@@ -58,7 +58,7 @@ export function getRandomProblemID() {
   return http.get("pickone")
 }
 
-export function getProblem(id: number) {
+export function getProblem(id: string) {
   return http.get("problem", {
     params: { problem_id: id },
   })
