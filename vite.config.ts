@@ -3,35 +3,35 @@ import vue from "@vitejs/plugin-vue";
 import AutoImport from "unplugin-auto-import/vite";
 import Components from "unplugin-vue-components/vite";
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers";
+import IconsResolver from "unplugin-icons/resolver";
+import Icons from "unplugin-icons/vite";
 
 const url = "https://oj.hyyz.izhai.net";
+const proxyConfig = {
+  target: url,
+  changeOrigin: true,
+  headers: { Referer: url },
+};
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
     AutoImport({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver(), IconsResolver()],
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [
+        ElementPlusResolver(),
+        IconsResolver({ enabledCollections: ["ep"] }),
+      ],
     }),
+    Icons({ autoInstall: true }),
   ],
   server: {
     proxy: {
-      "/api": {
-        target: url,
-        changeOrigin: true,
-        headers: {
-          Referer: url,
-        },
-      },
-      "/public": {
-        target: url,
-        changeOrigin: true,
-        headers: {
-          Referer: url,
-        },
-      },
+      "/api": proxyConfig,
+      "/public": proxyConfig,
     },
   },
 });

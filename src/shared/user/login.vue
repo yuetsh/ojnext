@@ -1,50 +1,50 @@
 <script setup lang="ts">
-import { FormInstance } from "element-plus";
-import { reactive, ref } from "vue";
-import { useSignupStore } from "../../oj/stores/signup";
-import { login } from "../../shared/api";
-import { useLoginStore } from "../stores/login";
-import { useUserStore } from "../stores/user";
+import { FormInstance } from "element-plus"
+import { reactive, ref } from "vue"
+import { useSignupStore } from "../../oj/stores/signup"
+import { login } from "../../shared/api"
+import { useLoginStore } from "../stores/login"
+import { useUserStore } from "../stores/user"
 
-const loginStore = useLoginStore();
-const signupStore = useSignupStore();
-const userStore = useUserStore();
-const loading = ref(false);
-const errorMessage = ref("");
-const loginRef = ref<FormInstance>();
+const loginStore = useLoginStore()
+const signupStore = useSignupStore()
+const userStore = useUserStore()
+const loading = ref(false)
+const errorMessage = ref("")
+const loginRef = ref<FormInstance>()
 const form = reactive({
   username: "",
   password: "",
-});
+})
 const rules = reactive({
   username: [{ required: true, message: "用户名必填", trigger: "blur" }],
   password: [
     { required: true, message: "密码必填", trigger: "blur" },
     { min: 6, max: 20, message: "长度在6到20位之间", trigger: "change" },
   ],
-});
+})
 
 async function submit() {
-  if (!loginRef.value) return;
+  if (!loginRef.value) return
   await loginRef.value.validate(async (valid) => {
     if (valid) {
-      loading.value = true;
-      errorMessage.value = "";
+      loading.value = true
+      errorMessage.value = ""
       try {
-        await login(form);
-        loginStore.hide();
-        await userStore.getMyProfile();
+        await login(form)
+        loginStore.hide()
+        await userStore.getMyProfile()
       } catch (err) {
-        errorMessage.value = "用户名或密码不正确";
+        errorMessage.value = "用户名或密码不正确"
       }
-      loading.value = false;
+      loading.value = false
     }
-  });
+  })
 }
 
 function goSignup() {
-  loginStore.hide();
-  signupStore.show();
+  loginStore.hide()
+  signupStore.show()
 }
 </script>
 

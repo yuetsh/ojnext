@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useSignupStore } from "../stores/signup";
-const store = useSignupStore();
+import { useSignupStore } from "../stores/signup"
+const store = useSignupStore()
 </script>
 
 <template>

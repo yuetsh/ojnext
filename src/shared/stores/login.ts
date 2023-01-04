@@ -1,16 +1,16 @@
-import { defineStore } from "pinia";
-import { ref } from "vue";
+import { defineStore } from "pinia"
+import { ref } from "vue"
 
 export const useLoginStore = defineStore("login", () => {
-  const visible = ref(false);
+  const visible = ref(false)
 
   function show() {
-    visible.value = true;
+    visible.value = true
   }
 
   function hide() {
-    visible.value = false;
+    visible.value = false
   }
 
-  return { visible, show, hide };
-});
+  return { visible, show, hide }
+})

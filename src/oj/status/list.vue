@@ -1,10 +1,5 @@
-<script setup lang="ts">
+<script setup lang="ts"></script>
 
-</script>
+<template>status list</template>
 
-<template>
-    status list
-</template>
-
-<style scoped>
-</style>
+<style scoped></style>

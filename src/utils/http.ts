@@ -1,10 +1,10 @@
-import axios from "axios";
+import axios from "axios"
 
 const http = axios.create({
   baseURL: "/api",
   xsrfHeaderName: "X-CSRFToken",
   xsrfCookieName: "csrftoken",
-});
+})
 
 // TODO
 http.interceptors.response.use(
@@ -13,14 +13,14 @@ http.interceptors.response.use(
       // 若后端返回为登录，则为session失效，应退出当前登录用户
       if (res.data.data.startsWith("Please login")) {
       }
-      return Promise.reject(res.data);
+      return Promise.reject(res.data)
     } else {
-      return Promise.resolve(res.data);
+      return Promise.resolve(res.data)
     }
   },
   (err) => {
-    return Promise.reject(err);
+    return Promise.reject(err)
   }
-);
+)
 
-export default http;
+export default http

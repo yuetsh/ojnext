@@ -1,31 +1,31 @@
 <script setup lang="ts">
-import { useLoginStore } from "../../shared/stores/login";
-import { useSignupStore } from "../stores/signup";
-import { useUserStore } from "../../shared/stores/user";
-import { onMounted } from "vue";
-import { logout } from "../../shared/api";
-import { useRouter } from "vue-router";
+import { useLoginStore } from "../../shared/stores/login"
+import { useSignupStore } from "../stores/signup"
+import { useUserStore } from "../../shared/stores/user"
+import { onMounted } from "vue"
+import { logout } from "../../shared/api"
+import { useRouter } from "vue-router"
 
-const loginStore = useLoginStore();
-const signupStore = useSignupStore();
-const userStore = useUserStore();
-const router = useRouter();
+const loginStore = useLoginStore()
+const signupStore = useSignupStore()
+const userStore = useUserStore()
+const router = useRouter()
 
 async function handleLogout() {
-  await logout();
-  userStore.clearMyProfile();
-  router.replace("/");
+  await logout()
+  userStore.clearMyProfile()
+  router.replace("/")
 }
 
 function handleDropdown(command: string) {
   switch (command) {
     case "logout":
-      handleLogout();
-      break;
+      handleLogout()
+      break
   }
 }
 
-onMounted(userStore.getMyProfile);
+onMounted(userStore.getMyProfile)
 </script>
 
 <template>
@@ -41,7 +41,7 @@ onMounted(userStore.getMyProfile);
   </div>
   <div v-if="userStore.isLoaded && userStore.isAuthed" class="actions">
     <el-dropdown @command="handleDropdown">
-      <h3>{{ userStore.user.username }}</h3>
+      <el-button>{{ userStore.user.username }}</el-button>
       <template #dropdown>
         <el-dropdown-menu>
           <el-dropdown-item>我的主页</el-dropdown-item>
@@ -64,5 +64,6 @@ onMounted(userStore.getMyProfile);
 .actions {
   display: flex;
   align-items: center;
+  border-bottom: solid 1px var(--el-menu-border-color);
 }
 </style>

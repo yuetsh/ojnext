@@ -1,10 +1,5 @@
-<script setup lang="ts">
+<script setup lang="ts"></script>
 
-</script>
+<template>contest list</template>
 
-<template>
-    contest list
-</template>
-
-<style scoped>
-</style>
+<style scoped></style>

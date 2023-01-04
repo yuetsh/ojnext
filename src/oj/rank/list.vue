@@ -1,10 +1,5 @@
-<script setup lang="ts">
+<script setup lang="ts"></script>
 
-</script>
+<template>rank list</template>
 
-<template>
-    rank list
-</template>
-
-<style scoped>
-</style>
+<style scoped></style>

@@ -68,13 +68,13 @@ export const JUDGE_STATUS = {
     color: "yellow",
     type: "warning",
   },
-};
+}
 
 export const CONTEST_STATUS = {
   NOT_START: "1",
   UNDERWAY: "0",
   ENDED: "-1",
-};
+}
 
 export const CONTEST_STATUS_REVERSE = {
   "1": {
@@ -89,41 +89,41 @@ export const CONTEST_STATUS_REVERSE = {
     name: "Ended",
     color: "red",
   },
-};
+}
 
 export const RULE_TYPE = {
   ACM: "ACM",
   OI: "OI",
-};
+}
 
 export const CONTEST_TYPE = {
   PUBLIC: "Public",
   PRIVATE: "Password Protected",
-};
+}
 
 export const USER_TYPE = {
   REGULAR_USER: "Regular User",
   ADMIN: "Admin",
   SUPER_ADMIN: "Super Admin",
-};
+}
 
 export const PROBLEM_PERMISSION = {
   NONE: "None",
   OWN: "Own",
   ALL: "All",
-};
+}
 
 export const STORAGE_KEY = {
   AUTHED: "authed",
   PROBLEM_CODE: "problemCode",
   USER: "user",
-};
+}
 
 export function buildProblemCodeKey(problemID: number, contestID = null) {
   if (contestID) {
-    return `${STORAGE_KEY.PROBLEM_CODE}_${contestID}_${problemID}`;
+    return `${STORAGE_KEY.PROBLEM_CODE}_${contestID}_${problemID}`
   }
-  return `${STORAGE_KEY.PROBLEM_CODE}_NaN_${problemID}`;
+  return `${STORAGE_KEY.PROBLEM_CODE}_NaN_${problemID}`
 }
 
-export const GOOGLE_ANALYTICS_ID = "UA-111499601-1";
+export const GOOGLE_ANALYTICS_ID = "UA-111499601-1"

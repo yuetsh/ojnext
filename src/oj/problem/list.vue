@@ -1,21 +1,23 @@
 <script setup lang="ts">
-import { onMounted, ref, reactive, watch, VueElement } from "vue";
-import { useRoute, useRouter } from "vue-router";
-import { filterEmptyValue } from "../../utils/functions";
-import { getProblemList, getProblemTagList } from "../api";
+import { onMounted, ref, reactive, watch, VueElement } from "vue"
+import { useRoute, useRouter } from "vue-router"
+import { useUserStore } from "../../shared/stores/user"
+import { filterEmptyValue } from "../../utils/functions"
+import { getProblemList, getProblemTagList, getRandomProblemID } from "../api"
 
 const difficultyOptions = [
   { label: "全部", value: "" },
   { label: "简单", value: "Low" },
   { label: "中等", value: "Mid" },
   { label: "困难", value: "High" },
-];
+]
 
-const router = useRouter();
-const route = useRoute();
-const problems = ref([]);
-const tags = ref(<{ id: number; name: string }[]>[]);
-const total = ref(0);
+const router = useRouter()
+const route = useRoute()
+const userStore = useUserStore()
+const problems = ref([])
+const tags = ref(<{ id: number; name: string }[]>[])
+const total = ref(0)
 
 const query = reactive({
   keyword: route.query.keyword || "",
@@ -23,75 +25,92 @@ const query = reactive({
   tag: route.query.tag || "",
   page: parseInt(<string>route.query.page) || 1,
   limit: parseInt(<string>route.query.limit) || 10,
-});
+})
 
 function getTagColor(tag: string) {
   return {
     简单: "success",
     中等: "",
     困难: "danger",
-  }[tag];
+  }[tag]
 }
 
 async function listTags() {
-  const res = await getProblemTagList();
-  tags.value = res.data;
+  const res = await getProblemTagList()
+  tags.value = res.data
 }
 
 async function listProblems() {
-  query.keyword = route.query.keyword || "";
-  query.difficulty = route.query.difficulty || "";
-  query.tag = route.query.tag || "";
-  query.page = parseInt(<string>route.query.page) || 1;
-  query.limit = parseInt(<string>route.query.limit) || 10;
+  query.keyword = route.query.keyword || ""
+  query.difficulty = route.query.difficulty || ""
+  query.tag = route.query.tag || ""
+  query.page = parseInt(<string>route.query.page) || 1
+  query.limit = parseInt(<string>route.query.limit) || 10
 
-  if (query.page < 1) query.page = 1;
-  const offset = (query.page - 1) * query.limit;
+  if (query.page < 1) query.page = 1
+  const offset = (query.page - 1) * query.limit
   const res = await getProblemList(offset, query.limit, {
     keyword: query.keyword,
     tag: query.tag,
     difficulty: query.difficulty,
-  });
-  total.value = res.total;
-  problems.value = res.results;
+  })
+  total.value = res.total
+  problems.value = res.results
 }
 
 function routePush() {
   router.push({
     path: "/",
     query: filterEmptyValue(query),
-  });
+  })
 }
 
 function search() {
-  query.page = 1;
-  routePush();
+  query.page = 1
+  routePush()
 }
 
 function clear() {
-  query.keyword = "";
-  query.tag = "";
-  query.difficulty = "";
-  query.page = 1;
-  routePush();
+  query.keyword = ""
+  query.tag = ""
+  query.difficulty = ""
+  query.page = 1
+  routePush()
 }
 
-watch(() => query.page, routePush);
+async function getRandom() {
+  const res = await getRandomProblemID()
+  router.push("/problem/" + res.data)
+}
+
+function goProblem(row: any) {
+  router.push("/problem/" + row.displayID)
+}
+
+watch(() => query.page, routePush)
 
 watch(
   () => query.tag || query.difficulty || query.limit,
   () => {
-    query.page = 1;
-    routePush();
+    query.page = 1
+    routePush()
   }
-);
+)
 
-watch(() => route.query, listProblems);
+watch(
+  () => route.path === "/" && route.query,
+  (newVal) => {
+    if (newVal) listProblems()
+  }
+)
+
+// TODO: 这里会在登录时候执行两次，有BUG
+watch(() => userStore.isLoaded && userStore.isAuthed, listProblems)
 
 onMounted(() => {
-  listTags();
-  listProblems();
-});
+  listTags()
+  listProblems()
+})
 </script>
 
 <template>
@@ -128,9 +147,15 @@ onMounted(() => {
     </el-form-item>
     <el-form-item>
       <el-button type="" @click="clear">重置</el-button>
+      <el-button type="" @click="getRandom">随机一题</el-button>
     </el-form-item>
   </el-form>
-  <el-table class="hidden-md-and-up" :data="problems" stripe>
+  <el-table
+    class="hidden-md-and-up"
+    :data="problems"
+    stripe
+    @row-click="goProblem"
+  >
     <el-table-column prop="displayID" label="ID" width="80" />
     <el-table-column prop="title" label="标题" />
     <el-table-column label="难度" width="100">
@@ -141,8 +166,25 @@ onMounted(() => {
       </template>
     </el-table-column>
   </el-table>
-  <el-table class="hidden-sm-and-down pointer" :data="problems" stripe>
-    <el-table-column prop="my_status" label="状态" width="80">
+  <el-table
+    class="hidden-sm-and-down pointer"
+    :data="problems"
+    stripe
+    @row-click="goProblem"
+  >
+    <el-table-column label="状态" width="80">
+      <template #default="scope">
+        <el-icon
+          v-if="scope.row.status === 'done'"
+          color="var(--el-color-success)"
+          ><i-ep-select
+        /></el-icon>
+        <el-icon
+          v-if="scope.row.status === 'tried'"
+          color="var(--el-color-error)"
+          ><i-ep-semi-select
+        /></el-icon>
+      </template>
     </el-table-column>
     <el-table-column prop="displayID" label="编号" width="100" />
     <el-table-column prop="title" label="标题" />
@@ -171,19 +213,20 @@ onMounted(() => {
   </el-table>
   <el-pagination
     class="right hidden-md-and-up margin"
-    layout="sizes,prev,next"
+    layout="prev,next,sizes"
     background
     :total="total"
-    :page-sizes="[10, 30, 50, 100]"
+    :page-sizes="[10, 20, 30]"
     v-model:page-size="query.limit"
     v-model:current-page="query.page"
   />
   <el-pagination
     class="right margin hidden-sm-and-down"
-    layout="sizes,prev,pager,next"
+    layout="prev,pager,next,sizes"
     background
     :total="total"
-    :page-sizes="[10, 30, 50, 100]"
+    :page-sizes="[10, 20, 30]"
+    :pager-count="5"
     v-model:page-size="query.limit"
     v-model:current-page="query.page"
   />

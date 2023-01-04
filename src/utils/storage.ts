@@ -1,21 +1,21 @@
-const localStorage = window.localStorage;
+const localStorage = window.localStorage
 
 export default {
   set(key: string, value: any) {
-    localStorage.setItem(key, JSON.stringify(value));
+    localStorage.setItem(key, JSON.stringify(value))
   },
   get(key: string) {
-    const content = localStorage.getItem(key);
+    const content = localStorage.getItem(key)
     if (content) {
-      return JSON.parse(content);
+      return JSON.parse(content)
     } else {
-      return null;
+      return null
     }
   },
   remove(key: string) {
-    localStorage.removeItem(key);
+    localStorage.removeItem(key)
   },
   clear() {
-    localStorage.clear();
+    localStorage.clear()
   },
-};
+}

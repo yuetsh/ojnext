@@ -1,14 +1,14 @@
-import { createApp } from "vue";
-import { createRouter, createWebHistory } from "vue-router";
-import { createPinia } from "pinia";
-import "element-plus/theme-chalk/display.css";
-import App from "./App.vue";
+import { createApp } from "vue"
+import { createRouter, createWebHistory } from "vue-router"
+import { createPinia } from "pinia"
+import "element-plus/theme-chalk/display.css"
+import App from "./App.vue"
 
-import Home from "./oj/index.vue";
-import Problems from "./oj/problem/list.vue";
-import storage from "./utils/storage";
-import { STORAGE_KEY } from "./utils/constants";
-import { useLoginStore } from "./shared/stores/login";
+import Home from "./oj/index.vue"
+import Problems from "./oj/problem/list.vue"
+import storage from "./utils/storage"
+import { STORAGE_KEY } from "./utils/constants"
+import { useLoginStore } from "./shared/stores/login"
 
 const routes = [
   {
@@ -45,30 +45,30 @@ const routes = [
     ],
   },
   { path: "/admin", component: () => import("./admin/index.vue") },
-];
+]
 
 const router = createRouter({
   history: createWebHistory(),
   routes,
-});
+})
 
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!storage.get(STORAGE_KEY.AUTHED)) {
-      const login = useLoginStore();
-      login.show();
-      next("/");
+      const login = useLoginStore()
+      login.show()
+      next("/")
     } else {
-      next();
+      next()
     }
   } else {
-    next();
+    next()
   }
-});
+})
 
-const pinia = createPinia();
+const pinia = createPinia()
 
-const app = createApp(App);
-app.use(router);
-app.use(pinia);
-app.mount("#app");
+const app = createApp(App)
+app.use(router)
+app.use(pinia)
+app.mount("#app")
