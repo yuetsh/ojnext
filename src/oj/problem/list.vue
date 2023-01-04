@@ -1,0 +1,211 @@
+<script setup lang="ts">
+import { onMounted, ref, reactive, watch, VueElement } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { filterEmptyValue } from "../../utils/functions";
+import { getProblemList, getProblemTagList } from "../api";
+
+const difficultyOptions = [
+  { label: "全部", value: "" },
+  { label: "简单", value: "Low" },
+  { label: "中等", value: "Mid" },
+  { label: "困难", value: "High" },
+];
+
+const router = useRouter();
+const route = useRoute();
+const problems = ref([]);
+const tags = ref(<{ id: number; name: string }[]>[]);
+const total = ref(0);
+
+const query = reactive({
+  keyword: route.query.keyword || "",
+  difficulty: route.query.difficulty || "",
+  tag: route.query.tag || "",
+  page: parseInt(<string>route.query.page) || 1,
+  limit: parseInt(<string>route.query.limit) || 10,
+});
+
+function getTagColor(tag: string) {
+  return {
+    简单: "success",
+    中等: "",
+    困难: "danger",
+  }[tag];
+}
+
+async function listTags() {
+  const res = await getProblemTagList();
+  tags.value = res.data;
+}
+
+async function listProblems() {
+  query.keyword = route.query.keyword || "";
+  query.difficulty = route.query.difficulty || "";
+  query.tag = route.query.tag || "";
+  query.page = parseInt(<string>route.query.page) || 1;
+  query.limit = parseInt(<string>route.query.limit) || 10;
+
+  if (query.page < 1) query.page = 1;
+  const offset = (query.page - 1) * query.limit;
+  const res = await getProblemList(offset, query.limit, {
+    keyword: query.keyword,
+    tag: query.tag,
+    difficulty: query.difficulty,
+  });
+  total.value = res.total;
+  problems.value = res.results;
+}
+
+function routePush() {
+  router.push({
+    path: "/",
+    query: filterEmptyValue(query),
+  });
+}
+
+function search() {
+  query.page = 1;
+  routePush();
+}
+
+function clear() {
+  query.keyword = "";
+  query.tag = "";
+  query.difficulty = "";
+  query.page = 1;
+  routePush();
+}
+
+watch(() => query.page, routePush);
+
+watch(
+  () => query.tag || query.difficulty || query.limit,
+  () => {
+    query.page = 1;
+    routePush();
+  }
+);
+
+watch(() => route.query, listProblems);
+
+onMounted(() => {
+  listTags();
+  listProblems();
+});
+</script>
+
+<template>
+  <el-form :inline="true">
+    <el-form-item label="难度">
+      <el-select v-model="query.difficulty">
+        <el-option
+          v-for="item in difficultyOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        >
+        </el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="标签">
+      <el-select v-model="query.tag" clearable>
+        <el-option
+          v-for="item in tags"
+          :key="item.id"
+          :label="item.name"
+          :value="item.name"
+        >
+        </el-option>
+      </el-select>
+    </el-form-item>
+    <el-form-item label="搜索">
+      <el-input
+        v-model="query.keyword"
+        placeholder="输入编号或标题后回车"
+        clearable
+        @change="search"
+      />
+    </el-form-item>
+    <el-form-item>
+      <el-button type="" @click="clear">重置</el-button>
+    </el-form-item>
+  </el-form>
+  <el-table class="hidden-md-and-up" :data="problems" stripe>
+    <el-table-column prop="displayID" label="ID" width="80" />
+    <el-table-column prop="title" label="标题" />
+    <el-table-column label="难度" width="100">
+      <template #default="scope">
+        <el-tag disable-transitions :type="getTagColor(scope.row.difficulty)">
+          {{ scope.row.difficulty }}
+        </el-tag>
+      </template>
+    </el-table-column>
+  </el-table>
+  <el-table class="hidden-sm-and-down pointer" :data="problems" stripe>
+    <el-table-column prop="my_status" label="状态" width="80">
+    </el-table-column>
+    <el-table-column prop="displayID" label="编号" width="100" />
+    <el-table-column prop="title" label="标题" />
+    <el-table-column label="难度" width="100">
+      <template #default="scope">
+        <el-tag disable-transitions :type="getTagColor(scope.row.difficulty)">
+          {{ scope.row.difficulty }}
+        </el-tag>
+      </template>
+    </el-table-column>
+    <el-table-column label="标签" width="200">
+      <template #default="scope">
+        <el-space>
+          <el-tag
+            disable-transitions
+            v-for="tag in scope.row.tags"
+            :key="tag"
+            type="info"
+            >{{ tag }}</el-tag
+          >
+        </el-space>
+      </template>
+    </el-table-column>
+    <el-table-column prop="submission" label="提交数" width="100" />
+    <el-table-column prop="rate" label="通过率" width="100" />
+  </el-table>
+  <el-pagination
+    class="right hidden-md-and-up margin"
+    layout="sizes,prev,next"
+    background
+    :total="total"
+    :page-sizes="[10, 30, 50, 100]"
+    v-model:page-size="query.limit"
+    v-model:current-page="query.page"
+  />
+  <el-pagination
+    class="right margin hidden-sm-and-down"
+    layout="sizes,prev,pager,next"
+    background
+    :total="total"
+    :page-sizes="[10, 30, 50, 100]"
+    v-model:page-size="query.limit"
+    v-model:current-page="query.page"
+  />
+</template>
+
+<style scoped>
+.margin {
+  margin-top: 24px;
+}
+.right {
+  float: right;
+}
+.pointer {
+  cursor: pointer;
+}
+
+.panel {
+  width: 400px;
+  padding: 0 4px;
+}
+
+.panel-tag {
+  margin: 4px;
+}
+</style>
