@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import { onMounted, ref, reactive, watch, VueElement } from "vue"
+import { onMounted, ref, reactive, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useUserStore } from "../../shared/stores/user"
 import { filterEmptyValue } from "../../utils/functions"
+import { getTagColor } from "../../utils/constants"
 import { getProblemList, getProblemTagList, getRandomProblemID } from "../api"
 
 const difficultyOptions = [
@@ -26,14 +27,6 @@ const query = reactive({
   page: parseInt(<string>route.query.page) || 1,
   limit: parseInt(<string>route.query.limit) || 10,
 })
-
-function getTagColor(tag: string) {
-  return {
-    简单: "success",
-    中等: "",
-    困难: "danger",
-  }[tag]
-}
 
 async function listTags() {
   const res = await getProblemTagList()

@@ -1,17 +1,12 @@
 import { getACRate } from "./../utils/functions"
+import { DIFFICULTY } from "./../utils/constants"
 import http from "./../utils/http"
-
-const difficultDict = {
-  Low: "简单",
-  Mid: "中等",
-  High: "困难",
-}
 
 function filterResult(result: any) {
   const newResult: any = {
     displayID: result._id,
     title: result.title,
-    difficulty: difficultDict[<"Low" | "Mid" | "High">result.difficulty],
+    difficulty: DIFFICULTY[<"Low" | "Mid" | "High">result.difficulty],
     tags: result.tags,
     submission: result.submission_number,
     rate: getACRate(result.accepted_number, result.submission_number),
