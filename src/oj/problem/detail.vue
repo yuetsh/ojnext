@@ -32,18 +32,19 @@ onMounted(() => {
 
 <template>
   <el-row>
-    <el-col :span="12">
+    <el-col :span="14">
       <el-tabs type="border-card">
         <el-tab-pane label="题目描述">
           <ProblemContent :problem="problem" />
         </el-tab-pane>
+        <el-tab-pane label="比赛信息"></el-tab-pane>
         <el-tab-pane label="题目信息">
           <ProblemInfo :problem="problem" />
         </el-tab-pane>
         <el-tab-pane label="提交信息">3</el-tab-pane>
       </el-tabs>
     </el-col>
-    <el-col :span="12">
+    <el-col :span="10">
       <Editor :value="code" :language="language" />
     </el-col>
   </el-row>

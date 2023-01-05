@@ -128,6 +128,7 @@ function editorInit() {
   height: 500px;
 }
 .actions {
-  margin-top: 20px;
+  margin-top: 16px;
+  float: right;
 }
 </style>

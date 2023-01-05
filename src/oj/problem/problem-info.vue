@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { defineProps } from "vue"
 import { DIFFICULTY, getTagColor } from "../../utils/constants"
+import { getACRate } from "../../utils/functions"
 
 const { problem } = defineProps(["problem"])
 </script>
 
 <template>
   <el-descriptions border>
-    <el-descriptions-item label="ID">
+    <el-descriptions-item label="编号">
       {{ problem._id }}
     </el-descriptions-item>
     <el-descriptions-item label="出题人">
@@ -27,7 +28,18 @@ const { problem } = defineProps(["problem"])
     <el-descriptions-item label="类型">
       {{ problem.rule_type }}
     </el-descriptions-item>
-    <el-descriptions-item label="标签">
+
+    <el-descriptions-item label="提交正确">
+      {{ problem.accepted_number }}次
+    </el-descriptions-item>
+    <el-descriptions-item label="提交错误">
+      {{ problem.submission_number - problem.accepted_number }}次
+    </el-descriptions-item>
+    <el-descriptions-item label="正确率">
+      {{ getACRate(problem.accepted_number, problem.submission_number) }}
+    </el-descriptions-item>
+
+    <el-descriptions-item :span="3" label="标签">
       <el-space>
         <el-tag type="info" v-for="tag in problem.tags" :key="tag">
           {{ tag }}
