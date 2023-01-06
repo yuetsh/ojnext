@@ -3,10 +3,12 @@ import { createRouter, createWebHistory } from "vue-router"
 import { createPinia } from "pinia"
 import "normalize.css"
 import "element-plus/theme-chalk/display.css"
-import App from "./App.vue"
+import loader from "@monaco-editor/loader"
 
+import App from "./App.vue"
 import Home from "./oj/index.vue"
 import Problems from "./oj/problem/list.vue"
+
 import storage from "./utils/storage"
 import { STORAGE_KEY } from "./utils/constants"
 import { useLoginStore } from "./shared/stores/login"
@@ -18,7 +20,7 @@ const routes = [
     children: [
       { path: "", component: Problems },
       {
-        path: "problem/:id",
+        path: "problem/:problemID",
         component: () => import("./oj/problem/detail.vue"),
       },
       {
@@ -27,7 +29,7 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
-        path: "status/:id",
+        path: "status/:statusID",
         component: () => import("./oj/status/detail.vue"),
       },
       {
@@ -36,7 +38,7 @@ const routes = [
         meta: { requiresAuth: true },
       },
       {
-        path: "contest/:id",
+        path: "contest/:contestID",
         component: () => import("./oj/contest/detail.vue"),
       },
       {
@@ -68,6 +70,11 @@ router.beforeEach((to, from, next) => {
 })
 
 const pinia = createPinia()
+
+loader.config({
+  paths: { vs: "https://cdn.staticfile.org/monaco-editor/0.34.1/min/vs" },
+  "vs/nls": { availableLanguages: { "*": "zh-cn" } },
+})
 
 const app = createApp(App)
 app.use(router)

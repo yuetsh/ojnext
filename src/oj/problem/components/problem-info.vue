@@ -1,7 +1,6 @@
 <script setup lang="ts">
-import { defineProps } from "vue"
-import { DIFFICULTY, getTagColor } from "../../utils/constants"
-import { getACRate } from "../../utils/functions"
+import { DIFFICULTY, getTagColor } from "../../../utils/constants"
+import { getACRate } from "../../../utils/functions"
 
 const { problem } = defineProps(["problem"])
 </script>

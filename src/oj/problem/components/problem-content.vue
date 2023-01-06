@@ -16,7 +16,7 @@ const { problem } = defineProps(["problem"])
 
     <div v-if="problem.hint">
       <p class="title">提示</p>
-      <el-card shadow="none">
+      <el-card shadow="never">
         <div class="content" v-html="problem.hint"></div>
       </el-card>
     </div>

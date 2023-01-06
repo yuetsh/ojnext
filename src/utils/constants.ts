@@ -136,9 +136,31 @@ export function getTagColor(tag: string) {
   }[tag]
 }
 
-export function buildProblemCodeKey(problemID: number, contestID = null) {
+export function buildProblemCodeKey(problemID: string, contestID = "") {
   if (contestID) {
     return `${STORAGE_KEY.PROBLEM_CODE}_${contestID}_${problemID}`
   }
   return `${STORAGE_KEY.PROBLEM_CODE}_NaN_${problemID}`
+}
+
+export const languageLabel = {
+  C: "C",
+  "C++": "C++",
+  Java: "Java",
+  Python2: "Python2",
+  Python3: "Python",
+  JavaScript: "JS",
+  Golang: "Go",
+}
+
+export type LANGUAGE = keyof typeof languageLabel
+
+export const languageValue = {
+  C: "c",
+  "C++": "cpp",
+  Java: "java",
+  Python2: "python",
+  Python3: "python",
+  JavaScript: "javascript",
+  Golang: "go",
 }
