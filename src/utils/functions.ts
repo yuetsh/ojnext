@@ -1,3 +1,5 @@
+import { STORAGE_KEY } from "./constants"
+
 export function getACRate(acCount: number, totalCount: number) {
   let rate = totalCount === 0 ? 0.0 : ((acCount / totalCount) * 100).toFixed(2)
   return `${rate}%`
@@ -11,4 +13,22 @@ export function filterEmptyValue(object: any) {
     }
   })
   return query
+}
+
+export function buildProblemCodeKey(problemID: string, contestID = "") {
+  if (contestID) {
+    return `${STORAGE_KEY.PROBLEM_CODE}_${contestID}_${problemID}`
+  }
+  return `${STORAGE_KEY.PROBLEM_CODE}_NaN_${problemID}`
+}
+
+export function getTagColor(tag: string) {
+  return {
+    Low: "success",
+    Mid: "",
+    High: "danger",
+    简单: "success",
+    中等: "",
+    困难: "danger",
+  }[tag]
 }

@@ -7,6 +7,7 @@ import {
   LANGUAGE_VALUE,
   SOURCES,
 } from "../../../utils/constants"
+import { isDesktop } from "../../../utils/breakpoints"
 
 const { problem } = defineProps<{
   problem: {
@@ -61,11 +62,13 @@ async function init() {
   monaco.editor.create(monacoEditorRef.value, {
     value: state.values[state.language], // 编辑器初始显示文字
     language: LANGUAGE_VALUE[state.language],
-    automaticLayout: true, // 自适应布局
     theme: "vs", // 官方自带三种主题vs, hc-black, or vs-dark
     minimap: {
       enabled: false,
     },
+    lineNumbersMinChars: 3,
+    automaticLayout: true, // 自适应布局
+    tabSize: 4,
     fontSize: 24, // 字体大小
     scrollBeyondLastLine: false, // 取消代码后面一大段空白
   })
@@ -92,7 +95,10 @@ async function init() {
       <el-button @click="reset">重置</el-button>
     </el-form-item>
   </el-form>
-  <div ref="monacoEditorRef" class="editor"></div>
+  <div
+    ref="monacoEditorRef"
+    :class="isDesktop ? 'editor' : 'editorMobile'"
+  ></div>
   <el-tabs type="border-card">
     <el-tab-pane label="测试用例"> 1 </el-tab-pane>
     <el-tab-pane label="执行结果"> 2 </el-tab-pane>
@@ -113,6 +119,11 @@ async function init() {
 .editor {
   height: 70%;
 }
+
+.editorMobile {
+  height: 500px;
+}
+
 .actions {
   margin-top: 16px;
   float: right;

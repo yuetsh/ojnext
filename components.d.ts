@@ -42,5 +42,6 @@ declare module '@vue/runtime-core' {
     IEpSemiSelect: typeof import('~icons/ep/semi-select')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    UseNetwork: typeof import('@vueuse/components')['UseNetwork']
   }
 }

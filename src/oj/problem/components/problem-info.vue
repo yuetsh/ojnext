@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { DIFFICULTY, getTagColor } from "../../../utils/constants"
-import { getACRate } from "../../../utils/functions"
+import { DIFFICULTY } from "../../../utils/constants"
+import { getACRate, getTagColor } from "../../../utils/functions"
+import { isDesktop } from "../../../utils/breakpoints"
 
 const { problem } = defineProps(["problem"])
 </script>
 
 <template>
-  <el-descriptions border>
+  <el-descriptions border :column="isDesktop ? 3 : 1">
     <el-descriptions-item label="编号">
       {{ problem._id }}
     </el-descriptions-item>
@@ -14,7 +15,7 @@ const { problem } = defineProps(["problem"])
       {{ problem.created_by.username }}
     </el-descriptions-item>
     <el-descriptions-item label="难度">
-      <el-tag :type="getTagColor(problem.difficulty)">
+      <el-tag disable-transitions :type="getTagColor(problem.difficulty)">
         {{ DIFFICULTY[<"Low" | "Mid" | "High">problem.difficulty] }}
       </el-tag>
     </el-descriptions-item>
@@ -40,7 +41,12 @@ const { problem } = defineProps(["problem"])
 
     <el-descriptions-item :span="3" label="标签">
       <el-space>
-        <el-tag type="info" v-for="tag in problem.tags" :key="tag">
+        <el-tag
+          disable-transitions
+          type="info"
+          v-for="tag in problem.tags"
+          :key="tag"
+        >
           {{ tag }}
         </el-tag>
       </el-space>

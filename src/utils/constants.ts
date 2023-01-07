@@ -116,31 +116,12 @@ export const PROBLEM_PERMISSION = {
 export const STORAGE_KEY = {
   AUTHED: "authed",
   PROBLEM_CODE: "problemCode",
-  USER: "user",
 }
 
 export const DIFFICULTY = {
   Low: "简单",
   Mid: "中等",
   High: "困难",
-}
-
-export function getTagColor(tag: string) {
-  return {
-    Low: "success",
-    Mid: "",
-    High: "danger",
-    简单: "success",
-    中等: "",
-    困难: "danger",
-  }[tag]
-}
-
-export function buildProblemCodeKey(problemID: string, contestID = "") {
-  if (contestID) {
-    return `${STORAGE_KEY.PROBLEM_CODE}_${contestID}_${problemID}`
-  }
-  return `${STORAGE_KEY.PROBLEM_CODE}_NaN_${problemID}`
 }
 
 const cSource =

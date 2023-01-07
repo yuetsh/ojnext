@@ -2,7 +2,6 @@ import { createApp } from "vue"
 import { createRouter, createWebHistory } from "vue-router"
 import { createPinia } from "pinia"
 import "normalize.css"
-import "element-plus/theme-chalk/display.css"
 import loader from "@monaco-editor/loader"
 
 import App from "./App.vue"

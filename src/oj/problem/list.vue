@@ -2,8 +2,8 @@
 import { onMounted, ref, reactive, watch } from "vue"
 import { useRoute, useRouter } from "vue-router"
 import { useUserStore } from "../../shared/stores/user"
-import { filterEmptyValue } from "../../utils/functions"
-import { getTagColor } from "../../utils/constants"
+import { filterEmptyValue, getTagColor } from "../../utils/functions"
+import { isDesktop } from "../../utils/breakpoints"
 import { getProblemList, getProblemTagList, getRandomProblemID } from "../api"
 
 const difficultyOptions = [
@@ -143,29 +143,8 @@ onMounted(() => {
       <el-button type="" @click="getRandom">随机一题</el-button>
     </el-form-item>
   </el-form>
-  <el-table
-    class="hidden-md-and-up"
-    :data="problems"
-    stripe
-    @row-click="goProblem"
-  >
-    <el-table-column prop="displayID" label="ID" width="80" />
-    <el-table-column prop="title" label="标题" />
-    <el-table-column label="难度" width="100">
-      <template #default="scope">
-        <el-tag disable-transitions :type="getTagColor(scope.row.difficulty)">
-          {{ scope.row.difficulty }}
-        </el-tag>
-      </template>
-    </el-table-column>
-  </el-table>
-  <el-table
-    class="hidden-sm-and-down pointer"
-    :data="problems"
-    stripe
-    @row-click="goProblem"
-  >
-    <el-table-column label="状态" width="80">
+  <el-table class="pointer" :data="problems" stripe @row-click="goProblem">
+    <el-table-column v-if="isDesktop" label="状态" :width="80">
       <template #default="scope">
         <el-icon
           v-if="scope.row.status === 'done'"
@@ -179,7 +158,11 @@ onMounted(() => {
         /></el-icon>
       </template>
     </el-table-column>
-    <el-table-column prop="displayID" label="编号" width="100" />
+    <el-table-column
+      prop="displayID"
+      label="编号"
+      :width="isDesktop ? 100 : 60"
+    />
     <el-table-column prop="title" label="标题" />
     <el-table-column label="难度" width="100">
       <template #default="scope">
@@ -188,7 +171,7 @@ onMounted(() => {
         </el-tag>
       </template>
     </el-table-column>
-    <el-table-column label="标签" width="200">
+    <el-table-column v-if="isDesktop" label="标签" :width="200">
       <template #default="scope">
         <el-space>
           <el-tag
@@ -201,21 +184,17 @@ onMounted(() => {
         </el-space>
       </template>
     </el-table-column>
-    <el-table-column prop="submission" label="提交数" width="100" />
-    <el-table-column prop="rate" label="通过率" width="100" />
+    <el-table-column
+      v-if="isDesktop"
+      prop="submission"
+      label="提交数"
+      width="100"
+    />
+    <el-table-column v-if="isDesktop" prop="rate" label="通过率" width="100" />
   </el-table>
   <el-pagination
-    class="right hidden-md-and-up margin"
-    layout="prev,next,sizes"
-    background
-    :total="total"
-    :page-sizes="[10, 20, 30]"
-    v-model:page-size="query.limit"
-    v-model:current-page="query.page"
-  />
-  <el-pagination
-    class="right margin hidden-sm-and-down"
-    layout="prev,pager,next,sizes"
+    class="right margin"
+    :layout="isDesktop ? 'prev,pager,next,sizes' : 'prev,next,sizes'"
     background
     :total="total"
     :page-sizes="[10, 20, 30]"
