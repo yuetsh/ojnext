@@ -11,7 +11,7 @@ const contestID = route.params.contestID as string
 const problemID = route.params.problemID as string
 
 const problem = ref({
-  _id: 0,
+  _id: "",
   created_by: {},
   io_mode: {},
   languages: [],
@@ -33,7 +33,7 @@ onMounted(() => {
 
 <template>
   <el-row v-if="problem._id">
-    <el-col :span="14">
+    <el-col :span="12">
       <el-tabs type="border-card">
         <el-tab-pane label="题目描述">
           <ProblemContent :problem="problem" />
@@ -45,8 +45,8 @@ onMounted(() => {
         <el-tab-pane label="提交情况">3</el-tab-pane>
       </el-tabs>
     </el-col>
-    <el-col :span="10">
-      <Editor :languages="problem.languages" :template="problem.template" />
+    <el-col :span="12">
+      <Editor :problem="problem" />
     </el-col>
   </el-row>
 </template>
