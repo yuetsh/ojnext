@@ -196,8 +196,6 @@ export const LANGUAGE_LABEL = {
   Golang: "Go",
 }
 
-export type LANGUAGE = keyof typeof LANGUAGE_LABEL
-
 export const LANGUAGE_VALUE = {
   C: "c",
   "C++": "cpp",

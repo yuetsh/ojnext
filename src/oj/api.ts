@@ -1,12 +1,14 @@
 import { getACRate } from "./../utils/functions"
 import { DIFFICULTY } from "./../utils/constants"
+import { Problem, LANGUAGE } from "./../utils/types"
 import http from "./../utils/http"
+import { useAxios } from "@vueuse/integrations/useAxios"
 
-function filterResult(result: any) {
+function filterResult(result: Problem) {
   const newResult: any = {
-    displayID: result._id,
+    _id: result._id,
     title: result.title,
-    difficulty: DIFFICULTY[<"Low" | "Mid" | "High">result.difficulty],
+    difficulty: DIFFICULTY[result.difficulty],
     tags: result.tags,
     submission: result.submission_number,
     rate: getACRate(result.accepted_number, result.submission_number),
@@ -46,7 +48,7 @@ export async function getProblemList(
 }
 
 export function getProblemTagList() {
-  return http.get("problem/tags")
+  return useAxios<{ id: number; name: string }[]>("problem/tags", http)
 }
 
 export function getRandomProblemID() {
@@ -54,11 +56,20 @@ export function getRandomProblemID() {
 }
 
 export function getProblem(id: string) {
-  return http.get("problem", {
-    params: { problem_id: id },
+  return useAxios<Problem>("problem", { params: { problem_id: id } }, http)
+}
+
+export function getSubmission(id: string) {
+  return http.get("submission", {
+    params: { id },
   })
 }
 
-export function getWebsite() {
-  return http.get("website")
+export function submitCode(data: {
+  problem_id: number
+  contest_id?: number
+  language: LANGUAGE
+  code: string
+}) {
+  return http.post("submission", data)
 }

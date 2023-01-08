@@ -1,39 +1,19 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue"
-import { useRoute } from "vue-router"
 import Editor from "./components/editor.vue"
 import ProblemContent from "./components/problem-content.vue"
 import ProblemInfo from "./components/problem-info.vue"
 import { getProblem } from "../api"
 import { isDesktop, isMobile } from "../../utils/breakpoints"
 
-const route = useRoute()
-const contestID = route.params.contestID as string
-const problemID = route.params.problemID as string
-
-const problem = ref({
-  _id: "",
-  created_by: {},
-  io_mode: {},
-  languages: [],
-  samples: [],
-  statistic_info: {},
-  tags: [],
-  template: {},
-})
-
-async function init() {
-  const res = await getProblem(problemID)
-  problem.value = res.data
-}
-
-onMounted(() => {
-  init()
-})
+const { problemID = "", contestID = "" } = defineProps<{
+  problemID?: string
+  contestID?: string
+}>()
+const { data: problem, isFinished } = getProblem(problemID)
 </script>
 
 <template>
-  <el-row v-if="problem._id">
+  <el-row v-if="isFinished && problem">
     <el-col :span="isDesktop ? 12 : 24">
       <el-tabs type="border-card">
         <el-tab-pane label="题目描述">

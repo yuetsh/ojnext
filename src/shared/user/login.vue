@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FormInstance } from "element-plus"
-import { reactive, ref } from "vue"
+import { computed, reactive, ref } from "vue"
 import { useSignupStore } from "../../oj/stores/signup"
 import { login } from "../../shared/api"
 import { useLoginStore } from "../stores/login"
@@ -9,8 +9,6 @@ import { useUserStore } from "../stores/user"
 const loginStore = useLoginStore()
 const signupStore = useSignupStore()
 const userStore = useUserStore()
-const loading = ref(false)
-const errorMessage = ref("")
 const loginRef = ref<FormInstance>()
 const form = reactive({
   username: "",
@@ -23,23 +21,19 @@ const rules = reactive({
     { min: 6, max: 20, message: "长度在6到20位之间", trigger: "change" },
   ],
 })
+const { isLoading, error, execute } = login(form)
+const msg = computed(() => error.value && "用户名或密码不正确")
 
 async function submit() {
   if (!loginRef.value) return
-  await loginRef.value.validate(async (valid) => {
-    if (valid) {
-      loading.value = true
-      errorMessage.value = ""
-      try {
-        await login(form)
-        loginStore.hide()
-        await userStore.getMyProfile()
-      } catch (err) {
-        errorMessage.value = "用户名或密码不正确"
-      }
-      loading.value = false
+  const valid = await loginRef.value.validate()
+  if (valid) {
+    await execute()
+    if (!error.value) {
+      loginStore.hide()
+      userStore.getMyProfile()
     }
-  })
+  }
 }
 
 function goSignup() {
@@ -75,17 +69,12 @@ function goSignup() {
         ></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" :loading="loading" @click="submit"
-          >登录</el-button
-        >
+        <el-button type="primary" :loading="isLoading" @click="submit">
+          登录
+        </el-button>
         <el-button @click="goSignup">没有账号，立即注册</el-button>
       </el-form-item>
-      <el-alert
-        v-if="errorMessage"
-        :title="errorMessage"
-        show-icon
-        type="error"
-      />
+      <el-alert v-if="msg" :title="msg" show-icon type="error" />
     </el-form>
   </el-dialog>
 </template>

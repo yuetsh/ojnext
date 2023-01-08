@@ -35,11 +35,11 @@ onMounted(userStore.getMyProfile)
     <el-menu-item index="/status">提交</el-menu-item>
     <el-menu-item index="/rank">排名</el-menu-item>
   </el-menu>
-  <div v-if="userStore.isLoaded && !userStore.isAuthed" class="actions">
+  <div v-if="userStore.isFinished && !userStore.isAuthed" class="actions">
     <el-button @click="loginStore.show">登录</el-button>
     <el-button @click="signupStore.show">注册</el-button>
   </div>
-  <div v-if="userStore.isLoaded && userStore.isAuthed" class="actions">
+  <div v-if="userStore.isFinished && userStore.isAuthed" class="actions">
     <el-dropdown @command="handleDropdown">
       <el-button>{{ userStore.user.username }}</el-button>
       <template #dropdown>

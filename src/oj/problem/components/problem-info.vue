@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import { DIFFICULTY } from "../../../utils/constants"
-import { getACRate, getTagColor } from "../../../utils/functions"
+import { getACRate, getTagColor, parseTime } from "../../../utils/functions"
 import { isDesktop } from "../../../utils/breakpoints"
+import { Problem } from "../../../utils/types"
 
-const { problem } = defineProps(["problem"])
+const { problem } = defineProps<{ problem: Problem }>()
 </script>
 
 <template>
@@ -14,19 +15,20 @@ const { problem } = defineProps(["problem"])
     <el-descriptions-item label="出题人">
       {{ problem.created_by.username }}
     </el-descriptions-item>
-    <el-descriptions-item label="难度">
-      <el-tag disable-transitions :type="getTagColor(problem.difficulty)">
-        {{ DIFFICULTY[<"Low" | "Mid" | "High">problem.difficulty] }}
-      </el-tag>
+    <el-descriptions-item label="创建时间">
+      {{ parseTime(problem.create_time) }}
     </el-descriptions-item>
+
     <el-descriptions-item label="时间限制">
       {{ problem.time_limit }}毫秒
     </el-descriptions-item>
     <el-descriptions-item label="内存限制">
       {{ problem.memory_limit }}MB
     </el-descriptions-item>
-    <el-descriptions-item label="类型">
-      {{ problem.rule_type }}
+    <el-descriptions-item label="难度">
+      <el-tag disable-transitions :type="getTagColor(problem.difficulty)">
+        {{ DIFFICULTY[problem.difficulty] }}
+      </el-tag>
     </el-descriptions-item>
 
     <el-descriptions-item label="提交正确">

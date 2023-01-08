@@ -17,8 +17,9 @@ const router = useRouter()
 const route = useRoute()
 const userStore = useUserStore()
 const problems = ref([])
-const tags = ref(<{ id: number; name: string }[]>[])
 const total = ref(0)
+
+const { data: tags } = getProblemTagList()
 
 const query = reactive({
   keyword: route.query.keyword || "",
@@ -27,11 +28,6 @@ const query = reactive({
   page: parseInt(<string>route.query.page) || 1,
   limit: parseInt(<string>route.query.limit) || 10,
 })
-
-async function listTags() {
-  const res = await getProblemTagList()
-  tags.value = res.data
-}
 
 async function listProblems() {
   query.keyword = route.query.keyword || ""
@@ -77,7 +73,7 @@ async function getRandom() {
 }
 
 function goProblem(row: any) {
-  router.push("/problem/" + row.displayID)
+  router.push("/problem/" + row._id)
 }
 
 watch(() => query.page, routePush)
@@ -98,12 +94,9 @@ watch(
 )
 
 // TODO: 这里会在登录时候执行两次，有BUG
-watch(() => userStore.isLoaded && userStore.isAuthed, listProblems)
+watch(() => userStore.isFinished && userStore.isAuthed, listProblems)
 
-onMounted(() => {
-  listTags()
-  listProblems()
-})
+onMounted(listProblems)
 </script>
 
 <template>
@@ -158,11 +151,7 @@ onMounted(() => {
         /></el-icon>
       </template>
     </el-table-column>
-    <el-table-column
-      prop="displayID"
-      label="编号"
-      :width="isDesktop ? 100 : 60"
-    />
+    <el-table-column prop="_id" label="编号" :width="isDesktop ? 100 : 60" />
     <el-table-column prop="title" label="标题" />
     <el-table-column label="难度" width="100">
       <template #default="scope">

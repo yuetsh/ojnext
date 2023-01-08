@@ -1,29 +1,28 @@
 <script lang="ts" setup>
 import loader, { Monaco } from "@monaco-editor/loader"
-import { ref, onBeforeUnmount, onMounted, watch, reactive } from "vue"
+import { ref, onBeforeUnmount, onMounted, watch, reactive, computed } from "vue"
 import {
-  LANGUAGE,
   LANGUAGE_LABEL,
   LANGUAGE_VALUE,
   SOURCES,
 } from "../../../utils/constants"
 import { isMobile } from "../../../utils/breakpoints"
+import { submitCode } from "../../api"
+import { Problem } from "../../../utils/types"
 
-const { problem } = defineProps<{
-  problem: {
-    languages: Array<LANGUAGE>
-    template: { [key in LANGUAGE]?: string }
-  }
+const { problem, contestID = "" } = defineProps<{
+  contestID?: string
+  problemID?: string
+  problem: Problem
 }>()
-
 const state = reactive({
   values: ref({ ...SOURCES }),
   language: problem.languages[0] || "C",
   isMobile,
+  submissionId: "",
 })
 
 const monacoEditorRef = ref()
-
 let monaco: Monaco
 
 function reset() {
@@ -34,9 +33,7 @@ function reset() {
   }
 }
 
-onMounted(() => {
-  init()
-})
+onMounted(init)
 
 onBeforeUnmount(() => {
   monaco.editor.getModels().forEach((model) => model.dispose())
@@ -77,6 +74,29 @@ async function init() {
     state.values[state.language] = monaco.editor.getModels()[0].getValue()
   })
 }
+
+const submitDisabled = computed(() => {
+  const code = state.values[state.language]
+  return (
+    code.trim() === "" ||
+    code === problem.template[state.language] ||
+    code === SOURCES[state.language]
+  )
+})
+
+async function submit() {
+  const data = {
+    problem_id: problem.id,
+    language: state.language,
+    code: state.values[state.language],
+  }
+  if (contestID) {
+    //@ts-ignore
+    data.contest_id = parseInt(contestID)
+  }
+  const res = await submitCode(data)
+  state.submissionId = res.data.submission_id
+}
 </script>
 
 <template>
@@ -107,7 +127,9 @@ async function init() {
   <el-form class="actions">
     <el-form-item>
       <el-button>运行</el-button>
-      <el-button type="primary">提交</el-button>
+      <el-button type="primary" :disabled="submitDisabled" @click="submit">
+        提交
+      </el-button>
     </el-form-item>
   </el-form>
 </template>

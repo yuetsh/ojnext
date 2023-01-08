@@ -21,6 +21,7 @@ const routes = [
       {
         path: "problem/:problemID",
         component: () => import("./oj/problem/detail.vue"),
+        props: true,
       },
       {
         path: "status",
@@ -30,6 +31,7 @@ const routes = [
       {
         path: "status/:statusID",
         component: () => import("./oj/status/detail.vue"),
+        props: true,
       },
       {
         path: "contest",
@@ -39,6 +41,12 @@ const routes = [
       {
         path: "contest/:contestID",
         component: () => import("./oj/contest/detail.vue"),
+        props: true,
+      },
+      {
+        path: "contest/:contestID/problem/:problemID",
+        component: () => import("./oj/problem/detail.vue"),
+        props: true,
       },
       {
         path: "rank",

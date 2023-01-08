@@ -1,3 +1,4 @@
+import { useDateFormat } from "@vueuse/core"
 import { STORAGE_KEY } from "./constants"
 
 export function getACRate(acCount: number, totalCount: number) {
@@ -31,4 +32,9 @@ export function getTagColor(tag: string) {
     中等: "",
     困难: "danger",
   }[tag]
+}
+
+export function parseTime(utc: Date, format = "YYYY年M月D日") {
+  const time = useDateFormat(utc, format, { locales: "zh-CN" })
+  return time.value
 }

@@ -1,5 +1,7 @@
 <script setup lang="ts">
-const { problem } = defineProps(["problem"])
+import { Problem } from "../../../utils/types"
+
+const { problem } = defineProps<{ problem: Problem }>()
 </script>
 
 <template>

@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import { computed, ref } from "vue"
+import { computed } from "vue"
 import {
   PROBLEM_PERMISSION,
   STORAGE_KEY,
@@ -9,8 +9,7 @@ import storage from "../../utils/storage"
 import { getUserInfo } from "../api"
 
 export const useUserStore = defineStore("user", () => {
-  const profile = ref<any>({})
-  const isLoaded = ref(false)
+  const { data: profile, isFinished, execute } = getUserInfo("")
   const user = computed(() => profile.value.user || {})
   const isAuthed = computed(() => !!user.value.email)
   const isAdminRole = computed(
@@ -26,10 +25,7 @@ export const useUserStore = defineStore("user", () => {
   )
 
   async function getMyProfile() {
-    isLoaded.value = false
-    const res = await getUserInfo("")
-    isLoaded.value = true
-    profile.value = res.data || {}
+    await execute()
     storage.set(STORAGE_KEY.AUTHED, !!user.value.email)
   }
 
@@ -39,7 +35,7 @@ export const useUserStore = defineStore("user", () => {
   }
   return {
     profile,
-    isLoaded,
+    isFinished,
     user,
     isAdminRole,
     isSuperAdmin,
