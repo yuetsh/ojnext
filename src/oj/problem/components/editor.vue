@@ -7,7 +7,7 @@ import {
   LANGUAGE_VALUE,
   SOURCES,
 } from "../../../utils/constants"
-import { isDesktop } from "../../../utils/breakpoints"
+import { isMobile } from "../../../utils/breakpoints"
 
 const { problem } = defineProps<{
   problem: {
@@ -19,6 +19,7 @@ const { problem } = defineProps<{
 const state = reactive({
   values: ref({ ...SOURCES }),
   language: problem.languages[0] || "C",
+  isMobile,
 })
 
 const monacoEditorRef = ref()
@@ -69,7 +70,7 @@ async function init() {
     lineNumbersMinChars: 3,
     automaticLayout: true, // 自适应布局
     tabSize: 4,
-    fontSize: 24, // 字体大小
+    fontSize: state.isMobile ? 16 : 24, // 字体大小
     scrollBeyondLastLine: false, // 取消代码后面一大段空白
   })
   monaco.editor.getModels()[0].onDidChangeContent(() => {
@@ -97,7 +98,7 @@ async function init() {
   </el-form>
   <div
     ref="monacoEditorRef"
-    :class="isDesktop ? 'editor' : 'editorMobile'"
+    :class="isMobile ? 'editorMobile' : 'editor'"
   ></div>
   <el-tabs type="border-card">
     <el-tab-pane label="测试用例"> 1 </el-tab-pane>

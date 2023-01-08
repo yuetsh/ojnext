@@ -36,7 +36,7 @@ onMounted(() => {
   <el-row v-if="problem._id">
     <el-col :span="isDesktop ? 12 : 24">
       <el-tabs type="border-card">
-        <el-tab-pane label="题目描述" lazy>
+        <el-tab-pane label="题目描述">
           <el-scrollbar v-if="isDesktop" height="calc(100vh - 171px)" noresize>
             <ProblemContent :problem="problem" />
           </el-scrollbar>
@@ -52,10 +52,14 @@ onMounted(() => {
         <el-tab-pane label="提交情况">3</el-tab-pane>
       </el-tabs>
     </el-col>
-    <el-col v-if="isDesktop" :span="12">
+    <el-col v-if="isDesktop" :span="12" class="editorWrapper">
       <Editor :problem="problem" />
     </el-col>
   </el-row>
 </template>
 
-<style scoped></style>
+<style scoped>
+.editorWrapper {
+  height: calc(100vh - 171px);
+}
+</style>

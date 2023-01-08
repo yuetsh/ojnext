@@ -6,7 +6,7 @@ import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 import IconsResolver from "unplugin-icons/resolver"
 import Icons from "unplugin-icons/vite"
 
-const url = "https://oj.hyyz.izhai.net"
+const url = "https://ojtest.hyyz.izhai.net"
 const proxyConfig = {
   target: url,
   changeOrigin: true,
