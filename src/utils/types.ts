@@ -49,3 +49,10 @@ export interface Problem {
   contest: null
   my_status: number
 }
+
+export interface SubmitCodePayload {
+  problem_id: number
+  language: LANGUAGE
+  code: string
+  contest_id?: number
+}

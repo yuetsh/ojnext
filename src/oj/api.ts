@@ -1,6 +1,6 @@
 import { getACRate } from "./../utils/functions"
 import { DIFFICULTY } from "./../utils/constants"
-import { Problem, LANGUAGE } from "./../utils/types"
+import { Problem, SubmitCodePayload } from "./../utils/types"
 import http from "./../utils/http"
 import { useAxios } from "@vueuse/integrations/useAxios"
 
@@ -65,11 +65,6 @@ export function getSubmission(id: string) {
   })
 }
 
-export function submitCode(data: {
-  problem_id: number
-  contest_id?: number
-  language: LANGUAGE
-  code: string
-}) {
+export function submitCode(data: SubmitCodePayload) {
   return http.post("submission", data)
 }

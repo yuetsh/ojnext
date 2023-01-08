@@ -12,7 +12,7 @@ export function logout() {
 }
 
 export function getUserInfo(username: string) {
-  return useAxios("profile", { method: "get", params: { username } }, http, {
+  return useAxios("profile", { params: { username } }, http, {
     immediate: false,
   })
 }

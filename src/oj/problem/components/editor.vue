@@ -8,7 +8,7 @@ import {
 } from "../../../utils/constants"
 import { isMobile } from "../../../utils/breakpoints"
 import { submitCode } from "../../api"
-import { Problem } from "../../../utils/types"
+import { LANGUAGE, Problem, SubmitCodePayload } from "../../../utils/types"
 
 const { problem, contestID = "" } = defineProps<{
   contestID?: string
@@ -85,13 +85,12 @@ const submitDisabled = computed(() => {
 })
 
 async function submit() {
-  const data = {
+  const data: SubmitCodePayload = {
     problem_id: problem.id,
     language: state.language,
     code: state.values[state.language],
   }
   if (contestID) {
-    //@ts-ignore
     data.contest_id = parseInt(contestID)
   }
   const res = await submitCode(data)
