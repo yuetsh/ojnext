@@ -6,11 +6,10 @@ const http = axios.create({
   xsrfCookieName: "csrftoken",
 })
 
-// TODO
 http.interceptors.response.use(
   (res) => {
     if (res.data.error) {
-      // 若后端返回为登录，则为session失效，应退出当前登录用户
+      // // TODO: 若后端返回为登录，则为session失效，应退出当前登录用户
       if (res.data.data.startsWith("Please login")) {
       }
       return Promise.reject(res.data)

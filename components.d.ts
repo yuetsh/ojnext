@@ -24,6 +24,7 @@ declare module '@vue/runtime-core' {
     ElHeader: typeof import('element-plus/es')['ElHeader']
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
+    ElLink: typeof import('element-plus/es')['ElLink']
     ElMain: typeof import('element-plus/es')['ElMain']
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
@@ -38,10 +39,14 @@ declare module '@vue/runtime-core' {
     ElTabPane: typeof import('element-plus/es')['ElTabPane']
     ElTabs: typeof import('element-plus/es')['ElTabs']
     ElTag: typeof import('element-plus/es')['ElTag']
+    IEpBell: typeof import('~icons/ep/bell')['default']
+    'IEpCaret-': typeof import('~icons/ep/caret-')['default']
+    IEpCaretRight: typeof import('~icons/ep/caret-right')['default']
+    IEpLoading: typeof import('~icons/ep/loading')['default']
     IEpSelect: typeof import('~icons/ep/select')['default']
     IEpSemiSelect: typeof import('~icons/ep/semi-select')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
-    UseNetwork: typeof import('@vueuse/components')['UseNetwork']
+    UseNetwork: typeof import("@vueuse/components")["UseNetwork"]
   }
 }

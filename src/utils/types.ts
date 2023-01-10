@@ -7,6 +7,8 @@ export type LANGUAGE =
   | "JavaScript"
   | "Golang"
 
+export type SUBMISSION_RESULT = -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
+
 export interface Problem {
   _id: string
   id: number
@@ -55,4 +57,41 @@ export interface SubmitCodePayload {
   language: LANGUAGE
   code: string
   contest_id?: number
+}
+
+interface Info {
+  err: string | null
+  data: {
+    error: number
+    memory: number
+    output: null
+    result: SUBMISSION_RESULT
+    signal: number
+    cpu_time: number
+    exit_code: number
+    real_time: number
+    test_case: string
+    output_md5: string
+  }[]
+}
+
+export interface Submission {
+  id: string
+  create_time: Date
+  user_id: number
+  username: string
+  code: string
+  result: SUBMISSION_RESULT
+  info: Info
+  language: string
+  shared: boolean
+  statistic_info: {
+    score: number
+    err_info: string
+  }
+  ip: string
+  // TODO: 这里不知道是什么
+  contest: null
+  problem: number
+  can_unshare: boolean
 }

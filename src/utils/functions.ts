@@ -38,3 +38,15 @@ export function parseTime(utc: Date, format = "YYYY年M月D日") {
   const time = useDateFormat(utc, format, { locales: "zh-CN" })
   return time.value
 }
+
+export function submissionMemoryFormat(memory: string) {
+  if (memory === undefined) return "--"
+  // 1048576 = 1024 * 1024
+  let t = parseInt(memory) / 1048576
+  return String(t.toFixed(0)) + "MB"
+}
+
+export function submissionTimeFormat(time: number) {
+  if (time === undefined) return "--"
+  return time + "ms"
+}

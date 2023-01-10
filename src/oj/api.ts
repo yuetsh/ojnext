@@ -1,6 +1,6 @@
 import { getACRate } from "./../utils/functions"
 import { DIFFICULTY } from "./../utils/constants"
-import { Problem, SubmitCodePayload } from "./../utils/types"
+import { Problem, SubmitCodePayload, Submission } from "./../utils/types"
 import http from "./../utils/http"
 import { useAxios } from "@vueuse/integrations/useAxios"
 
@@ -60,8 +60,14 @@ export function getProblem(id: string) {
 }
 
 export function getSubmission(id: string) {
-  return http.get("submission", {
+  return http.get<Submission>("submission", {
     params: { id },
+  })
+}
+
+export function submissionExists(problemID: number) {
+  return http.get("submission_exists", {
+    params: { problem_id: problemID },
   })
 }
 

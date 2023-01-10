@@ -17,6 +17,7 @@
     "axios": "^1.2.2",
     "element-plus": "^2.2.28",
     "normalize.css": "^8.0.1",
+    "party-js": "^2.2.0",
     "pinia": "^2.0.28",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"

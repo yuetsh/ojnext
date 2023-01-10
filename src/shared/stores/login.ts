@@ -1,8 +1,8 @@
+import { useToggle } from "@vueuse/core"
 import { defineStore } from "pinia"
-import { ref } from "vue"
 
 export const useLoginStore = defineStore("login", () => {
-  const visible = ref(false)
+  const [visible] = useToggle()
 
   function show() {
     visible.value = true

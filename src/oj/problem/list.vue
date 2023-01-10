@@ -100,7 +100,7 @@ onMounted(listProblems)
 </script>
 
 <template>
-  <el-form :inline="true">
+  <el-form inline>
     <el-form-item label="难度">
       <el-select v-model="query.difficulty">
         <el-option

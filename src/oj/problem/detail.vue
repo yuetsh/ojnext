@@ -13,7 +13,7 @@ const { data: problem, isFinished } = getProblem(problemID)
 </script>
 
 <template>
-  <el-row v-if="isFinished && problem">
+  <el-row v-if="isFinished && problem" :gutter="20">
     <el-col :span="isDesktop ? 12 : 24">
       <el-tabs type="border-card">
         <el-tab-pane label="题目描述">
@@ -29,17 +29,13 @@ const { data: problem, isFinished } = getProblem(problemID)
         <el-tab-pane label="题目信息" lazy>
           <ProblemInfo :problem="problem" />
         </el-tab-pane>
-        <el-tab-pane label="提交情况">3</el-tab-pane>
+        <el-tab-pane label="提交列表">3</el-tab-pane>
       </el-tabs>
     </el-col>
-    <el-col v-if="isDesktop" :span="12" class="editorWrapper">
+    <el-col v-if="isDesktop" :span="12">
       <Editor :problem="problem" />
     </el-col>
   </el-row>
 </template>
 
-<style scoped>
-.editorWrapper {
-  height: calc(100vh - 171px);
-}
-</style>
+<style scoped></style>
