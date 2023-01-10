@@ -16,50 +16,62 @@ export const JUDGE_STATUS = {
   "-2": {
     name: "编译失败",
     type: "danger",
+    alertType: "error",
   },
   "-1": {
     name: "答案错误",
     type: "danger",
+    alertType: "error",
   },
   "0": {
     name: "答案正确",
     type: "success",
+    alertType: "success",
   },
   "1": {
     name: "运行超时",
     type: "danger",
+    alertType: "error",
   },
   "2": {
     name: "运行超时",
     type: "danger",
+    alertType: "error",
   },
   "3": {
     name: "内存超限",
     type: "danger",
+    alertType: "error",
   },
   "4": {
     name: "运行时错误",
     type: "danger",
+    alertType: "error",
   },
   "5": {
     name: "系统错误",
     type: "danger",
+    alertType: "error",
   },
   "6": {
     name: "等待评分",
     type: "warning",
+    alertType: "warning",
   },
   "7": {
     name: "正在评分",
     type: "warning",
+    alertType: "warning",
   },
   "8": {
     name: "部分正确",
     type: "warning",
+    alertType: "warning",
   },
   "9": {
     name: "正在提交",
     type: "info",
+    alertType: "info",
   },
 }
 

@@ -208,11 +208,13 @@ watch(
 <template>
   <el-tabs type="border-card" @tab-click="onTab" v-model="tab">
     <el-tab-pane label="测试用例" :name="Tab.testcase">
-      <div class="panel"></div>
+      <div class="panel">
+        <el-table height="320"></el-table>
+      </div>
     </el-tab-pane>
     <el-tab-pane :disabled="submitDisabled" :name="Tab.result">
       <template #label>
-        <el-space>
+        <el-space :size="2">
           <el-icon>
             <i-ep-loading v-if="judging || pending || submitting" />
             <i-ep-bell v-else-if="isPending" />
@@ -225,7 +227,7 @@ watch(
         <el-alert
           v-if="submission"
           :closable="false"
-          :type="JUDGE_STATUS[submission.result]['type']"
+          :type="JUDGE_STATUS[submission.result]['alertType']"
           :title="JUDGE_STATUS[submission.result]['name']"
         >
         </el-alert>
