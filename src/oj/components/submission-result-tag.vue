@@ -2,9 +2,10 @@
 import { JUDGE_STATUS } from "../../utils/constants"
 import { SUBMISSION_RESULT } from "../../utils/types"
 
-const { result } = defineProps<{
+interface Props {
   result: SUBMISSION_RESULT
-}>()
+}
+defineProps<Props>()
 </script>
 
 <template>

@@ -4,12 +4,19 @@ import ProblemContent from "./components/problem-content.vue"
 import ProblemInfo from "./components/problem-info.vue"
 import { getProblem } from "../api"
 import { isDesktop, isMobile } from "../../utils/breakpoints"
+import { provide, readonly } from "vue"
 
-const { problemID = "", contestID = "" } = defineProps<{
-  problemID?: string
+interface Props {
+  problemID: string
   contestID?: string
-}>()
-const { data: problem, isFinished } = getProblem(problemID)
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  contestID: "",
+})
+
+const { data: problem, isFinished } = getProblem(props.problemID)
+provide("problem", readonly(problem))
 </script>
 
 <template>
@@ -25,7 +32,7 @@ const { data: problem, isFinished } = getProblem(problemID)
         <el-tab-pane v-if="isMobile" label="代码编辑" lazy>
           <Editor :problem="problem" />
         </el-tab-pane>
-        <el-tab-pane label="比赛信息" v-if="contestID" lazy></el-tab-pane>
+        <el-tab-pane label="比赛信息" v-if="props.contestID" lazy></el-tab-pane>
         <el-tab-pane label="题目信息" lazy>
           <ProblemInfo :problem="problem" />
         </el-tab-pane>

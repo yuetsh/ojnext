@@ -5,13 +5,17 @@
 <script setup lang="ts">
 import { computed } from "vue"
 
-const { className, split } = defineProps<{
+interface Props {
   split: "horizontal" | "vertical"
   className?: string
-}>()
+}
+const props = withDefaults(defineProps<Props>(), {
+  split: "horizontal",
+  className: "",
+})
 
 const classes = computed(() =>
-  ["splitter-pane-resizer", split, className].join(" ")
+  ["splitter-pane-resizer", props.split, props.className].join(" ")
 )
 </script>
 

@@ -5,12 +5,18 @@
 </template>
 
 <script setup lang="ts">
-const { className, split } = defineProps<{
+import { computed } from "vue"
+
+interface Props {
   split: "horizontal" | "vertical"
   className?: string
-}>()
+}
+const props = withDefaults(defineProps<Props>(), {
+  split: "horizontal",
+  className: "",
+})
 
-const classes = $computed(() => [split, className].join(" "))
+const classes = computed(() => [props.split, props.className].join(" "))
 </script>
 
 <style scoped>

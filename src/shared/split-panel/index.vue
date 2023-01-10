@@ -36,30 +36,32 @@
 import Resizer from "./resizer.vue"
 import Pane from "./pane.vue"
 import { computed, ref } from "vue"
+import { classNameToArray } from "element-plus/es/utils"
 
-const {
-  minPercent = 10,
-  defaultPercent = 50,
-  split,
-  className,
-} = defineProps<{
+interface Props {
   minPercent?: number
   defaultPercent?: number
   split: "vertical" | "horizontal"
   className?: string
-}>()
+}
+const props = withDefaults(defineProps<Props>(), {
+  minPercent: 10,
+  defaultPercent: 50,
+  split: "horizontal",
+  className: "",
+})
 
 const emit = defineEmits(["resize"])
 
 const active = ref(false)
 const hasMoved = ref(false)
-const percent = ref(defaultPercent)
-const type = ref(split === "vertical" ? "width" : "height")
-const resizeType = ref(split === "vertical" ? "left" : "top")
+const percent = ref(props.defaultPercent)
+const type = ref(props.split === "vertical" ? "width" : "height")
+const resizeType = ref(props.split === "vertical" ? "left" : "top")
 
 const userSelect = computed(() => (active.value ? "none" : "auto"))
 const cursor = computed(() =>
-  active.value ? (split === "vertical" ? "col-resize" : "row-resize") : ""
+  active.value ? (props.split === "vertical" ? "col-resize" : "row-resize") : ""
 )
 
 // watch(
@@ -89,7 +91,7 @@ function onMouseMove(e: any) {
   if (active.value) {
     let offset = 0
     let target = e.currentTarget
-    if (split === "vertical") {
+    if (props.split === "vertical") {
       while (target) {
         offset += target.offsetLeft
         target = target.offsetParent
@@ -100,14 +102,14 @@ function onMouseMove(e: any) {
         target = target.offsetParent
       }
     }
-    const currentPage = split === "vertical" ? e.pageX : e.pageY
+    const currentPage = props.split === "vertical" ? e.pageX : e.pageY
     const targetOffset =
-      split === "vertical"
+      props.split === "vertical"
         ? e.currentTarget.offsetWidth
         : e.currentTarget.offsetHeight
     const newPercent =
       Math.floor(((currentPage - offset) / targetOffset) * 10000) / 100
-    if (newPercent > minPercent && newPercent < 100 - minPercent) {
+    if (newPercent > props.minPercent && newPercent < 100 - props.minPercent) {
       percent.value = newPercent
     }
     emit("resize", newPercent)

@@ -1,7 +1,10 @@
 <script setup lang="ts">
 import { Problem } from "../../../utils/types"
 
-const { problem } = defineProps<{ problem: Problem }>()
+interface Props {
+  problem: Problem
+}
+defineProps<Props>()
 </script>
 
 <template>

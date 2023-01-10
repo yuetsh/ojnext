@@ -4,7 +4,10 @@ import { getACRate, getTagColor, parseTime } from "../../../utils/functions"
 import { isDesktop } from "../../../utils/breakpoints"
 import { Problem } from "../../../utils/types"
 
-const { problem } = defineProps<{ problem: Problem }>()
+interface Props {
+  problem: Problem
+}
+defineProps<Props>()
 </script>
 
 <template>
