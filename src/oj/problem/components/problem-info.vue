@@ -29,7 +29,10 @@ defineProps<Props>()
       {{ problem.memory_limit }}MB
     </el-descriptions-item>
     <el-descriptions-item label="难度">
-      <el-tag disable-transitions :type="getTagColor(problem.difficulty)">
+      <el-tag
+        disable-transitions
+        :type="(getTagColor(problem.difficulty) as any)"
+      >
         {{ DIFFICULTY[problem.difficulty] }}
       </el-tag>
     </el-descriptions-item>

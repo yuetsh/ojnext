@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import Login from "../shared/user/login.vue"
-import Signup from "./components/signup.vue"
-import Header from "./components/header.vue"
+import Signup from "../shared/user/signup.vue"
+import Header from "../shared/layout/header.vue"
 </script>
 
 <template>
   <el-container>
-    <el-header>
+    <el-header class="header">
       <Header />
     </el-header>
     <el-main><router-view></router-view></el-main>
@@ -16,7 +16,7 @@ import Header from "./components/header.vue"
 </template>
 
 <style scoped>
-.el-header {
+.header {
   display: flex;
 }
 </style>

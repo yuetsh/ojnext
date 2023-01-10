@@ -4,7 +4,6 @@ import ProblemContent from "./components/problem-content.vue"
 import ProblemInfo from "./components/problem-info.vue"
 import { getProblem } from "../api"
 import { isDesktop, isMobile } from "../../utils/breakpoints"
-import { provide, readonly } from "vue"
 
 interface Props {
   problemID: string

@@ -1,10 +1,11 @@
 import { defineConfig } from "vite"
-import vue from "@vitejs/plugin-vue"
+import Vue from "@vitejs/plugin-vue"
 import AutoImport from "unplugin-auto-import/vite"
 import Components from "unplugin-vue-components/vite"
 import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
 import IconsResolver from "unplugin-icons/resolver"
 import Icons from "unplugin-icons/vite"
+import Markdown from "vite-plugin-vue-markdown"
 
 const url = "https://ojtest.hyyz.izhai.net"
 const proxyConfig = {
@@ -16,8 +17,9 @@ const proxyConfig = {
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    vue(),
+    Vue({ include: [/\.vue$/, /\.md$/] }),
     AutoImport({
+      imports: ["vue", "vue-router", "@vueuse/core", "pinia"],
       resolvers: [ElementPlusResolver(), IconsResolver()],
     }),
     Components({
@@ -27,6 +29,7 @@ export default defineConfig({
       ],
     }),
     Icons({ autoInstall: true }),
+    Markdown(),
   ],
   server: {
     proxy: {

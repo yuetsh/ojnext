@@ -1,4 +1,3 @@
-import { useDateFormat } from "@vueuse/core"
 import { STORAGE_KEY } from "./constants"
 
 export function getACRate(acCount: number, totalCount: number) {
@@ -23,7 +22,7 @@ export function buildProblemCodeKey(problemID: string, contestID = "") {
   return `${STORAGE_KEY.PROBLEM_CODE}_NaN_${problemID}`
 }
 
-export function getTagColor(tag: string) {
+export function getTagColor(tag: "Low" | "Mid" | "High") {
   return {
     Low: "success",
     Mid: "",

@@ -7,6 +7,7 @@ const routes = [
     component: Home,
     children: [
       { path: "", component: Problems },
+      { path: "/learn", component: () => import("./learn/index.vue") },
       {
         path: "problem/:problemID",
         component: () => import("./oj/problem/detail.vue"),
@@ -41,9 +42,12 @@ const routes = [
         path: "rank",
         component: () => import("./oj/rank/list.vue"),
       },
+      {
+        path: "/admin",
+        component: () => import("./admin/index.vue"),
+      },
     ],
   },
-  { path: "/admin", component: () => import("./admin/index.vue") },
 ]
 
 export default routes

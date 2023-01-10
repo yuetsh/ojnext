@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useSignupStore } from "../stores/signup"
+import { useSignupStore } from "../../oj/stores/signup"
 const store = useSignupStore()
 </script>
 

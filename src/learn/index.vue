@@ -1,5 +1,5 @@
 <script setup lang="ts"></script>
 
-<template>status detail</template>
+<template>learn</template>
 
 <style scoped></style>

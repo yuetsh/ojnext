@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { FormInstance } from "element-plus"
-import { computed, reactive, ref } from "vue"
 import { useSignupStore } from "../../oj/stores/signup"
 import { login } from "../../shared/api"
 import { useLoginStore } from "../stores/login"
@@ -74,7 +73,7 @@ function goSignup() {
         </el-button>
         <el-button @click="goSignup">没有账号，立即注册</el-button>
       </el-form-item>
-      <el-alert v-if="msg" :title="msg" show-icon type="danger" />
+      <el-alert v-if="msg" :title="msg" show-icon type="error" />
     </el-form>
   </el-dialog>
 </template>

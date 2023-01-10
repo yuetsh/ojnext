@@ -1,6 +1,3 @@
-import { useToggle } from "@vueuse/core"
-import { defineStore } from "pinia"
-
 export const useSignupStore = defineStore("signup", () => {
   const [visible] = useToggle()
 

@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { useLoginStore } from "../../shared/stores/login"
-import { useSignupStore } from "../stores/signup"
-import { useUserStore } from "../../shared/stores/user"
-import { onMounted } from "vue"
-import { logout } from "../../shared/api"
-import { useRouter } from "vue-router"
+import { useLoginStore } from "../stores/login"
+import { useSignupStore } from "../../oj/stores/signup"
+import { useUserStore } from "../stores/user"
+import { logout } from "../api"
 
 const loginStore = useLoginStore()
 const signupStore = useSignupStore()
@@ -30,6 +28,7 @@ onMounted(userStore.getMyProfile)
 
 <template>
   <el-menu router mode="horizontal" :default-active="$route.path">
+    <el-menu-item index="/learn">自学</el-menu-item>
     <el-menu-item index="/">题库</el-menu-item>
     <el-menu-item index="/contest">竞赛</el-menu-item>
     <el-menu-item index="/status">提交</el-menu-item>

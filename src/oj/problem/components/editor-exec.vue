@@ -1,14 +1,13 @@
 <script setup lang="ts">
-import { useToggle } from "@vueuse/core"
 import { TabsPaneContext } from "element-plus"
-import { inject, onMounted, Ref, ref } from "vue"
 import { Problem } from "../../../utils/types"
 import { submissionExists } from "../../api"
 import SubmitPanel from "./submit-panel.vue"
 
 const tab = ref("testcase")
 const submitPanelRef = ref<{ submit: Function }>()
-const problem = inject<Ref<Problem>>("problem")
+const problem = inject("problem") as Problem
+const id = ref(problem.id)
 const [tried] = useToggle()
 
 onMounted(() => {
@@ -16,7 +15,7 @@ onMounted(() => {
 })
 
 async function checkIfTried() {
-  const res = await submissionExists(problem!.value.id)
+  const res = await submissionExists(id.value)
   tried.value = res.data
 }
 

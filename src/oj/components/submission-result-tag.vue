@@ -9,7 +9,7 @@ defineProps<Props>()
 </script>
 
 <template>
-  <el-tag :type="JUDGE_STATUS[result]['type']" disable-transitions>
+  <el-tag :type="(JUDGE_STATUS[result]['type'] as any)" disable-transitions>
     {{ JUDGE_STATUS[result]["name"] }}
   </el-tag>
 </template>

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import loader, { Monaco } from "@monaco-editor/loader"
-import { ref, onBeforeUnmount, onMounted, watch, reactive, provide } from "vue"
 import {
   LANGUAGE_LABEL,
   LANGUAGE_VALUE,

@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { onMounted, ref, reactive, watch } from "vue"
-import { useRoute, useRouter } from "vue-router"
 import { useUserStore } from "../../shared/stores/user"
 import { filterEmptyValue, getTagColor } from "../../utils/functions"
 import { isDesktop } from "../../utils/breakpoints"
@@ -22,7 +20,7 @@ const total = ref(0)
 const { data: tags } = getProblemTagList()
 
 const query = reactive({
-  keyword: route.query.keyword || "",
+  keyword: (route.query.keyword as string) || "",
   difficulty: route.query.difficulty || "",
   tag: route.query.tag || "",
   page: parseInt(<string>route.query.page) || 1,
@@ -30,7 +28,7 @@ const query = reactive({
 })
 
 async function listProblems() {
-  query.keyword = route.query.keyword || ""
+  query.keyword = (route.query.keyword as string) || ""
   query.difficulty = route.query.difficulty || ""
   query.tag = route.query.tag || ""
   query.page = parseInt(<string>route.query.page) || 1
@@ -155,7 +153,10 @@ onMounted(listProblems)
     <el-table-column prop="title" label="标题" />
     <el-table-column label="难度" width="100">
       <template #default="scope">
-        <el-tag disable-transitions :type="getTagColor(scope.row.difficulty)">
+        <el-tag
+          disable-transitions
+          :type="(getTagColor(scope.row.difficulty) as any)"
+        >
           {{ scope.row.difficulty }}
         </el-tag>
       </template>

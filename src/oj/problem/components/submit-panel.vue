@@ -1,8 +1,5 @@
 <script setup lang="ts">
-import { useTimeout, useTimeoutFn, useToggle } from "@vueuse/core"
-import { computed, inject, Ref, ref, watch } from "vue"
 import party from "party-js"
-import { useRoute } from "vue-router"
 import {
   SOURCES,
   JUDGE_STATUS,
@@ -19,12 +16,16 @@ import {
   SubmitCodePayload,
 } from "../../../utils/types"
 import { getSubmission, submitCode } from "../../api"
+
 import SubmissionResultTag from "../../components/submission-result-tag.vue"
+
 const code = inject<{ value: string; language: LANGUAGE }>("code", {
   value: "",
   language: "C",
 })
-const problem = inject<Ref<Problem>>("problem")
+const problem = inject("problem") as Problem
+const template = ref(problem.template)
+const id = ref(problem.id)
 
 const route = useRoute()
 const contestID = <string>route.params.contestID || ""
@@ -79,7 +80,7 @@ const submitDisabled = computed(() => {
   const value = code.value
   if (
     value.trim() === "" ||
-    value === problem!.value.template[code.language] ||
+    value === template.value[code.language] ||
     value === SOURCES[code.language]
   ) {
     return true
@@ -151,7 +152,7 @@ const infoTable = computed(() => {
 
 async function submit() {
   const data: SubmitCodePayload = {
-    problem_id: problem!.value.id,
+    problem_id: id.value,
     language: code.language,
     code: code.value,
   }
@@ -198,7 +199,7 @@ defineExpose({ submit })
       <el-alert
         v-if="submission"
         :closable="false"
-        :type="JUDGE_STATUS[submission.result]['alertType']"
+        :type="(JUDGE_STATUS[submission.result]['alertType'] as any)"
         :title="JUDGE_STATUS[submission.result]['name']"
       >
       </el-alert>
