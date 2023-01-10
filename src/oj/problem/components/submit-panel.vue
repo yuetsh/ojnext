@@ -138,7 +138,12 @@ const infoTable = computed(() => {
     submission.value.info.data &&
     submission.value.info.data.length
   ) {
-    return submission.value.info.data
+    const data = submission.value.info.data
+    if (data.some((item) => item.result === 0)) {
+      return submission.value.info.data
+    } else {
+      return []
+    }
   } else {
     return []
   }
