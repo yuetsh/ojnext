@@ -15,11 +15,11 @@ export enum SubmissionStatus {
 export const JUDGE_STATUS = {
   "-2": {
     name: "编译失败",
-    type: "error",
+    type: "danger",
   },
   "-1": {
     name: "答案错误",
-    type: "error",
+    type: "danger",
   },
   "0": {
     name: "答案正确",
@@ -27,23 +27,23 @@ export const JUDGE_STATUS = {
   },
   "1": {
     name: "运行超时",
-    type: "error",
+    type: "danger",
   },
   "2": {
     name: "运行超时",
-    type: "error",
+    type: "danger",
   },
   "3": {
     name: "内存超限",
-    type: "error",
+    type: "danger",
   },
   "4": {
     name: "运行时错误",
-    type: "error",
+    type: "danger",
   },
   "5": {
     name: "系统错误",
-    type: "error",
+    type: "danger",
   },
   "6": {
     name: "等待评分",
@@ -51,7 +51,7 @@ export const JUDGE_STATUS = {
   },
   "7": {
     name: "正在评分",
-    type: "info",
+    type: "warning",
   },
   "8": {
     name: "部分正确",

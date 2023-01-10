@@ -74,7 +74,7 @@ function goSignup() {
         </el-button>
         <el-button @click="goSignup">没有账号，立即注册</el-button>
       </el-form-item>
-      <el-alert v-if="msg" :title="msg" show-icon type="error" />
+      <el-alert v-if="msg" :title="msg" show-icon type="danger" />
     </el-form>
   </el-dialog>
 </template>
