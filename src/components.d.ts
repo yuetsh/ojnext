@@ -43,6 +43,7 @@ declare module '@vue/runtime-core' {
     IEpLoading: typeof import('~icons/ep/loading')['default']
     IEpSelect: typeof import('~icons/ep/select')['default']
     IEpSemiSelect: typeof import('~icons/ep/semi-select')['default']
+    IEpVideoPlay: typeof import('~icons/ep/video-play')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }

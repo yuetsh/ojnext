@@ -1,10 +1,31 @@
 <script setup lang="ts">
 import { Problem } from "../../../utils/types"
+import { Flag } from "@element-plus/icons-vue"
+import { useTestcaseReultStore } from "../../stores/testcaseResult"
+import { useCodeStore } from "../../stores/code"
+import { SOURCES } from "../../../utils/constants"
 
 interface Props {
   problem: Problem
 }
-defineProps<Props>()
+
+const props = defineProps<Props>()
+
+const { code } = useCodeStore()
+const testcaseResultStore = useTestcaseReultStore()
+
+const disabled = computed(
+  () =>
+    !!(
+      code.value.trim() === "" ||
+      code.value === props.problem.template[code.language] ||
+      code.value === SOURCES[code.language]
+    )
+)
+
+function test(input: string) {
+  testcaseResultStore.runTestcase(code, input)
+}
 </script>
 
 <template>
@@ -26,7 +47,16 @@ defineProps<Props>()
   </div>
 
   <div v-for="(sample, index) of problem.samples" :key="index">
-    <p class="title">测试用例 {{ index + 1 }}</p>
+    <el-space>
+      <p class="title testcaseTitle">测试用例 {{ index + 1 }}</p>
+      <el-button
+        :icon="Flag"
+        type="success"
+        :disabled="disabled"
+        circle
+        @click="test(sample.input)"
+      ></el-button>
+    </el-space>
     <el-descriptions border direction="vertical">
       <el-descriptions-item width="50%" label="输入">
         <div class="testcase">{{ sample.input }}</div>
@@ -48,6 +78,9 @@ defineProps<Props>()
   font-size: 20px;
   margin: 24px 0 16px 0;
   color: var(--el-color-primary);
+}
+.testcaseTitle {
+  margin-bottom: 24px;
 }
 
 .content {

@@ -1,17 +1,13 @@
-<script setup lang="ts">
-import { Ref } from "vue"
-import { Code, Problem } from "../../../utils/types"
-
-const problem = inject<Ref<Problem>>("problem")
-const code = inject<Code>("code")
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <el-tab-pane label="测试用例" name="testcase">
-    <div class="panel">
-      <el-table height="320"> el- </el-table>
-    </div>
+  <el-tab-pane label="测试 & 运行" name="test">
+    <div class="panel"></div>
   </el-tab-pane>
 </template>
 
-<style scoped></style>
+<style scoped>
+.panel {
+  height: 320px;
+}
+</style>

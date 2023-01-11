@@ -10,21 +10,14 @@ import {
   submissionMemoryFormat,
   submissionTimeFormat,
 } from "../../../utils/functions"
-import {
-  Code,
-  Problem,
-  Submission,
-  SubmitCodePayload,
-} from "../../../utils/types"
+import { Problem, Submission, SubmitCodePayload } from "../../../utils/types"
 import { getSubmission, submitCode } from "../../api"
 
 import SubmissionResultTag from "../../components/submission-result-tag.vue"
+import { useCodeStore } from "../../stores/code"
 
-const code = inject<Code>("code", {
-  value: "",
-  language: "C",
-})
 const problem = inject<Ref<Problem>>("problem")
+const { code } = useCodeStore()
 
 const route = useRoute()
 const contestID = <string>route.params.contestID || ""
@@ -183,7 +176,7 @@ watch(
 defineExpose({ submit })
 </script>
 <template>
-  <el-tab-pane :disabled="submitDisabled" name="result">
+  <el-tab-pane :disabled="submitDisabled" name="submit">
     <template #label>
       <el-space :size="2">
         <el-icon>

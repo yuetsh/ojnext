@@ -15,6 +15,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { data: problem, isFinished } = getProblem(props.problemID)
+
 provide("problem", readonly(problem))
 </script>
 

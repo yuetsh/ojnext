@@ -8,17 +8,17 @@ import {
 import { isMobile } from "../../../utils/breakpoints"
 import { Problem } from "../../../utils/types"
 import EditorExec from "./editor-exec.vue"
+import { useCodeStore } from "../../stores/code"
 
 interface Props {
   problem: Problem
 }
 
 const props = defineProps<Props>()
-const code = reactive({
-  value: SOURCES[props.problem.languages[0] || "C"],
-  language: props.problem.languages[0] || "C",
-})
-provide("code", readonly(code))
+
+const { code, setLanguage, setValue } = useCodeStore()
+setValue(SOURCES[props.problem.languages[0] || "C"])
+setLanguage(props.problem.languages[0] || "C")
 
 const monacoEditorRef = ref()
 
@@ -45,20 +45,22 @@ watch(
   }
 )
 
+function run() {}
+
 function reset() {
-  code.value = props.problem.template[code.language] || SOURCES[code.language]
+  setValue(props.problem.template[code.language] || SOURCES[code.language])
   if (monaco && monaco.editor) {
     monaco.editor.getModels()[0].setValue(code.value)
   }
 }
 
 async function init() {
-  code.value = props.problem.template[code.language] || SOURCES[code.language]
+  setValue(props.problem.template[code.language] || SOURCES[code.language])
   monaco = await loader.init()
   monaco.editor.create(monacoEditorRef.value, {
     value: code.value, // 编辑器初始显示文字
     language: LANGUAGE_VALUE[code.language],
-    theme: "vs-dark", // 官方自带三种主题vs, hc-black, or vs-dark
+    theme: "vs", // 官方自带三种主题vs, hc-black, or vs-dark
     minimap: {
       enabled: false,
     },
@@ -69,7 +71,7 @@ async function init() {
     scrollBeyondLastLine: false, // 取消代码后面一大段空白
   })
   monaco.editor.getModels()[0].onDidChangeContent(() => {
-    code.value = monaco.editor.getModels()[0].getValue()
+    setValue(monaco.editor.getModels()[0].getValue())
   })
 }
 </script>
@@ -109,6 +111,6 @@ async function init() {
 }
 
 .editorMobile {
-  height: 500px;
+  height: calc(100vh - 612px);
 }
 </style>

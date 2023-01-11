@@ -6,7 +6,7 @@ import { submissionExists } from "../../api"
 import SubmitPanel from "./submit-panel.vue"
 import TestcasePanel from "./testcase-panel.vue"
 
-const tab = ref("testcase")
+const tab = ref("test")
 const submitPanelRef = ref<{ submit: Function }>()
 const problem = inject<Ref<Problem>>("problem")
 const [tried] = useToggle()
@@ -21,7 +21,7 @@ async function checkIfTried() {
 }
 
 function onTab(pane: TabsPaneContext) {
-  if (pane.paneName === "result") {
+  if (pane.paneName === "submit") {
     submitPanelRef && submitPanelRef.value!.submit()
   }
 }
