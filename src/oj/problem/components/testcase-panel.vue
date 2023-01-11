@@ -9,7 +9,7 @@ const code = inject<Code>("code")
 <template>
   <el-tab-pane label="测试用例" name="testcase">
     <div class="panel">
-      <el-table height="320"></el-table>
+      <el-table height="320"> el- </el-table>
     </div>
   </el-tab-pane>
 </template>

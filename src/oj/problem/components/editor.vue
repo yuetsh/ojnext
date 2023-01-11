@@ -32,15 +32,18 @@ onBeforeUnmount(() => {
   monaco.editor.getModels().forEach((model) => model.dispose())
 })
 
-watchEffect(() => {
-  if (monaco && monaco.editor) {
-    monaco.editor.setModelLanguage(
-      monaco.editor.getModels()[0],
-      LANGUAGE_VALUE[code.language]
-    )
-    reset()
+watch(
+  () => code.language,
+  () => {
+    if (monaco && monaco.editor) {
+      monaco.editor.setModelLanguage(
+        monaco.editor.getModels()[0],
+        LANGUAGE_VALUE[code.language]
+      )
+      reset()
+    }
   }
-})
+)
 
 function reset() {
   code.value = props.problem.template[code.language] || SOURCES[code.language]
