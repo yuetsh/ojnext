@@ -21,12 +21,14 @@ export default defineConfig({
     AutoImport({
       imports: ["vue", "vue-router", "@vueuse/core", "pinia"],
       resolvers: [ElementPlusResolver(), IconsResolver()],
+      dts: "./src/auto-imports.d.ts",
     }),
     Components({
       resolvers: [
         ElementPlusResolver(),
         IconsResolver({ enabledCollections: ["ep"] }),
       ],
+      dts: "./src/components.d.ts",
     }),
     Icons({ autoInstall: true }),
     Markdown(),

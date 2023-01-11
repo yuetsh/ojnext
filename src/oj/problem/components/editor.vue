@@ -18,7 +18,7 @@ const code = reactive({
   value: SOURCES[props.problem.languages[0] || "C"],
   language: props.problem.languages[0] || "C",
 })
-provide("code", code)
+provide("code", readonly(code))
 
 const monacoEditorRef = ref()
 
@@ -32,18 +32,15 @@ onBeforeUnmount(() => {
   monaco.editor.getModels().forEach((model) => model.dispose())
 })
 
-watch(
-  () => code.language,
-  () => {
-    if (monaco && monaco.editor) {
-      monaco.editor.setModelLanguage(
-        monaco.editor.getModels()[0],
-        LANGUAGE_VALUE[code.language]
-      )
-      reset()
-    }
+watchEffect(() => {
+  if (monaco && monaco.editor) {
+    monaco.editor.setModelLanguage(
+      monaco.editor.getModels()[0],
+      LANGUAGE_VALUE[code.language]
+    )
+    reset()
   }
-)
+})
 
 function reset() {
   code.value = props.problem.template[code.language] || SOURCES[code.language]

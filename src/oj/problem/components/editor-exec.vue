@@ -1,13 +1,14 @@
 <script setup lang="ts">
 import { TabsPaneContext } from "element-plus"
+import { Ref } from "vue"
 import { Problem } from "../../../utils/types"
 import { submissionExists } from "../../api"
 import SubmitPanel from "./submit-panel.vue"
+import TestcasePanel from "./testcase-panel.vue"
 
 const tab = ref("testcase")
 const submitPanelRef = ref<{ submit: Function }>()
-const problem = inject("problem") as Problem
-const id = ref(problem.id)
+const problem = inject<Ref<Problem>>("problem")
 const [tried] = useToggle()
 
 onMounted(() => {
@@ -15,7 +16,7 @@ onMounted(() => {
 })
 
 async function checkIfTried() {
-  const res = await submissionExists(id.value)
+  const res = await submissionExists(problem!.value.id)
   tried.value = res.data
 }
 
@@ -28,11 +29,7 @@ function onTab(pane: TabsPaneContext) {
 
 <template>
   <el-tabs type="border-card" @tab-click="onTab" v-model="tab">
-    <el-tab-pane label="测试用例" name="testcase">
-      <div class="panel">
-        <el-table height="320"></el-table>
-      </div>
-    </el-tab-pane>
+    <TestcasePanel />
     <SubmitPanel ref="submitPanelRef" />
   </el-tabs>
 </template>

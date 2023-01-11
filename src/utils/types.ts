@@ -52,6 +52,11 @@ export interface Problem {
   my_status: number
 }
 
+export interface Code {
+  language: LANGUAGE
+  value: string
+}
+
 export interface SubmitCodePayload {
   problem_id: number
   language: LANGUAGE

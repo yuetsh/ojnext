@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import party from "party-js"
+import { Ref } from "vue"
 import {
   SOURCES,
   JUDGE_STATUS,
@@ -10,7 +11,7 @@ import {
   submissionTimeFormat,
 } from "../../../utils/functions"
 import {
-  LANGUAGE,
+  Code,
   Problem,
   Submission,
   SubmitCodePayload,
@@ -19,13 +20,11 @@ import { getSubmission, submitCode } from "../../api"
 
 import SubmissionResultTag from "../../components/submission-result-tag.vue"
 
-const code = inject<{ value: string; language: LANGUAGE }>("code", {
+const code = inject<Code>("code", {
   value: "",
   language: "C",
 })
-const problem = inject("problem") as Problem
-const template = ref(problem.template)
-const id = ref(problem.id)
+const problem = inject<Ref<Problem>>("problem")
 
 const route = useRoute()
 const contestID = <string>route.params.contestID || ""
@@ -80,7 +79,7 @@ const submitDisabled = computed(() => {
   const value = code.value
   if (
     value.trim() === "" ||
-    value === template.value[code.language] ||
+    value === problem!.value.template[code.language] ||
     value === SOURCES[code.language]
   ) {
     return true
@@ -152,7 +151,7 @@ const infoTable = computed(() => {
 
 async function submit() {
   const data: SubmitCodePayload = {
-    problem_id: id.value,
+    problem_id: problem!.value.id,
     language: code.language,
     code: code.value,
   }

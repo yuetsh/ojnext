@@ -9,7 +9,9 @@ import Header from "../shared/layout/header.vue"
     <el-header class="header">
       <Header />
     </el-header>
-    <el-main><router-view></router-view></el-main>
+    <el-main>
+      <router-view></router-view>
+    </el-main>
     <Login />
     <Signup />
   </el-container>
