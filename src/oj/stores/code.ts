@@ -6,13 +6,5 @@ export const useCodeStore = defineStore("code", () => {
     language: "C",
   })
 
-  function setValue(value: string) {
-    code.value = value
-  }
-
-  function setLanguage(language: LANGUAGE) {
-    code.language = language
-  }
-
-  return { code, setLanguage, setValue }
+  return { code }
 })

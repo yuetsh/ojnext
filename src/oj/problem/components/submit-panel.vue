@@ -230,7 +230,7 @@ defineExpose({ submit })
 </template>
 <style scoped>
 .panel {
-  height: 320px;
+  height: 400px;
 }
 
 .result {

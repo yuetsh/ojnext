@@ -8,7 +8,7 @@ import App from "./App.vue"
 import storage from "./utils/storage"
 import routes from "./routes"
 import { STORAGE_KEY } from "./utils/constants"
-import { useLoginStore } from "./shared/stores/login"
+import { useLoginStore } from "./shared/store/login"
 
 const router = createRouter({
   history: createWebHistory(),

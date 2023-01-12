@@ -1,14 +1,13 @@
 <script lang="ts" setup>
-import loader, { Monaco } from "@monaco-editor/loader"
-import {
-  LANGUAGE_LABEL,
-  LANGUAGE_VALUE,
-  SOURCES,
-} from "../../../utils/constants"
-import { isMobile } from "../../../utils/breakpoints"
+import { LANGUAGE_LABEL, SOURCES } from "../../../utils/constants"
 import { Problem } from "../../../utils/types"
-import EditorExec from "./editor-exec.vue"
 import { useCodeStore } from "../../stores/code"
+import { submissionExists } from "../../api"
+import { TabsPaneContext } from "element-plus"
+
+import Monaco from "../../../shared/monaco/index.vue"
+import SubmitPanel from "../components/submit-panel.vue"
+import TestcasePanel from "../components/testcase-panel.vue"
 
 interface Props {
   problem: Problem
@@ -16,63 +15,38 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const { code, setLanguage, setValue } = useCodeStore()
-setValue(SOURCES[props.problem.languages[0] || "C"])
-setLanguage(props.problem.languages[0] || "C")
+const { code } = useCodeStore()
 
-const monacoEditorRef = ref()
+code.language = props.problem.languages[0] || "C"
+code.value = props.problem.template[code.language] || SOURCES[code.language]
 
-let monaco: Monaco
+const tab = ref("test")
+const submitPanelRef = ref<{ submit: Function }>()
+const [tried] = useToggle()
 
-onMounted(() => {
-  init()
-})
-
-onBeforeUnmount(() => {
-  monaco.editor.getModels().forEach((model) => model.dispose())
-})
-
-watch(
-  () => code.language,
-  () => {
-    if (monaco && monaco.editor) {
-      monaco.editor.setModelLanguage(
-        monaco.editor.getModels()[0],
-        LANGUAGE_VALUE[code.language]
-      )
-      reset()
-    }
-  }
-)
-
-function run() {}
+watch(() => code.language, reset)
 
 function reset() {
-  setValue(props.problem.template[code.language] || SOURCES[code.language])
-  if (monaco && monaco.editor) {
-    monaco.editor.getModels()[0].setValue(code.value)
-  }
+  code.value = props.problem.template[code.language] || SOURCES[code.language]
 }
 
-async function init() {
-  setValue(props.problem.template[code.language] || SOURCES[code.language])
-  monaco = await loader.init()
-  monaco.editor.create(monacoEditorRef.value, {
-    value: code.value, // 编辑器初始显示文字
-    language: LANGUAGE_VALUE[code.language],
-    theme: "vs", // 官方自带三种主题vs, hc-black, or vs-dark
-    minimap: {
-      enabled: false,
-    },
-    lineNumbersMinChars: 3,
-    automaticLayout: true, // 自适应布局
-    tabSize: 4,
-    fontSize: isMobile.value ? 20 : 24, // 字体大小
-    scrollBeyondLastLine: false, // 取消代码后面一大段空白
-  })
-  monaco.editor.getModels()[0].onDidChangeContent(() => {
-    setValue(monaco.editor.getModels()[0].getValue())
-  })
+function change(value: string) {
+  code.value = value
+}
+
+onMounted(() => {
+  checkIfTried()
+})
+
+async function checkIfTried() {
+  const res = await submissionExists(props.problem.id)
+  tried.value = res.data
+}
+
+function onTab(pane: TabsPaneContext) {
+  if (pane.paneName === "submit") {
+    submitPanelRef && submitPanelRef.value!.submit()
+  }
 }
 </script>
 
@@ -93,11 +67,17 @@ async function init() {
       <el-button @click="reset">重置</el-button>
     </el-form-item>
   </el-form>
-  <section
-    ref="monacoEditorRef"
-    :class="isMobile ? 'editorMobile' : 'editor'"
-  ></section>
-  <EditorExec />
+  <Monaco
+    class="editor"
+    :language="code.language"
+    :value="code.value"
+    height="calc(100vh - 621px)"
+    @change="change"
+  />
+  <el-tabs type="border-card" @tab-click="onTab" v-model="tab">
+    <TestcasePanel />
+    <SubmitPanel ref="submitPanelRef" />
+  </el-tabs>
 </template>
 
 <style scoped>
@@ -106,11 +86,6 @@ async function init() {
 }
 
 .editor {
-  /* 141px+400 */
-  height: calc(100vh - 541px);
-}
-
-.editorMobile {
-  height: calc(100vh - 612px);
+  min-height: 200px;
 }
 </style>

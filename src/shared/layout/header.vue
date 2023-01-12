@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useLoginStore } from "../stores/login"
+import { useLoginStore } from "../store/login"
 import { useSignupStore } from "../../oj/stores/signup"
-import { useUserStore } from "../stores/user"
+import { useUserStore } from "../store/user"
 import { logout } from "../api"
 
 const loginStore = useLoginStore()
@@ -30,7 +30,7 @@ onMounted(userStore.getMyProfile)
   <el-menu router mode="horizontal" :default-active="$route.path">
     <el-menu-item index="/learn">自学</el-menu-item>
     <el-menu-item index="/">题库</el-menu-item>
-    <el-menu-item index="/contest">竞赛</el-menu-item>
+    <el-menu-item index="/contest">比赛</el-menu-item>
     <el-menu-item index="/status">提交</el-menu-item>
     <el-menu-item index="/rank">排名</el-menu-item>
   </el-menu>

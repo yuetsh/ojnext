@@ -61,5 +61,3 @@ defineProps<Props>()
     </el-descriptions-item>
   </el-descriptions>
 </template>
-
-<style scoped></style>

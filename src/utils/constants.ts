@@ -189,6 +189,27 @@ export const DEAD_RESULTS = {
       output: "黄岩一职",
     },
   },
+  Python2: {
+    encoded: "",
+    result: {
+      status: 3,
+      output: "黄岩一职",
+    },
+  },
+  Golang: {
+    encoded: "",
+    result: {
+      status: 3,
+      output: "黄岩一职",
+    },
+  },
+  JavaScript: {
+    encoded: "",
+    result: {
+      status: 3,
+      output: "黄岩一职",
+    },
+  },
 }
 
 export const LANGUAGE_LABEL = {

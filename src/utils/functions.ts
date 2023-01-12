@@ -49,3 +49,13 @@ export function submissionTimeFormat(time: number) {
   if (time === undefined) return "--"
   return time + "ms"
 }
+
+export function debounce(fn: Function, n = 100) {
+  let handle: any
+  return (...args: any[]) => {
+    if (handle) clearTimeout(handle)
+    handle = setTimeout(() => {
+      fn(...args)
+    }, n)
+  }
+}

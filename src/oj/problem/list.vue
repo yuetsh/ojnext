@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useUserStore } from "../../shared/stores/user"
+import { useUserStore } from "../../shared/store/user"
 import { filterEmptyValue, getTagColor } from "../../utils/functions"
 import { isDesktop } from "../../utils/breakpoints"
 import { getProblemList, getProblemTagList, getRandomProblemID } from "../api"
@@ -77,7 +77,7 @@ function goProblem(row: any) {
 watch(() => query.page, routePush)
 
 watch(
-  () => query.tag || query.difficulty || query.limit,
+  () => [query.tag, query.difficulty, query.limit],
   () => {
     query.page = 1
     routePush()
