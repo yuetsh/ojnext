@@ -13,6 +13,7 @@ export const routes = [
       {
         path: "status",
         component: () => import("oj/status/list.vue"),
+        meta: { requiresAuth: true },
       },
       {
         path: "status/:statusID",
@@ -44,7 +45,7 @@ export const routes = [
   {
     path: "/learn",
     component: () => import("~/shared/layout/default.vue"),
-    children: [{ path: ":step*", component: () => import("learn/index.vue") }],
+    children: [{ path: "", component: () => import("learn/index.vue") }],
   },
   {
     path: "/admin",

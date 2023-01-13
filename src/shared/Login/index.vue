@@ -1,12 +1,9 @@
 <script setup lang="ts">
 import { FormInstance } from "element-plus"
-import { useSignupStore } from "~/shared/store/signup"
 import { login } from "../api"
-import { useLoginStore } from "../store/login"
+import { loginModal, toggleLogin, toggleSignup } from "../composables/modal"
 import { useUserStore } from "../store/user"
 
-const loginStore = useLoginStore()
-const signupStore = useSignupStore()
 const userStore = useUserStore()
 const loginRef = ref<FormInstance>()
 const form = reactive({
@@ -29,15 +26,15 @@ async function submit() {
   if (valid) {
     await execute()
     if (!error.value) {
-      loginStore.hide()
+      toggleLogin(false)
       userStore.getMyProfile()
     }
   }
 }
 
 function goSignup() {
-  loginStore.hide()
-  signupStore.show()
+  toggleLogin(false)
+  toggleSignup(true)
 }
 </script>
 
@@ -46,7 +43,7 @@ function goSignup() {
     style="max-width: 400px"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    v-model="loginStore.visible"
+    v-model="loginModal"
     title="登录"
   >
     <el-form

@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router"
 import { createPinia } from "pinia"
 import "normalize.css"
+import "element-plus/theme-chalk/dark/css-vars.css"
 import loader from "@monaco-editor/loader"
 
 import storage from "utils/storage"
@@ -9,7 +10,7 @@ import { STORAGE_KEY } from "utils/constants"
 import { routes } from "./routes"
 import App from "./App.vue"
 
-import { useLoginStore } from "~/shared/store/login"
+import { toggleLogin } from "./shared/composables/modal"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,8 +20,7 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!storage.get(STORAGE_KEY.AUTHED)) {
-      const login = useLoginStore()
-      login.show()
+      toggleLogin(true)
       next("/")
     } else {
       next()
@@ -32,9 +32,14 @@ router.beforeEach((to, from, next) => {
 
 const pinia = createPinia()
 
-Promise.all([loader.init(), fetch("/dracula.json")]).then(([monaco, dark]) => {
+loader.init().then((monaco) => {
   window.monaco = monaco
-  dark.json().then((data) => monaco.editor.defineTheme("dark", data))
+  fetch("/dark.json").then((data) =>
+    data.json().then((theme) => monaco.editor.defineTheme("dark", theme))
+  )
+  fetch("/light.json").then((data) =>
+    data.json().then((theme) => monaco.editor.defineTheme("light", theme))
+  )
 })
 
 loader.config({

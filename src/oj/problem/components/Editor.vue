@@ -1,10 +1,10 @@
 <script lang="ts" setup>
+import { TabsPaneContext } from "element-plus"
 import { SOURCES } from "utils/constants"
 import { Problem } from "utils/types"
 import Monaco from "~/shared/Monaco/index.vue"
 import { useCodeStore } from "oj/store/code"
 import { submissionExists } from "oj/api"
-import { TabsPaneContext } from "element-plus"
 
 import SubmitPanel from "./SubmitPanel.vue"
 import TestcasePanel from "./TestcasePanel.vue"
@@ -68,8 +68,8 @@ function onTab(pane: TabsPaneContext) {
     class="editor"
     :language="code.language"
     :value="code.value"
-    height="calc(100vh - 621px)"
     @change="change"
+    height="calc(100vh - 621px)"
   />
   <el-tabs type="border-card" @tab-click="onTab" v-model="tab">
     <TestcasePanel />

@@ -3,6 +3,7 @@ import type * as Monaco from "monaco-editor"
 import { LANGUAGE_VALUE } from "utils/constants"
 import { LANGUAGE } from "utils/types"
 import { isMobile } from "utils/breakpoints"
+import { isDark } from "../composables/dark"
 
 interface Props {
   value: string
@@ -35,7 +36,7 @@ onMounted(function () {
 
   editor = window.monaco.editor.create(monacoEditorRef.value, {
     model,
-    theme: "dark", // 官方自带三种主题vs, hc-black, or vs-dark
+    theme: isDark.value ? "dark" : "light", // 官方自带三种主题vs, hc-black, or vs-dark
     minimap: {
       enabled: false,
     },
@@ -77,6 +78,10 @@ onMounted(function () {
     if (props.value !== model.getValue()) {
       model.setValue(props.value)
     }
+  })
+
+  watchEffect(() => {
+    window.monaco.editor.setTheme(isDark.value ? "dark" : "light")
   })
 })
 

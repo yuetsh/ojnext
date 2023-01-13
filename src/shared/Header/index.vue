@@ -1,11 +1,10 @@
 <script setup lang="ts">
-import { useLoginStore } from "../store/login"
-import { useSignupStore } from "~/shared/store/signup"
+import { Sunny, Moon } from "@element-plus/icons-vue"
 import { logout } from "../api"
 import { useUserStore } from "../store/user"
+import { isDark, toggleDark } from "~/shared/composables/dark"
+import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
 
-const loginStore = useLoginStore()
-const signupStore = useSignupStore()
 const userStore = useUserStore()
 const router = useRouter()
 
@@ -34,26 +33,33 @@ onMounted(userStore.getMyProfile)
     <el-menu-item index="/status">提交</el-menu-item>
     <el-menu-item index="/rank">排名</el-menu-item>
   </el-menu>
-  <div v-if="userStore.isFinished && !userStore.isAuthed" class="actions">
-    <el-button @click="loginStore.show">登录</el-button>
-    <el-button @click="signupStore.show">注册</el-button>
-  </div>
-  <div v-if="userStore.isFinished && userStore.isAuthed" class="actions">
-    <el-dropdown @command="handleDropdown">
-      <el-button>{{ userStore.user.username }}</el-button>
-      <template #dropdown>
-        <el-dropdown-menu>
-          <el-dropdown-item>我的主页</el-dropdown-item>
-          <el-dropdown-item>我的提交</el-dropdown-item>
-          <el-dropdown-item>我的设置</el-dropdown-item>
-          <el-dropdown-item v-if="userStore.isAdminRole">
-            后台管理
-          </el-dropdown-item>
-          <el-dropdown-item divided command="logout">退出</el-dropdown-item>
-        </el-dropdown-menu>
-      </template>
-    </el-dropdown>
-  </div>
+  <el-space class="actions">
+    <el-button
+      circle
+      :icon="isDark ? Sunny : Moon"
+      @click="toggleDark()"
+    ></el-button>
+    <div v-if="userStore.isFinished && !userStore.isAuthed">
+      <el-button @click="toggleLogin(true)">登录</el-button>
+      <el-button @click="toggleSignup(true)">注册</el-button>
+    </div>
+    <div v-if="userStore.isFinished && userStore.isAuthed">
+      <el-dropdown @command="handleDropdown">
+        <el-button>{{ userStore.user.username }}</el-button>
+        <template #dropdown>
+          <el-dropdown-menu>
+            <el-dropdown-item>我的主页</el-dropdown-item>
+            <el-dropdown-item>我的提交</el-dropdown-item>
+            <el-dropdown-item>我的设置</el-dropdown-item>
+            <el-dropdown-item v-if="userStore.isAdminRole">
+              后台管理
+            </el-dropdown-item>
+            <el-dropdown-item divided command="logout">退出</el-dropdown-item>
+          </el-dropdown-menu>
+        </template>
+      </el-dropdown>
+    </div>
+  </el-space>
 </template>
 
 <style scoped>

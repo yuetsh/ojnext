@@ -3,7 +3,7 @@ import Md from "./step-1/index.md"
 import Monaco from "../shared/monaco/index.vue"
 
 const route = useRoute()
-console.log(route.params.step)
+// console.log(route.params.step)
 
 const code = ref("")
 
@@ -19,6 +19,7 @@ function change(value: string) {
       <Md />
       {{ code }}
     </el-col>
+    <!-- TODO: 这里有BUG -->
     <el-col :span="8">
       <Monaco :value="code" @change="change" />
     </el-col>

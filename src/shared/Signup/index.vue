@@ -1,13 +1,12 @@
 <script setup lang="ts">
-import { useSignupStore } from "../store/signup"
-const store = useSignupStore()
+import { signupModal } from "../composables/modal"
 </script>
 
 <template>
   <el-dialog
     :close-on-click-modal="false"
     :close-on-press-escape="false"
-    v-model="store.visible"
+    v-model="signupModal"
     title="注册"
   >
   </el-dialog>
