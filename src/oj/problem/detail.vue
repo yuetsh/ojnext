@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Editor from "./components/editor.vue"
-import ProblemContent from "./components/problem-content.vue"
-import ProblemInfo from "./components/problem-info.vue"
+import Editor from "./components/Editor.vue"
+import ProblemContent from "./components/ProblemContent.vue"
+import ProblemInfo from "./components/ProblemInfo.vue"
 import { getProblem } from "../api"
 import { isDesktop, isMobile } from "../../utils/breakpoints"
 

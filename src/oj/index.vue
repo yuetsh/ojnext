@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import Login from "../shared/user/login.vue"
-import Signup from "../shared/user/signup.vue"
-import Header from "../shared/layout/header.vue"
+import Login from "../shared/Login/index.vue"
+import Signup from "../shared/Signup/index.vue"
+import Header from "../shared/Header/index.vue"
 </script>
 
 <template>

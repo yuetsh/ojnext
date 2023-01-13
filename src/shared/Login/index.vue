@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { FormInstance } from "element-plus"
 import { useSignupStore } from "../../oj/stores/signup"
-import { login } from "../../shared/api"
+import { login } from "../api"
 import { useLoginStore } from "../store/login"
 import { useUserStore } from "../store/user"
 
@@ -56,15 +56,16 @@ function goSignup() {
       label-position="right"
       label-width="70px"
     >
-      <el-form-item label="用户名" required prop="username" name="username">
-        <el-input v-model="form.username"></el-input>
+      <el-form-item label="用户名" required prop="username">
+        <el-input v-model="form.username" name="username"></el-input>
       </el-form-item>
-      <el-form-item label="密码" required prop="password" name="password">
+      <el-form-item label="密码" required prop="password">
         <el-input
           v-model="form.password"
           type="password"
           show-password
           @change="submit"
+          name="password"
         ></el-input>
       </el-form-item>
       <el-form-item>

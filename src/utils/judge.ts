@@ -5,11 +5,11 @@ import { Code } from "./types"
 const http = axios.create({ baseURL: "https://judge0api.hyyz.izhai.net" })
 
 function encode(str: string) {
-  return btoa(unescape(encodeURIComponent(str || "")))
+  return btoa(unescape(encodeURIComponent(str ?? "")))
 }
 
 function decode(bytes: string) {
-  let escaped = escape(atob(bytes || ""))
+  let escaped = escape(atob(bytes ?? ""))
   try {
     return decodeURIComponent(escaped)
   } catch (e) {

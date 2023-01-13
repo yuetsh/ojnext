@@ -33,8 +33,8 @@
 </template>
 
 <script setup lang="ts">
-import Resizer from "./resizer.vue"
-import Pane from "./pane.vue"
+import Resizer from "./Resizer.vue"
+import Pane from "./Pane.vue"
 import { computed, ref } from "vue"
 import { classNameToArray } from "element-plus/es/utils"
 

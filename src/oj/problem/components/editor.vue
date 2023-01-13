@@ -6,8 +6,8 @@ import { submissionExists } from "../../api"
 import { TabsPaneContext } from "element-plus"
 
 import Monaco from "../../../shared/monaco/index.vue"
-import SubmitPanel from "../components/submit-panel.vue"
-import TestcasePanel from "../components/testcase-panel.vue"
+import SubmitPanel from "./SubmitPanel.vue"
+import TestcasePanel from "./TestcasePanel.vue"
 
 interface Props {
   problem: Problem

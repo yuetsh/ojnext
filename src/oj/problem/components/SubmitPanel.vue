@@ -13,14 +13,14 @@ import {
 import { Problem, Submission, SubmitCodePayload } from "../../../utils/types"
 import { getSubmission, submitCode } from "../../api"
 
-import SubmissionResultTag from "../../components/submission-result-tag.vue"
+import SubmissionResultTag from "../../components/SubmissionResultTag.vue"
 import { useCodeStore } from "../../stores/code"
 
 const problem = inject<Ref<Problem>>("problem")
 const { code } = useCodeStore()
 
 const route = useRoute()
-const contestID = <string>route.params.contestID || ""
+const contestID = <string>route.params.contestID ?? ""
 
 const submissionId = ref("")
 const submission = ref<Submission | null>(null)

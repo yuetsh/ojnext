@@ -8,7 +8,7 @@ import { getUserInfo } from "../api"
 
 export const useUserStore = defineStore("user", () => {
   const { data: profile, isFinished, execute } = getUserInfo("")
-  const user = computed(() => profile.value.user || {})
+  const user = computed(() => profile?.value?.user ?? {})
   const isAuthed = computed(() => !!user.value.email)
   const isAdminRole = computed(
     () =>

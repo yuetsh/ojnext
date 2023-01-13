@@ -20,19 +20,19 @@ const total = ref(0)
 const { data: tags } = getProblemTagList()
 
 const query = reactive({
-  keyword: (route.query.keyword as string) || "",
-  difficulty: route.query.difficulty || "",
-  tag: route.query.tag || "",
-  page: parseInt(<string>route.query.page) || 1,
-  limit: parseInt(<string>route.query.limit) || 10,
+  keyword: route.query.keyword ?? "",
+  difficulty: route.query.difficulty ?? "",
+  tag: route.query.tag ?? "",
+  page: parseInt(<string>route.query.page) ?? 1,
+  limit: parseInt(<string>route.query.limit) ?? 10,
 })
 
 async function listProblems() {
-  query.keyword = (route.query.keyword as string) || ""
-  query.difficulty = route.query.difficulty || ""
-  query.tag = route.query.tag || ""
-  query.page = parseInt(<string>route.query.page) || 1
-  query.limit = parseInt(<string>route.query.limit) || 10
+  query.keyword = route.query.keyword ?? ""
+  query.difficulty = route.query.difficulty ?? ""
+  query.tag = route.query.tag ?? ""
+  query.page = parseInt(<string>route.query.page) ?? 1
+  query.limit = parseInt(<string>route.query.limit) ?? 10
 
   if (query.page < 1) query.page = 1
   const offset = (query.page - 1) * query.limit
