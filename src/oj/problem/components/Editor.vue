@@ -1,11 +1,11 @@
 <script lang="ts" setup>
 import { LANGUAGE_LABEL, SOURCES } from "../../../utils/constants"
 import { Problem } from "../../../utils/types"
-import { useCodeStore } from "../../stores/code"
+import { useCodeStore } from "../../store/code"
 import { submissionExists } from "../../api"
 import { TabsPaneContext } from "element-plus"
 
-import Monaco from "../../../shared/monaco/index.vue"
+import Monaco from "../../../shared/Monaco/index.vue"
 import SubmitPanel from "./SubmitPanel.vue"
 import TestcasePanel from "./TestcasePanel.vue"
 

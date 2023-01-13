@@ -46,6 +46,7 @@ onMounted(async function () {
     automaticLayout: true, // 自适应布局
     tabSize: 4,
     fontSize: isMobile.value ? 20 : 24, // 字体大小
+    scrollBeyondLastLine: false,
   })
 
   model.onDidChangeContent(() => {
@@ -68,7 +69,6 @@ onMounted(async function () {
 
   watchEffect(() => {
     if (props.value !== model.getValue()) {
-      console.log(666)
       model.setValue(props.value)
     }
   })

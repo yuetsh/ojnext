@@ -14,7 +14,7 @@ import { Problem, Submission, SubmitCodePayload } from "../../../utils/types"
 import { getSubmission, submitCode } from "../../api"
 
 import SubmissionResultTag from "../../components/SubmissionResultTag.vue"
-import { useCodeStore } from "../../stores/code"
+import { useCodeStore } from "../../store/code"
 
 const problem = inject<Ref<Problem>>("problem")
 const { code } = useCodeStore()
@@ -103,22 +103,22 @@ const submitLabel = computed(() => {
 })
 
 const msg = computed(() => {
-  if (
-    submission.value &&
-    submission.value.statistic_info &&
-    submission.value.statistic_info.err_info
-  ) {
-    return submission.value.statistic_info.err_info
-  }
+  let msg = ""
   const result = submission.value && submission.value.result
   if (
     result === SubmissionStatus.compile_error ||
     result === SubmissionStatus.runtime_error
   ) {
-    return "请仔细检查，看看代码格式是不是写错了！"
-  } else {
-    return ""
+    msg += "请仔细检查，看看代码的格式是不是写错了！\n\n"
   }
+  if (
+    submission.value &&
+    submission.value.statistic_info &&
+    submission.value.statistic_info.err_info
+  ) {
+    msg += submission.value.statistic_info.err_info
+  }
+  return msg
 })
 
 const infoTable = computed(() => {
@@ -162,7 +162,7 @@ async function submit() {
 }
 
 watch(
-  () => submission.value && submission.value.result,
+  () => submission?.value?.result,
   (result) => {
     if (result === SubmissionStatus.accepted) {
       party.confetti(document.body, {
@@ -195,36 +195,28 @@ defineExpose({ submit })
         :title="JUDGE_STATUS[submission.result]['name']"
       >
       </el-alert>
-      <el-scrollbar
-        v-if="msg || infoTable.length"
-        height="280"
-        class="result"
-        noresize
-      >
-        <div v-if="msg">{{ msg }}</div>
-        <el-table v-if="infoTable.length" :data="infoTable" stripe>
-          <el-table-column prop="test_case" label="测试用例" align="center" />
-          <el-table-column label="测试状态" width="120" align="center">
-            <template #default="scope">
-              <SubmissionResultTag
-                v-if="scope.row"
-                :result="scope.row.result"
-              />
-            </template>
-          </el-table-column>
-          <el-table-column label="占用内存" align="center">
-            <template #default="scope">
-              {{ submissionMemoryFormat(scope.row.memory) }}
-            </template>
-          </el-table-column>
-          <el-table-column label="执行耗时" align="center">
-            <template #default="scope">
-              {{ submissionTimeFormat(scope.row.real_time) }}
-            </template>
-          </el-table-column>
-          <el-table-column prop="signal" label="信号" align="center" />
-        </el-table>
+      <el-scrollbar v-if="msg" height="354" class="result" noresize>
+        <div>{{ msg }}</div>
       </el-scrollbar>
+      <el-table v-if="infoTable.length" height="354" :data="infoTable" stripe>
+        <el-table-column prop="test_case" label="测试用例" align="center" />
+        <el-table-column label="测试状态" width="120" align="center">
+          <template #default="scope">
+            <SubmissionResultTag v-if="scope.row" :result="scope.row.result" />
+          </template>
+        </el-table-column>
+        <el-table-column label="占用内存" align="center">
+          <template #default="scope">
+            {{ submissionMemoryFormat(scope.row.memory) }}
+          </template>
+        </el-table-column>
+        <el-table-column label="执行耗时" align="center">
+          <template #default="scope">
+            {{ submissionTimeFormat(scope.row.real_time) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="signal" label="信号" align="center" />
+      </el-table>
     </div>
   </el-tab-pane>
 </template>

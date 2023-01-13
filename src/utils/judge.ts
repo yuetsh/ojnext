@@ -41,19 +41,15 @@ export async function createTestSubmission(code: Code, input: string) {
       redirect_stderr_to_stdout: true,
       compiler_options: compilerOptions,
     }
-    try {
-      const response = await http.post("/submissions", payload, {
-        params: { base64_encoded: true, wait: true },
-      })
-      const data = response.data
-      return {
-        status: data.status && data.status.id,
-        output: [decode(data.compile_output), decode(data.stdout)]
-          .join("\n")
-          .trim(),
-      }
-    } catch (e) {
-      console.error(e)
+    const response = await http.post("/submissions", payload, {
+      params: { base64_encoded: true, wait: true },
+    })
+    const data = response.data
+    return {
+      status: data.status && data.status.id,
+      output: [decode(data.compile_output), decode(data.stdout)]
+        .join("\n")
+        .trim(),
     }
   }
 }

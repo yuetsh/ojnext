@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { FormInstance } from "element-plus"
-import { useSignupStore } from "../../oj/stores/signup"
+import { useSignupStore } from "../../oj/store/signup"
 import { login } from "../api"
 import { useLoginStore } from "../store/login"
 import { useUserStore } from "../store/user"

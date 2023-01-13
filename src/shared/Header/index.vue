@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useLoginStore } from "../store/login"
-import { useSignupStore } from "../../oj/stores/signup"
+import { useSignupStore } from "../../oj/store/signup"
 import { useUserStore } from "../store/user"
 import { logout } from "../api"
 

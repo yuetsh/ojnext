@@ -1,18 +1,32 @@
 <script setup lang="ts">
 import { Problem } from "../../../utils/types"
-import { Flag } from "@element-plus/icons-vue"
-import { useTestcaseReultStore } from "../../stores/testcaseResult"
-import { useCodeStore } from "../../stores/code"
+import { Flag, CloseBold, Select } from "@element-plus/icons-vue"
+import { useCodeStore } from "../../store/code"
 import { SOURCES } from "../../../utils/constants"
+import { createTestSubmission } from "../../../utils/judge"
 
 interface Props {
   problem: Problem
 }
+type Sample = Problem["samples"][number] & {
+  id: number
+  msg: string
+  status: "passed" | "failed" | "not_test"
+  loading: boolean
+}
 
 const props = defineProps<Props>()
 
+const samples = ref<Sample[]>(
+  props.problem.samples.map((sample, index) => ({
+    ...sample,
+    id: index,
+    msg: "",
+    status: "not_test",
+    loading: false,
+  }))
+)
 const { code } = useCodeStore()
-const testcaseResultStore = useTestcaseReultStore()
 
 const disabled = computed(
   () =>
@@ -22,10 +36,44 @@ const disabled = computed(
       code.value === SOURCES[code.language]
     )
 )
-
-function test(input: string) {
-  testcaseResultStore.runTestcase(code, input)
+async function test(sample: Sample, index: number) {
+  samples.value = samples.value.map((sample) => {
+    if (sample.id === index) {
+      sample.loading = true
+    }
+    return sample
+  })
+  const res = await createTestSubmission(code, sample.input)
+  samples.value = samples.value.map((sample) => {
+    if (sample.id === index) {
+      const status =
+        res.status === 3 && res.output.trim() === sample.output
+          ? "passed"
+          : "failed"
+      return {
+        ...sample,
+        msg: res.output,
+        status: status,
+        loading: false,
+      }
+    } else {
+      return sample
+    }
+  })
 }
+
+const icon = (status: Sample["status"]) =>
+  ({
+    not_test: Flag,
+    failed: CloseBold,
+    passed: Select,
+  }[status])
+const type = (status: Sample["status"]) =>
+  ({
+    not_test: "warning",
+    failed: "danger",
+    passed: "success",
+  }[status])
 </script>
 
 <template>
@@ -46,23 +94,27 @@ function test(input: string) {
     </el-card>
   </div>
 
-  <div v-for="(sample, index) of problem.samples" :key="index">
+  <div v-for="(sample, index) of samples" :key="index">
     <el-space>
       <p class="title testcaseTitle">测试用例 {{ index + 1 }}</p>
       <el-button
-        :icon="Flag"
-        type="success"
+        :icon="icon(sample.status)"
+        :type="type(sample.status)"
         :disabled="disabled"
+        :loading="sample.loading"
         circle
-        @click="test(sample.input)"
+        @click="test(sample, index)"
       ></el-button>
     </el-space>
-    <el-descriptions border direction="vertical">
+    <el-descriptions border direction="vertical" :column="2">
       <el-descriptions-item width="50%" label="输入">
         <div class="testcase">{{ sample.input }}</div>
       </el-descriptions-item>
       <el-descriptions-item width="50%" label="输出">
         <div class="testcase">{{ sample.output }}</div>
+      </el-descriptions-item>
+      <el-descriptions-item label="运行结果" v-if="sample.status === 'failed'">
+        <div class="testcase">{{ sample.msg }}</div>
       </el-descriptions-item>
     </el-descriptions>
   </div>

@@ -12,6 +12,7 @@ const routes = [
         path: "problem/:problemID",
         component: () => import("./oj/problem/detail.vue"),
         props: true,
+        name: "ProblemDetail",
       },
       {
         path: "status",
@@ -37,6 +38,7 @@ const routes = [
         path: "contest/:contestID/problem/:problemID",
         component: () => import("./oj/problem/detail.vue"),
         props: true,
+        name: "ContestProblemDetail",
       },
       {
         path: "rank",
