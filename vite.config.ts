@@ -1,4 +1,5 @@
 import { defineConfig } from "vite"
+import path from "path"
 import Vue from "@vitejs/plugin-vue"
 import AutoImport from "unplugin-auto-import/vite"
 import Components from "unplugin-vue-components/vite"
@@ -16,6 +17,15 @@ const proxyConfig = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  resolve: {
+    alias: {
+      "~": path.resolve(__dirname, "./src"),
+      utils: path.resolve(__dirname, "./src/utils"),
+      oj: path.resolve(__dirname, "./src/oj"),
+      admin: path.resolve(__dirname, "./src/admin"),
+      learn: path.resolve(__dirname, "./src/learn"),
+    },
+  },
   plugins: [
     Vue({ include: [/\.vue$/, /\.md$/] }),
     AutoImport({

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { DIFFICULTY } from "../../../utils/constants"
-import { getACRate, getTagColor, parseTime } from "../../../utils/functions"
-import { isDesktop } from "../../../utils/breakpoints"
-import { Problem } from "../../../utils/types"
+import { DIFFICULTY } from "utils/constants"
+import { getACRate, getTagColor, parseTime } from "utils/functions"
+import { isDesktop } from "utils/breakpoints"
+import { Problem } from "utils/types"
 
 interface Props {
   problem: Problem

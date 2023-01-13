@@ -2,8 +2,9 @@
 import Editor from "./components/Editor.vue"
 import ProblemContent from "./components/ProblemContent.vue"
 import ProblemInfo from "./components/ProblemInfo.vue"
-import { getProblem } from "../api"
-import { isDesktop, isMobile } from "../../utils/breakpoints"
+import SubmissionList from "./components/SubmissionList.vue"
+import { getProblem } from "oj/api"
+import { isDesktop, isMobile } from "utils/breakpoints"
 
 interface Props {
   problemID: string
@@ -32,11 +33,13 @@ provide("problem", readonly(problem))
         <el-tab-pane v-if="isMobile" label="代码编辑" lazy>
           <Editor :problem="problem" />
         </el-tab-pane>
+        <el-tab-pane label="提交列表" lazy>
+          <SubmissionList />
+        </el-tab-pane>
         <el-tab-pane label="比赛信息" v-if="props.contestID" lazy></el-tab-pane>
-        <el-tab-pane label="题目信息" lazy>
+        <el-tab-pane label="统计信息" lazy>
           <ProblemInfo :problem="problem" />
         </el-tab-pane>
-        <el-tab-pane label="提交列表">3</el-tab-pane>
       </el-tabs>
     </el-col>
     <el-col v-if="isDesktop" :span="12">

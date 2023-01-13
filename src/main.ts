@@ -3,12 +3,13 @@ import { createPinia } from "pinia"
 import "normalize.css"
 import loader from "@monaco-editor/loader"
 
+import storage from "utils/storage"
+import { STORAGE_KEY } from "utils/constants"
+
+import { routes } from "./routes"
 import App from "./App.vue"
 
-import storage from "./utils/storage"
-import routes from "./routes"
-import { STORAGE_KEY } from "./utils/constants"
-import { useLoginStore } from "./shared/store/login"
+import { useLoginStore } from "~/shared/store/login"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -30,6 +31,11 @@ router.beforeEach((to, from, next) => {
 })
 
 const pinia = createPinia()
+
+Promise.all([loader.init(), fetch("/dracula.json")]).then(([monaco, dark]) => {
+  window.monaco = monaco
+  dark.json().then((data) => monaco.editor.defineTheme("dark", data))
+})
 
 loader.config({
   paths: { vs: "https://cdn.staticfile.org/monaco-editor/0.34.1/min/vs" },

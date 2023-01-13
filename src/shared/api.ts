@@ -1,5 +1,5 @@
 import { useAxios } from "@vueuse/integrations/useAxios"
-import http from "../utils/http"
+import http from "utils/http"
 
 export function login(data: { username: string; password: string }) {
   return useAxios("login", { method: "post", data }, http, {

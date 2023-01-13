@@ -1,4 +1,4 @@
-import { Code } from "../../utils/types"
+import { Code } from "utils/types"
 
 export const useCodeStore = defineStore("code", () => {
   const code = reactive<Code>({

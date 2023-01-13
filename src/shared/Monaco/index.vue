@@ -1,9 +1,8 @@
 <script setup lang="ts">
 import type * as Monaco from "monaco-editor"
-import loader from "@monaco-editor/loader"
-import { LANGUAGE_VALUE } from "../../utils/constants"
-import { LANGUAGE } from "../../utils/types"
-import { isMobile } from "../../utils/breakpoints"
+import { LANGUAGE_VALUE } from "utils/constants"
+import { LANGUAGE } from "utils/types"
+import { isMobile } from "utils/breakpoints"
 
 interface Props {
   value: string
@@ -25,20 +24,18 @@ const emit = defineEmits<{
 }>()
 
 const monacoEditorRef = ref()
-let editor: Monaco.editor.IStandaloneCodeEditor | null
+let editor: Monaco.editor.IStandaloneCodeEditor
 
-onMounted(async function () {
-  const monaco = await loader.init()
-
-  const model = monaco.editor.createModel(
+onMounted(function () {
+  const model = window.monaco.editor.createModel(
     props.value,
     LANGUAGE_VALUE[props.language],
-    monaco.Uri.parse(`file:///root/${Date.now()}.${ext()}`)
+    window.monaco.Uri.parse(`file:///root/${Date.now()}.${ext()}`)
   )
 
-  editor = monaco.editor.create(monacoEditorRef.value, {
+  editor = window.monaco.editor.create(monacoEditorRef.value, {
     model,
-    theme: "vs-dark", // 官方自带三种主题vs, hc-black, or vs-dark
+    theme: "dark", // 官方自带三种主题vs, hc-black, or vs-dark
     minimap: {
       enabled: false,
     },
@@ -47,6 +44,15 @@ onMounted(async function () {
     tabSize: 4,
     fontSize: isMobile.value ? 20 : 24, // 字体大小
     scrollBeyondLastLine: false,
+    lineDecorationsWidth: 0,
+    scrollBeyondLastColumn: 0,
+    glyphMargin: false,
+    scrollbar: {
+      useShadows: false,
+      vertical: "hidden",
+      horizontal: "hidden",
+    },
+    overviewRulerLanes: 0,
   })
 
   model.onDidChangeContent(() => {
@@ -64,7 +70,7 @@ onMounted(async function () {
   })
 
   watchEffect(() => {
-    monaco.editor.setModelLanguage(model, LANGUAGE_VALUE[props.language])
+    window.monaco.editor.setModelLanguage(model, LANGUAGE_VALUE[props.language])
   })
 
   watchEffect(() => {

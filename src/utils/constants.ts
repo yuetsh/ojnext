@@ -212,16 +212,6 @@ export const DEAD_RESULTS = {
   },
 }
 
-export const LANGUAGE_LABEL = {
-  C: "C",
-  "C++": "C++",
-  Java: "Java",
-  Python2: "Python2",
-  Python3: "Python",
-  JavaScript: "JS",
-  Golang: "Go",
-}
-
 export const LANGUAGE_VALUE = {
   C: "c",
   "C++": "cpp",

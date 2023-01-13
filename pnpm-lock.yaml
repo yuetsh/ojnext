@@ -4,6 +4,7 @@ specifiers:
   '@element-plus/icons-vue': ^2.0.10
   '@iconify-json/ep': ^1.1.8
   '@monaco-editor/loader': ^1.3.2
+  '@types/node': ^18.11.18
   '@vitejs/plugin-vue': ^4.0.0
   '@vueuse/core': ^9.10.0
   '@vueuse/integrations': ^9.10.0
@@ -39,6 +40,7 @@ dependencies:
 
 devDependencies:
   '@iconify-json/ep': 1.1.8
+  '@types/node': 18.11.18
   '@vitejs/plugin-vue': 4.0.0_vite@4.0.4+vue@3.2.45
   monaco-editor: 0.34.1
   prettier: 2.8.2
@@ -46,7 +48,7 @@ devDependencies:
   unplugin-auto-import: 0.12.1_@vueuse+core@9.10.0
   unplugin-icons: 0.15.1
   unplugin-vue-components: 0.22.12_vue@3.2.45
-  vite: 4.0.4
+  vite: 4.0.4_@types+node@18.11.18
   vite-plugin-vue-markdown: 0.22.2_vite@4.0.4
   vue-tsc: 1.0.24_typescript@4.9.4
 
@@ -431,6 +433,10 @@ packages:
     resolution: {integrity: sha512-eC4U9MlIcu2q0KQmXszyn5Akca/0jrQmwDRgpAMJai7qBWq4amIQhZyNau4VYGtCeALvW1/NtjzJJ567aZxfKA==}
     dev: true
 
+  /@types/node/18.11.18:
+    resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
+    dev: true
+
   /@types/web-bluetooth/0.0.16:
     resolution: {integrity: sha512-oh8q2Zc32S6gd/j50GowEjKLoOVOwHP/bWVjKJInBwQqdOYMdPrf1oVlelTlyfFK3CKxL1uahMDAr+vy8T7yMQ==}
 
@@ -441,7 +447,7 @@ packages:
       vite: ^4.0.0
       vue: ^3.2.25
     dependencies:
-      vite: 4.0.4
+      vite: 4.0.4_@types+node@18.11.18
       vue: 3.2.45
     dev: true
 
@@ -1515,12 +1521,12 @@ packages:
       '@rollup/pluginutils': 5.0.2
       '@types/markdown-it': 12.2.3
       markdown-it: 13.0.1
-      vite: 4.0.4
+      vite: 4.0.4_@types+node@18.11.18
     transitivePeerDependencies:
       - rollup
     dev: true
 
-  /vite/4.0.4:
+  /vite/4.0.4_@types+node@18.11.18:
     resolution: {integrity: sha512-xevPU7M8FU0i/80DMR+YhgrzR5KS2ORy1B4xcX/cXLsvnUWvfHuqMmVU6N0YiJ4JWGRJJsLCgjEzKjG9/GKoSw==}
     engines: {node: ^14.18.0 || >=16.0.0}
     hasBin: true
@@ -1545,6 +1551,7 @@ packages:
       terser:
         optional: true
     dependencies:
+      '@types/node': 18.11.18
       esbuild: 0.16.16
       postcss: 8.4.21
       resolve: 1.22.1

@@ -1,8 +1,8 @@
 import { useAxios } from "@vueuse/integrations/useAxios"
-import http from "./../utils/http"
-import { getACRate } from "./../utils/functions"
-import { DIFFICULTY } from "./../utils/constants"
-import { Problem, SubmitCodePayload, Submission } from "./../utils/types"
+import http from "utils/http"
+import { getACRate } from "utils/functions"
+import { DIFFICULTY } from "utils/constants"
+import { Problem, SubmitCodePayload, Submission } from "utils/types"
 
 function filterResult(result: Problem) {
   const newResult: any = {

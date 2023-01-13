@@ -1,9 +1,5 @@
-import {
-  PROBLEM_PERMISSION,
-  STORAGE_KEY,
-  USER_TYPE,
-} from "../../utils/constants"
-import storage from "../../utils/storage"
+import { PROBLEM_PERMISSION, STORAGE_KEY, USER_TYPE } from "utils/constants"
+import storage from "utils/storage"
 import { getUserInfo } from "../api"
 
 export const useUserStore = defineStore("user", () => {

@@ -36,7 +36,6 @@
 import Resizer from "./Resizer.vue"
 import Pane from "./Pane.vue"
 import { computed, ref } from "vue"
-import { classNameToArray } from "element-plus/es/utils"
 
 interface Props {
   minPercent?: number

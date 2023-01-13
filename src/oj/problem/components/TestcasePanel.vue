@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { createTestSubmission } from "../../../utils/judge"
-import { useCodeStore } from "../../store/code"
+import { createTestSubmission } from "utils/judge"
+import { useCodeStore } from "oj/store/code"
 
 const input = ref("")
 const result = ref("")

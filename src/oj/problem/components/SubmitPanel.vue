@@ -1,20 +1,13 @@
 <script setup lang="ts">
 import party from "party-js"
 import { Ref } from "vue"
-import {
-  SOURCES,
-  JUDGE_STATUS,
-  SubmissionStatus,
-} from "../../../utils/constants"
-import {
-  submissionMemoryFormat,
-  submissionTimeFormat,
-} from "../../../utils/functions"
-import { Problem, Submission, SubmitCodePayload } from "../../../utils/types"
-import { getSubmission, submitCode } from "../../api"
+import { SOURCES, JUDGE_STATUS, SubmissionStatus } from "utils/constants"
+import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
+import { Problem, Submission, SubmitCodePayload } from "utils/types"
+import { getSubmission, submitCode } from "oj/api"
+import { useCodeStore } from "oj/store/code"
 
 import SubmissionResultTag from "../../components/SubmissionResultTag.vue"
-import { useCodeStore } from "../../store/code"
 
 const problem = inject<Ref<Problem>>("problem")
 const { code } = useCodeStore()
@@ -198,7 +191,12 @@ defineExpose({ submit })
       <el-scrollbar v-if="msg" height="354" class="result" noresize>
         <div>{{ msg }}</div>
       </el-scrollbar>
-      <el-table v-if="infoTable.length" height="354" :data="infoTable" stripe>
+      <el-table
+        v-if="infoTable.length"
+        max-height="354"
+        :data="infoTable"
+        stripe
+      >
         <el-table-column prop="test_case" label="测试用例" align="center" />
         <el-table-column label="测试状态" width="120" align="center">
           <template #default="scope">

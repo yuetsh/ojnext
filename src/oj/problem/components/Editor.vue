@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { LANGUAGE_LABEL, SOURCES } from "../../../utils/constants"
-import { Problem } from "../../../utils/types"
-import { useCodeStore } from "../../store/code"
-import { submissionExists } from "../../api"
+import { SOURCES } from "utils/constants"
+import { Problem } from "utils/types"
+import Monaco from "~/shared/Monaco/index.vue"
+import { useCodeStore } from "oj/store/code"
+import { submissionExists } from "oj/api"
 import { TabsPaneContext } from "element-plus"
 
-import Monaco from "../../../shared/Monaco/index.vue"
 import SubmitPanel from "./SubmitPanel.vue"
 import TestcasePanel from "./TestcasePanel.vue"
 
@@ -54,12 +54,9 @@ function onTab(pane: TabsPaneContext) {
   <el-form inline>
     <el-form-item label="语言" label-width="60">
       <el-select v-model="code.language" class="language">
-        <el-option
-          v-for="item in problem.languages"
-          :key="item"
-          :value="item"
-          :label="LANGUAGE_LABEL[item]"
-        >
+        <el-option v-for="item in problem.languages" :key="item" :value="item">
+          <img class="logo" :src="`/${item}.svg`" alt="logo" />&nbsp;&nbsp;
+          <span>{{ item }}</span>
         </el-option>
       </el-select>
     </el-form-item>
@@ -82,10 +79,14 @@ function onTab(pane: TabsPaneContext) {
 
 <style scoped>
 .language {
-  width: 100px;
+  width: 110px;
 }
 
 .editor {
   min-height: 200px;
+}
+
+.logo {
+  width: 12px;
 }
 </style>

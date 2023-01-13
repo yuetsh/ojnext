@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { useLoginStore } from "../store/login"
-import { useSignupStore } from "../../oj/store/signup"
-import { useUserStore } from "../store/user"
+import { useSignupStore } from "~/shared/store/signup"
 import { logout } from "../api"
+import { useUserStore } from "../store/user"
 
 const loginStore = useLoginStore()
 const signupStore = useSignupStore()

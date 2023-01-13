@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { Problem } from "../../../utils/types"
 import { Flag, CloseBold, Select } from "@element-plus/icons-vue"
-import { useCodeStore } from "../../store/code"
-import { SOURCES } from "../../../utils/constants"
-import { createTestSubmission } from "../../../utils/judge"
+import { useCodeStore } from "oj/store/code"
+import { SOURCES } from "utils/constants"
+import { Problem } from "utils/types"
+import { createTestSubmission } from "utils/judge"
 
 interface Props {
   problem: Problem

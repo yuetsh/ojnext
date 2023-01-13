@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { useUserStore } from "../../shared/store/user"
-import { filterEmptyValue, getTagColor } from "../../utils/functions"
-import { isDesktop } from "../../utils/breakpoints"
-import { getProblemList, getProblemTagList, getRandomProblemID } from "../api"
+import { useUserStore } from "~/shared/store/user"
+import { filterEmptyValue, getTagColor } from "utils/functions"
+import { isDesktop } from "utils/breakpoints"
+import { getProblemList, getProblemTagList, getRandomProblemID } from "oj/api"
+
+import Pagination from "~/shared/Pagination/index.vue"
 
 const difficultyOptions = [
   { label: "全部", value: "" },
@@ -182,35 +184,15 @@ onMounted(listProblems)
     />
     <el-table-column v-if="isDesktop" prop="rate" label="通过率" width="100" />
   </el-table>
-  <el-pagination
-    class="right margin"
-    :layout="isDesktop ? 'prev,pager,next,sizes' : 'prev,next,sizes'"
-    background
+  <Pagination
     :total="total"
-    :page-sizes="[10, 20, 30]"
-    :pager-count="5"
-    v-model:page-size="query.limit"
-    v-model:current-page="query.page"
+    v-model:limit="query.limit"
+    v-model:page="query.page"
   />
 </template>
 
 <style scoped>
-.margin {
-  margin-top: 24px;
-}
-.right {
-  float: right;
-}
 .pointer {
   cursor: pointer;
-}
-
-.panel {
-  width: 400px;
-  padding: 0 4px;
-}
-
-.panel-tag {
-  margin: 4px;
 }
 </style>
