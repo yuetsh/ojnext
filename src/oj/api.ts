@@ -66,11 +66,27 @@ export function getSubmission(id: string) {
 }
 
 export function submissionExists(problemID: number) {
-  return http.get("submission_exists", {
-    params: { problem_id: problemID },
-  })
+  return useAxios(
+    "submission_exists",
+    { params: { problem_id: problemID } },
+    http,
+    { immediate: false }
+  )
 }
 
 export function submitCode(data: SubmitCodePayload) {
   return http.post("submission", data)
+}
+
+export function listSubmissions(params: {
+  myself: "1" | "0"
+  result: string
+  username: string
+  page: number
+  contest_id: string
+  problem_id: string
+  limit: number
+  offset: number
+}) {
+  return useAxios("submissions", { params }, http)
 }

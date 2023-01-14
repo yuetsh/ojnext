@@ -2,9 +2,9 @@
 import Editor from "./components/Editor.vue"
 import ProblemContent from "./components/ProblemContent.vue"
 import ProblemInfo from "./components/ProblemInfo.vue"
-import SubmissionList from "./components/SubmissionList.vue"
 import { getProblem } from "oj/api"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
+import { TabsPaneContext } from "element-plus"
 
 interface Props {
   problemID: string
@@ -16,7 +16,6 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const { data: problem, isFinished } = getProblem(props.problemID)
-
 provide("problem", readonly(problem))
 </script>
 
@@ -33,11 +32,8 @@ provide("problem", readonly(problem))
         <el-tab-pane v-if="isMobile" label="代码编辑" lazy>
           <Editor :problem="problem" />
         </el-tab-pane>
-        <el-tab-pane label="提交列表" lazy>
-          <SubmissionList />
-        </el-tab-pane>
         <el-tab-pane label="比赛信息" v-if="props.contestID" lazy></el-tab-pane>
-        <el-tab-pane label="统计信息" lazy>
+        <el-tab-pane label="题目信息" lazy>
           <ProblemInfo :problem="problem" />
         </el-tab-pane>
       </el-tabs>

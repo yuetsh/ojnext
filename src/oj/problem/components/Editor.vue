@@ -4,7 +4,6 @@ import { SOURCES } from "utils/constants"
 import { Problem } from "utils/types"
 import Monaco from "~/shared/Monaco/index.vue"
 import { useCodeStore } from "oj/store/code"
-import { submissionExists } from "oj/api"
 
 import SubmitPanel from "./SubmitPanel.vue"
 import TestcasePanel from "./TestcasePanel.vue"
@@ -22,7 +21,6 @@ code.value = props.problem.template[code.language] || SOURCES[code.language]
 
 const tab = ref("test")
 const submitPanelRef = ref<{ submit: Function }>()
-const [tried] = useToggle()
 
 watch(() => code.language, reset)
 
@@ -32,15 +30,6 @@ function reset() {
 
 function change(value: string) {
   code.value = value
-}
-
-onMounted(() => {
-  checkIfTried()
-})
-
-async function checkIfTried() {
-  const res = await submissionExists(props.problem.id)
-  tried.value = res.data
 }
 
 function onTab(pane: TabsPaneContext) {
@@ -62,6 +51,9 @@ function onTab(pane: TabsPaneContext) {
     </el-form-item>
     <el-form-item>
       <el-button @click="reset">重置</el-button>
+      <el-button @click="$router.push(`/status?problem=${problem.id}`)">
+        提交信息
+      </el-button>
     </el-form-item>
   </el-form>
   <Monaco

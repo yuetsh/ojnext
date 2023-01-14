@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import { Flag, CloseBold, Select } from "@element-plus/icons-vue"
+import { Flag, CloseBold, Select, CopyDocument } from "@element-plus/icons-vue"
+import copy from "copy-text-to-clipboard"
 import { useCodeStore } from "oj/store/code"
 import { SOURCES } from "utils/constants"
 import { Problem } from "utils/types"
 import { createTestSubmission } from "utils/judge"
+import { submissionExists } from "oj/api"
 
 interface Props {
   problem: Problem
@@ -16,7 +18,12 @@ type Sample = Problem["samples"][number] & {
 }
 
 const props = defineProps<Props>()
-
+const route = useRoute()
+const contestID = <string>route.params.contestID
+const { data: hasSolved, execute } = submissionExists(props.problem.id)
+if (contestID) {
+  execute()
+}
 const samples = ref<Sample[]>(
   props.problem.samples.map((sample, index) => ({
     ...sample,
@@ -77,6 +84,16 @@ const type = (status: Sample["status"]) =>
 </script>
 
 <template>
+  <el-alert
+    v-if="problem.my_status === 0 || (contestID && hasSolved)"
+    type="success"
+    :closable="false"
+    center
+    title="🎉 本 题 已 经 被 你 解 决 啦"
+    effect="dark"
+  >
+  </el-alert>
+
   <h1>{{ problem.title }}</h1>
   <p class="title">描述</p>
   <div class="content" v-html="problem.description"></div>
@@ -107,10 +124,22 @@ const type = (status: Sample["status"]) =>
       ></el-button>
     </el-space>
     <el-descriptions border direction="vertical" :column="2">
-      <el-descriptions-item width="50%" label="输入">
+      <el-descriptions-item width="50%">
+        <template #label>
+          <el-space>
+            <span>输入</span>
+            <el-icon @click="copy(sample.input)"><CopyDocument /> </el-icon>
+          </el-space>
+        </template>
         <div class="testcase">{{ sample.input }}</div>
       </el-descriptions-item>
-      <el-descriptions-item width="50%" label="输出">
+      <el-descriptions-item width="50%">
+        <template #label>
+          <el-space>
+            <span>输出</span>
+            <el-icon @click="copy(sample.output)"><CopyDocument /> </el-icon>
+          </el-space>
+        </template>
         <div class="testcase">{{ sample.output }}</div>
       </el-descriptions-item>
       <el-descriptions-item label="运行结果" v-if="sample.status === 'failed'">
@@ -131,6 +160,7 @@ const type = (status: Sample["status"]) =>
   margin: 24px 0 16px 0;
   color: var(--el-color-primary);
 }
+
 .testcaseTitle {
   margin-bottom: 24px;
 }

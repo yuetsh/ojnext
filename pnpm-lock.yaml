@@ -9,6 +9,7 @@ specifiers:
   '@vueuse/core': ^9.10.0
   '@vueuse/integrations': ^9.10.0
   axios: ^1.2.2
+  copy-text-to-clipboard: ^3.0.1
   element-plus: ^2.2.28
   monaco-editor: ^0.34.1
   normalize.css: ^8.0.1
@@ -31,6 +32,7 @@ dependencies:
   '@vueuse/core': 9.10.0_vue@3.2.45
   '@vueuse/integrations': 9.10.0_axios@1.2.2+vue@3.2.45
   axios: 1.2.2
+  copy-text-to-clipboard: 3.0.1
   element-plus: 2.2.28_vue@3.2.45
   normalize.css: 8.0.1
   party-js: 2.2.0
@@ -720,6 +722,11 @@ packages:
     engines: {node: '>= 0.8'}
     dependencies:
       delayed-stream: 1.0.0
+    dev: false
+
+  /copy-text-to-clipboard/3.0.1:
+    resolution: {integrity: sha512-rvVsHrpFcL4F2P8ihsoLdFHmd404+CMg71S756oRSeQgqk51U3kicGdnvfkrxva0xXH92SjGS62B0XIJsbh+9Q==}
+    engines: {node: '>=12'}
     dev: false
 
   /cross-spawn/7.0.3:
