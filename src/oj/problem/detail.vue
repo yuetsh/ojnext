@@ -4,7 +4,7 @@ import ProblemContent from "./components/ProblemContent.vue"
 import ProblemInfo from "./components/ProblemInfo.vue"
 import SubmissionList from "./components/SubmissionList.vue"
 import { getProblem } from "oj/api"
-import { isDesktop, isMobile } from "utils/breakpoints"
+import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 
 interface Props {
   problemID: string
@@ -25,7 +25,7 @@ provide("problem", readonly(problem))
     <el-col :span="isDesktop ? 12 : 24">
       <el-tabs type="border-card">
         <el-tab-pane label="题目描述">
-          <el-scrollbar v-if="isDesktop" height="calc(100vh - 171px)" noresize>
+          <el-scrollbar v-if="isDesktop" height="calc(100vh - 171px)">
             <ProblemContent :problem="problem" />
           </el-scrollbar>
           <ProblemContent v-else :problem="problem" />

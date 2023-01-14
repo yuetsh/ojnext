@@ -4,6 +4,7 @@ import { logout } from "../api"
 import { useUserStore } from "../store/user"
 import { isDark, toggleDark } from "~/shared/composables/dark"
 import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
+import { isDesktop } from "../composables/breakpoints"
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -26,14 +27,19 @@ onMounted(userStore.getMyProfile)
 </script>
 
 <template>
-  <el-menu router mode="horizontal" :default-active="$route.path">
-    <el-menu-item index="/learn">自学</el-menu-item>
+  <el-menu
+    v-if="isDesktop"
+    router
+    mode="horizontal"
+    :default-active="$route.path"
+  >
+    <el-menu-item index="/learn#step-1">自学</el-menu-item>
     <el-menu-item index="/">题库</el-menu-item>
     <el-menu-item index="/contest">比赛</el-menu-item>
     <el-menu-item index="/status">提交</el-menu-item>
     <el-menu-item index="/rank">排名</el-menu-item>
   </el-menu>
-  <el-space class="actions">
+  <el-space v-if="isDesktop" class="actions">
     <el-button
       circle
       :icon="isDark ? Sunny : Moon"

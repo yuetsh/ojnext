@@ -1,9 +1,14 @@
 <script setup lang="ts">
-import Md from "./step-1/index.md"
+import Loading from "./components/Loading.vue"
 import Monaco from "../shared/monaco/index.vue"
 
 const route = useRoute()
-// console.log(route.params.step)
+const step = route.hash.replace("#step-", "") || "1"
+
+const Md = defineAsyncComponent({
+  loader: () => import(`./step-${step}/index.md`),
+  loadingComponent: Loading,
+})
 
 const code = ref("")
 
@@ -14,13 +19,10 @@ function change(value: string) {
 
 <template>
   <el-row>
-    <el-col :span="4"> </el-col>
     <el-col :span="12">
       <Md />
-      {{ code }}
     </el-col>
-    <!-- TODO: 这里有BUG -->
-    <el-col :span="8">
+    <el-col :span="12">
       <Monaco :value="code" @change="change" />
     </el-col>
   </el-row>

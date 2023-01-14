@@ -40,12 +40,11 @@ export const routes = [
         path: "rank",
         component: () => import("oj/rank/list.vue"),
       },
+      {
+        path: "learn",
+        component: () => import("learn/index.vue"),
+      },
     ],
-  },
-  {
-    path: "/learn",
-    component: () => import("~/shared/layout/default.vue"),
-    children: [{ path: "", component: () => import("learn/index.vue") }],
   },
   {
     path: "/admin",

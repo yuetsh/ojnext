@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useUserStore } from "~/shared/store/user"
 import { filterEmptyValue, getTagColor } from "utils/functions"
-import { isDesktop } from "utils/breakpoints"
+import { isDesktop } from "~/shared/composables/breakpoints"
 import { getProblemList, getProblemTagList, getRandomProblemID } from "oj/api"
 
 import Pagination from "~/shared/Pagination/index.vue"

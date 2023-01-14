@@ -15,7 +15,6 @@ const proxyConfig = {
   headers: { Referer: url },
 }
 
-// https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
     alias: {

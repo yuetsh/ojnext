@@ -2,7 +2,7 @@
 import type * as Monaco from "monaco-editor"
 import { LANGUAGE_VALUE } from "utils/constants"
 import { LANGUAGE } from "utils/types"
-import { isMobile } from "utils/breakpoints"
+import { isMobile } from "~/shared/composables/breakpoints"
 import { isDark } from "../composables/dark"
 
 interface Props {
@@ -30,8 +30,7 @@ let editor: Monaco.editor.IStandaloneCodeEditor
 onMounted(function () {
   const model = window.monaco.editor.createModel(
     props.value,
-    LANGUAGE_VALUE[props.language],
-    window.monaco.Uri.parse(`file:///root/${Date.now()}.${ext()}`)
+    LANGUAGE_VALUE[props.language]
   )
 
   editor = window.monaco.editor.create(monacoEditorRef.value, {
@@ -88,25 +87,6 @@ onMounted(function () {
 onUnmounted(() => {
   editor && editor.dispose()
 })
-
-function ext() {
-  switch (props.language) {
-    case "C":
-      return "c"
-    case "C++":
-      return "cpp"
-    case "Java":
-      return "java"
-    case "JavaScript":
-      return "js"
-    case "Python2":
-      return "py"
-    case "Python3":
-      return "py"
-    case "Golang":
-      return "go"
-  }
-}
 </script>
 <template>
   <div

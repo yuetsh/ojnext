@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isDesktop } from "utils/breakpoints"
+import { isDesktop } from "~/shared/composables/breakpoints"
 interface Props {
   total: number
   limit: number

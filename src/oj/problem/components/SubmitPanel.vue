@@ -188,7 +188,7 @@ defineExpose({ submit })
         :title="JUDGE_STATUS[submission.result]['name']"
       >
       </el-alert>
-      <el-scrollbar v-if="msg" height="354" class="result" noresize>
+      <el-scrollbar v-if="msg" height="354" class="result">
         <div>{{ msg }}</div>
       </el-scrollbar>
       <el-table
