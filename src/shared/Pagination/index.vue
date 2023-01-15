@@ -22,6 +22,7 @@ watch(page, () => emit("update:page", page))
 
 <template>
   <el-pagination
+    v-if="props.total"
     class="right margin"
     :layout="isDesktop ? 'prev,pager,next,sizes' : 'prev,next,sizes'"
     background

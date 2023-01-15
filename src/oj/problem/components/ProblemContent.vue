@@ -90,7 +90,6 @@ const type = (status: Sample["status"]) =>
     :closable="false"
     center
     title="🎉 本 题 已 经 被 你 解 决 啦"
-    effect="dark"
   >
   </el-alert>
 

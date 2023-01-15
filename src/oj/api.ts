@@ -83,6 +83,6 @@ export function submitCode(data: SubmitCodePayload) {
   return http.post("submission", data)
 }
 
-export function listSubmissions(params: SubmissionListPayload) {
-  return useAxios("submissions", { params }, http, { immediate: false })
+export function getSubmissions(params: SubmissionListPayload) {
+  return http.get("submissions", { params })
 }

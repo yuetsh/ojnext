@@ -47,16 +47,16 @@ async function listProblems() {
   problems.value = res.results
 }
 
-function routePush() {
+function routerPush() {
   router.push({
-    path: "/",
+    path: route.path,
     query: filterEmptyValue(query),
   })
 }
 
 function search() {
   query.page = 1
-  routePush()
+  routerPush()
 }
 
 function clear() {
@@ -64,7 +64,7 @@ function clear() {
   query.tag = ""
   query.difficulty = ""
   query.page = 1
-  routePush()
+  routerPush()
 }
 
 async function getRandom() {
@@ -76,13 +76,13 @@ function goProblem(row: any) {
   router.push("/problem/" + row._id)
 }
 
-watch(() => query.page, routePush)
+watch(() => query.page, routerPush)
 
 watch(
   () => [query.tag, query.difficulty, query.limit],
   () => {
     query.page = 1
-    routePush()
+    routerPush()
   }
 )
 
