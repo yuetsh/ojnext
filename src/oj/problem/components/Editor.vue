@@ -5,8 +5,8 @@ import { Problem } from "utils/types"
 import Monaco from "~/shared/Monaco/index.vue"
 import { useCodeStore } from "oj/store/code"
 
-import SubmitPanel from "./SubmitPanel.vue"
-import TestcasePanel from "./TestcasePanel.vue"
+const SubmitPanel = defineAsyncComponent(() => import("./SubmitPanel.vue"))
+const TestcasePanel = defineAsyncComponent(() => import("./TestcasePanel.vue"))
 
 interface Props {
   problem: Problem
@@ -51,7 +51,7 @@ function onTab(pane: TabsPaneContext) {
     </el-form-item>
     <el-form-item>
       <el-button @click="reset">重置</el-button>
-      <el-button @click="$router.push(`/status?problem=${problem.id}`)">
+      <el-button @click="$router.push(`/status?problem=${problem._id}`)">
         提交信息
       </el-button>
     </el-form-item>

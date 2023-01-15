@@ -7,7 +7,7 @@
     "start": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "fmt": "prettier --write src *.d.ts *.ts"
+    "fmt": "prettier --write src *.ts"
   },
   "dependencies": {
     "@element-plus/icons-vue": "^2.0.10",

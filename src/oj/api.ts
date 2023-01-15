@@ -2,7 +2,12 @@ import { useAxios } from "@vueuse/integrations/useAxios"
 import http from "utils/http"
 import { getACRate } from "utils/functions"
 import { DIFFICULTY } from "utils/constants"
-import { Problem, SubmitCodePayload, Submission } from "utils/types"
+import {
+  Problem,
+  SubmitCodePayload,
+  Submission,
+  SubmissionListPayload,
+} from "utils/types"
 
 function filterResult(result: Problem) {
   const newResult: any = {
@@ -14,11 +19,11 @@ function filterResult(result: Problem) {
     rate: getACRate(result.accepted_number, result.submission_number),
   }
   if (result.my_status === null || result.my_status === undefined) {
-    newResult.status = "none"
+    newResult.status = "not_test"
   } else if (result.my_status === 0) {
-    newResult.status = "done"
+    newResult.status = "passed"
   } else {
-    newResult.status = "tried"
+    newResult.status = "failed"
   }
   return newResult
 }
@@ -78,15 +83,6 @@ export function submitCode(data: SubmitCodePayload) {
   return http.post("submission", data)
 }
 
-export function listSubmissions(params: {
-  myself: "1" | "0"
-  result: string
-  username: string
-  page: number
-  contest_id: string
-  problem_id: string
-  limit: number
-  offset: number
-}) {
-  return useAxios("submissions", { params }, http)
+export function listSubmissions(params: SubmissionListPayload) {
+  return useAxios("submissions", { params }, http, { immediate: false })
 }

@@ -1,10 +1,14 @@
 <script setup lang="ts">
-import Editor from "./components/Editor.vue"
-import ProblemContent from "./components/ProblemContent.vue"
-import ProblemInfo from "./components/ProblemInfo.vue"
 import { getProblem } from "oj/api"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
-import { TabsPaneContext } from "element-plus"
+
+const Editor = defineAsyncComponent(() => import("./components/Editor.vue"))
+const ProblemContent = defineAsyncComponent(
+  () => import("./components/ProblemContent.vue")
+)
+const ProblemInfo = defineAsyncComponent(
+  () => import("./components/ProblemInfo.vue")
+)
 
 interface Props {
   problemID: string

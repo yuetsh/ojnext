@@ -3,7 +3,7 @@ import { Flag, CloseBold, Select, CopyDocument } from "@element-plus/icons-vue"
 import copy from "copy-text-to-clipboard"
 import { useCodeStore } from "oj/store/code"
 import { SOURCES } from "utils/constants"
-import { Problem } from "utils/types"
+import { Problem, ProblemStatus } from "utils/types"
 import { createTestSubmission } from "utils/judge"
 import { submissionExists } from "oj/api"
 
@@ -13,7 +13,7 @@ interface Props {
 type Sample = Problem["samples"][number] & {
   id: number
   msg: string
-  status: "passed" | "failed" | "not_test"
+  status: ProblemStatus
   loading: boolean
 }
 

@@ -140,12 +140,12 @@ onMounted(listProblems)
     <el-table-column v-if="isDesktop" label="状态" :width="80">
       <template #default="scope">
         <el-icon
-          v-if="scope.row.status === 'done'"
+          v-if="scope.row.status === 'passed'"
           color="var(--el-color-success)"
           ><i-ep-select
         /></el-icon>
         <el-icon
-          v-if="scope.row.status === 'tried'"
+          v-if="scope.row.status === 'failed'"
           color="var(--el-color-error)"
           ><i-ep-semi-select
         /></el-icon>
@@ -155,10 +155,7 @@ onMounted(listProblems)
     <el-table-column prop="title" label="标题" />
     <el-table-column label="难度" width="100">
       <template #default="scope">
-        <el-tag
-          disable-transitions
-          :type="(getTagColor(scope.row.difficulty) as any)"
-        >
+        <el-tag disable-transitions :type="getTagColor(scope.row.difficulty)">
           {{ scope.row.difficulty }}
         </el-tag>
       </template>

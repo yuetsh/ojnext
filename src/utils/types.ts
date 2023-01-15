@@ -9,6 +9,8 @@ export type LANGUAGE =
 
 export type SUBMISSION_RESULT = -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
+export type ProblemStatus = "passed" | "failed" | "not_test"
+
 export interface Problem {
   _id: string
   id: number
@@ -99,4 +101,15 @@ export interface Submission {
   contest: null
   problem: number
   can_unshare: boolean
+}
+
+export interface SubmissionListPayload {
+  myself?: "1" | "0"
+  result?: SUBMISSION_RESULT
+  username?: string
+  contest_id?: string
+  problem_id?: string
+  page: number
+  limit: number
+  offset: number
 }

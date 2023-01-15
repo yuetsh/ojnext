@@ -184,7 +184,7 @@ defineExpose({ submit })
       <el-alert
         v-if="submission"
         :closable="false"
-        :type="(JUDGE_STATUS[submission.result]['alertType'] as any)"
+        :type="JUDGE_STATUS[submission.result]['alertType']"
         :title="JUDGE_STATUS[submission.result]['name']"
       >
       </el-alert>

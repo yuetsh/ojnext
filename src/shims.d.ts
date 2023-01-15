@@ -1,5 +1,3 @@
-import type * as Monaco from "monaco-editor"
-
 declare module "element-plus/dist/locale/zh-cn.mjs"
 
 declare module "*.md" {
@@ -9,7 +7,12 @@ declare module "*.md" {
 }
 
 declare global {
+  let monaco: Monaco
   interface Window {
     monaco: Monaco
   }
+}
+
+interface Window {
+  monaco: Monaco
 }
