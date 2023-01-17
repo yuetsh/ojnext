@@ -4,7 +4,12 @@ import { logout } from "../api"
 import { useUserStore } from "../store/user"
 import { isDark, toggleDark } from "~/shared/composables/dark"
 import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
-import { isDesktop } from "../composables/breakpoints"
+import type {
+  MenuOption,
+  DropdownOption,
+  DropdownDividerOption,
+} from "naive-ui"
+import { RouterLink } from "vue-router"
 
 const userStore = useUserStore()
 const router = useRouter()
@@ -15,8 +20,8 @@ async function handleLogout() {
   router.replace("/")
 }
 
-function handleDropdown(command: string) {
-  switch (command) {
+function handleDropdown(key: string) {
+  switch (key) {
     case "logout":
       handleLogout()
       break
@@ -24,57 +29,66 @@ function handleDropdown(command: string) {
 }
 
 onMounted(userStore.getMyProfile)
+
+const menus: MenuOption[] = [
+  {
+    label: () =>
+      h(RouterLink, { to: "/learn#step-1" }, { default: () => "自学" }),
+    key: "learn",
+  },
+  {
+    label: () => h(RouterLink, { to: "/" }, { default: () => "题库" }),
+    key: "problem",
+  },
+  {
+    label: () => h(RouterLink, { to: "/contest" }, { default: () => "比赛" }),
+    key: "contest",
+  },
+  {
+    label: () => h(RouterLink, { to: "/status" }, { default: () => "提交" }),
+    key: "status",
+  },
+  {
+    label: () => h(RouterLink, { to: "/rank" }, { default: () => "排名" }),
+    key: "rank",
+  },
+]
+
+const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
+  { label: "我的主页", key: "home" },
+  { label: "我的提交", key: "status" },
+  { label: "我的设置", key: "setting" },
+  { label: "后台管理", key: "admin", show: userStore.isAdminRole },
+  { type: "divider" },
+  { label: "退出", key: "logout" },
+])
 </script>
 
 <template>
-  <el-menu
-    v-if="isDesktop"
-    router
-    mode="horizontal"
-    :default-active="$route.path"
-  >
-    <el-menu-item index="/learn#step-1">自学</el-menu-item>
-    <el-menu-item index="/">题库</el-menu-item>
-    <el-menu-item index="/contest">比赛</el-menu-item>
-    <el-menu-item index="/status">提交</el-menu-item>
-    <el-menu-item index="/rank">排名</el-menu-item>
-  </el-menu>
-  <el-space v-if="isDesktop" class="actions">
-    <el-button
-      circle
-      :icon="isDark ? Sunny : Moon"
-      @click="toggleDark()"
-    ></el-button>
-    <div v-if="userStore.isFinished && !userStore.isAuthed">
-      <el-button @click="toggleLogin(true)">登录</el-button>
-      <el-button @click="toggleSignup(true)">注册</el-button>
-    </div>
-    <div v-if="userStore.isFinished && userStore.isAuthed">
-      <el-dropdown @command="handleDropdown">
-        <el-button>{{ userStore.user.username }}</el-button>
-        <template #dropdown>
-          <el-dropdown-menu>
-            <el-dropdown-item>我的主页</el-dropdown-item>
-            <el-dropdown-item>我的提交</el-dropdown-item>
-            <el-dropdown-item>我的设置</el-dropdown-item>
-            <el-dropdown-item v-if="userStore.isAdminRole">
-              后台管理
-            </el-dropdown-item>
-            <el-dropdown-item divided command="logout">退出</el-dropdown-item>
-          </el-dropdown-menu>
+  <n-space justify="space-between" align="center">
+    <n-menu mode="horizontal" :options="menus" default-value="problem"></n-menu>
+    <n-space>
+      <n-button circle @click="toggleDark()">
+        <template #icon>
+          <n-icon v-if="isDark"><Sunny /></n-icon>
+          <n-icon v-else><Moon /></n-icon>
         </template>
-      </el-dropdown>
-    </div>
-  </el-space>
+      </n-button>
+      <div v-if="userStore.isFinished">
+        <n-dropdown
+          v-if="userStore.isAuthed"
+          :options="options"
+          @select="handleDropdown"
+        >
+          <n-button>{{ userStore.user.username }}</n-button>
+        </n-dropdown>
+        <n-space v-else>
+          <n-button @click="toggleLogin(true)">登录</n-button>
+          <n-button @click="toggleSignup(true)">注册</n-button>
+        </n-space>
+      </div>
+    </n-space>
+  </n-space>
 </template>
 
-<style scoped>
-.el-menu {
-  flex: 1;
-}
-.actions {
-  display: flex;
-  align-items: center;
-  border-bottom: solid 1px var(--el-menu-border-color);
-}
-</style>
+<style scoped></style>

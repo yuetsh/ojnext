@@ -1,11 +1,11 @@
 <script setup lang="ts"></script>
 
 <template>
-  <el-container>
-    <el-main>
+  <n-layout>
+    <n-layout-content bordered>
       <router-view></router-view>
-    </el-main>
-  </el-container>
+    </n-layout-content>
+  </n-layout>
 </template>
 
 <style scoped></style>

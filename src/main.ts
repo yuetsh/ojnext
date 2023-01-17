@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from "vue-router"
 import { createPinia } from "pinia"
 import "normalize.css"
-import "element-plus/theme-chalk/dark/css-vars.css"
 import loader from "@monaco-editor/loader"
 
 import storage from "utils/storage"

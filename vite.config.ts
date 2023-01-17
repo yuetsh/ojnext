@@ -3,7 +3,10 @@ import path from "path"
 import Vue from "@vitejs/plugin-vue"
 import AutoImport from "unplugin-auto-import/vite"
 import Components from "unplugin-vue-components/vite"
-import { ElementPlusResolver } from "unplugin-vue-components/resolvers"
+import {
+  ElementPlusResolver,
+  NaiveUiResolver,
+} from "unplugin-vue-components/resolvers"
 import IconsResolver from "unplugin-icons/resolver"
 import Icons from "unplugin-icons/vite"
 import Markdown from "vite-plugin-vue-markdown"
@@ -28,12 +31,25 @@ export default defineConfig({
   plugins: [
     Vue({ include: [/\.vue$/, /\.md$/] }),
     AutoImport({
-      imports: ["vue", "vue-router", "@vueuse/core", "pinia"],
-      resolvers: [ElementPlusResolver(), IconsResolver()],
+      imports: [
+        "vue",
+        "vue-router",
+        "@vueuse/core",
+        "pinia",
+        {
+          "naive-ui": [
+            "useDialog",
+            "useMessage",
+            "useNotification",
+            "useLoadingBar",
+          ],
+        },
+      ],
       dts: "./src/auto-imports.d.ts",
     }),
     Components({
       resolvers: [
+        NaiveUiResolver(),
         ElementPlusResolver(),
         IconsResolver({ enabledCollections: ["ep"] }),
       ],

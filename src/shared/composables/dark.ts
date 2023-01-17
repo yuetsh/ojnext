@@ -1,2 +1,2 @@
-export const isDark = useDark({ storageKey: "theme-appearance" })
+export const isDark = useLocalStorage("theme-appearance", false)
 export const toggleDark = useToggle(isDark)

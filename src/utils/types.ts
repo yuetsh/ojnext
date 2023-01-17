@@ -93,8 +93,10 @@ export interface Submission {
   language: string
   shared: boolean
   statistic_info: {
-    score: number
-    err_info: string
+    score?: number
+    err_info?: string
+    time_cost?: number
+    memory_cost?: number
   }
   ip: string
   // TODO: 这里不知道是什么
@@ -105,7 +107,7 @@ export interface Submission {
 
 export interface SubmissionListPayload {
   myself?: "1" | "0"
-  result?: SUBMISSION_RESULT
+  result?: string
   username?: string
   contest_id?: string
   problem_id?: string

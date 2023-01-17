@@ -5,20 +5,24 @@ import Header from "../Header/index.vue"
 </script>
 
 <template>
-  <el-container>
-    <el-header class="header">
+  <n-layout>
+    <n-layout-header bordered class="header">
       <Header />
-    </el-header>
-    <el-main>
+    </n-layout-header>
+    <n-layout-content class="content">
       <router-view></router-view>
-    </el-main>
+    </n-layout-content>
     <Login />
     <Signup />
-  </el-container>
+  </n-layout>
 </template>
 
 <style scoped>
 .header {
-  display: flex;
+  padding: 8px;
+}
+
+.content {
+  padding: 16px;
 }
 </style>

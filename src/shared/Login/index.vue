@@ -1,35 +1,35 @@
 <script setup lang="ts">
-import { FormInstance } from "element-plus"
 import { login } from "../api"
 import { loginModal, toggleLogin, toggleSignup } from "../composables/modal"
 import { useUserStore } from "../store/user"
+import type { FormRules } from "naive-ui"
 
 const userStore = useUserStore()
-const loginRef = ref<FormInstance>()
+const loginRef = ref()
 const form = reactive({
   username: "",
   password: "",
 })
-const rules = reactive({
+const rules: FormRules = {
   username: [{ required: true, message: "用户名必填", trigger: "blur" }],
   password: [
     { required: true, message: "密码必填", trigger: "blur" },
-    { min: 6, max: 20, message: "长度在6到20位之间", trigger: "change" },
+    { min: 6, max: 20, message: "长度在6到20位之间", trigger: "input" },
   ],
-})
+}
 const { isLoading, error, execute } = login(form)
 const msg = computed(() => error.value && "用户名或密码不正确")
 
 async function submit() {
-  if (!loginRef.value) return
-  const valid = await loginRef.value.validate()
-  if (valid) {
-    await execute()
-    if (!error.value) {
-      toggleLogin(false)
-      userStore.getMyProfile()
+  loginRef.value?.validate(async (errors: FormRules | undefined) => {
+    if (!errors) {
+      await execute()
+      if (!error.value) {
+        toggleLogin(false)
+        userStore.getMyProfile()
+      }
     }
-  }
+  })
 }
 
 function goSignup() {
@@ -39,41 +39,43 @@ function goSignup() {
 </script>
 
 <template>
-  <el-dialog
-    style="max-width: 400px"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    v-model="loginModal"
+  <n-modal
+    :mask-closable="false"
+    v-model:show="loginModal"
+    preset="card"
     title="登录"
+    style="width: 400px"
+    :auto-focus="false"
   >
-    <el-form
-      ref="loginRef"
-      :model="form"
-      :rules="rules"
-      label-position="right"
-      label-width="70px"
-    >
-      <el-form-item label="用户名" required prop="username">
-        <el-input v-model="form.username" name="username"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" required prop="password">
-        <el-input
-          v-model="form.password"
+    <n-form ref="loginRef" :model="form" :rules="rules" show-require-mark>
+      <n-form-item label="用户名" path="username">
+        <n-input
+          v-model:value="form.username"
+          autofocus
+          clearable
+          name="username"
+        />
+      </n-form-item>
+      <n-form-item label="密码" path="password">
+        <n-input
+          v-model:value="form.password"
+          clearable
           type="password"
-          show-password
-          @change="submit"
           name="password"
-        ></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-button type="primary" :loading="isLoading" @click="submit">
-          登录
-        </el-button>
-        <el-button @click="goSignup">没有账号，立即注册</el-button>
-      </el-form-item>
-      <el-alert v-if="msg" :title="msg" show-icon type="error" />
-    </el-form>
-  </el-dialog>
+          @change="submit"
+        />
+      </n-form-item>
+      <n-alert v-if="msg" type="error" :show-icon="false"> {{ msg }}</n-alert>
+      <n-form-item>
+        <n-space>
+          <n-button type="primary" :loading="isLoading" @click="submit">
+            登录
+          </n-button>
+          <n-button @click="goSignup">没有账号，立即注册</n-button>
+        </n-space>
+      </n-form-item>
+    </n-form>
+  </n-modal>
 </template>
 
 <style scoped></style>

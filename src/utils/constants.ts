@@ -1,3 +1,5 @@
+import { SUBMISSION_RESULT } from "./types"
+
 export enum SubmissionStatus {
   compile_error = -2,
   wrong_answer = -1,
@@ -12,66 +14,59 @@ export enum SubmissionStatus {
   submitting = 9,
 }
 
-export const JUDGE_STATUS = {
+export const JUDGE_STATUS: {
+  [key in SUBMISSION_RESULT]: {
+    name: string
+    type: "error" | "success" | "warning" | "info"
+  }
+} = {
   "-2": {
     name: "编译失败",
-    type: "danger",
-    alertType: "error",
+    type: "warning",
   },
   "-1": {
     name: "答案错误",
-    type: "danger",
-    alertType: "error",
+    type: "error",
   },
   "0": {
     name: "答案正确",
     type: "success",
-    alertType: "success",
   },
   "1": {
     name: "运行超时",
-    type: "danger",
-    alertType: "error",
+    type: "error",
   },
   "2": {
     name: "运行超时",
-    type: "danger",
-    alertType: "error",
+    type: "error",
   },
   "3": {
     name: "内存超限",
-    type: "danger",
-    alertType: "error",
+    type: "error",
   },
   "4": {
     name: "运行时错误",
-    type: "danger",
-    alertType: "error",
+    type: "warning",
   },
   "5": {
     name: "系统错误",
-    type: "danger",
-    alertType: "error",
+    type: "error",
   },
   "6": {
     name: "等待评分",
     type: "warning",
-    alertType: "warning",
   },
   "7": {
     name: "正在评分",
     type: "warning",
-    alertType: "warning",
   },
   "8": {
     name: "部分正确",
     type: "warning",
-    alertType: "warning",
   },
   "9": {
     name: "正在提交",
     type: "info",
-    alertType: "info",
   },
 }
 

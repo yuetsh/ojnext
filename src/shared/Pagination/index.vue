@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { isDesktop } from "~/shared/composables/breakpoints"
+
 interface Props {
   total: number
   limit: number
@@ -21,16 +22,15 @@ watch(page, () => emit("update:page", page))
 </script>
 
 <template>
-  <el-pagination
+  <n-pagination
     v-if="props.total"
     class="right margin"
-    :layout="isDesktop ? 'prev,pager,next,sizes' : 'prev,next,sizes'"
-    background
-    :total="props.total"
-    :page-sizes="[10, 20, 30]"
-    :pager-count="5"
+    :item-count="props.total"
+    v-model:page="page"
     v-model:page-size="limit"
-    v-model:current-page="page"
+    :page-sizes="[10, 20, 30]"
+    :page-slot="isDesktop ? 7 : 5"
+    show-size-picker
   />
 </template>
 <style scoped>

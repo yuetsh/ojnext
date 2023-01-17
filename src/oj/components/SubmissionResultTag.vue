@@ -9,9 +9,9 @@ defineProps<Props>()
 </script>
 
 <template>
-  <el-tag :type="JUDGE_STATUS[result]['type']" disable-transitions>
+  <n-tag :type="JUDGE_STATUS[result]['type']">
     {{ JUDGE_STATUS[result]["name"] }}
-  </el-tag>
+  </n-tag>
 </template>
 
 <style scoped></style>
