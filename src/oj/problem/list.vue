@@ -5,6 +5,26 @@ import { isDesktop } from "~/shared/composables/breakpoints"
 import { getProblemList, getProblemTagList, getRandomProblemID } from "oj/api"
 
 import Pagination from "~/shared/Pagination/index.vue"
+import { DataTableColumn, NIcon, NSpace, NTag, useThemeVars } from "naive-ui"
+import { Select, SemiSelect } from "@element-plus/icons-vue"
+
+interface Query {
+  keyword: string
+  difficulty: string
+  tag: string
+  page: number
+  limit: number
+}
+
+interface ProblemFiltered {
+  _id: string
+  title: string
+  difficulty: "简单" | "中等" | "困难"
+  tags: string[]
+  submission: number
+  rate: string
+  status: "not_test" | "passed" | "failed"
+}
 
 const difficultyOptions = [
   { label: "全部", value: "" },
@@ -15,24 +35,30 @@ const difficultyOptions = [
 
 const router = useRouter()
 const route = useRoute()
+const theme = useThemeVars()
 const userStore = useUserStore()
-const problems = ref([])
+const problems = ref<ProblemFiltered[]>([])
 const total = ref(0)
 
-const { data: tags } = getProblemTagList()
+const { data } = getProblemTagList()
 
-const query = reactive({
-  keyword: route.query.keyword ?? "",
-  difficulty: route.query.difficulty ?? "",
-  tag: route.query.tag ?? "",
+const tagOptions = computed(() => [
+  { label: "全部", value: "" },
+  ...(data.value?.map((t) => ({ label: t.name, value: t.name })) || []),
+])
+
+const query = reactive<Query>({
+  keyword: <string>route.query.keyword ?? "",
+  difficulty: <string>route.query.difficulty ?? "",
+  tag: <string>route.query.tag ?? "",
   page: parseInt(<string>route.query.page) || 1,
   limit: parseInt(<string>route.query.limit) || 10,
 })
 
 async function listProblems() {
-  query.keyword = route.query.keyword ?? ""
-  query.difficulty = route.query.difficulty ?? ""
-  query.tag = route.query.tag ?? ""
+  query.keyword = <string>route.query.keyword ?? ""
+  query.difficulty = <string>route.query.difficulty ?? ""
+  query.tag = <string>route.query.tag ?? ""
   query.page = parseInt(<string>route.query.page) || 1
   query.limit = parseInt(<string>route.query.limit) || 10
 
@@ -54,17 +80,14 @@ function routerPush() {
   })
 }
 
-function search() {
-  query.page = 1
-  routerPush()
+function search(value: string) {
+  query.keyword = value
 }
 
 function clear() {
   query.keyword = ""
   query.tag = ""
   query.difficulty = ""
-  query.page = 1
-  routerPush()
 }
 
 async function getRandom() {
@@ -72,14 +95,10 @@ async function getRandom() {
   router.push("/problem/" + res.data)
 }
 
-function goProblem(row: any) {
-  router.push("/problem/" + row._id)
-}
-
 watch(() => query.page, routerPush)
 
 watch(
-  () => [query.tag, query.difficulty, query.limit],
+  () => [query.tag, query.difficulty, query.limit, query.keyword],
   () => {
     query.page = 1
     routerPush()
@@ -97,90 +116,86 @@ watch(
 watch(() => userStore.isFinished && userStore.isAuthed, listProblems)
 
 onMounted(listProblems)
+
+const columns: DataTableColumn<ProblemFiltered>[] = [
+  {
+    title: "状态",
+    key: "status",
+    width: 80,
+    render: (row) => {
+      if (row.status === "passed") {
+        return h(NIcon, { color: theme.value.successColor }, () => h(Select))
+      } else if (row.status === "failed") {
+        return h(NIcon, { color: theme.value.errorColor }, () => h(SemiSelect))
+      } else {
+        return null
+      }
+    },
+  },
+  { title: "编号", key: "_id", width: 100 },
+  { title: "标题", key: "title", minWidth: 200 },
+  {
+    title: "难度",
+    key: "difficulty",
+    width: 100,
+    render: (row) =>
+      h(NTag, { type: getTagColor(row.difficulty) }, () => row.difficulty),
+  },
+  {
+    title: "标签",
+    key: "tags",
+    width: 260,
+    render: (row) =>
+      h(NSpace, () => row.tags.map((t) => h(NTag, { key: t }, () => t))),
+  },
+  { title: "提交数", key: "submission", width: 100 },
+  { title: "通过率", key: "rate", width: 100 },
+]
+
+function rowProps(row: ProblemFiltered) {
+  return {
+    style: "cursor: pointer",
+    onClick() {
+      router.push("/problem/" + row._id)
+    },
+  }
+}
 </script>
 
 <template>
-  <el-form inline>
-    <el-form-item label="难度">
-      <el-select v-model="query.difficulty">
-        <el-option
-          v-for="item in difficultyOptions"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value"
-        >
-        </el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item label="标签">
-      <el-select v-model="query.tag" clearable>
-        <el-option
-          v-for="item in tags"
-          :key="item.id"
-          :label="item.name"
-          :value="item.name"
-        >
-        </el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item label="搜索">
-      <el-input
-        v-model="query.keyword"
-        placeholder="输入编号或标题后回车"
-        clearable
-        @change="search"
+  <n-form :inline="isDesktop" label-placement="left">
+    <n-form-item label="难度">
+      <n-select
+        class="select"
+        v-model:value="query.difficulty"
+        :options="difficultyOptions"
       />
-    </el-form-item>
-    <el-form-item>
-      <el-button type="" @click="clear">重置</el-button>
-      <el-button type="" @click="getRandom">随机一题</el-button>
-    </el-form-item>
-  </el-form>
-  <el-table class="pointer" :data="problems" stripe @row-click="goProblem">
-    <el-table-column v-if="isDesktop" label="状态" :width="80">
-      <template #default="scope">
-        <el-icon
-          v-if="scope.row.status === 'passed'"
-          color="var(--el-color-success)"
-          ><i-ep-select
-        /></el-icon>
-        <el-icon
-          v-if="scope.row.status === 'failed'"
-          color="var(--el-color-error)"
-          ><i-ep-semi-select
-        /></el-icon>
-      </template>
-    </el-table-column>
-    <el-table-column prop="_id" label="编号" :width="isDesktop ? 100 : 60" />
-    <el-table-column prop="title" label="标题" />
-    <el-table-column label="难度" width="100">
-      <template #default="scope">
-        <el-tag disable-transitions :type="getTagColor(scope.row.difficulty)">
-          {{ scope.row.difficulty }}
-        </el-tag>
-      </template>
-    </el-table-column>
-    <el-table-column v-if="isDesktop" label="标签" :width="200">
-      <template #default="scope">
-        <el-space>
-          <el-tag
-            disable-transitions
-            v-for="tag in scope.row.tags"
-            :key="tag"
-            type="info"
-            >{{ tag }}</el-tag
-          >
-        </el-space>
-      </template>
-    </el-table-column>
-    <el-table-column
-      v-if="isDesktop"
-      prop="submission"
-      label="提交数"
-      width="100"
-    />
-    <el-table-column v-if="isDesktop" prop="rate" label="通过率" width="100" />
-  </el-table>
+    </n-form-item>
+    <n-form-item label="标签">
+      <n-select
+        class="select"
+        v-model:value="query.tag"
+        :options="tagOptions"
+        clearable
+      />
+    </n-form-item>
+    <n-form-item label="搜索">
+      <n-input placeholder="输入编号或标题后回车" clearable @change="search" />
+    </n-form-item>
+    <n-form-item>
+      <n-space>
+        <n-button @click="clear">重置</n-button>
+        <n-button @click="getRandom">随机一题</n-button>
+      </n-space>
+    </n-form-item>
+  </n-form>
+  <n-data-table
+    striped
+    size="small"
+    :data="problems"
+    :columns="columns"
+    :row-props="rowProps"
+  />
   <Pagination
     :total="total"
     v-model:limit="query.limit"
@@ -189,7 +204,7 @@ onMounted(listProblems)
 </template>
 
 <style scoped>
-.pointer {
-  cursor: pointer;
+.select {
+  width: 120px;
 }
 </style>

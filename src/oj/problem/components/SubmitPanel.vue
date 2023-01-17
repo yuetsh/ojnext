@@ -5,12 +5,11 @@ import { SOURCES, JUDGE_STATUS, SubmissionStatus } from "utils/constants"
 import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
 import { Problem, Submission, SubmitCodePayload } from "utils/types"
 import { getSubmission, submitCode } from "oj/api"
-import { useCodeStore } from "oj/store/code"
+import { code } from "oj/composables/code"
 
 import SubmissionResultTag from "../../components/SubmissionResultTag.vue"
 
 const problem = inject<Ref<Problem>>("problem")
-const { code } = useCodeStore()
 
 const route = useRoute()
 const contestID = <string>route.params.contestID ?? ""

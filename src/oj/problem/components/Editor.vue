@@ -3,7 +3,7 @@ import { TabsPaneContext } from "element-plus"
 import { SOURCES } from "utils/constants"
 import { Problem } from "utils/types"
 import Monaco from "~/shared/Monaco/index.vue"
-import { useCodeStore } from "oj/store/code"
+import { code } from "oj/composables/code"
 
 const SubmitPanel = defineAsyncComponent(() => import("./SubmitPanel.vue"))
 const TestcasePanel = defineAsyncComponent(() => import("./TestcasePanel.vue"))
@@ -13,8 +13,6 @@ interface Props {
 }
 
 const props = defineProps<Props>()
-
-const { code } = useCodeStore()
 
 code.language = props.problem.languages[0] || "C"
 code.value = props.problem.template[code.language] || SOURCES[code.language]

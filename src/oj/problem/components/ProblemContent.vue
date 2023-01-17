@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Flag, CloseBold, Select, CopyDocument } from "@element-plus/icons-vue"
 import copy from "copy-text-to-clipboard"
-import { useCodeStore } from "oj/store/code"
+import { code } from "oj/composables/code"
 import { SOURCES } from "utils/constants"
 import { Problem, ProblemStatus } from "utils/types"
 import { createTestSubmission } from "utils/judge"
@@ -33,7 +33,6 @@ const samples = ref<Sample[]>(
     loading: false,
   }))
 )
-const { code } = useCodeStore()
 
 const disabled = computed(
   () =>

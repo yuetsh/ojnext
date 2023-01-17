@@ -22,14 +22,16 @@ export function buildProblemCodeKey(problemID: string, contestID = "") {
   return `${STORAGE_KEY.PROBLEM_CODE}_NaN_${problemID}`
 }
 
-export function getTagColor(tag: "Low" | "Mid" | "High") {
-  return {
+export function getTagColor(
+  tag: "Low" | "Mid" | "High" | "简单" | "中等" | "困难"
+) {
+  return <"success" | "info" | "error">{
     Low: "success",
-    Mid: "",
-    High: "danger",
+    Mid: "info",
+    High: "error",
     简单: "success",
-    中等: "",
-    困难: "danger",
+    中等: "info",
+    困难: "error",
   }[tag]
 }
 

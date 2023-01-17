@@ -1,10 +1,9 @@
 <script setup lang="ts">
 import { createTestSubmission } from "utils/judge"
-import { useCodeStore } from "oj/store/code"
+import { code } from "oj/composables/code"
 
 const input = ref("")
 const result = ref("")
-const { code } = useCodeStore()
 
 async function submit() {
   const res = await createTestSubmission(code, input.value)
