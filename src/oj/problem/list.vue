@@ -4,7 +4,7 @@ import { filterEmptyValue, getTagColor } from "utils/functions"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { getProblemList, getProblemTagList, getRandomProblemID } from "oj/api"
 
-import Pagination from "~/shared/Pagination/index.vue"
+import Pagination from "~/shared/Pagination.vue"
 import { DataTableColumn, NIcon, NSpace, NTag, useThemeVars } from "naive-ui"
 import { Select, SemiSelect } from "@element-plus/icons-vue"
 

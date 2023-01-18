@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { c, DataTableColumn, SelectOption } from "naive-ui"
+import { DataTableColumn, SelectOption } from "naive-ui"
 import { NButton } from "naive-ui"
-import Pagination from "~/shared/Pagination/index.vue"
 import SubmissionResultTag from "oj/components/SubmissionResultTag.vue"
+import Pagination from "~/shared/Pagination.vue"
 import {
   submissionMemoryFormat,
   submissionTimeFormat,
@@ -38,14 +38,10 @@ const query = reactive<Query>({
 
 const options: SelectOption[] = [
   { label: "全部", value: "" },
-  { label: "编译失败", value: "-2" },
-  { label: "答案错误", value: "-1" },
   { label: "答案正确", value: "0" },
-  { label: "运行超时", value: "1" },
-  { label: "内存超限", value: "3" },
+  { label: "答案错误", value: "-1" },
+  { label: "编译失败", value: "-2" },
   { label: "运行时错误", value: "4" },
-  { label: "系统错误", value: "5" },
-  { label: "部分正确", value: "8" },
 ]
 
 async function listSubmissions() {
@@ -133,7 +129,15 @@ const columns: DataTableColumn<Submission>[] = [
     key: "problem",
     width: 100,
     render: (row) =>
-      h(NButton, { text: true, type: "info" }, () => row.problem),
+      h(
+        NButton,
+        {
+          text: true,
+          type: "info",
+          onClick: () => router.push("/problem/" + row.problem),
+        },
+        () => row.problem
+      ),
   },
   {
     title: "执行耗时",

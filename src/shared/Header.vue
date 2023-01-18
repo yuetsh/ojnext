@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Sunny, Moon } from "@element-plus/icons-vue"
-import { logout } from "../api"
-import { useUserStore } from "../store/user"
+import { logout } from "./api"
+import { useUserStore } from "./store/user"
 import { isDark, toggleDark } from "~/shared/composables/dark"
 import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
 import type {

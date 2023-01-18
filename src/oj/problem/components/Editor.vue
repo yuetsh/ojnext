@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { SOURCES } from "utils/constants"
 import { Problem } from "utils/types"
-import Monaco from "~/shared/Monaco/index.vue"
+import Monaco from "~/shared/Monaco.vue"
 import { code } from "oj/composables/code"
 
 interface Props {

@@ -3,7 +3,7 @@ import type * as Monaco from "monaco-editor"
 import { LANGUAGE_VALUE } from "utils/constants"
 import { LANGUAGE } from "utils/types"
 import { isMobile } from "~/shared/composables/breakpoints"
-import { isDark } from "../composables/dark"
+import { isDark } from "./composables/dark"
 
 interface Props {
   value: string

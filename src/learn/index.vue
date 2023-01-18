@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import Loading from "./components/Loading.vue"
-import Monaco from "../shared/monaco/index.vue"
+import Monaco from "../shared/Monaco.vue"
 
 const route = useRoute()
 const step = route.hash.replace("#step-", "") || "1"

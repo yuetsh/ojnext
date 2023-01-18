@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormRules } from "naive-ui"
-import { signupModal, toggleLogin, toggleSignup } from "../composables/modal"
+import { signupModal, toggleLogin, toggleSignup } from "./composables/modal"
 
 const form = reactive({
   username: "",

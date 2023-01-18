@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Flag, CloseBold, Select, CopyDocument } from "@element-plus/icons-vue"
-import copy from "copy-text-to-clipboard"
+import { Flag, CloseBold, Select } from "@element-plus/icons-vue"
+import Copy from "~/shared/Copy.vue"
 import { code } from "oj/composables/code"
 import { SOURCES } from "utils/constants"
 import { Problem, ProblemStatus } from "utils/types"
@@ -131,7 +131,7 @@ const type = (status: ProblemStatus) =>
         <template #label>
           <n-space>
             <span>输入</span>
-            <n-icon @click="copy(sample.input)"><CopyDocument /></n-icon>
+            <Copy :value="sample.input" />
           </n-space>
         </template>
         <div class="testcase">{{ sample.input }}</div>
@@ -140,7 +140,7 @@ const type = (status: ProblemStatus) =>
         <template #label>
           <n-space>
             <span>输出</span>
-            <n-icon @click="copy(sample.output)"><CopyDocument /></n-icon>
+            <Copy :value="sample.output" />
           </n-space>
         </template>
         <div class="testcase">{{ sample.output }}</div>

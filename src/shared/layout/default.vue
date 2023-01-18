@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import Login from "../Login/index.vue"
-import Signup from "../Signup/index.vue"
-import Header from "../Header/index.vue"
+import Login from "../Login.vue"
+import Signup from "../Signup.vue"
+import Header from "../Header.vue"
 </script>
 
 <template>
-  <n-layout>
+  <n-layout position="absolute" :native-scrollbar="false">
     <n-layout-header bordered class="header">
       <Header />
     </n-layout-header>
