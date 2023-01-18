@@ -1,0 +1,254 @@
+<script setup lang="ts">
+import { createTestSubmission } from "utils/judge"
+import { code } from "oj/composables/code"
+import party from "party-js"
+import { Ref } from "vue"
+import { SOURCES, JUDGE_STATUS, SubmissionStatus } from "utils/constants"
+import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
+import { Problem, Submission, SubmitCodePayload } from "utils/types"
+import { getSubmission, submitCode } from "oj/api"
+import SubmissionResultTag from "../../components/SubmissionResultTag.vue"
+import { DataTableColumn } from "naive-ui"
+
+const problem = inject<Ref<Problem>>("problem")
+
+const route = useRoute()
+const contestID = <string>route.params.contestID ?? ""
+
+const submissionId = ref("")
+const submission = ref<Submission | null>(null)
+const input = ref("")
+const result = ref("")
+const [submitted] = useToggle()
+
+const { start: submitPending, isPending } = useTimeout(5000, {
+  controls: true,
+  immediate: false,
+})
+
+const { start: fetchSubmission } = useTimeoutFn(
+  async () => {
+    const res = await getSubmission(submissionId.value)
+    submission.value = res.data
+    const result = submission.value.result
+    if (
+      result === SubmissionStatus.judging ||
+      result === SubmissionStatus.pending
+    ) {
+      fetchSubmission()
+    } else {
+      submitted.value = false
+    }
+  },
+  2000,
+  { immediate: false }
+)
+
+const judging = computed(
+  () =>
+    !!(submission.value && submission.value.result === SubmissionStatus.judging)
+)
+
+const pending = computed(
+  () =>
+    !!(submission.value && submission.value.result === SubmissionStatus.pending)
+)
+
+const submitting = computed(
+  () =>
+    !!(
+      submission.value &&
+      submission.value.result === SubmissionStatus.submitting
+    )
+)
+
+const submitDisabled = computed(() => {
+  const value = code.value
+  if (
+    value.trim() === "" ||
+    value === problem!.value.template[code.language] ||
+    value === SOURCES[code.language]
+  ) {
+    return true
+  }
+  if (judging.value || pending.value || submitting.value) {
+    return true
+  }
+  if (submitted.value) {
+    return true
+  }
+  if (isPending.value) {
+    return true
+  }
+  return false
+})
+
+const submitLabel = computed(() => {
+  if (submitting.value) {
+    return "正在提交"
+  }
+  if (judging.value || pending.value) {
+    return "正在评分"
+  }
+  if (isPending.value) {
+    return "运行结果"
+  }
+  return "点击提交"
+})
+
+const msg = computed(() => {
+  let msg = ""
+  const result = submission.value && submission.value.result
+  if (
+    result === SubmissionStatus.compile_error ||
+    result === SubmissionStatus.runtime_error
+  ) {
+    msg += "请仔细检查，看看代码的格式是不是写错了！\n\n"
+  }
+  if (
+    submission.value &&
+    submission.value.statistic_info &&
+    submission.value.statistic_info.err_info
+  ) {
+    msg += submission.value.statistic_info.err_info
+  }
+  return msg
+})
+
+const infoTable = computed(() => {
+  if (
+    submission.value &&
+    submission.value.result !== SubmissionStatus.accepted &&
+    submission.value.result !== SubmissionStatus.compile_error &&
+    submission.value.result !== SubmissionStatus.runtime_error &&
+    submission.value.info &&
+    submission.value.info.data &&
+    submission.value.info.data.length
+  ) {
+    const data = submission.value.info.data
+    if (data.some((item) => item.result === 0)) {
+      return submission.value.info.data
+    } else {
+      return []
+    }
+  } else {
+    return []
+  }
+})
+
+const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
+  { title: "测试用例", key: "test_case" },
+  {
+    title: "测试状态",
+    key: "result",
+    render: (row) => h(SubmissionResultTag, { result: row.result }),
+  },
+  {
+    title: "占用内存",
+    key: "memory",
+    render: (row) => submissionMemoryFormat(row.memory),
+  },
+  {
+    title: "执行耗时",
+    key: "real_time",
+    render: (row) => submissionTimeFormat(row.real_time),
+  },
+  { title: "信号", key: "signal" },
+]
+
+async function submit() {
+  const data: SubmitCodePayload = {
+    problem_id: problem!.value.id,
+    language: code.language,
+    code: code.value,
+  }
+  if (contestID) {
+    data.contest_id = parseInt(contestID)
+  }
+  submission.value = { result: 9 } as Submission
+  const res = await submitCode(data)
+  submissionId.value = res.data.submission_id
+  // 防止重复提交
+  submitPending()
+  submitted.value = true
+  // 查询结果
+  fetchSubmission()
+}
+
+watch(
+  () => submission?.value?.result,
+  (result) => {
+    if (result === SubmissionStatus.accepted) {
+      party.confetti(document.body, {
+        count: party.variation.range(200, 400),
+        size: party.variation.skew(2, 0.3),
+      })
+    }
+  }
+)
+
+async function testcaseSubmit() {
+  const res = await createTestSubmission(code, input.value)
+  result.value = res.output
+}
+
+const tabProps = {
+  onClick() {
+    if (!submitDisabled.value) {
+      submit()
+    }
+  },
+}
+</script>
+
+<template>
+  <n-tabs default-value="testcase">
+    <n-tab-pane name="testcase" tab="测试面板">
+      <n-scrollbar style="height: 400px">
+        <n-form inline label-placement="left">
+          <n-form-item label="输入">
+            <n-input type="textarea" v-model:value="input" />
+          </n-form-item>
+          <n-form-item>
+            <n-button @click="testcaseSubmit">运行</n-button>
+          </n-form-item>
+        </n-form>
+        <div class="msg">{{ result }}</div>
+      </n-scrollbar>
+    </n-tab-pane>
+    <n-tab-pane name="submit" :disabled="submitDisabled" :tab-props="tabProps">
+      <template #tab>
+        <n-icon>
+          <i-ep-loading v-if="judging || pending || submitting" />
+          <i-ep-bell v-else-if="isPending" />
+          <i-ep-caret-right v-else />
+        </n-icon>
+        <span>{{ submitLabel }}</span>
+      </template>
+      <n-scrollbar style="height: 400px">
+        <n-alert
+          v-if="submission"
+          :type="JUDGE_STATUS[submission.result]['type']"
+          :title="JUDGE_STATUS[submission.result]['name']"
+        />
+        <div v-if="msg" class="msg result">{{ msg }}</div>
+        <n-data-table
+          v-if="infoTable.length"
+          size="small"
+          :data="infoTable"
+          :columns="columns"
+          striped
+        />
+      </n-scrollbar>
+    </n-tab-pane>
+  </n-tabs>
+</template>
+<style scoped>
+.msg {
+  white-space: pre;
+  line-height: 1.5;
+}
+.result {
+  margin-top: 12px;
+}
+</style>

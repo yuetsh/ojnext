@@ -184,6 +184,7 @@ function rowProps(row: ProblemFiltered) {
     </n-form-item>
     <n-form-item>
       <n-space>
+        <n-button @click="search(query.keyword)">搜索</n-button>
         <n-button @click="clear">重置</n-button>
         <n-button @click="getRandom">随机一题</n-button>
       </n-space>

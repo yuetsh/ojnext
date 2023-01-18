@@ -65,7 +65,7 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
 </script>
 
 <template>
-  <n-space justify="space-between" align="center">
+  <n-space align="center">
     <n-menu mode="horizontal" :options="menus" default-value="problem"></n-menu>
     <n-space>
       <n-button circle @click="toggleDark()">

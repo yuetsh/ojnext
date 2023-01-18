@@ -11,50 +11,42 @@ defineProps<Props>()
 </script>
 
 <template>
-  <el-descriptions border :column="isDesktop ? 3 : 1">
-    <el-descriptions-item label="编号">
+  <n-descriptions bordered label-placement="left" :column="isDesktop ? 3 : 1">
+    <n-descriptions-item label="编号">
       {{ problem._id }}
-    </el-descriptions-item>
-    <el-descriptions-item label="出题人">
+    </n-descriptions-item>
+    <n-descriptions-item label="出题人">
       {{ problem.created_by.username }}
-    </el-descriptions-item>
-    <el-descriptions-item label="创建时间">
+    </n-descriptions-item>
+    <n-descriptions-item label="创建时间">
       {{ parseTime(problem.create_time) }}
-    </el-descriptions-item>
-
-    <el-descriptions-item label="时间限制">
-      {{ problem.time_limit }}毫秒
-    </el-descriptions-item>
-    <el-descriptions-item label="内存限制">
-      {{ problem.memory_limit }}MB
-    </el-descriptions-item>
-    <el-descriptions-item label="难度">
-      <el-tag disable-transitions :type="getTagColor(problem.difficulty)">
+    </n-descriptions-item>
+    <n-descriptions-item label="难度">
+      <n-tag :type="getTagColor(problem.difficulty)">
         {{ DIFFICULTY[problem.difficulty] }}
-      </el-tag>
-    </el-descriptions-item>
-
-    <el-descriptions-item label="提交正确">
+      </n-tag>
+    </n-descriptions-item>
+    <n-descriptions-item label="时间限制">
+      {{ problem.time_limit }}毫秒
+    </n-descriptions-item>
+    <n-descriptions-item label="内存限制">
+      {{ problem.memory_limit }}MB
+    </n-descriptions-item>
+    <n-descriptions-item label="提交正确">
       {{ problem.accepted_number }}次
-    </el-descriptions-item>
-    <el-descriptions-item label="提交错误">
+    </n-descriptions-item>
+    <n-descriptions-item label="提交错误">
       {{ problem.submission_number - problem.accepted_number }}次
-    </el-descriptions-item>
-    <el-descriptions-item label="正确率">
+    </n-descriptions-item>
+    <n-descriptions-item label="正确率">
       {{ getACRate(problem.accepted_number, problem.submission_number) }}
-    </el-descriptions-item>
-
-    <el-descriptions-item :span="3" label="标签">
-      <el-space>
-        <el-tag
-          disable-transitions
-          type="info"
-          v-for="tag in problem.tags"
-          :key="tag"
-        >
+    </n-descriptions-item>
+    <n-descriptions-item :span="3" label="标签">
+      <n-space>
+        <n-tag type="info" v-for="tag in problem.tags" :key="tag">
           {{ tag }}
-        </el-tag>
-      </el-space>
-    </el-descriptions-item>
-  </el-descriptions>
+        </n-tag>
+      </n-space>
+    </n-descriptions-item>
+  </n-descriptions>
 </template>

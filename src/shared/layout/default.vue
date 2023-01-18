@@ -21,7 +21,6 @@ import Header from "../Header/index.vue"
 .header {
   padding: 8px;
 }
-
 .content {
   padding: 16px;
 }

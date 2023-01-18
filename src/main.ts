@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"
 import { createPinia } from "pinia"
-import "normalize.css"
 import loader from "@monaco-editor/loader"
 
 import storage from "utils/storage"

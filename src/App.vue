@@ -6,7 +6,12 @@ const theme = computed(() => (isDark.value ? darkTheme : null))
 </script>
 
 <template>
-  <n-config-provider :theme="theme" :locale="zhCN" :date-locale="dateZhCN">
+  <n-config-provider
+    inline-theme-disabled
+    :theme="theme"
+    :locale="zhCN"
+    :date-locale="dateZhCN"
+  >
     <router-view></router-view>
   </n-config-provider>
 </template>

@@ -6,6 +6,7 @@ import { SOURCES } from "utils/constants"
 import { Problem, ProblemStatus } from "utils/types"
 import { createTestSubmission } from "utils/judge"
 import { submissionExists } from "oj/api"
+import { useThemeVars } from "naive-ui"
 
 interface Props {
   problem: Problem
@@ -20,6 +21,8 @@ type Sample = Problem["samples"][number] & {
 const props = defineProps<Props>()
 const route = useRoute()
 const contestID = <string>route.params.contestID
+const theme = useThemeVars()
+const style = computed(() => "color: " + theme.value.primaryColor)
 const { data: hasSolved, execute } = submissionExists(props.problem.id)
 if (contestID) {
   execute()
@@ -68,86 +71,88 @@ async function test(sample: Sample, index: number) {
   })
 }
 
-const icon = (status: Sample["status"]) =>
+const icon = (status: ProblemStatus) =>
   ({
     not_test: Flag,
     failed: CloseBold,
     passed: Select,
   }[status])
-const type = (status: Sample["status"]) =>
+const type = (status: ProblemStatus) =>
   ({
     not_test: "warning",
-    failed: "danger",
+    failed: "error",
     passed: "success",
-  }[status])
+  }[status] as "warning" | "error" | "success")
 </script>
 
 <template>
-  <el-alert
+  <n-alert
     v-if="problem.my_status === 0 || (contestID && hasSolved)"
     type="success"
-    :closable="false"
-    center
     title="🎉 本 题 已 经 被 你 解 决 啦"
-  >
-  </el-alert>
+  />
 
   <h1>{{ problem.title }}</h1>
-  <p class="title">描述</p>
+  <p class="title" :style="style">描述</p>
   <div class="content" v-html="problem.description"></div>
 
-  <p class="title">输入</p>
+  <p class="title" :style="style">输入</p>
   <div class="content" v-html="problem.input_description"></div>
 
-  <p class="title">输出</p>
+  <p class="title" :style="style">输出</p>
   <div class="content" v-html="problem.output_description"></div>
 
   <div v-if="problem.hint">
-    <p class="title">提示</p>
-    <el-card shadow="never">
-      <div class="content" v-html="problem.hint"></div>
-    </el-card>
+    <p class="title" :style="style">提示</p>
+    <div class="content" v-html="problem.hint"></div>
   </div>
 
   <div v-for="(sample, index) of samples" :key="index">
-    <el-space>
-      <p class="title testcaseTitle">测试用例 {{ index + 1 }}</p>
-      <el-button
-        :icon="icon(sample.status)"
+    <n-space align="center">
+      <p class="title testcaseTitle" :style="style">测试用例 {{ index + 1 }}</p>
+      <n-button
         :type="type(sample.status)"
         :disabled="disabled"
         :loading="sample.loading"
         circle
         @click="test(sample, index)"
-      ></el-button>
-    </el-space>
-    <el-descriptions border direction="vertical" :column="2">
-      <el-descriptions-item width="50%">
+      >
+        <template #icon>
+          <component :is="icon(sample.status)"></component>
+        </template>
+      </n-button>
+    </n-space>
+    <n-descriptions
+      bordered
+      :column="2"
+      label-style="width: 50%; min-width: 100px"
+    >
+      <n-descriptions-item>
         <template #label>
-          <el-space>
+          <n-space>
             <span>输入</span>
-            <el-icon @click="copy(sample.input)"><CopyDocument /> </el-icon>
-          </el-space>
+            <n-icon @click="copy(sample.input)"><CopyDocument /></n-icon>
+          </n-space>
         </template>
         <div class="testcase">{{ sample.input }}</div>
-      </el-descriptions-item>
-      <el-descriptions-item width="50%">
+      </n-descriptions-item>
+      <n-descriptions-item>
         <template #label>
-          <el-space>
+          <n-space>
             <span>输出</span>
-            <el-icon @click="copy(sample.output)"><CopyDocument /> </el-icon>
-          </el-space>
+            <n-icon @click="copy(sample.output)"><CopyDocument /></n-icon>
+          </n-space>
         </template>
         <div class="testcase">{{ sample.output }}</div>
-      </el-descriptions-item>
-      <el-descriptions-item label="运行结果" v-if="sample.status === 'failed'">
+      </n-descriptions-item>
+      <n-descriptions-item label="运行结果" v-if="sample.status === 'failed'">
         <div class="testcase">{{ sample.msg }}</div>
-      </el-descriptions-item>
-    </el-descriptions>
+      </n-descriptions-item>
+    </n-descriptions>
   </div>
 
   <div v-if="problem.source">
-    <p class="title">来源</p>
+    <p class="title" :style="style">来源</p>
     <div class="content" v-html="problem.source"></div>
   </div>
 </template>
@@ -156,7 +161,6 @@ const type = (status: Sample["status"]) =>
 .title {
   font-size: 20px;
   margin: 24px 0 16px 0;
-  color: var(--el-color-primary);
 }
 
 .testcaseTitle {
@@ -164,15 +168,12 @@ const type = (status: Sample["status"]) =>
 }
 
 .content {
+  font-size: 16px;
   line-height: 2;
 }
 
-.label {
-  display: flex;
-  align-items: center;
-}
-
 .testcase {
+  font-size: 14px;
   white-space: pre;
 }
 </style>

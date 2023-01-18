@@ -1,12 +1,8 @@
 <script lang="ts" setup>
-import { TabsPaneContext } from "element-plus"
 import { SOURCES } from "utils/constants"
 import { Problem } from "utils/types"
 import Monaco from "~/shared/Monaco/index.vue"
 import { code } from "oj/composables/code"
-
-const SubmitPanel = defineAsyncComponent(() => import("./SubmitPanel.vue"))
-const TestcasePanel = defineAsyncComponent(() => import("./TestcasePanel.vue"))
 
 interface Props {
   problem: Problem
@@ -17,9 +13,6 @@ const props = defineProps<Props>()
 code.language = props.problem.languages[0] || "C"
 code.value = props.problem.template[code.language] || SOURCES[code.language]
 
-const tab = ref("test")
-const submitPanelRef = ref<{ submit: Function }>()
-
 watch(() => code.language, reset)
 
 function reset() {
@@ -29,54 +22,40 @@ function reset() {
 function change(value: string) {
   code.value = value
 }
-
-function onTab(pane: TabsPaneContext) {
-  if (pane.paneName === "submit") {
-    submitPanelRef && submitPanelRef.value!.submit()
-  }
-}
 </script>
 
 <template>
-  <el-form inline>
-    <el-form-item label="语言" label-width="60">
-      <el-select v-model="code.language" class="language">
-        <el-option v-for="item in problem.languages" :key="item" :value="item">
-          <img class="logo" :src="`/${item}.svg`" alt="logo" />&nbsp;&nbsp;
-          <span>{{ item }}</span>
-        </el-option>
-      </el-select>
-    </el-form-item>
-    <el-form-item>
-      <el-button @click="reset">重置</el-button>
-      <el-button @click="$router.push(`/status?problem=${problem._id}`)">
-        提交信息
-      </el-button>
-    </el-form-item>
-  </el-form>
+  <n-form inline label-placement="left">
+    <n-form-item label="语言">
+      <n-select
+        class="language"
+        v-model:value="code.language"
+        :options="problem.languages.map((it) => ({ label: it, value: it }))"
+      />
+    </n-form-item>
+    <n-form-item>
+      <n-space>
+        <n-button @click="reset">重置</n-button>
+        <n-button @click="$router.push(`/status?problem=${problem._id}`)">
+          提交信息
+        </n-button>
+      </n-space>
+    </n-form-item>
+  </n-form>
   <Monaco
     class="editor"
     :language="code.language"
     :value="code.value"
     @change="change"
-    height="calc(100vh - 621px)"
+    height="calc(100vh - 594px)"
   />
-  <el-tabs type="border-card" @tab-click="onTab" v-model="tab">
-    <TestcasePanel />
-    <SubmitPanel ref="submitPanelRef" />
-  </el-tabs>
 </template>
 
 <style scoped>
 .language {
-  width: 110px;
+  width: 120px;
 }
-
 .editor {
   min-height: 200px;
-}
-
-.logo {
-  width: 12px;
 }
 </style>

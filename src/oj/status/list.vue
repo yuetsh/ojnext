@@ -173,7 +173,10 @@ const columns: DataTableColumn<Submission>[] = [
       <n-input @change="search" clearable placeholder="输入后回车" />
     </n-form-item>
     <n-form-item>
-      <n-button @click="clear">重置</n-button>
+      <n-space>
+        <n-button @click="search(query.username)">搜索</n-button>
+        <n-button @click="clear">重置</n-button>
+      </n-space>
     </n-form-item>
   </n-form>
   <n-data-table striped size="small" :columns="columns" :data="submissions" />

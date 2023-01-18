@@ -15,7 +15,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   language: "C",
-  height: "calc(100vh - 100px)",
+  height: "100%",
   fontSize: 20,
   class: "",
 })

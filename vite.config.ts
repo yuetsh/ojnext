@@ -3,10 +3,7 @@ import path from "path"
 import Vue from "@vitejs/plugin-vue"
 import AutoImport from "unplugin-auto-import/vite"
 import Components from "unplugin-vue-components/vite"
-import {
-  ElementPlusResolver,
-  NaiveUiResolver,
-} from "unplugin-vue-components/resolvers"
+import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
 import IconsResolver from "unplugin-icons/resolver"
 import Icons from "unplugin-icons/vite"
 import Markdown from "vite-plugin-vue-markdown"
@@ -50,7 +47,6 @@ export default defineConfig({
     Components({
       resolvers: [
         NaiveUiResolver(),
-        ElementPlusResolver(),
         IconsResolver({ enabledCollections: ["ep"] }),
       ],
       dts: "./src/components.d.ts",

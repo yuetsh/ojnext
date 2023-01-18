@@ -18,14 +18,14 @@ function change(value: string) {
 </script>
 
 <template>
-  <el-row>
-    <el-col :span="12">
+  <n-grid :cols="2">
+    <n-gi>
       <Md />
-    </el-col>
-    <el-col :span="12">
+    </n-gi>
+    <n-gi>
       <Monaco :value="code" @change="change" />
-    </el-col>
-  </el-row>
+    </n-gi>
+  </n-grid>
 </template>
 
 <style scoped></style>
