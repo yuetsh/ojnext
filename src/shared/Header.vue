@@ -45,7 +45,8 @@ const menus: MenuOption[] = [
     key: "contest",
   },
   {
-    label: () => h(RouterLink, { to: "/status" }, { default: () => "提交" }),
+    label: () =>
+      h(RouterLink, { to: "/submission" }, { default: () => "提交" }),
     key: "status",
   },
   {

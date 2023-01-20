@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { DataTableColumn, SelectOption } from "naive-ui"
 import { NButton } from "naive-ui"
-import SubmissionResultTag from "oj/components/SubmissionResultTag.vue"
+import SubmissionResultTag from "~/shared/SubmissionResultTag.vue"
 import Pagination from "~/shared/Pagination.vue"
 import {
   submissionMemoryFormat,
@@ -23,8 +23,6 @@ interface Query {
 
 const route = useRoute()
 const router = useRouter()
-const problemID = <string>route.query.problem ?? ""
-const contestID = <string>route.query.contest ?? ""
 
 const submissions = ref([])
 const total = ref(0)
@@ -57,8 +55,8 @@ async function listSubmissions() {
     ...query,
     myself: query.myself ? "1" : "0",
     offset,
-    problem_id: problemID,
-    contest_id: contestID,
+    problem_id: <string>route.query.problem ?? "",
+    contest_id: <string>route.params.contestID ?? "",
   })
   submissions.value = res.data.results
   total.value = res.data.total
@@ -98,7 +96,7 @@ watch(
 )
 
 watch(
-  () => route.path === "/status" && route.query,
+  () => route.path === "/submission" && route.query,
   (newVal) => {
     if (newVal) listSubmissions()
   }
@@ -116,7 +114,15 @@ const columns: DataTableColumn<Submission>[] = [
     title: "编号",
     key: "id",
     render: (row) =>
-      h(NButton, { text: true, type: "info" }, () => row.id.slice(0, 12)),
+      h(
+        NButton,
+        {
+          text: true,
+          type: "info",
+          onClick: () => router.push("/submission/" + row.id),
+        },
+        () => row.id.slice(0, 12)
+      ),
   },
   {
     title: "状态",

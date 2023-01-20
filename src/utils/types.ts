@@ -90,7 +90,7 @@ export interface Submission {
   code: string
   result: SUBMISSION_RESULT
   info: Info
-  language: string
+  language: LANGUAGE
   shared: boolean
   statistic_info: {
     score?: number

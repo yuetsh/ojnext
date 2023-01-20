@@ -36,7 +36,7 @@ function change(value: string) {
     <n-form-item>
       <n-space>
         <n-button @click="reset">重置</n-button>
-        <n-button @click="$router.push(`/status?problem=${problem._id}`)">
+        <n-button @click="$router.push(`/submission?problem=${problem._id}`)">
           提交信息
         </n-button>
       </n-space>

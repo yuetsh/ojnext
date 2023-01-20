@@ -4,6 +4,7 @@ import { LANGUAGE_VALUE } from "utils/constants"
 import { LANGUAGE } from "utils/types"
 import { isMobile } from "~/shared/composables/breakpoints"
 import { isDark } from "./composables/dark"
+import { monaco } from "./composables/monaco"
 
 interface Props {
   value: string
@@ -15,7 +16,7 @@ interface Props {
 
 const props = withDefaults(defineProps<Props>(), {
   language: "C",
-  height: "100%",
+  height: "calc(100vh - 92px)",
   fontSize: 20,
   class: "",
 })
@@ -26,14 +27,16 @@ const emit = defineEmits<{
 
 const monacoEditorRef = ref()
 let editor: Monaco.editor.IStandaloneCodeEditor
+let model: Monaco.editor.ITextModel
 
-onMounted(function () {
-  const model = window.monaco.editor.createModel(
+onMounted(() => {
+  if (!monaco.value) return
+  model = monaco.value!.editor.createModel(
     props.value,
     LANGUAGE_VALUE[props.language]
   )
 
-  editor = window.monaco.editor.create(monacoEditorRef.value, {
+  editor = monaco.value!.editor.create(monacoEditorRef.value, {
     model,
     theme: isDark.value ? "dark" : "light", // 官方自带三种主题vs, hc-black, or vs-dark
     minimap: {
@@ -70,7 +73,8 @@ onMounted(function () {
   })
 
   watchEffect(() => {
-    window.monaco.editor.setModelLanguage(model, LANGUAGE_VALUE[props.language])
+    if (!monaco.value) return
+    monaco.value.editor.setModelLanguage(model, LANGUAGE_VALUE[props.language])
   })
 
   watchEffect(() => {
@@ -80,16 +84,17 @@ onMounted(function () {
   })
 
   watchEffect(() => {
-    window.monaco.editor.setTheme(isDark.value ? "dark" : "light")
+    if (!monaco.value) return
+    monaco.value.editor.setTheme(isDark.value ? "dark" : "light")
   })
 })
-
 onUnmounted(() => {
   editor && editor.dispose()
 })
 </script>
 <template>
   <div
+    v-if="monaco"
     ref="monacoEditorRef"
     :class="props.class"
     :style="{ height: props.height }"

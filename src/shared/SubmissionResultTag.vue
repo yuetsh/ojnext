@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { JUDGE_STATUS } from "../../utils/constants"
-import { SUBMISSION_RESULT } from "../../utils/types"
+import { JUDGE_STATUS } from "utils/constants"
+import { SUBMISSION_RESULT } from "utils/types"
 
 interface Props {
   result: SUBMISSION_RESULT

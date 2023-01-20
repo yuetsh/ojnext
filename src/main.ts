@@ -1,6 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router"
 import { createPinia } from "pinia"
-import loader from "@monaco-editor/loader"
 
 import storage from "utils/storage"
 import { STORAGE_KEY } from "utils/constants"
@@ -9,6 +8,7 @@ import { routes } from "./routes"
 import App from "./App.vue"
 
 import { toggleLogin } from "./shared/composables/modal"
+import { init } from "./shared/composables/monaco"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -27,24 +27,8 @@ router.beforeEach((to, from, next) => {
     next()
   }
 })
-
+init()
 const pinia = createPinia()
-
-loader.init().then((monaco) => {
-  window.monaco = monaco
-  fetch("/dark.json").then((data) =>
-    data.json().then((theme) => monaco.editor.defineTheme("dark", theme))
-  )
-  fetch("/light.json").then((data) =>
-    data.json().then((theme) => monaco.editor.defineTheme("light", theme))
-  )
-})
-
-loader.config({
-  paths: { vs: "https://cdn.staticfile.org/monaco-editor/0.34.1/min/vs" },
-  "vs/nls": { availableLanguages: { "*": "zh-cn" } },
-})
-
 const app = createApp(App)
 app.use(router)
 app.use(pinia)

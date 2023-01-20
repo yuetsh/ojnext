@@ -11,13 +11,13 @@ export const routes = [
         name: "ProblemDetail",
       },
       {
-        path: "status",
-        component: () => import("oj/status/list.vue"),
+        path: "submission",
+        component: () => import("oj/submission/list.vue"),
         meta: { requiresAuth: true },
       },
       {
-        path: "status/:statusID",
-        component: () => import("oj/status/detail.vue"),
+        path: "submission/:submissionID",
+        component: () => import("oj/submission/detail.vue"),
         props: true,
       },
       {
