@@ -10,8 +10,9 @@ import {
   filterEmptyValue,
 } from "utils/functions"
 import { Submission } from "utils/types"
-import { getSubmissions } from "oj/api"
+import { adminRejudge, getSubmissions } from "oj/api"
 import { isDesktop } from "~/shared/composables/breakpoints"
+import { useUserStore } from "~/shared/store/user"
 
 interface Query {
   username: string
@@ -23,6 +24,8 @@ interface Query {
 
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
+const notification = useNotification()
 
 const submissions = ref([])
 const total = ref(0)
@@ -85,6 +88,12 @@ function clear() {
   query.result = ""
 }
 
+async function rejudge(submissionID: string) {
+  await adminRejudge(submissionID)
+  notification.success({ title: "重新判分成功", duration: 2000 })
+  listSubmissions()
+}
+
 watch(() => query.page, routerPush)
 
 watch(
@@ -102,70 +111,88 @@ watch(
   }
 )
 
-const columns: DataTableColumn<Submission>[] = [
-  {
-    title: "提交时间",
-    key: "create_time",
-    width: 180,
-    render: (row) =>
-      parseTime(row.create_time, isDesktop ? "YYYY-M-D hh:mm:ss" : "M-D hh:mm"),
-  },
-  {
-    title: "编号",
-    key: "id",
-    render: (row) =>
-      h(
-        NButton,
-        {
-          text: true,
-          type: "info",
-          onClick: () => router.push("/submission/" + row.id),
-        },
-        () => row.id.slice(0, 12)
-      ),
-  },
-  {
-    title: "状态",
-    key: "status",
-    width: 120,
-    render: (row) => h(SubmissionResultTag, { result: row.result }),
-  },
-  {
-    title: "题目",
-    key: "problem",
-    width: 100,
-    render: (row) =>
-      h(
-        NButton,
-        {
-          text: true,
-          type: "info",
-          onClick: () => router.push("/problem/" + row.problem),
-        },
-        () => row.problem
-      ),
-  },
-  {
-    title: "执行耗时",
-    key: "time",
-    width: 100,
-    render: (row) => submissionTimeFormat(row.statistic_info.time_cost),
-  },
-  {
-    title: "占用内存",
-    key: "memory",
-    width: 100,
-    render: (row) => submissionMemoryFormat(row.statistic_info.memory_cost),
-  },
-  { title: "语言", key: "language", width: 100 },
-  {
-    title: "提交者",
-    key: "username",
-    minWidth: 120,
-    render: (row) =>
-      h(NButton, { text: true, type: "info" }, () => row.username),
-  },
-]
+const columns = computed(() => {
+  const res: DataTableColumn<Submission>[] = [
+    {
+      title: "提交时间",
+      key: "create_time",
+      width: 180,
+      render: (row) =>
+        parseTime(
+          row.create_time,
+          isDesktop ? "YYYY-M-D hh:mm:ss" : "M-D hh:mm"
+        ),
+    },
+    {
+      title: "编号",
+      key: "id",
+      render: (row) =>
+        h(
+          NButton,
+          {
+            text: true,
+            type: "info",
+            onClick: () => router.push("/submission/" + row.id),
+          },
+          () => row.id.slice(0, 12)
+        ),
+    },
+    {
+      title: "状态",
+      key: "status",
+      width: 120,
+      render: (row) => h(SubmissionResultTag, { result: row.result }),
+    },
+    {
+      title: "题目",
+      key: "problem",
+      width: 100,
+      render: (row) =>
+        h(
+          NButton,
+          {
+            text: true,
+            type: "info",
+            onClick: () => router.push("/problem/" + row.problem),
+          },
+          () => row.problem
+        ),
+    },
+    {
+      title: "执行耗时",
+      key: "time",
+      width: 100,
+      render: (row) => submissionTimeFormat(row.statistic_info.time_cost),
+    },
+    {
+      title: "占用内存",
+      key: "memory",
+      width: 100,
+      render: (row) => submissionMemoryFormat(row.statistic_info.memory_cost),
+    },
+    { title: "语言", key: "language", width: 100 },
+    {
+      title: "提交者",
+      key: "username",
+      minWidth: 120,
+      render: (row) =>
+        h(NButton, { text: true, type: "info" }, () => row.username),
+    },
+  ]
+  if (!route.params.contestID && userStore.isSuperAdmin) {
+    res.push({
+      title: "选项",
+      key: "rejudge",
+      render: (row) =>
+        h(
+          NButton,
+          { size: "small", onClick: () => rejudge(row.id) },
+          () => "重新评分"
+        ),
+    })
+  }
+  return res
+})
 </script>
 <template>
   <n-form :inline="isDesktop" label-placement="left">

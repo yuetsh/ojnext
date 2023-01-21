@@ -86,3 +86,9 @@ export function submitCode(data: SubmitCodePayload) {
 export function getSubmissions(params: SubmissionListPayload) {
   return http.get("submissions", { params })
 }
+
+export function adminRejudge(id: string) {
+  return http.get("admin/submission/rejudge", {
+    params: { id },
+  })
+}

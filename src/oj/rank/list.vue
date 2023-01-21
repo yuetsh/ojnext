@@ -1,5 +1,11 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { DataTableColumn } from "naive-ui"
 
-<template>rank list</template>
+const columns: DataTableColumn[] = []
+</script>
+
+<template>
+  <n-data-table :columns="columns" />
+</template>
 
 <style scoped></style>

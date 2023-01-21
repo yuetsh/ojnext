@@ -27,7 +27,9 @@ hljs.registerLanguage("go", go)
     :date-locale="dateZhCN"
     :hljs="hljs"
   >
-    <router-view></router-view>
+    <n-notification-provider>
+      <router-view></router-view>
+    </n-notification-provider>
   </n-config-provider>
 </template>
 
