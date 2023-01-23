@@ -1,3 +1,5 @@
+import { ContestStatus, ContestType } from "./constants"
+
 export interface Profile {
   id: number
   user: User
@@ -206,8 +208,8 @@ export interface Contest {
     username: string
     real_name: null
   }
-  status: "-1" | "0" | "1"
-  contest_type: "Password Protected" | "Public"
+  status: ContestStatus
+  contest_type: ContestType
   title: string
   description: string
   real_time_rank: boolean

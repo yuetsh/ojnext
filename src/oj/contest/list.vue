@@ -4,7 +4,7 @@ import { getContestList } from "oj/api"
 import Pagination from "~/shared/Pagination.vue"
 import { filterEmptyValue, parseTime, duration } from "utils/functions"
 import { Contest } from "utils/types"
-import { CONTEST_STATUS } from "~/utils/constants"
+import { ContestType, CONTEST_STATUS } from "~/utils/constants"
 import ContestTitle from "./components/ContestTitle.vue"
 import { useUserStore } from "~/shared/store/user"
 import { toggleLogin } from "~/shared/composables/modal"
@@ -108,7 +108,7 @@ function rowProps(row: Contest) {
   return {
     style: "cursor: pointer",
     onClick() {
-      if (!userStore.isAuthed && row.contest_type === "Password Protected") {
+      if (!userStore.isAuthed && row.contest_type === ContestType.private) {
         toggleLogin(true)
       } else {
         router.push("/contest/" + row.id)

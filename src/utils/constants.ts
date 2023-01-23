@@ -14,6 +14,17 @@ export enum SubmissionStatus {
   submitting = 9,
 }
 
+export enum ContestStatus {
+  not_started = "1",
+  underway = "0",
+  finished = "-1",
+}
+
+export enum ContestType {
+  public = "Public",
+  private = "Password Protected",
+}
+
 export const JUDGE_STATUS: {
   [key in SUBMISSION_RESULT]: {
     name: string
@@ -71,7 +82,7 @@ export const JUDGE_STATUS: {
 }
 
 export const CONTEST_STATUS: {
-  [key in "1" | "-1" | "0"]: {
+  [key in ContestStatus]: {
     name: string
     type: "error" | "success" | "warning"
   }

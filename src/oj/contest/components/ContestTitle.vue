@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { Contest } from "~/utils/types"
+import { ContestType } from "~/utils/constants"
 
 defineProps<{ contest: Contest }>()
 </script>
@@ -8,7 +9,7 @@ defineProps<{ contest: Contest }>()
     <span>{{ contest.title }}</span>
     <n-icon
       class="lockIcon"
-      v-if="contest.contest_type === 'Password Protected'"
+      v-if="contest.contest_type === ContestType.private"
     >
       <i-ep-lock />
     </n-icon>

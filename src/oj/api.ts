@@ -105,3 +105,16 @@ export function getContestList(query: {
 export function getContest(id: string) {
   return http.get("contest", { params: { id } })
 }
+
+export function getContestAccess(id: string) {
+  return http.get("contest/access", { params: { contest_id: id } })
+}
+
+export function checkContestPassword(contestID: string, password: string) {
+  return http.post("contest/password", {
+    data: {
+      contest_id: contestID,
+      password,
+    },
+  })
+}

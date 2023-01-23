@@ -12,6 +12,7 @@ import type {
 import { RouterLink } from "vue-router"
 
 const userStore = useUserStore()
+const route = useRoute()
 const router = useRouter()
 
 async function handleLogout() {
@@ -30,6 +31,8 @@ function handleDropdown(key: string) {
 
 onMounted(userStore.getMyProfile)
 
+const defaultValue = computed(() => route.path.split("/")[1] || "problem")
+
 const menus: MenuOption[] = [
   {
     label: () =>
@@ -47,7 +50,7 @@ const menus: MenuOption[] = [
   {
     label: () =>
       h(RouterLink, { to: "/submission" }, { default: () => "提交" }),
-    key: "status",
+    key: "submission",
   },
   {
     label: () => h(RouterLink, { to: "/rank" }, { default: () => "排名" }),
@@ -67,7 +70,11 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
 
 <template>
   <n-space align="center">
-    <n-menu mode="horizontal" :options="menus" default-value="problem"></n-menu>
+    <n-menu
+      mode="horizontal"
+      :options="menus"
+      :default-value="defaultValue"
+    ></n-menu>
     <n-space>
       <n-button circle @click="toggleDark()">
         <template #icon>
