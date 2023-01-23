@@ -54,7 +54,7 @@ onMounted(init)
       <n-space>
         <span>提交时间：{{ parseTime(submission.create_time) }}</span>
         <span>语言：{{ submission.language }}</span>
-        <span>提交人 {{ submission.username }}</span>
+        <span>用户 {{ submission.username }}</span>
       </n-space>
     </n-alert>
     <n-card embedded>

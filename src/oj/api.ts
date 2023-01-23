@@ -92,3 +92,18 @@ export function adminRejudge(id: string) {
     params: { id },
   })
 }
+
+export function getRank(offset: number, limit: number) {
+  return http.get("user_rank", {
+    params: { offset, limit, rule: "acm" },
+  })
+}
+
+export function getContestList(query: {
+  offset: number
+  limit: number
+  keyword: string
+  status: string
+}) {
+  return http.get("contests", { params: query })
+}

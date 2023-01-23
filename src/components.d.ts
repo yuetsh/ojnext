@@ -10,6 +10,7 @@ declare module '@vue/runtime-core' {
     IEpBell: typeof import('~icons/ep/bell')['default']
     IEpCaretRight: typeof import('~icons/ep/caret-right')['default']
     IEpLoading: typeof import('~icons/ep/loading')['default']
+    IEpLock: typeof import('~icons/ep/lock')['default']
     NAlert: typeof import('naive-ui')['NAlert']
     NButton: typeof import('naive-ui')['NButton']
     NCard: typeof import('naive-ui')['NCard']

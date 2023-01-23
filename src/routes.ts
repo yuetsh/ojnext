@@ -13,7 +13,6 @@ export const routes = [
       {
         path: "submission",
         component: () => import("oj/submission/list.vue"),
-        meta: { requiresAuth: true },
       },
       {
         path: "submission/:submissionID",
@@ -23,7 +22,6 @@ export const routes = [
       {
         path: "contest",
         component: () => import("oj/contest/list.vue"),
-        meta: { requiresAuth: true },
       },
       {
         path: "contest/:contestID",

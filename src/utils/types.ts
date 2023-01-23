@@ -115,3 +115,59 @@ export interface SubmissionListPayload {
   limit: number
   offset: number
 }
+
+export interface Rank {
+  id: number
+  user: {
+    id: number
+    username: string
+    real_name: null
+  }
+  acm_problems_status: {
+    problems: {
+      [key: string]: {
+        _id: string
+        status: number
+      }
+    }
+    contest_problems?: {
+      [key: string]: {
+        [key: string]: {
+          _id: string
+          status: number
+        }
+      }
+    }
+  }
+  oi_problems_status: {}
+  real_name: null | string
+  avatar: string
+  blog: null
+  mood: null | string
+  github: null
+  school: null | string
+  major: null | string
+  language: null | string
+  accepted_number: number
+  total_score: number
+  submission_number: number
+}
+
+export interface Contest {
+  id: number
+  created_by: {
+    id: number
+    username: string
+    real_name: null
+  }
+  status: "-1" | "0" | "1"
+  contest_type: "Password Protected" | "Public"
+  title: string
+  description: string
+  real_time_rank: boolean
+  rule_type: "ACM"
+  start_time: Date
+  end_time: Date
+  create_time: Date
+  last_update_time: Date
+}

@@ -172,7 +172,7 @@ const columns = computed(() => {
     },
     { title: "语言", key: "language", width: 100 },
     {
-      title: "提交者",
+      title: "用户",
       key: "username",
       minWidth: 120,
       render: (row) =>
@@ -206,7 +206,7 @@ const columns = computed(() => {
     <n-form-item label="只看自己">
       <n-switch v-model:value="query.myself" />
     </n-form-item>
-    <n-form-item label="搜索提交者">
+    <n-form-item label="搜索用户">
       <n-input @change="search" clearable placeholder="输入后回车" />
     </n-form-item>
     <n-form-item>

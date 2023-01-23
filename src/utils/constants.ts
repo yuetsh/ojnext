@@ -70,30 +70,24 @@ export const JUDGE_STATUS: {
   },
 }
 
-export const CONTEST_STATUS = {
-  NOT_START: "1",
-  UNDERWAY: "0",
-  ENDED: "-1",
-}
-
-export const CONTEST_STATUS_REVERSE = {
+export const CONTEST_STATUS: {
+  [key in "1" | "-1" | "0"]: {
+    name: string
+    type: "error" | "success" | "warning"
+  }
+} = {
   "1": {
-    name: "Not Started",
-    color: "yellow",
+    name: "未开始",
+    type: "warning",
   },
   "0": {
-    name: "Underway",
-    color: "green",
+    name: "进行中",
+    type: "success",
   },
   "-1": {
-    name: "Ended",
-    color: "red",
+    name: "已结束",
+    type: "error",
   },
-}
-
-export const RULE_TYPE = {
-  ACM: "ACM",
-  OI: "OI",
 }
 
 export const CONTEST_TYPE = {

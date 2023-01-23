@@ -8,7 +8,7 @@ import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
 import { Problem, Submission, SubmitCodePayload } from "utils/types"
 import { getSubmission, submitCode } from "oj/api"
 import SubmissionResultTag from "../../../shared/SubmissionResultTag.vue"
-import { DataTableColumn } from "naive-ui"
+import type { DataTableColumn } from "naive-ui"
 
 const problem = inject<Ref<Problem>>("problem")
 
@@ -235,9 +235,9 @@ const tabProps = {
         <n-data-table
           v-if="infoTable.length"
           size="small"
+          striped
           :data="infoTable"
           :columns="columns"
-          striped
         />
       </n-scrollbar>
     </n-tab-pane>
