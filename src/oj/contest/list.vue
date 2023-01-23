@@ -126,9 +126,9 @@ function rowProps(row: Contest) {
         v-model:value="query.status"
       />
     </n-form-item>
-    <n-form-item>
+    <n-form-item label="搜索比赛标题">
       <n-input
-        placeholder="关键字"
+        placeholder="输入后回车"
         v-model:value="query.keyword"
         @change="search"
       />

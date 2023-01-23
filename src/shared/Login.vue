@@ -6,6 +6,8 @@ import type { FormRules } from "naive-ui"
 
 const userStore = useUserStore()
 const loginRef = ref()
+const [isLoading] = useToggle()
+const error = ref()
 const form = reactive({
   username: "",
   password: "",
@@ -17,13 +19,21 @@ const rules: FormRules = {
     { min: 6, max: 20, message: "长度在6到20位之间", trigger: "input" },
   ],
 }
-const { isLoading, error, execute } = login(form)
+
 const msg = computed(() => error.value && "用户名或密码不正确")
 
 async function submit() {
   loginRef.value?.validate(async (errors: FormRules | undefined) => {
     if (!errors) {
-      await execute()
+      try {
+        error.value = null
+        isLoading.value = true
+        await login(form)
+      } catch (err) {
+        error.value = err
+      } finally {
+        isLoading.value = false
+      }
       if (!error.value) {
         toggleLogin(false)
         userStore.getMyProfile()

@@ -1,9 +1,10 @@
 import { PROBLEM_PERMISSION, STORAGE_KEY, USER_TYPE } from "utils/constants"
 import storage from "utils/storage"
-import { getUserInfo } from "../api"
+import { getProfile } from "../api"
 
 export const useUserStore = defineStore("user", () => {
-  const { data: profile, isFinished, execute } = getUserInfo("")
+  const profile = ref()
+  const [isFinished] = useToggle(false)
   const user = computed(() => profile?.value?.user ?? {})
   const isAuthed = computed(() => !!user.value.email)
   const isAdminRole = computed(
@@ -19,7 +20,10 @@ export const useUserStore = defineStore("user", () => {
   )
 
   async function getMyProfile() {
-    await execute()
+    isFinished.value = false
+    const res = await getProfile()
+    profile.value = res.data
+    isFinished.value = true
     storage.set(STORAGE_KEY.AUTHED, !!user.value.email)
   }
 

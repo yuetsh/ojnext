@@ -39,12 +39,11 @@ const theme = useThemeVars()
 const userStore = useUserStore()
 const problems = ref<ProblemFiltered[]>([])
 const total = ref(0)
-
-const { data } = getProblemTagList()
+const tags = ref<{ id: number; name: string }[]>([])
 
 const tagOptions = computed(() => [
   { label: "全部", value: "" },
-  ...(data.value?.map((t) => ({ label: t.name, value: t.name })) || []),
+  ...(tags.value?.map((t) => ({ label: t.name, value: t.name })) || []),
 ])
 
 const query = reactive<Query>({
@@ -71,6 +70,11 @@ async function listProblems() {
   })
   total.value = res.total
   problems.value = res.results
+}
+
+async function listTags() {
+  const res = await getProblemTagList()
+  tags.value = res.data
 }
 
 function routerPush() {
@@ -115,13 +119,16 @@ watch(
 // TODO: 这里会在登录时候执行两次，有BUG
 watch(() => userStore.isFinished && userStore.isAuthed, listProblems)
 
-onMounted(listProblems)
+onMounted(() => {
+  listProblems()
+  listTags()
+})
 
 const columns: DataTableColumn<ProblemFiltered>[] = [
   {
     title: "状态",
     key: "status",
-    width: 80,
+    width: 60,
     render: (row) => {
       if (row.status === "passed") {
         return h(NIcon, { color: theme.value.successColor }, () => h(Select))

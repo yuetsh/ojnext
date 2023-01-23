@@ -22,14 +22,14 @@ const columns: DataTableColumn<Rank>[] = [
   {
     title: "排名",
     key: "index",
-    minWidth: 60,
+    width: 100,
     render: (_, index) =>
       h("span", {}, index + (query.page - 1) * query.limit + 1),
   },
   {
     title: "用户",
     key: "username",
-    minWidth: 100,
+    width: 200,
     render: (row) =>
       h(
         NButton,
@@ -38,12 +38,12 @@ const columns: DataTableColumn<Rank>[] = [
       ),
   },
   { title: "骚话", key: "mood", minWidth: 200 },
-  { title: "已解决", key: "accepted_number", minWidth: 80 },
-  { title: "提交数", key: "submission_number", minWidth: 80 },
+  { title: "已解决", key: "accepted_number", width: 100 },
+  { title: "提交数", key: "submission_number", width: 100 },
   {
     title: "正确率",
     key: "rate",
-    minWidth: 80,
+    width: 100,
     render: (row) => getACRate(row.accepted_number, row.submission_number),
   },
 ]

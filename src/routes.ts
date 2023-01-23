@@ -18,6 +18,7 @@ export const routes = [
         path: "submission/:submissionID",
         component: () => import("oj/submission/detail.vue"),
         props: true,
+        meta: { requiresAuth: true },
       },
       {
         path: "contest",

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getProblem } from "oj/api"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
+import { Problem } from "utils/types"
 
 const Editor = defineAsyncComponent(() => import("./components/Editor.vue"))
 const Panel = defineAsyncComponent(() => import("./components/Panel.vue"))
@@ -19,13 +20,18 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   contestID: "",
 })
+const problem = ref<Problem>()
 
-const { data: problem, isFinished } = getProblem(props.problemID)
+async function init() {
+  const res = await getProblem(props.problemID)
+  problem.value = res.data
+}
+onMounted(init)
 provide("problem", readonly(problem))
 </script>
 
 <template>
-  <n-grid v-if="isFinished && problem" x-gap="16" :cols="2">
+  <n-grid v-if="problem" x-gap="16" :cols="2">
     <n-gi :span="isDesktop ? 1 : 2">
       <n-tabs default-value="content">
         <n-tab-pane name="content" tab="题目描述">

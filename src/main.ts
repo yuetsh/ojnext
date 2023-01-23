@@ -19,7 +19,6 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!storage.get(STORAGE_KEY.AUTHED)) {
       toggleLogin(true)
-      next("/")
     } else {
       next()
     }

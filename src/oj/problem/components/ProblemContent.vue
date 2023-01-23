@@ -23,10 +23,14 @@ const route = useRoute()
 const contestID = <string>route.params.contestID
 const theme = useThemeVars()
 const style = computed(() => "color: " + theme.value.primaryColor)
-const { data: hasSolved, execute } = submissionExists(props.problem.id)
-if (contestID) {
-  execute()
-}
+const solved = ref(false)
+
+onMounted(() => {
+  if (contestID) {
+    checkSubmisson()
+  }
+})
+
 const samples = ref<Sample[]>(
   props.problem.samples.map((sample, index) => ({
     ...sample,
@@ -45,6 +49,12 @@ const disabled = computed(
       code.value === SOURCES[code.language]
     )
 )
+
+async function checkSubmisson() {
+  const res = await submissionExists(props.problem.id)
+  solved.value = res.data
+}
+
 async function test(sample: Sample, index: number) {
   samples.value = samples.value.map((sample) => {
     if (sample.id === index) {
@@ -87,7 +97,7 @@ const type = (status: ProblemStatus) =>
 
 <template>
   <n-alert
-    v-if="problem.my_status === 0 || (contestID && hasSolved)"
+    v-if="problem.my_status === 0 || (contestID && solved)"
     type="success"
     title="🎉 本 题 已 经 被 你 解 决 啦"
   />

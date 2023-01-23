@@ -1,5 +1,7 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+const route = useRoute()
+</script>
 
-<template>contest detail</template>
+<template></template>
 
 <style scoped></style>

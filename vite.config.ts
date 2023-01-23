@@ -7,8 +7,7 @@ import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
 import IconsResolver from "unplugin-icons/resolver"
 import Icons from "unplugin-icons/vite"
 import Markdown from "vite-plugin-vue-markdown"
-import Highlight from "markdown-it-highlightjs"
-import c from "highlight.js/lib/languages/c"
+import Shiki from "markdown-it-shiki"
 
 const url = "https://ojtest.hyyz.izhai.net"
 const proxyConfig = {
@@ -56,9 +55,11 @@ export default defineConfig({
     Icons({ autoInstall: true }),
     Markdown({
       markdownItSetup(md) {
-        md.use(Highlight, {
-          register: {
-            c,
+        md.use(Shiki, {
+          highlightLines: true,
+          theme: {
+            dark: "vitesse-dark",
+            light: "vitesse-light",
           },
         })
       },

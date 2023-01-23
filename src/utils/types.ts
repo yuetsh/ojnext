@@ -1,3 +1,49 @@
+export interface Profile {
+  id: number
+  user: User
+  real_name: string
+  acm_problems_status: {
+    problems: {
+      [key: string]: {
+        _id: string
+        status: number
+      }
+    }
+  }
+  oi_problems_status: {
+    problems: {
+      [key: string]: {
+        _id: string
+        score: number
+        status: number
+      }
+    }
+  }
+  avatar: string
+  blog: null
+  mood: string
+  github: string
+  school: string
+  major: string
+  language: string
+  accepted_number: number
+  total_score: number
+  submission_number: number
+}
+
+export interface User {
+  id: number
+  username: string
+  email: string
+  admin_type: string
+  problem_permission: string
+  create_time: Date
+  last_login: Date
+  two_factor_auth: boolean
+  open_api: boolean
+  is_disabled: boolean
+}
+
 export type LANGUAGE =
   | "C"
   | "C++"

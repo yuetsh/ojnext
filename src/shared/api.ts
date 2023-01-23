@@ -1,18 +1,13 @@
-import { useAxios } from "@vueuse/integrations/useAxios"
 import http from "utils/http"
 
 export function login(data: { username: string; password: string }) {
-  return useAxios("login", { method: "post", data }, http, {
-    immediate: false,
-  })
+  return http.post("login", data)
 }
 
 export function logout() {
   return http.get("logout")
 }
 
-export function getUserInfo(username: string) {
-  return useAxios("profile", { params: { username } }, http, {
-    immediate: false,
-  })
+export function getProfile(username: string = "") {
+  return http.get("profile", { params: { username } })
 }

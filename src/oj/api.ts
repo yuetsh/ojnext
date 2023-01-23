@@ -1,4 +1,3 @@
-import { useAxios } from "@vueuse/integrations/useAxios"
 import http from "utils/http"
 import { getACRate } from "utils/functions"
 import { DIFFICULTY } from "utils/constants"
@@ -53,7 +52,7 @@ export async function getProblemList(
 }
 
 export function getProblemTagList() {
-  return useAxios<{ id: number; name: string }[]>("problem/tags", http)
+  return http.get("problem/tags")
 }
 
 export function getRandomProblemID() {
@@ -61,7 +60,7 @@ export function getRandomProblemID() {
 }
 
 export function getProblem(id: string) {
-  return useAxios<Problem>("problem", { params: { problem_id: id } }, http)
+  return http.get("problem", { params: { problem_id: id } })
 }
 
 export function getSubmission(id: string) {
@@ -71,12 +70,7 @@ export function getSubmission(id: string) {
 }
 
 export function submissionExists(problemID: number) {
-  return useAxios(
-    "submission_exists",
-    { params: { problem_id: problemID } },
-    http,
-    { immediate: false }
-  )
+  return http.get("submission_exists", { params: { problem_id: problemID } })
 }
 
 export function submitCode(data: SubmitCodePayload) {
@@ -106,4 +100,8 @@ export function getContestList(query: {
   status: string
 }) {
   return http.get("contests", { params: query })
+}
+
+export function getContest(id: string) {
+  return http.get("contest", { params: { id } })
 }
