@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { DIFFICULTY } from "utils/constants"
+import { Pie } from "vue-chartjs"
+import { DIFFICULTY, JUDGE_STATUS } from "utils/constants"
 import { getACRate, getTagColor, parseTime } from "utils/functions"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { Problem } from "utils/types"
@@ -7,7 +8,30 @@ import { Problem } from "utils/types"
 interface Props {
   problem: Problem
 }
-defineProps<Props>()
+const props = defineProps<Props>()
+
+const data = computed(() => {
+  const status = props.problem.statistic_info
+  const labels = []
+  for (let i in status) {
+    if (status[i] === 0) {
+      delete status[i]
+    }
+    // @ts-ignore
+    labels.push(JUDGE_STATUS[i]["name"])
+  }
+  return {
+    labels,
+    datasets: [{ data: Object.values(status), hoverOffset: 4 }],
+  }
+})
+
+const options = ref({
+  responsive: true,
+  plugins: {
+    title: { text: "提交结果的比例", display: true, font: { size: 20 } },
+  },
+})
 </script>
 
 <template>
@@ -49,4 +73,14 @@ defineProps<Props>()
       </n-space>
     </n-descriptions-item>
   </n-descriptions>
+  <div class="pie">
+    <Pie :data="data" :options="options" />
+  </div>
 </template>
+<style scoped>
+.pie {
+  width: 100%;
+  max-width: 500px;
+  margin: 24px auto;
+}
+</style>

@@ -1,32 +1,72 @@
 <script setup lang="ts">
-import Monaco from "../shared/Monaco.vue"
-import raw from "./step-1/1.c?raw"
-
+import Monaco from "~/shared/Monaco.vue"
+import { isDesktop } from "~/shared/composables/breakpoints"
 const route = useRoute()
-const id = route.hash.replace("#step-", "") || "1"
+const router = useRouter()
 
-const Md = defineAsyncComponent(() => import(`./step-${id}/index.md`))
+const TOTAL = 3
 
-const code = ref(raw)
+const Mds = Array.from({ length: TOTAL }, (_, i) => i + 1).map((v) =>
+  defineAsyncComponent(() => import(`./step-${v}/index.md`))
+)
+const code = ref("")
+const step = computed(() => {
+  if (!route.params.step || !route.params.step.length) return 1
+  else {
+    return parseInt(route.params.step[0].split("-")[1])
+  }
+})
 
-function change(value: string) {
-  code.value = value
+watch(
+  () => route.params.step,
+  async (value) => {
+    if (route.name !== "learn") return
+    try {
+      const raw = await import(`./${value[0]}/main.c?raw`)
+      code.value = raw.default
+    } catch (err) {
+      router.replace("/learn/step-1")
+    }
+  },
+  { immediate: true }
+)
+
+function change(v: string) {
+  code.value = v
+}
+function prev() {
+  router.push(`/learn/step-${step.value - 1}`)
+}
+function next() {
+  router.push(`/learn/step-${step.value + 1}`)
+}
+function run() {
+  console.log(code.value)
 }
 </script>
 
 <template>
-  <n-grid :cols="2">
-    <n-gi>
-      <Md />
-      <n-space justify="space-between">
-        <n-button text type="primary">上一步</n-button>
-        <n-button text type="primary">下一步</n-button>
-      </n-space>
+  <n-grid v-if="isDesktop" :cols="24">
+    <n-gi :span="10">
+      <n-scrollbar style="max-height: calc(100vh - 92px)">
+        <component :is="Mds[step - 1]"></component>
+        <n-space justify="space-around">
+          <n-button v-if="step !== 1" text type="primary" @click="prev">
+            上一步
+          </n-button>
+          <n-button v-if="step !== TOTAL" text type="primary" @click="next">
+            下一步
+          </n-button>
+        </n-space>
+      </n-scrollbar>
     </n-gi>
-    <n-gi>
+    <n-gi :span="14" class="relative">
+      <n-button type="primary" class="action" @click="run">运行</n-button>
       <Monaco :value="code" @change="change" />
+      <div></div>
     </n-gi>
   </n-grid>
+  <div v-else></div>
 </template>
 
 <style>
@@ -63,5 +103,16 @@ function change(value: string) {
   display: inline-block;
   text-align: right;
   color: rgba(115, 138, 148, 0.4);
+}
+
+.relative {
+  position: relative;
+}
+
+.action {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 10;
 }
 </style>

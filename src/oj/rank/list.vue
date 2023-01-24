@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { DataTableColumn, NButton, NButtonGroup } from "naive-ui"
+import { DataTableColumn, NButton } from "naive-ui"
+import Chart from "./components/Chart.vue"
 import Pagination from "~/shared/Pagination.vue"
 import { Rank } from "utils/types"
 import { getRank } from "oj/api"
@@ -11,13 +12,18 @@ const query = reactive({
   limit: 10,
   page: 1,
 })
+const rankData = ref<Rank[]>([])
 
 async function listRanks() {
   const offset = (query.page - 1) * query.limit
   const res = await getRank(offset, query.limit)
   data.value = res.data.results
   total.value = res.data.total
+  if (query.page === 1) {
+    rankData.value = data.value
+  }
 }
+
 const columns: DataTableColumn<Rank>[] = [
   {
     title: "排名",
@@ -61,6 +67,7 @@ onMounted(listRanks)
 </script>
 
 <template>
+  <Chart v-if="!!rankData.length" :rankData="rankData" />
   <n-data-table striped size="small" :data="data" :columns="columns" />
   <Pagination
     :total="total"

@@ -1,4 +1,6 @@
-export const routes = [
+import { RouteRecordRaw } from "vue-router"
+
+export const routes: RouteRecordRaw[] = [
   {
     path: "/",
     component: () => import("~/shared/layout/default.vue"),
@@ -41,7 +43,12 @@ export const routes = [
       },
       {
         path: "learn",
+        redirect: "learn/step-1",
+      },
+      {
+        path: "learn/:step+",
         component: () => import("learn/index.vue"),
+        name: "learn",
       },
     ],
   },

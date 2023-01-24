@@ -96,7 +96,7 @@ export interface Problem {
   total_score: number
   submission_number: number
   accepted_number: number
-  statistic_info: {}
+  statistic_info: { [key in string]: number }
   share_submission: boolean
   contest: null
   my_status: number

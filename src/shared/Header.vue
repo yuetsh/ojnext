@@ -36,7 +36,7 @@ const defaultValue = computed(() => route.path.split("/")[1] || "problem")
 const menus: MenuOption[] = [
   {
     label: () =>
-      h(RouterLink, { to: "/learn#step-1" }, { default: () => "自学" }),
+      h(RouterLink, { to: "/learn/step-1" }, { default: () => "自学" }),
     key: "learn",
   },
   {
