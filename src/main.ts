@@ -8,19 +8,6 @@ import { routes } from "./routes"
 import App from "./App.vue"
 
 import { toggleLogin } from "./shared/composables/modal"
-import { init as monacoInit } from "./shared/composables/monaco"
-
-import {
-  Chart as ChartJS,
-  Title,
-  Colors,
-  Tooltip,
-  Legend,
-  BarElement,
-  ArcElement,
-  CategoryScale,
-  LinearScale,
-} from "chart.js"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -39,18 +26,6 @@ router.beforeEach((to, from, next) => {
   }
 })
 
-monacoInit()
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  ArcElement,
-  Colors,
-  Title,
-  Tooltip,
-  Legend
-)
 const pinia = createPinia()
 const app = createApp(App)
 app.use(router)

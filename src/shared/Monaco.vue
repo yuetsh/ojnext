@@ -4,7 +4,7 @@ import { LANGUAGE_VALUE } from "utils/constants"
 import { LANGUAGE } from "utils/types"
 import { isMobile } from "~/shared/composables/breakpoints"
 import { isDark } from "./composables/dark"
-import { monaco } from "./composables/monaco"
+import { init, monaco } from "./composables/monaco"
 
 interface Props {
   value: string
@@ -29,8 +29,8 @@ const monacoEditorRef = ref()
 let editor: Monaco.editor.IStandaloneCodeEditor
 let model: Monaco.editor.ITextModel
 
-onMounted(() => {
-  if (!monaco.value) return
+onMounted(async () => {
+  if (!monaco.value) await init()
   model = monaco.value!.editor.createModel(
     props.value,
     LANGUAGE_VALUE[props.language]
@@ -99,5 +99,6 @@ onUnmounted(() => {
     :class="props.class"
     :style="{ height: props.height }"
   ></div>
+  <div v-else :style="{ height: props.height }"></div>
 </template>
 <style scoped></style>

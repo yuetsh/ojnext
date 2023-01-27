@@ -8,6 +8,7 @@ import { ContestType, CONTEST_STATUS } from "~/utils/constants"
 import ContestTitle from "./components/ContestTitle.vue"
 import { useUserStore } from "~/shared/store/user"
 import { toggleLogin } from "~/shared/composables/modal"
+import { isDesktop } from "~/shared/composables/breakpoints"
 
 const route = useRoute()
 const router = useRouter()
@@ -118,7 +119,7 @@ function rowProps(row: Contest) {
 }
 </script>
 <template>
-  <n-form label-placement="left" inline>
+  <n-form label-placement="left" :inline="isDesktop">
     <n-form-item label="状态">
       <n-select
         class="select"

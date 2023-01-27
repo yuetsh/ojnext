@@ -22,6 +22,22 @@ function reset() {
 function change(value: string) {
   code.value = value
 }
+
+const options = props.problem.languages.map((it) => ({
+  label: () => [
+    h("img", {
+      src: `/${it}.svg`,
+      style: {
+        width: "16px",
+        height: "16px",
+        marginRight: "8px",
+        transform: "translateY(3px)",
+      },
+    }),
+    it,
+  ],
+  value: it,
+}))
 </script>
 
 <template>
@@ -30,7 +46,7 @@ function change(value: string) {
       <n-select
         class="language"
         v-model:value="code.language"
-        :options="problem.languages.map((it) => ({ label: it, value: it }))"
+        :options="options"
       />
     </n-form-item>
     <n-form-item>
@@ -53,7 +69,7 @@ function change(value: string) {
 
 <style scoped>
 .language {
-  width: 120px;
+  width: 140px;
 }
 .editor {
   min-height: 200px;

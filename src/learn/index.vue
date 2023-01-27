@@ -63,10 +63,25 @@ function run() {
     <n-gi :span="14" class="relative">
       <n-button type="primary" class="action" @click="run">运行</n-button>
       <Monaco :value="code" @change="change" />
-      <div></div>
     </n-gi>
   </n-grid>
-  <div v-else></div>
+  <div v-else>
+    <n-scrollbar style="height: calc(50vh - 50px)">
+      <component :is="Mds[step - 1]"></component>
+    </n-scrollbar>
+    <n-space justify="space-around">
+      <n-button v-if="step !== 1" text type="primary" @click="prev">
+        上一步
+      </n-button>
+      <n-button v-if="step !== TOTAL" text type="primary" @click="next">
+        下一步
+      </n-button>
+    </n-space>
+    <div class="relative">
+      <n-button type="primary" class="action" @click="run">运行</n-button>
+      <Monaco :value="code" @change="change" height="calc(50vh - 55px)" />
+    </div>
+  </div>
 </template>
 
 <style>

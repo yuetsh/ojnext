@@ -1,4 +1,5 @@
 import { RouteRecordRaw } from "vue-router"
+import { loadChart } from "./shared/composables/chart"
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -11,6 +12,9 @@ export const routes: RouteRecordRaw[] = [
         component: () => import("oj/problem/detail.vue"),
         props: true,
         name: "ProblemDetail",
+        beforeEnter() {
+          loadChart()
+        },
       },
       {
         path: "submission",
@@ -40,6 +44,9 @@ export const routes: RouteRecordRaw[] = [
       {
         path: "rank",
         component: () => import("oj/rank/list.vue"),
+        beforeEnter() {
+          loadChart()
+        },
       },
       {
         path: "learn",

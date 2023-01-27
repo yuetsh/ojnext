@@ -10,6 +10,7 @@ import type {
   DropdownDividerOption,
 } from "naive-ui"
 import { RouterLink } from "vue-router"
+import { isDesktop } from "~/shared/composables/breakpoints"
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -69,12 +70,8 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
 </script>
 
 <template>
-  <n-space align="center">
-    <n-menu
-      mode="horizontal"
-      :options="menus"
-      :default-value="defaultValue"
-    ></n-menu>
+  <n-space v-if="isDesktop" justify="space-between" align="center">
+    <n-menu mode="horizontal" :options="menus" :default-value="defaultValue" />
     <n-space>
       <n-button circle @click="toggleDark()">
         <template #icon>
@@ -96,6 +93,22 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
         </n-space>
       </div>
     </n-space>
+  </n-space>
+  <n-space v-else justify="end">
+    <n-dropdown
+      v-if="userStore.isAuthed"
+      :options="options"
+      @select="handleDropdown"
+    >
+      <n-button>{{ userStore.user.username }}</n-button>
+    </n-dropdown>
+    <n-space v-else>
+      <n-button @click="toggleLogin(true)">登录</n-button>
+      <n-button @click="toggleSignup(true)">注册</n-button>
+    </n-space>
+    <n-dropdown :options="menus">
+      <n-button>菜单</n-button>
+    </n-dropdown>
   </n-space>
 </template>
 

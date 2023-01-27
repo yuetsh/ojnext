@@ -17,6 +17,16 @@ const proxyConfig = {
 }
 
 export default defineConfig({
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          fancy: ["highlight.js", "party-js"],
+          chart: ["vue-chartjs", "chart.js"],
+        },
+      },
+    },
+  },
   resolve: {
     alias: {
       "~": path.resolve(__dirname, "./src"),
