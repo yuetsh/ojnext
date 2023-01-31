@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Sunny, Moon } from "@element-plus/icons-vue"
 import { logout } from "./api"
 import { useUserStore } from "./store/user"
 import { isDark, toggleDark } from "~/shared/composables/dark"
@@ -11,6 +10,7 @@ import type {
 } from "naive-ui"
 import { RouterLink } from "vue-router"
 import { isDesktop } from "~/shared/composables/breakpoints"
+import { code } from "~/shared/composables/learn"
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -67,6 +67,10 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
   { type: "divider" },
   { label: "退出", key: "logout" },
 ])
+
+function run() {
+  console.log(code.value)
+}
 </script>
 
 <template>
@@ -75,14 +79,15 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
     <n-space>
       <n-button circle @click="toggleDark()">
         <template #icon>
-          <n-icon v-if="isDark"><Sunny /></n-icon>
-          <n-icon v-else><Moon /></n-icon>
+          <n-icon v-if="isDark"><i-ep-sunny /></n-icon>
+          <n-icon v-else> <i-ep-moon /></n-icon>
         </template>
       </n-button>
       <div v-if="userStore.isFinished">
         <n-dropdown
           v-if="userStore.isAuthed"
           :options="options"
+          trigger="click"
           @select="handleDropdown"
         >
           <n-button>{{ userStore.user.username }}</n-button>
@@ -92,13 +97,20 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
           <n-button @click="toggleSignup(true)">注册</n-button>
         </n-space>
       </div>
+      <n-button v-if="$route.name === 'learn'" type="primary" @click="run">
+        运行
+      </n-button>
     </n-space>
   </n-space>
   <n-space v-else justify="end">
+    <n-button v-if="$route.name === 'learn'" type="primary" @click="run">
+      运行
+    </n-button>
     <n-dropdown
       v-if="userStore.isAuthed"
       :options="options"
       @select="handleDropdown"
+      trigger="click"
     >
       <n-button>{{ userStore.user.username }}</n-button>
     </n-dropdown>
@@ -106,7 +118,7 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
       <n-button @click="toggleLogin(true)">登录</n-button>
       <n-button @click="toggleSignup(true)">注册</n-button>
     </n-space>
-    <n-dropdown :options="menus">
+    <n-dropdown :options="menus" trigger="click">
       <n-button>
         <template #icon>
           <n-icon>

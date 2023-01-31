@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import Monaco from "~/shared/Monaco.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
+import { code } from "~/shared/composables/learn"
+
 const route = useRoute()
 const router = useRouter()
 
@@ -9,7 +11,6 @@ const TOTAL = 3
 const Mds = Array.from({ length: TOTAL }, (_, i) => i + 1).map((v) =>
   defineAsyncComponent(() => import(`./step-${v}/index.md`))
 )
-const code = ref("")
 const step = computed(() => {
   if (!route.params.step || !route.params.step.length) return 1
   else {
@@ -40,9 +41,6 @@ function prev() {
 function next() {
   router.push(`/learn/step-${step.value + 1}`)
 }
-function run() {
-  console.log(code.value)
-}
 </script>
 
 <template>
@@ -60,27 +58,23 @@ function run() {
         </n-space>
       </n-scrollbar>
     </n-gi>
-    <n-gi :span="14" class="relative">
-      <n-button type="primary" class="action" @click="run">运行</n-button>
+    <n-gi :span="14">
       <Monaco :value="code" @change="change" />
     </n-gi>
   </n-grid>
   <div v-else>
-    <n-scrollbar style="height: calc(50vh - 50px)">
+    <n-scrollbar style="height: calc(50vh - 42px)">
       <component :is="Mds[step - 1]"></component>
+      <n-space justify="space-around">
+        <n-button v-if="step !== 1" text type="primary" @click="prev">
+          上一步
+        </n-button>
+        <n-button v-if="step !== TOTAL" text type="primary" @click="next">
+          下一步
+        </n-button>
+      </n-space>
     </n-scrollbar>
-    <n-space justify="space-around">
-      <n-button v-if="step !== 1" text type="primary" @click="prev">
-        上一步
-      </n-button>
-      <n-button v-if="step !== TOTAL" text type="primary" @click="next">
-        下一步
-      </n-button>
-    </n-space>
-    <div class="relative">
-      <n-button type="primary" class="action" @click="run">运行</n-button>
-      <Monaco :value="code" @change="change" height="calc(50vh - 55px)" />
-    </div>
+    <Monaco :value="code" @change="change" height="calc(50vh - 42px)" />
   </div>
 </template>
 
@@ -118,16 +112,5 @@ function run() {
   display: inline-block;
   text-align: right;
   color: rgba(115, 138, 148, 0.4);
-}
-
-.relative {
-  position: relative;
-}
-
-.action {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  z-index: 10;
 }
 </style>
