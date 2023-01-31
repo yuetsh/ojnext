@@ -16,10 +16,18 @@ const props = defineProps<{
 }>()
 
 const submission = ref<Submission>()
+const [copied, toggle] = useToggle()
+const { start } = useTimeoutFn(() => toggle(false), 1000, { immediate: false })
 
 async function init() {
   const res = await getSubmission(props.submissionID)
   submission.value = res.data
+}
+
+function handleCopy(v: string) {
+  copy(v)
+  toggle(true)
+  start()
 }
 
 const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
@@ -59,7 +67,9 @@ onMounted(init)
     </n-alert>
     <n-card embedded>
       <n-space justify="end">
-        <n-button @click="copy(submission!.code)">复制代码</n-button>
+        <n-button @click="handleCopy(submission!.code)">
+          {{ copied ? "已复制" : "复制代码" }}
+        </n-button>
       </n-space>
       <n-code
         class="code"

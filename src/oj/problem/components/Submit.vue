@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { createTestSubmission } from "utils/judge"
 import { code } from "oj/composables/code"
 import party from "party-js"
 import { Ref } from "vue"
@@ -7,7 +6,7 @@ import { SOURCES, JUDGE_STATUS, SubmissionStatus } from "utils/constants"
 import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
 import { Problem, Submission, SubmitCodePayload } from "utils/types"
 import { getSubmission, submitCode } from "oj/api"
-import SubmissionResultTag from "../../../shared/SubmissionResultTag.vue"
+import SubmissionResultTag from "~/shared/SubmissionResultTag.vue"
 import type { DataTableColumn } from "naive-ui"
 
 const problem = inject<Ref<Problem>>("problem")
@@ -16,9 +15,7 @@ const route = useRoute()
 const contestID = <string>route.params.contestID ?? ""
 
 const submissionId = ref("")
-const submission = ref<Submission | null>(null)
-const input = ref("")
-const result = ref("")
+const submission = ref<Submission>()
 const [submitted] = useToggle()
 
 const { start: submitPending, isPending } = useTimeout(5000, {
@@ -186,69 +183,51 @@ watch(
     }
   }
 )
-
-async function testcaseSubmit() {
-  const res = await createTestSubmission(code, input.value)
-  result.value = res.output
-}
-
-const tabProps = {
-  onClick() {
-    if (!submitDisabled.value) {
-      submit()
-    }
-  },
-}
 </script>
 
 <template>
-  <n-tabs default-value="testcase">
-    <n-tab-pane name="testcase" tab="测试面板">
-      <n-scrollbar style="height: 400px">
-        <n-form inline label-placement="left">
-          <n-form-item label="输入">
-            <n-input type="textarea" v-model:value="input" />
-          </n-form-item>
-          <n-form-item>
-            <n-button @click="testcaseSubmit">运行</n-button>
-          </n-form-item>
-        </n-form>
-        <div class="msg">{{ result }}</div>
-      </n-scrollbar>
-    </n-tab-pane>
-    <n-tab-pane name="submit" :disabled="submitDisabled" :tab-props="tabProps">
-      <template #tab>
-        <n-icon>
-          <i-ep-loading v-if="judging || pending || submitting" />
-          <i-ep-bell v-else-if="isPending" />
-          <i-ep-caret-right v-else />
-        </n-icon>
-        <span>{{ submitLabel }}</span>
-      </template>
-      <n-scrollbar style="height: 400px">
-        <n-alert
-          v-if="submission"
-          :type="JUDGE_STATUS[submission.result]['type']"
-          :title="JUDGE_STATUS[submission.result]['name']"
-        />
-        <div v-if="msg" class="msg result">{{ msg }}</div>
-        <n-data-table
-          v-if="infoTable.length"
-          size="small"
-          striped
-          :data="infoTable"
-          :columns="columns"
-        />
-      </n-scrollbar>
-    </n-tab-pane>
-  </n-tabs>
+  <n-popover
+    trigger="click"
+    placement="bottom-end"
+    scrollable
+    :show-arrow="false"
+    style="max-height: 600px"
+  >
+    <template #trigger>
+      <n-button type="primary" :disabled="submitDisabled" @click="submit">
+        <template #icon>
+          <n-icon>
+            <i-ep-loading v-if="judging || pending || submitting" />
+            <i-ep-bell v-else-if="isPending" />
+            <i-ep-caret-right v-else />
+          </n-icon>
+        </template>
+        {{ submitLabel }}
+      </n-button>
+    </template>
+    <template #header>
+      <n-alert
+        v-if="submission"
+        :type="JUDGE_STATUS[submission.result]['type']"
+        :title="JUDGE_STATUS[submission.result]['name']"
+      />
+    </template>
+    <n-space vertical v-if="msg || infoTable.length">
+      <n-card v-if="msg" embedded class="msg">{{ msg }}</n-card>
+      <n-data-table
+        v-if="infoTable.length"
+        size="small"
+        striped
+        :data="infoTable"
+        :columns="columns"
+      />
+    </n-space>
+  </n-popover>
 </template>
 <style scoped>
 .msg {
   white-space: pre;
+  word-break: break-all;
   line-height: 1.5;
-}
-.result {
-  margin-top: 12px;
 }
 </style>

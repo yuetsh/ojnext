@@ -107,7 +107,13 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
       <n-button @click="toggleSignup(true)">注册</n-button>
     </n-space>
     <n-dropdown :options="menus">
-      <n-button>菜单</n-button>
+      <n-button>
+        <template #icon>
+          <n-icon>
+            <i-ep-menu />
+          </n-icon>
+        </template>
+      </n-button>
     </n-dropdown>
   </n-space>
 </template>

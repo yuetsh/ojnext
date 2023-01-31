@@ -4,7 +4,6 @@ import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { Problem } from "utils/types"
 
 const Editor = defineAsyncComponent(() => import("./components/Editor.vue"))
-const Panel = defineAsyncComponent(() => import("./components/Panel.vue"))
 const ProblemContent = defineAsyncComponent(
   () => import("./components/ProblemContent.vue")
 )
@@ -42,7 +41,6 @@ provide("problem", readonly(problem))
         </n-tab-pane>
         <n-tab-pane v-if="isMobile" name="editor" tab="代码编辑">
           <Editor :problem="problem" />
-          <Panel />
         </n-tab-pane>
         <n-tab-pane
           name="contest"
@@ -56,7 +54,6 @@ provide("problem", readonly(problem))
     </n-gi>
     <n-gi v-if="isDesktop">
       <Editor :problem="problem" />
-      <Panel />
     </n-gi>
   </n-grid>
 </template>

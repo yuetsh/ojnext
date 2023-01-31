@@ -15,10 +15,16 @@ function handleClick(value: string) {
 <template>
   <n-tooltip trigger="hover">
     <template #trigger>
-      <n-icon @click="handleClick(value)">
+      <n-icon class="icon" @click="handleClick(value)">
         <component :is="copied ? Select : DocumentCopy"></component>
       </n-icon>
     </template>
     {{ copied ? "已复制" : "复制" }}
   </n-tooltip>
 </template>
+<style scoped>
+.icon {
+  cursor: pointer;
+  transform: translateY(2px);
+}
+</style>

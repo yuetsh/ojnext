@@ -49,6 +49,7 @@ export const useContestStore = defineStore("contest", () => {
   }
 
   async function _getProblems(contestID: string) {
+    problems.value = []
     try {
       problems.value = await getContestProblem(contestID)
     } catch (err) {
