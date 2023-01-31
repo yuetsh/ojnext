@@ -63,7 +63,6 @@ onMounted(init)
       </n-space>
       <n-code
         class="code"
-        word-wrap
         :language="LANGUAGE_VALUE[submission.language]"
         :code="submission.code"
         show-line-numbers

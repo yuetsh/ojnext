@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { useUserStore } from "~/shared/store/user"
 import { filterEmptyValue, getTagColor } from "utils/functions"
+import { ProblemFiltered } from "utils/types"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { getProblemList, getProblemTagList, getRandomProblemID } from "oj/api"
 
 import Pagination from "~/shared/Pagination.vue"
-import { DataTableColumn, NIcon, NSpace, NTag, useThemeVars } from "naive-ui"
-import { Select, SemiSelect } from "@element-plus/icons-vue"
+import { DataTableColumn, NSpace, NTag } from "naive-ui"
+import ProblemStatus from "./components/ProblemStatus.vue"
 
 interface Query {
   keyword: string
@@ -14,16 +15,6 @@ interface Query {
   tag: string
   page: number
   limit: number
-}
-
-interface ProblemFiltered {
-  _id: string
-  title: string
-  difficulty: "简单" | "中等" | "困难"
-  tags: string[]
-  submission: number
-  rate: string
-  status: "not_test" | "passed" | "failed"
 }
 
 const difficultyOptions = [
@@ -35,7 +26,7 @@ const difficultyOptions = [
 
 const router = useRouter()
 const route = useRoute()
-const theme = useThemeVars()
+
 const userStore = useUserStore()
 const problems = ref<ProblemFiltered[]>([])
 const total = ref(0)
@@ -129,18 +120,10 @@ const columns: DataTableColumn<ProblemFiltered>[] = [
     title: "状态",
     key: "status",
     width: 60,
-    render: (row) => {
-      if (row.status === "passed") {
-        return h(NIcon, { color: theme.value.successColor }, () => h(Select))
-      } else if (row.status === "failed") {
-        return h(NIcon, { color: theme.value.errorColor }, () => h(SemiSelect))
-      } else {
-        return null
-      }
-    },
+    render: (row) => h(ProblemStatus, { status: row.status }),
   },
   { title: "编号", key: "_id", width: 100 },
-  { title: "标题", key: "title", minWidth: 200 },
+  { title: "题目", key: "title", minWidth: 200 },
   {
     title: "难度",
     key: "difficulty",

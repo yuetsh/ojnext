@@ -31,6 +31,17 @@ const options: SelectOption[] = [
 
 const columns: DataTableColumn<Contest>[] = [
   {
+    title: "状态",
+    key: "status",
+    width: 100,
+    render: (row) =>
+      h(
+        NTag,
+        { type: CONTEST_STATUS[row.status]["type"] },
+        () => CONTEST_STATUS[row.status]["name"]
+      ),
+  },
+  {
     title: "比赛",
     key: "title",
     minWidth: 360,
@@ -47,17 +58,6 @@ const columns: DataTableColumn<Contest>[] = [
     key: "duration",
     width: 180,
     render: (row) => duration(row.start_time, row.end_time),
-  },
-  {
-    title: "状态",
-    key: "status",
-    width: 100,
-    render: (row) =>
-      h(
-        NTag,
-        { type: CONTEST_STATUS[row.status]["type"] },
-        () => CONTEST_STATUS[row.status]["name"]
-      ),
   },
 ]
 
@@ -129,7 +129,7 @@ function rowProps(row: Contest) {
     </n-form-item>
     <n-form-item label="搜索比赛标题">
       <n-input
-        placeholder="输入后回车"
+        placeholder="输入后回车或点击搜索"
         v-model:value="query.keyword"
         @change="search"
       />

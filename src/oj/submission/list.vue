@@ -25,7 +25,7 @@ interface Query {
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
-const notification = useNotification()
+const message = useMessage()
 
 const submissions = ref([])
 const total = ref(0)
@@ -90,7 +90,7 @@ function clear() {
 
 async function rejudge(submissionID: string) {
   await adminRejudge(submissionID)
-  notification.success({ title: "重新判分成功", duration: 2000 })
+  message.success("重新判分成功")
   listSubmissions()
 }
 
@@ -209,7 +209,7 @@ const columns = computed(() => {
       <n-switch v-model:value="query.myself" />
     </n-form-item>
     <n-form-item label="搜索用户">
-      <n-input @change="search" clearable placeholder="输入后回车" />
+      <n-input @change="search" clearable placeholder="输入后回车或点击搜索" />
     </n-form-item>
     <n-form-item>
       <n-space>

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Contest, Problem } from "utils/types"
 import { CONTEST_STATUS, ContestStatus, ContestType } from "utils/constants"
-import { getACRate, parseTime } from "utils/functions"
+import { parseTime } from "utils/functions"
 import {
   getContest,
   getContestAccess,
@@ -10,12 +10,13 @@ import {
 } from "../api"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import ContestTypeVue from "./components/ContestType.vue"
-import { DataTableColumn } from "naive-ui"
 import { useUserStore } from "~/shared/store/user"
 
 const props = defineProps<{
   contestID: string
 }>()
+const message = useMessage()
+const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const contest = ref<Contest>()
@@ -33,10 +34,11 @@ async function init() {
   getProblems()
 }
 
+onMounted(init)
+
 async function getProblems() {
   try {
-    const res = await getContestProblem(props.contestID)
-    problems.value = res.data
+    problems.value = await getContestProblem(props.contestID)
   } catch (err) {
     toggleAccsess(false)
   }
@@ -51,9 +53,10 @@ async function checkPassword() {
     }
   } catch (err) {
     toggleAccsess(false)
+    message.error("密码错误")
   }
 }
-onMounted(init)
+
 const isContestAdmin = computed(
   () =>
     userStore.isSuperAdmin ||
@@ -64,28 +67,23 @@ const passwordFormVisible = computed(
   () =>
     contest.value?.contest_type === ContestType.private &&
     !access.value &&
-    !isContestAdmin
+    !isContestAdmin.value
 )
 
-const problemsColumns: DataTableColumn<Problem>[] = [
-  { title: "编号", key: "_id", width: 100 },
-  { title: "标题", key: "title" },
-  { title: "总提交数", key: "submission_number", width: 100 },
-  {
-    title: "通过率",
-    key: "rate",
-    width: 100,
-    render: (row) => getACRate(row.accepted_number, row.submission_number),
-  },
-]
-
-function rowProps(row: Problem) {
-  return {
-    style: "cursor: pointer",
-    onClick() {
-      router.push(`/contest/${props.contestID}/problem/${row._id}`)
-    },
+const contestMenuVisible = computed(() => {
+  if (isContestAdmin) return true
+  if (contest.value?.contest_type === ContestType.public) {
   }
+  return access.value
+})
+
+function goto(name: string) {
+  router.push({ name: "contest " + name })
+}
+
+function getCurrentType(name: string): "primary" | "default" {
+  if (route.name === "contest " + name) return "primary"
+  return "default"
 }
 </script>
 
@@ -104,27 +102,42 @@ function rowProps(row: Problem) {
       </n-icon>
     </n-space>
     <div v-html="contest.description"></div>
-    <n-form inline label-placement="left">
+    <n-form :inline="isDesktop" label-placement="left">
       <n-form-item v-if="passwordFormVisible" label="需要输入密码才能看到题目">
         <n-input
           name="ContestPassword"
           type="password"
           v-model:value="password"
+          @change="checkPassword"
         />
       </n-form-item>
       <n-form-item v-if="passwordFormVisible">
         <n-button @click="checkPassword" :disabled="!password">确认</n-button>
       </n-form-item>
-      <n-form-item>
+      <n-form-item v-if="contestMenuVisible">
         <n-space>
-          <n-button type="primary">比赛题目</n-button>
-          <n-button>提交信息</n-button>
-          <n-button>比赛排名</n-button>
-          <n-button>管理员助手</n-button>
+          <n-button
+            :type="getCurrentType('problems')"
+            @click="goto('problems')"
+          >
+            比赛题目
+          </n-button>
+          <n-button
+            :type="getCurrentType('submissions')"
+            @click="goto('submissions')"
+          >
+            提交信息
+          </n-button>
+          <n-button :type="getCurrentType('rank')" @click="goto('rank')">
+            比赛排名
+          </n-button>
+          <n-button :type="getCurrentType('helper')" @click="goto('helper')">
+            管理员助手
+          </n-button>
         </n-space>
       </n-form-item>
     </n-form>
-    <n-descriptions bordered :column="isDesktop ? 5 : 2">
+    <n-descriptions class="margin" bordered :column="isDesktop ? 5 : 2">
       <n-descriptions-item
         :span="isDesktop ? 1 : 2"
         v-if="contest.status !== ContestStatus.finished"
@@ -156,16 +169,8 @@ function rowProps(row: Problem) {
         {{ contest.created_by.username }}
       </n-descriptions-item>
     </n-descriptions>
+    <router-view :problems="problems"></router-view>
   </div>
-  <n-data-table
-    striped
-    size="small"
-    class="problems"
-    :data="problems"
-    :columns="problemsColumns"
-    :row-props="rowProps"
-    v-if="problems?.length"
-  ></n-data-table>
 </template>
 
 <style scoped>
@@ -177,7 +182,7 @@ function rowProps(row: Problem) {
   transform: translateY(2px);
 }
 
-.problems {
-  margin-top: 24px;
+.margin {
+  margin-bottom: 24px;
 }
 </style>

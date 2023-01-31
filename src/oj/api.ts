@@ -117,6 +117,9 @@ export function checkContestPassword(contestID: string, password: string) {
   })
 }
 
-export function getContestProblem(contestID: string) {
-  return http.get("contest/problem", { params: { contest_id: contestID } })
+export async function getContestProblem(contestID: string) {
+  const res = await http.get("contest/problem", {
+    params: { contest_id: contestID },
+  })
+  return res.data.map(filterResult)
 }

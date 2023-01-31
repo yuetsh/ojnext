@@ -14,11 +14,10 @@ const data = computed(() => {
   const status = props.problem.statistic_info
   const labels = []
   for (let i in status) {
-    if (status[i] === 0) {
-      delete status[i]
+    if (status[i] !== 0) {
+      // @ts-ignore
+      labels.push(JUDGE_STATUS[i]["name"])
     }
-    // @ts-ignore
-    labels.push(JUDGE_STATUS[i]["name"])
   }
   return {
     labels,

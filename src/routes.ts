@@ -34,6 +34,37 @@ export const routes: RouteRecordRaw[] = [
         path: "contest/:contestID",
         component: () => import("oj/contest/detail.vue"),
         props: true,
+        meta: { requiresAuth: true },
+        children: [
+          {
+            path: "",
+            component: () => import("oj/contest/pages/problems.vue"),
+            props: true,
+            meta: { requiresAuth: true },
+            name: "contest problems",
+          },
+          {
+            path: "submissions",
+            component: () => import("oj/contest/pages/submissions.vue"),
+            props: true,
+            meta: { requiresAuth: true },
+            name: "contest submissions",
+          },
+          {
+            path: "rank",
+            component: () => import("oj/contest/pages/rank.vue"),
+            props: true,
+            meta: { requiresAuth: true },
+            name: "contest rank",
+          },
+          {
+            path: "helper",
+            component: () => import("~/oj/contest/pages/helper.vue"),
+            props: true,
+            meta: { requiresAuth: true },
+            name: "contest helper",
+          },
+        ],
       },
       {
         path: "contest/:contestID/problem/:problemID",

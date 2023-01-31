@@ -102,6 +102,16 @@ export interface Problem {
   my_status: number
 }
 
+export interface ProblemFiltered {
+  _id: string
+  title: string
+  difficulty: "简单" | "中等" | "困难"
+  tags: string[]
+  submission: number
+  rate: string
+  status: "not_test" | "passed" | "failed"
+}
+
 export interface Code {
   language: LANGUAGE
   value: string
