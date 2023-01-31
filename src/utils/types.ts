@@ -140,6 +140,7 @@ export interface Submission {
   info: Info
   language: LANGUAGE
   shared: boolean
+  show_link: boolean
   statistic_info: {
     score?: number
     err_info?: string

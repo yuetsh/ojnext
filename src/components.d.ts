@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
     IEpLock: typeof import('~icons/ep/lock')['default']
     NAlert: typeof import('naive-ui')['NAlert']
     NButton: typeof import('naive-ui')['NButton']
+    NButtonGroup: typeof import('naive-ui')['NButtonGroup']
     NCard: typeof import('naive-ui')['NCard']
     NCode: typeof import('naive-ui')['NCode']
     NConfigProvider: typeof import('naive-ui')['NConfigProvider']

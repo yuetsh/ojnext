@@ -132,7 +132,9 @@ const columns = computed(() => {
           {
             text: true,
             type: "info",
-            onClick: () => router.push("/submission/" + row.id),
+            onClick: () => {
+              if (row.show_link) router.push("/submission/" + row.id)
+            },
           },
           () => row.id.slice(0, 12)
         ),

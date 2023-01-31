@@ -112,9 +112,11 @@ export function getContestAccess(id: string) {
 
 export function checkContestPassword(contestID: string, password: string) {
   return http.post("contest/password", {
-    data: {
-      contest_id: contestID,
-      password,
-    },
+    contest_id: contestID,
+    password,
   })
+}
+
+export function getContestProblem(contestID: string) {
+  return http.get("contest/problem", { params: { contest_id: contestID } })
 }
