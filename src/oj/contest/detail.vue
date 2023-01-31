@@ -1,81 +1,34 @@
 <script setup lang="ts">
-import { Contest, Problem } from "utils/types"
 import { CONTEST_STATUS, ContestStatus, ContestType } from "utils/constants"
 import { parseTime } from "utils/functions"
-import {
-  getContest,
-  getContestAccess,
-  getContestProblem,
-  checkContestPassword,
-} from "../api"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import ContestTypeVue from "./components/ContestType.vue"
-import { useUserStore } from "~/shared/store/user"
+import { useContestStore } from "../store/contest"
 
 const props = defineProps<{
   contestID: string
 }>()
-const message = useMessage()
+const contestStore = useContestStore()
 const route = useRoute()
 const router = useRouter()
-const userStore = useUserStore()
-const contest = ref<Contest>()
-const problems = ref<Problem[]>([])
 const password = ref("")
-const [access, toggleAccsess] = useToggle()
 
-async function init() {
-  const res = await getContest(props.contestID)
-  contest.value = res.data
-  if (contest.value?.contest_type === ContestType.private) {
-    const res = await getContestAccess(props.contestID)
-    toggleAccsess(res.data.access)
+onMounted(() => contestStore.init(props.contestID))
+
+const contestMenuVisible = computed(() => {
+  if (contestStore.isContestAdmin) return true
+  if (contestStore.contest?.contest_type === ContestType.public) {
+    // TODO:这里没有完成
   }
-  getProblems()
-}
-
-onMounted(init)
-
-async function getProblems() {
-  try {
-    problems.value = await getContestProblem(props.contestID)
-  } catch (err) {
-    toggleAccsess(false)
-  }
-}
-
-async function checkPassword() {
-  try {
-    const res = await checkContestPassword(props.contestID, password.value)
-    toggleAccsess(res.data)
-    if (res.data) {
-      getProblems()
-    }
-  } catch (err) {
-    toggleAccsess(false)
-    message.error("密码错误")
-  }
-}
-
-const isContestAdmin = computed(
-  () =>
-    userStore.isSuperAdmin ||
-    (userStore.isAuthed && contest.value?.created_by.id === userStore.user.id)
-)
+  return contestStore.access
+})
 
 const passwordFormVisible = computed(
   () =>
-    contest.value?.contest_type === ContestType.private &&
-    !access.value &&
-    !isContestAdmin.value
+    contestStore.contest?.contest_type === ContestType.private &&
+    !contestStore.access &&
+    !contestStore.isContestAdmin
 )
-
-const contestMenuVisible = computed(() => {
-  if (isContestAdmin) return true
-  if (contest.value?.contest_type === ContestType.public) {
-  }
-  return access.value
-})
 
 function goto(name: string) {
   router.push({ name: "contest " + name })
@@ -88,31 +41,35 @@ function getCurrentType(name: string): "primary" | "default" {
 </script>
 
 <template>
-  <div v-if="contest">
+  <div v-if="contestStore.contest">
     <n-space align="center">
-      <n-tag :type="CONTEST_STATUS[contest.status]['type']">
-        {{ CONTEST_STATUS[contest.status]["name"] }}
+      <n-tag :type="CONTEST_STATUS[contestStore.contest.status]['type']">
+        {{ CONTEST_STATUS[contestStore.contest.status]["name"] }}
       </n-tag>
-      <h2 class="contestTitle">{{ contest.title }}</h2>
+      <h2 class="contestTitle">{{ contestStore.contest.title }}</h2>
       <n-icon
-        v-if="contest.contest_type === ContestType.private"
+        v-if="contestStore.contest.contest_type === ContestType.private"
         class="lockIcon"
       >
         <i-ep-lock />
       </n-icon>
     </n-space>
-    <div v-html="contest.description"></div>
+    <div v-html="contestStore.contest.description"></div>
     <n-form :inline="isDesktop" label-placement="left">
       <n-form-item v-if="passwordFormVisible" label="需要输入密码才能看到题目">
         <n-input
           name="ContestPassword"
           type="password"
           v-model:value="password"
-          @change="checkPassword"
         />
       </n-form-item>
       <n-form-item v-if="passwordFormVisible">
-        <n-button @click="checkPassword" :disabled="!password">确认</n-button>
+        <n-button
+          @click="contestStore.checkPassword(contestID, password)"
+          :disabled="!password"
+        >
+          确认
+        </n-button>
       </n-form-item>
       <n-form-item v-if="contestMenuVisible">
         <n-space>
@@ -137,39 +94,43 @@ function getCurrentType(name: string): "primary" | "default" {
         </n-space>
       </n-form-item>
     </n-form>
-    <n-descriptions class="margin" bordered :column="isDesktop ? 5 : 2">
+    <n-descriptions class="bottom" bordered :column="isDesktop ? 5 : 2">
       <n-descriptions-item
         :span="isDesktop ? 1 : 2"
-        v-if="contest.status !== ContestStatus.finished"
+        v-if="contestStore.contest.status !== ContestStatus.finished"
       >
         <template #label>
-          <span v-if="contest.status === ContestStatus.not_started">
+          <span
+            v-if="contestStore.contest.status === ContestStatus.not_started"
+          >
             距离比赛开始还有
           </span>
-          <span v-if="contest.status === ContestStatus.underway">
+          <span v-if="contestStore.contest.status === ContestStatus.underway">
             距离比赛结束还有
           </span>
         </template>
         <n-space align="center">
-          <n-tag :type="CONTEST_STATUS[contest.status]['type']">
+          <n-tag :type="CONTEST_STATUS[contestStore.contest.status]['type']">
             <n-countdown :duration="500000" />
           </n-tag>
         </n-space>
       </n-descriptions-item>
       <n-descriptions-item label="开始时间">
-        {{ parseTime(contest.start_time, "YYYY年M月D日 hh:mm:ss") }}
+        {{
+          parseTime(contestStore.contest.start_time, "YYYY年M月D日 hh:mm:ss")
+        }}
       </n-descriptions-item>
       <n-descriptions-item label="结束时间">
-        {{ parseTime(contest.end_time, "YYYY年M月D日 hh:mm:ss") }}
+        {{ parseTime(contestStore.contest.end_time, "YYYY年M月D日 hh:mm:ss") }}
       </n-descriptions-item>
       <n-descriptions-item label="比赛类型">
-        <ContestTypeVue :contest="contest" />
+        <ContestTypeVue :contest="contestStore.contest" />
       </n-descriptions-item>
       <n-descriptions-item label="发起人">
-        {{ contest.created_by.username }}
+        {{ contestStore.contest.created_by.username }}
       </n-descriptions-item>
     </n-descriptions>
-    <router-view :problems="problems"></router-view>
+    <router-view></router-view>
   </div>
 </template>
 
@@ -182,7 +143,7 @@ function getCurrentType(name: string): "primary" | "default" {
   transform: translateY(2px);
 }
 
-.margin {
+.bottom {
   margin-bottom: 24px;
 }
 </style>

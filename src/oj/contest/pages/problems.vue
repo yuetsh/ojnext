@@ -2,13 +2,14 @@
 import { DataTableColumn } from "naive-ui"
 import { ProblemFiltered } from "utils/types"
 import ProblemStatus from "~/oj/problem/components/ProblemStatus.vue"
+import { useContestStore } from "~/oj/store/contest"
 
 const props = defineProps<{
   contestID: string
-  problems: ProblemFiltered[]
 }>()
 
 const router = useRouter()
+const contestStore = useContestStore()
 const problemsColumns: DataTableColumn<ProblemFiltered>[] = [
   {
     title: "状态",
@@ -37,10 +38,10 @@ function rowProps(row: ProblemFiltered) {
     striped
     size="small"
     class="problems"
-    :data="problems"
+    :data="contestStore.problems"
     :columns="problemsColumns"
     :row-props="rowProps"
-    v-if="problems?.length"
+    v-if="contestStore.problems?.length"
   />
 </template>
 
