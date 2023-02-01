@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Flag, CloseBold, Select } from "@element-plus/icons-vue"
+import { Promotion, CloseBold, Select } from "@element-plus/icons-vue"
 import Copy from "~/shared/Copy.vue"
 import { code } from "oj/composables/code"
 import { SOURCES } from "utils/constants"
@@ -83,13 +83,13 @@ async function test(sample: Sample, index: number) {
 
 const icon = (status: ProblemStatus) =>
   ({
-    not_test: Flag,
+    not_test: Promotion,
     failed: CloseBold,
     passed: Select,
   }[status])
 const type = (status: ProblemStatus) =>
   ({
-    not_test: "warning",
+    not_test: "",
     failed: "error",
     passed: "success",
   }[status] as "warning" | "error" | "success")
@@ -120,17 +120,22 @@ const type = (status: ProblemStatus) =>
   <div v-for="(sample, index) of samples" :key="index">
     <n-space align="center">
       <p class="title testcaseTitle" :style="style">测试用例 {{ index + 1 }}</p>
-      <n-button
-        :type="type(sample.status)"
-        :disabled="disabled"
-        :loading="sample.loading"
-        circle
-        @click="test(sample, index)"
-      >
-        <template #icon>
-          <component :is="icon(sample.status)"></component>
+      <n-tooltip trigger="hover">
+        <template #trigger>
+          <n-button
+            :type="type(sample.status)"
+            :disabled="disabled"
+            :loading="sample.loading"
+            circle
+            @click="test(sample, index)"
+          >
+            <template #icon>
+              <component :is="icon(sample.status)"></component>
+            </template>
+          </n-button>
         </template>
-      </n-button>
+        点击测试
+      </n-tooltip>
     </n-space>
     <n-descriptions
       bordered

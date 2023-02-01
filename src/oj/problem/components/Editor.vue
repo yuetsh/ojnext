@@ -2,17 +2,17 @@
 import { SOURCES } from "utils/constants"
 import { Problem } from "utils/types"
 import Monaco from "~/shared/Monaco.vue"
+import Submit from "./Submit.vue"
 import { code } from "oj/composables/code"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { DropdownOption } from "naive-ui"
-
-const Submit = defineAsyncComponent(() => import("./Submit.vue"))
 
 interface Props {
   problem: Problem
 }
 
 const props = defineProps<Props>()
+const route = useRoute()
 const router = useRouter()
 
 code.language = props.problem.languages[0] || "C"
@@ -27,8 +27,10 @@ function reset() {
 function change(value: string) {
   code.value = value
 }
+
 function goSubmissions() {
-  router.push(`/submission?problem=${props.problem._id}`)
+  const name = !!route.params.contestID ? "contest submissions" : "submissions"
+  router.push({ name, query: { problem: props.problem._id } })
 }
 const options: DropdownOption[] = props.problem.languages.map((it) => ({
   label: () => [

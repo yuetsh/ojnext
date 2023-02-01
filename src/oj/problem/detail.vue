@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
 const problem = ref<Problem>()
 
 async function init() {
-  const res = await getProblem(props.problemID)
+  const res = await getProblem(props.problemID, props.contestID)
   problem.value = res.data
 }
 onMounted(init)
@@ -42,11 +42,6 @@ provide("problem", readonly(problem))
         <n-tab-pane v-if="isMobile" name="editor" tab="代码编辑">
           <Editor :problem="problem" />
         </n-tab-pane>
-        <n-tab-pane
-          name="contest"
-          tab="比赛信息"
-          v-if="props.contestID"
-        ></n-tab-pane>
         <n-tab-pane name="info" tab="题目信息">
           <ProblemInfo :problem="problem" />
         </n-tab-pane>

@@ -105,7 +105,9 @@ watch(
 )
 
 watch(
-  () => route.path === "/submission" && route.query,
+  () =>
+    (route.name === "submissions" || route.name === "contest submissions") &&
+    route.query,
   (newVal) => {
     if (newVal) listSubmissions()
   }
@@ -228,9 +230,5 @@ const columns = computed(() => {
 <style scoped>
 .select {
   width: 120px;
-}
-
-.warning {
-  color: red;
 }
 </style>

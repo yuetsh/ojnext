@@ -99,7 +99,7 @@ watch(
   }
 )
 watch(
-  () => route.path === "/contest" && route.query,
+  () => route.name === "contests" && route.query,
   (newVal) => {
     if (newVal) listContests()
   }

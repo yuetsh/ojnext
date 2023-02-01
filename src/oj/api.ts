@@ -9,13 +9,14 @@ import {
 } from "utils/types"
 
 function filterResult(result: Problem) {
-  const newResult: any = {
+  const newResult = {
     _id: result._id,
     title: result.title,
     difficulty: DIFFICULTY[result.difficulty],
     tags: result.tags,
     submission: result.submission_number,
     rate: getACRate(result.accepted_number, result.submission_number),
+    status: "",
   }
   if (result.my_status === null || result.my_status === undefined) {
     newResult.status = "not_test"
@@ -59,8 +60,14 @@ export function getRandomProblemID() {
   return http.get("pickone")
 }
 
-export function getProblem(id: string) {
-  return http.get("problem", { params: { problem_id: id } })
+export function getProblem(problemID: string, contestID: string) {
+  const endpoint = !!contestID ? "contest/problem" : "problem"
+  return http.get(endpoint, {
+    params: {
+      problem_id: problemID,
+      contest_id: contestID,
+    },
+  })
 }
 
 export function getSubmission(id: string) {
@@ -78,7 +85,8 @@ export function submitCode(data: SubmitCodePayload) {
 }
 
 export function getSubmissions(params: SubmissionListPayload) {
-  return http.get("submissions", { params })
+  const endpoint = !!params.contest_id ? "contest_submissions" : "submissions"
+  return http.get(endpoint, { params })
 }
 
 export function adminRejudge(id: string) {
@@ -117,7 +125,7 @@ export function checkContestPassword(contestID: string, password: string) {
   })
 }
 
-export async function getContestProblem(contestID: string) {
+export async function getContestProblems(contestID: string) {
   const res = await http.get("contest/problem", {
     params: { contest_id: contestID },
   })

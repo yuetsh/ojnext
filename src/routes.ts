@@ -11,14 +11,13 @@ export const routes: RouteRecordRaw[] = [
         path: "problem/:problemID",
         component: () => import("oj/problem/detail.vue"),
         props: true,
-        name: "ProblemDetail",
-        beforeEnter() {
-          loadChart()
-        },
+        name: "problem",
+        beforeEnter: loadChart,
       },
       {
         path: "submission",
         component: () => import("oj/submission/list.vue"),
+        name: "submissions",
       },
       {
         path: "submission/:submissionID",
@@ -29,6 +28,7 @@ export const routes: RouteRecordRaw[] = [
       {
         path: "contest",
         component: () => import("oj/contest/list.vue"),
+        name: "contests",
       },
       {
         path: "contest/:contestID",
@@ -44,9 +44,8 @@ export const routes: RouteRecordRaw[] = [
             name: "contest problems",
           },
           {
-            path: "submissions",
-            component: () => import("oj/contest/pages/submissions.vue"),
-            props: true,
+            path: "submission",
+            component: () => import("oj/submission/list.vue"),
             meta: { requiresAuth: true },
             name: "contest submissions",
           },
@@ -59,7 +58,7 @@ export const routes: RouteRecordRaw[] = [
           },
           {
             path: "helper",
-            component: () => import("~/oj/contest/pages/helper.vue"),
+            component: () => import("oj/contest/pages/helper.vue"),
             props: true,
             meta: { requiresAuth: true },
             name: "contest helper",
@@ -70,14 +69,14 @@ export const routes: RouteRecordRaw[] = [
         path: "contest/:contestID/problem/:problemID",
         component: () => import("oj/problem/detail.vue"),
         props: true,
-        name: "ContestProblemDetail",
+        name: "contest problem",
+        meta: { requiresAuth: true },
+        beforeEnter: loadChart,
       },
       {
         path: "rank",
         component: () => import("oj/rank/list.vue"),
-        beforeEnter() {
-          loadChart()
-        },
+        beforeEnter: loadChart,
       },
       {
         path: "learn",

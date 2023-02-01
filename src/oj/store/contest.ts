@@ -4,7 +4,7 @@ import { Contest, Problem } from "~/utils/types"
 import {
   getContest,
   getContestAccess,
-  getContestProblem,
+  getContestProblems,
   checkContestPassword,
 } from "../api"
 
@@ -51,7 +51,7 @@ export const useContestStore = defineStore("contest", () => {
   async function _getProblems(contestID: string) {
     problems.value = []
     try {
-      problems.value = await getContestProblem(contestID)
+      problems.value = await getContestProblems(contestID)
     } catch (err) {
       problems.value = []
       toggleAccsess(false)

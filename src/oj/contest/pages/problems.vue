@@ -4,9 +4,7 @@ import { ProblemFiltered } from "utils/types"
 import ProblemStatus from "~/oj/problem/components/ProblemStatus.vue"
 import { useContestStore } from "~/oj/store/contest"
 
-const props = defineProps<{
-  contestID: string
-}>()
+const props = defineProps<{ contestID: string }>()
 
 const router = useRouter()
 const contestStore = useContestStore()
