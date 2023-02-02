@@ -4,17 +4,17 @@ import { Code } from "./types"
 
 const http = axios.create({ baseURL: "https://judge0api.hyyz.izhai.net" })
 
-function encode(str: string) {
-  return btoa(unescape(encodeURIComponent(str ?? "")))
+function encode(string?: string) {
+  return btoa(String.fromCharCode(...new TextEncoder().encode(string ?? "")))
 }
 
-function decode(bytes: string) {
-  let escaped = escape(atob(bytes ?? ""))
-  try {
-    return decodeURIComponent(escaped)
-  } catch (e) {
-    return unescape(escaped)
-  }
+function decode(bytes?: string) {
+  const latin = atob(bytes ?? "")
+  return new TextDecoder("utf-8").decode(
+    Uint8Array.from({ length: latin.length }, (_, index) =>
+      latin.charCodeAt(index)
+    )
+  )
 }
 
 export async function createTestSubmission(code: Code, input: string) {

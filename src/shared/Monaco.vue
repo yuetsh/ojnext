@@ -42,7 +42,7 @@ onMounted(async () => {
     minimap: {
       enabled: false,
     },
-    lineNumbersMinChars: 3,
+    lineNumbersMinChars: 2,
     automaticLayout: true, // 自适应布局
     tabSize: 4,
     fontSize: isMobile.value ? 20 : 24, // 字体大小

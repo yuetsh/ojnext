@@ -88,7 +88,11 @@ function getCurrentType(name: string): "primary" | "default" {
           <n-button :type="getCurrentType('rank')" @click="goto('rank')">
             比赛排名
           </n-button>
-          <n-button :type="getCurrentType('helper')" @click="goto('helper')">
+          <n-button
+            v-if="contestStore.isContestAdmin"
+            :type="getCurrentType('helper')"
+            @click="goto('helper')"
+          >
             管理员助手
           </n-button>
         </n-space>
