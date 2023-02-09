@@ -12,7 +12,7 @@ const query = reactive({
   limit: 10,
   page: 1,
 })
-const rankData = ref<Rank[]>([])
+const chart = ref<Rank[]>([])
 
 async function listRanks() {
   const offset = (query.page - 1) * query.limit
@@ -20,7 +20,7 @@ async function listRanks() {
   data.value = res.data.results
   total.value = res.data.total
   if (query.page === 1) {
-    rankData.value = data.value
+    chart.value = data.value
   }
 }
 
@@ -67,7 +67,7 @@ onMounted(listRanks)
 </script>
 
 <template>
-  <Chart v-if="!!rankData.length" :rankData="rankData" />
+  <Chart v-if="!!chart.length" :rankData="chart" />
   <n-data-table striped size="small" :data="data" :columns="columns" />
   <Pagination
     :total="total"

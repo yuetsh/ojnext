@@ -71,7 +71,7 @@ const data = computed(() => ({
 const options = ref({
   plugins: {
     title: {
-      text: "全校前十名的提交者（不包括超管）",
+      text: "全校前十名的用户（不包括超管）",
       display: true,
       font: { size: 20 },
     },

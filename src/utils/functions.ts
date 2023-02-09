@@ -65,6 +65,16 @@ export function duration(start: Date, end: Date): string {
   return result
 }
 
+export function secondsToDuration(seconds: number): string {
+  const epoch = new Date(0)
+  const secondsAfterEpoch = new Date(seconds * 1000)
+  const duration = intervalToDuration({
+    start: epoch,
+    end: secondsAfterEpoch,
+  })
+  return [duration.hours, duration.minutes, duration.seconds].join(":")
+}
+
 export function submissionMemoryFormat(memory: number | string | undefined) {
   if (memory === undefined) return "--"
   // 1048576 = 1024 * 1024

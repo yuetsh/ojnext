@@ -14,8 +14,14 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(["update:limit", "update:page"])
 
+const route = useRoute()
+
 const limit = ref(props.limit)
 const page = ref(props.page)
+const sizes = computed(() => {
+  if (route.name === "contest rank") return [10, 30, 50]
+  return [10, 20, 30]
+})
 
 watch(limit, () => emit("update:limit", limit))
 watch(page, () => emit("update:page", page))
@@ -28,7 +34,7 @@ watch(page, () => emit("update:page", page))
     :item-count="props.total"
     v-model:page="page"
     v-model:page-size="limit"
-    :page-sizes="[10, 20, 30]"
+    :page-sizes="sizes"
     :page-slot="isDesktop ? 7 : 5"
     show-size-picker
   />

@@ -10,6 +10,7 @@ import {
 
 function filterResult(result: Problem) {
   const newResult = {
+    id: result.id,
     _id: result._id,
     title: result.title,
     difficulty: DIFFICULTY[result.difficulty],
@@ -130,4 +131,16 @@ export async function getContestProblems(contestID: string) {
     params: { contest_id: contestID },
   })
   return res.data.map(filterResult)
+}
+
+export function getContestRank(
+  contestID: string,
+  query: { limit: number; offset: number }
+) {
+  return http.get("contest_rank", {
+    params: {
+      contest_id: contestID,
+      ...query,
+    },
+  })
 }

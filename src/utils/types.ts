@@ -59,15 +59,17 @@ export type SUBMISSION_RESULT = -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 
 export type ProblemStatus = "passed" | "failed" | "not_test"
 
+interface SampleUser {
+  id: number
+  username: string
+  real_name: string | null
+}
+
 export interface Problem {
   _id: string
   id: number
   tags: string[]
-  created_by: {
-    id: number
-    username: string
-    real_name: null
-  }
+  created_by: SampleUser
   template: { [key in LANGUAGE]?: string }
   title: string
   description: string
@@ -104,6 +106,7 @@ export interface Problem {
 
 export interface ProblemFiltered {
   _id: string
+  id: number
   title: string
   difficulty: "简单" | "中等" | "困难"
   tags: string[]
@@ -177,11 +180,7 @@ export interface SubmissionListPayload {
 
 export interface Rank {
   id: number
-  user: {
-    id: number
-    username: string
-    real_name: null
-  }
+  user: SampleUser
   acm_problems_status: {
     problems: {
       [key: string]: {
@@ -214,11 +213,7 @@ export interface Rank {
 
 export interface Contest {
   id: number
-  created_by: {
-    id: number
-    username: string
-    real_name: null
-  }
+  created_by: SampleUser
   status: ContestStatus
   contest_type: ContestType
   title: string
@@ -229,4 +224,22 @@ export interface Contest {
   end_time: Date
   create_time: Date
   last_update_time: Date
+}
+
+interface SubmissionInfo {
+  is_ac: boolean
+  ac_time: number
+  is_first_ac: boolean
+  error_number: number
+  checked?: boolean
+}
+
+export interface ContestRank {
+  id: number
+  user: SampleUser
+  submission_number: number
+  accepted_number: number
+  total_time: number
+  submission_info: { [key: string]: SubmissionInfo }
+  contest: number
 }
