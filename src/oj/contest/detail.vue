@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { CONTEST_STATUS, ContestStatus, ContestType } from "utils/constants"
-import { parseTime } from "utils/functions"
-import { isDesktop } from "~/shared/composables/breakpoints"
-import ContestTypeVue from "./components/ContestType.vue"
+import { CONTEST_STATUS, ContestType } from "utils/constants"
+
+import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { useContestStore } from "../store/contest"
+import { DropdownOption } from "naive-ui"
+import ContestInfo from "./components/ContestInfo.vue"
 
 const props = defineProps<{
   contestID: string
@@ -38,41 +39,33 @@ function getCurrentType(name: string): "primary" | "default" {
   if (route.name === "contest " + name) return "primary"
   return "default"
 }
+
+const options = computed<DropdownOption[]>(() => [
+  { label: "比赛题目", key: "problems" },
+  { label: "提交信息", key: "submissions" },
+  { label: "比赛排名", key: "rank" },
+  { label: "管理员助手", key: "helper", show: contestStore.isContestAdmin },
+])
 </script>
 
 <template>
   <div v-if="contestStore.contest">
-    <n-space align="center">
-      <n-tag :type="CONTEST_STATUS[contestStore.contest.status]['type']">
-        {{ CONTEST_STATUS[contestStore.contest.status]["name"] }}
-      </n-tag>
-      <h2 class="contestTitle">{{ contestStore.contest.title }}</h2>
-      <n-icon
-        v-if="contestStore.contest.contest_type === ContestType.private"
-        class="lockIcon"
-      >
-        <i-ep-lock />
-      </n-icon>
-    </n-space>
-    <div v-html="contestStore.contest.description"></div>
-    <n-form :inline="isDesktop" label-placement="left">
-      <n-form-item v-if="passwordFormVisible" label="需要输入密码才能看到题目">
-        <n-input
-          name="ContestPassword"
-          type="password"
-          v-model:value="password"
-        />
-      </n-form-item>
-      <n-form-item v-if="passwordFormVisible">
-        <n-button
-          @click="contestStore.checkPassword(contestID, password)"
-          :disabled="!password"
+    <n-space align="center" justify="space-between">
+      <n-space align="center">
+        <n-tag :type="CONTEST_STATUS[contestStore.contest.status]['type']">
+          {{ CONTEST_STATUS[contestStore.contest.status]["name"] }}
+        </n-tag>
+        <h2 class="contestTitle">{{ contestStore.contest.title }}</h2>
+        <n-icon
+          v-if="contestStore.contest.contest_type === ContestType.private"
+          class="lockIcon"
         >
-          确认
-        </n-button>
-      </n-form-item>
-      <n-form-item v-if="contestMenuVisible">
-        <n-space>
+          <i-ep-lock />
+        </n-icon>
+      </n-space>
+      <n-space v-if="contestMenuVisible">
+        <ContestInfo />
+        <n-space v-if="isDesktop">
           <n-button
             :type="getCurrentType('problems')"
             @click="goto('problems')"
@@ -96,44 +89,38 @@ function getCurrentType(name: string): "primary" | "default" {
             管理员助手
           </n-button>
         </n-space>
+        <n-dropdown
+          v-if="isMobile"
+          :options="options"
+          trigger="click"
+          @select="goto"
+        >
+          <n-button>菜单</n-button>
+        </n-dropdown>
+      </n-space>
+    </n-space>
+    <div v-html="contestStore.contest.description"></div>
+    <n-form
+      :inline="isDesktop"
+      label-placement="left"
+      v-if="passwordFormVisible"
+    >
+      <n-form-item label="需要输入密码才能看到题目">
+        <n-input
+          name="ContestPassword"
+          type="password"
+          v-model:value="password"
+        />
+      </n-form-item>
+      <n-form-item>
+        <n-button
+          @click="contestStore.checkPassword(contestID, password)"
+          :disabled="!password"
+        >
+          确认
+        </n-button>
       </n-form-item>
     </n-form>
-    <n-descriptions class="bottom" bordered :column="isDesktop ? 5 : 2">
-      <n-descriptions-item
-        :span="isDesktop ? 1 : 2"
-        v-if="contestStore.contest.status !== ContestStatus.finished"
-      >
-        <template #label>
-          <span
-            v-if="contestStore.contest.status === ContestStatus.not_started"
-          >
-            距离比赛开始还有
-          </span>
-          <span v-if="contestStore.contest.status === ContestStatus.underway">
-            距离比赛结束还有
-          </span>
-        </template>
-        <n-space align="center">
-          <n-tag :type="CONTEST_STATUS[contestStore.contest.status]['type']">
-            <n-countdown :duration="500000" />
-          </n-tag>
-        </n-space>
-      </n-descriptions-item>
-      <n-descriptions-item label="开始时间">
-        {{
-          parseTime(contestStore.contest.start_time, "YYYY年M月D日 hh:mm:ss")
-        }}
-      </n-descriptions-item>
-      <n-descriptions-item label="结束时间">
-        {{ parseTime(contestStore.contest.end_time, "YYYY年M月D日 hh:mm:ss") }}
-      </n-descriptions-item>
-      <n-descriptions-item label="比赛类型">
-        <ContestTypeVue :contest="contestStore.contest" />
-      </n-descriptions-item>
-      <n-descriptions-item label="发起人">
-        {{ contestStore.contest.created_by.username }}
-      </n-descriptions-item>
-    </n-descriptions>
     <router-view></router-view>
   </div>
 </template>
@@ -145,9 +132,5 @@ function getCurrentType(name: string): "primary" | "default" {
 }
 .lockIcon {
   transform: translateY(2px);
-}
-
-.bottom {
-  margin-bottom: 24px;
 }
 </style>
