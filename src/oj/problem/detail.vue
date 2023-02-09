@@ -32,14 +32,21 @@ provide("problem", readonly(problem))
 <template>
   <n-grid v-if="problem" x-gap="16" :cols="2">
     <n-gi :span="isDesktop ? 1 : 2">
-      <n-tabs default-value="content">
-        <n-tab-pane name="content" tab="题目描述">
-          <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 136px)">
+      <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
+        <n-tabs default-value="content">
+          <n-tab-pane name="content" tab="题目描述">
             <ProblemContent :problem="problem" />
-          </n-scrollbar>
-          <ProblemContent v-else :problem="problem" />
+          </n-tab-pane>
+          <n-tab-pane name="info" tab="题目信息">
+            <ProblemInfo :problem="problem" />
+          </n-tab-pane>
+        </n-tabs>
+      </n-scrollbar>
+      <n-tabs v-else default-value="content">
+        <n-tab-pane name="content" tab="题目描述">
+          <ProblemContent :problem="problem" />
         </n-tab-pane>
-        <n-tab-pane v-if="isMobile" name="editor" tab="代码编辑">
+        <n-tab-pane name="editor" tab="代码编辑">
           <Editor :problem="problem" />
         </n-tab-pane>
         <n-tab-pane name="info" tab="题目信息">

@@ -45,7 +45,7 @@ onMounted(async () => {
     lineNumbersMinChars: 2,
     automaticLayout: true, // 自适应布局
     tabSize: 4,
-    fontSize: isMobile.value ? 20 : 24, // 字体大小
+    fontSize: isMobile.value ? 20 : 22, // 字体大小
     scrollBeyondLastLine: false,
     lineDecorationsWidth: 0,
     scrollBeyondLastColumn: 0,
