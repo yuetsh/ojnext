@@ -1,27 +1,18 @@
 <script setup lang="ts">
 import { CONTEST_STATUS } from "utils/constants"
-import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
+import { isDesktop } from "~/shared/composables/breakpoints"
 import { useContestStore } from "../store/contest"
-import { DropdownOption } from "naive-ui"
 import ContestInfo from "./components/ContestInfo.vue"
+import ContestMenu from "./components/ContestMenu.vue"
 
 const props = defineProps<{
   contestID: string
 }>()
 const contestStore = useContestStore()
-const route = useRoute()
-const router = useRouter()
+
 const password = ref("")
 
 onMounted(() => contestStore.init(props.contestID))
-
-const contestMenuVisible = computed(() => {
-  if (contestStore.isContestAdmin) return true
-  if (!contestStore.isPrivate) {
-    // TODO:这里没有完成
-  }
-  return contestStore.access
-})
 
 const passwordFormVisible = computed(
   () =>
@@ -29,22 +20,6 @@ const passwordFormVisible = computed(
     !contestStore.access &&
     !contestStore.isContestAdmin
 )
-
-function goto(name: string) {
-  router.push({ name: "contest " + name })
-}
-
-function getCurrentType(name: string): "primary" | "default" {
-  if (route.name === "contest " + name) return "primary"
-  return "default"
-}
-
-const options = computed<DropdownOption[]>(() => [
-  { label: "比赛题目", key: "problems" },
-  { label: "提交信息", key: "submissions" },
-  { label: "比赛排名", key: "rank" },
-  { label: "管理员助手", key: "helper", show: contestStore.isContestAdmin },
-])
 </script>
 
 <template>
@@ -61,40 +36,7 @@ const options = computed<DropdownOption[]>(() => [
       </n-space>
       <n-space>
         <ContestInfo />
-        <div v-if="contestMenuVisible">
-          <n-space v-if="isDesktop">
-            <n-button
-              :type="getCurrentType('problems')"
-              @click="goto('problems')"
-            >
-              比赛题目
-            </n-button>
-            <n-button
-              :type="getCurrentType('submissions')"
-              @click="goto('submissions')"
-            >
-              提交信息
-            </n-button>
-            <n-button :type="getCurrentType('rank')" @click="goto('rank')">
-              比赛排名
-            </n-button>
-            <n-button
-              v-if="contestStore.isContestAdmin"
-              :type="getCurrentType('helper')"
-              @click="goto('helper')"
-            >
-              管理员助手
-            </n-button>
-          </n-space>
-          <n-dropdown
-            v-if="isMobile"
-            :options="options"
-            trigger="click"
-            @select="goto"
-          >
-            <n-button>菜单</n-button>
-          </n-dropdown>
-        </div>
+        <ContestMenu />
       </n-space>
     </n-space>
     <n-form
