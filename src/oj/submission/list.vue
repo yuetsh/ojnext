@@ -227,12 +227,7 @@ const columns = computed(() => {
       <n-switch v-model:value="query.myself" />
     </n-form-item>
     <n-form-item label="搜索用户">
-      <n-input
-        v-model:value="query.username"
-        @change="search"
-        clearable
-        placeholder="输入用户后回车或点击搜索"
-      />
+      <n-input @change="search" clearable placeholder="输入后回车或点击搜索" />
     </n-form-item>
     <n-form-item>
       <n-space>

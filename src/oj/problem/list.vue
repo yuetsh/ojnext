@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useUserStore } from "~/shared/store/user"
-import { filterEmptyValue, getTagColor } from "utils/functions"
+import { filterEmptyValue, getTagColor, debounce } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { getProblemList, getProblemTagList, getRandomProblemID } from "oj/api"
@@ -169,12 +169,7 @@ function rowProps(row: ProblemFiltered) {
       />
     </n-form-item>
     <n-form-item label="搜索">
-      <n-input
-        placeholder="输入编号或标题后回车"
-        clearable
-        v-model:value="query.keyword"
-        @change="search"
-      />
+      <n-input placeholder="输入编号或标题后回车" clearable @change="search" />
     </n-form-item>
     <n-form-item>
       <n-space>
