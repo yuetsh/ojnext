@@ -79,7 +79,7 @@ onMounted(init)
       />
     </n-card>
     <n-data-table
-      v-if="submission.info"
+      v-if="submission.info && submission.info.data"
       :columns="columns"
       :data="submission.info.data"
     />
