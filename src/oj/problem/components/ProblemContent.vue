@@ -20,15 +20,12 @@ type Sample = Problem["samples"][number] & {
 
 const props = defineProps<Props>()
 const route = useRoute()
-const contestID = <string>route.params.contestID
 const theme = useThemeVars()
 const style = computed(() => "color: " + theme.value.primaryColor)
 const solved = ref(false)
 
 onMounted(() => {
-  if (contestID) {
-    checkSubmisson()
-  }
+  if (route.params.contestID) checkSubmission()
 })
 
 const samples = ref<Sample[]>(
@@ -50,7 +47,7 @@ const disabled = computed(
     )
 )
 
-async function checkSubmisson() {
+async function checkSubmission() {
   const res = await submissionExists(props.problem.id)
   solved.value = res.data
 }
@@ -97,7 +94,7 @@ const type = (status: ProblemStatus) =>
 
 <template>
   <n-alert
-    v-if="problem.my_status === 0 || (contestID && solved)"
+    v-if="problem.my_status === 0 || (route.params.contestID && solved)"
     type="success"
     title="🎉 本 题 已 经 被 你 解 决 啦"
   />

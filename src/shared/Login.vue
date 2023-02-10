@@ -63,7 +63,7 @@ function goSignup() {
           v-model:value="form.username"
           autofocus
           clearable
-          name="username"
+          name="login username"
         />
       </n-form-item>
       <n-form-item label="密码" path="password">
@@ -71,7 +71,7 @@ function goSignup() {
           v-model:value="form.password"
           clearable
           type="password"
-          name="password"
+          name="login password"
           @change="submit"
         />
       </n-form-item>

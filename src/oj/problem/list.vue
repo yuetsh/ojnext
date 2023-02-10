@@ -166,7 +166,6 @@ function rowProps(row: ProblemFiltered) {
         class="select"
         v-model:value="query.tag"
         :options="tagOptions"
-        clearable
       />
     </n-form-item>
     <n-form-item label="搜索">

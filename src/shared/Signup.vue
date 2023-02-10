@@ -36,14 +36,14 @@ function submit() {}
           v-model:value="form.username"
           autofocus
           clearable
-          name="username"
+          name="signup username"
         />
       </n-form-item>
       <n-form-item label="邮箱" path="email">
         <n-input
           v-model:value="form.email"
           clearable
-          name="email"
+          name="signup email"
           @change="submit"
         />
       </n-form-item>
@@ -52,7 +52,7 @@ function submit() {}
           v-model:value="form.password"
           clearable
           type="password"
-          name="password"
+          name="signup password"
         />
       </n-form-item>
       <n-form-item label="确认密码" path="password">
@@ -60,7 +60,7 @@ function submit() {}
           v-model:value="form.passwordAgain"
           clearable
           type="password"
-          name="passwordAgain"
+          name="signup password again"
         />
       </n-form-item>
       <n-alert v-if="msg" type="error" :show-icon="false"> {{ msg }}</n-alert>

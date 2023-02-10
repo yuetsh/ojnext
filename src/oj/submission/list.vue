@@ -118,28 +118,33 @@ const columns = computed(() => {
     {
       title: "提交时间",
       key: "create_time",
-      width: 180,
+      width: 200,
       render: (row) =>
         parseTime(
           row.create_time,
-          isDesktop ? "YYYY-M-D hh:mm:ss" : "M-D hh:mm"
+          isDesktop ? "YYYY-MM-DD hh:mm:ss" : "M-D hh:mm"
         ),
     },
     {
       title: "编号",
       key: "id",
-      render: (row) =>
-        h(
-          NButton,
-          {
-            text: true,
-            type: "info",
-            onClick: () => {
-              if (row.show_link) router.push("/submission/" + row.id)
+      render: (row) => {
+        if (row.show_link) {
+          return h(
+            NButton,
+            {
+              text: true,
+              type: "info",
+              onClick: () => {
+                router.push("/submission/" + row.id)
+              },
             },
-          },
-          () => row.id.slice(0, 12)
-        ),
+            () => row.id.slice(0, 12)
+          )
+        } else {
+          return row.id.slice(0, 12)
+        }
+      },
     },
     {
       title: "状态",
@@ -157,7 +162,18 @@ const columns = computed(() => {
           {
             text: true,
             type: "info",
-            onClick: () => router.push("/problem/" + row.problem),
+            onClick: () => {
+              if (route.name === "contest submissions") {
+                router.push({
+                  name: "contest problem",
+                  params: {
+                    problemID: row.problem,
+                  },
+                })
+              } else {
+                router.push("/problem/" + row.problem)
+              }
+            },
           },
           () => row.problem
         ),
@@ -215,7 +231,7 @@ const columns = computed(() => {
         v-model:value="query.username"
         @change="search"
         clearable
-        placeholder="输入后回车或点击搜索"
+        placeholder="输入用户后回车或点击搜索"
       />
     </n-form-item>
     <n-form-item>

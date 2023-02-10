@@ -67,7 +67,7 @@ onMounted(init)
     </n-alert>
     <n-card embedded>
       <n-space justify="end">
-        <n-button @click="handleCopy(submission!.code)">
+        <n-button type="primary" @click="handleCopy(submission!.code)">
           {{ copied ? "已复制" : "复制代码" }}
         </n-button>
       </n-space>
@@ -78,7 +78,11 @@ onMounted(init)
         show-line-numbers
       />
     </n-card>
-    <n-data-table :columns="columns" :data="submission.info.data" />
+    <n-data-table
+      v-if="submission.info"
+      :columns="columns"
+      :data="submission.info.data"
+    />
   </n-space>
 </template>
 
