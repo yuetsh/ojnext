@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { CONTEST_STATUS, ContestType } from "utils/constants"
-
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { useContestStore } from "../store/contest"
 import { DropdownOption } from "naive-ui"

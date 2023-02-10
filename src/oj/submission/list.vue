@@ -150,7 +150,7 @@ const columns = computed(() => {
     {
       title: "题目",
       key: "problem",
-      width: 100,
+      width: 120,
       render: (row) =>
         h(
           NButton,
@@ -165,16 +165,16 @@ const columns = computed(() => {
     {
       title: "执行耗时",
       key: "time",
-      width: 100,
+      width: 120,
       render: (row) => submissionTimeFormat(row.statistic_info.time_cost),
     },
     {
       title: "占用内存",
       key: "memory",
-      width: 100,
+      width: 120,
       render: (row) => submissionMemoryFormat(row.statistic_info.memory_cost),
     },
-    { title: "语言", key: "language", width: 100 },
+    { title: "语言", key: "language", width: 120 },
     {
       title: "用户",
       key: "username",
@@ -211,7 +211,12 @@ const columns = computed(() => {
       <n-switch v-model:value="query.myself" />
     </n-form-item>
     <n-form-item label="搜索用户">
-      <n-input @change="search" clearable placeholder="输入后回车或点击搜索" />
+      <n-input
+        v-model:value="query.username"
+        @change="search"
+        clearable
+        placeholder="输入后回车或点击搜索"
+      />
     </n-form-item>
     <n-form-item>
       <n-space>

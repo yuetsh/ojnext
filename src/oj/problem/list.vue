@@ -170,7 +170,12 @@ function rowProps(row: ProblemFiltered) {
       />
     </n-form-item>
     <n-form-item label="搜索">
-      <n-input placeholder="输入编号或标题后回车" clearable @change="search" />
+      <n-input
+        placeholder="输入编号或标题后回车"
+        clearable
+        v-model:value="query.keyword"
+        @change="search"
+      />
     </n-form-item>
     <n-form-item>
       <n-space>
