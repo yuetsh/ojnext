@@ -14,7 +14,7 @@ const isPrivate = computed(
 </script>
 
 <template>
-  <n-tag :type="isPrivate ? 'error' : 'default'">
+  <n-tag :type="isPrivate ? 'error' : 'info'">
     {{ isPrivate ? "需要密码" : "公开" }}
   </n-tag>
 </template>

@@ -2,7 +2,6 @@
 import { parseTime } from "utils/functions"
 import { useContestStore } from "oj/store/contest"
 import ContestTypeVue from "./ContestType.vue"
-import { isDesktop } from "~/shared/composables/breakpoints"
 
 const contestStore = useContestStore()
 </script>
@@ -17,7 +16,8 @@ const contestStore = useContestStore()
     <template #trigger>
       <n-button>比赛信息</n-button>
     </template>
-    <n-descriptions bordered :column="isDesktop ? 4 : 1">
+    <div v-html="contestStore.contest.description"></div>
+    <n-descriptions bordered label-placement="left" :column="1">
       <n-descriptions-item label="开始时间">
         {{
           parseTime(contestStore.contest.start_time, "YYYY年M月D日 hh:mm:ss")
