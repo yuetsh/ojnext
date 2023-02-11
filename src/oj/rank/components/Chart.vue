@@ -68,7 +68,7 @@ const data = computed(() => ({
   ],
 }))
 
-const options = ref({
+const options = {
   plugins: {
     title: {
       text: "全校前十名的用户（不包括超管）",
@@ -76,7 +76,7 @@ const options = ref({
       font: { size: 20 },
     },
   },
-})
+}
 </script>
 <template>
   <Bar class="chart" :data="data" :options="options" />

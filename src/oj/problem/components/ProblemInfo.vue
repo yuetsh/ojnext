@@ -25,12 +25,11 @@ const data = computed(() => {
   }
 })
 
-const options = ref({
-  responsive: true,
+const options = {
   plugins: {
     title: { text: "提交结果的比例", display: true, font: { size: 20 } },
   },
-})
+}
 </script>
 
 <template>
