@@ -72,6 +72,16 @@ export const routes: RouteRecordRaw[] = [
         beforeEnter: loadChart,
       },
       {
+        path: "user",
+        component: () => import("oj/user/index.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
+        path: "setting",
+        component: () => import("oj/user/setting.vue"),
+        meta: { requiresAuth: true },
+      },
+      {
         path: "learn",
         redirect: "learn/step-1",
       },

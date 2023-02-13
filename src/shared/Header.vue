@@ -15,24 +15,18 @@ import { code } from "~/shared/composables/learn"
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
+const active = computed(() => {
+  const path = route.path.split("/")[1] || "problem"
+  return !["user", "setting"].includes(path) ? path : ""
+})
 
 async function handleLogout() {
   await logout()
-  userStore.clearMyProfile()
+  userStore.clearProfile()
   router.replace("/")
 }
 
-function handleDropdown(key: string) {
-  switch (key) {
-    case "logout":
-      handleLogout()
-      break
-  }
-}
-
 onMounted(userStore.getMyProfile)
-
-const defaultValue = computed(() => route.path.split("/")[1] || "problem")
 
 const menus: MenuOption[] = [
   {
@@ -60,12 +54,30 @@ const menus: MenuOption[] = [
 ]
 
 const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
-  { label: "我的主页", key: "home" },
-  { label: "我的提交", key: "status" },
-  { label: "我的设置", key: "setting" },
+  {
+    label: "我的主页",
+    key: "home",
+    props: {
+      onClick: () => router.push("/user"),
+    },
+  },
+  {
+    label: "我的提交",
+    key: "status",
+    props: {
+      onClick: () => router.push("/submission?myself=1"),
+    },
+  },
+  {
+    label: "我的设置",
+    key: "setting",
+    props: {
+      onClick: () => router.push("/setting"),
+    },
+  },
   { label: "后台管理", key: "admin", show: userStore.isAdminRole },
   { type: "divider" },
-  { label: "退出", key: "logout" },
+  { label: "退出", key: "logout", props: { onClick: handleLogout } },
 ])
 
 function run() {
@@ -75,7 +87,7 @@ function run() {
 
 <template>
   <n-space v-if="isDesktop" justify="space-between" align="center">
-    <n-menu mode="horizontal" :options="menus" :default-value="defaultValue" />
+    <n-menu mode="horizontal" :options="menus" :value="active" />
     <n-space>
       <n-button circle @click="toggleDark()">
         <template #icon>
@@ -88,7 +100,6 @@ function run() {
           v-if="userStore.isAuthed"
           :options="options"
           trigger="click"
-          @select="handleDropdown"
         >
           <n-button>{{ userStore.user.username }}</n-button>
         </n-dropdown>
@@ -106,12 +117,7 @@ function run() {
     <n-button v-if="$route.name === 'learn'" type="primary" @click="run">
       运行
     </n-button>
-    <n-dropdown
-      v-if="userStore.isAuthed"
-      :options="options"
-      @select="handleDropdown"
-      trigger="click"
-    >
+    <n-dropdown v-if="userStore.isAuthed" :options="options" trigger="click">
       <n-button>{{ userStore.user.username }}</n-button>
     </n-dropdown>
     <n-space v-else>

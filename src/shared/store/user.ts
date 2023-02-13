@@ -27,7 +27,7 @@ export const useUserStore = defineStore("user", () => {
     storage.set(STORAGE_KEY.AUTHED, !!user.value.email)
   }
 
-  function clearMyProfile() {
+  function clearProfile() {
     profile.value = {}
     storage.clear()
   }
@@ -40,6 +40,6 @@ export const useUserStore = defineStore("user", () => {
     hasProblemPermission,
     isAuthed,
     getMyProfile,
-    clearMyProfile,
+    clearProfile,
   }
 })
