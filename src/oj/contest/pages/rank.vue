@@ -40,7 +40,15 @@ const columns = ref<DataTableColumn<ContestRank>[]>([
     fixed: "left",
     align: "center",
     render: (row) =>
-      h(NButton, { text: true, type: "info" }, () => row.user.username),
+      h(
+        NButton,
+        {
+          text: true,
+          type: "info",
+          onClick: () => router.push("/user?name=" + row.user.username),
+        },
+        () => row.user.username
+      ),
   },
   {
     title: "正确数/总提交",

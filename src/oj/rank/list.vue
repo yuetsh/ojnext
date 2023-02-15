@@ -6,6 +6,7 @@ import { Rank } from "utils/types"
 import { getRank } from "oj/api"
 import { getACRate } from "utils/functions"
 
+const router = useRouter()
 const data = ref<Rank[]>([])
 const total = ref(0)
 const query = reactive({
@@ -39,7 +40,11 @@ const columns: DataTableColumn<Rank>[] = [
     render: (row) =>
       h(
         NButton,
-        { text: true, type: "info", onClick: () => {} },
+        {
+          text: true,
+          type: "info",
+          onClick: () => router.push("/user?name=" + row.user.username),
+        },
         () => row.user.username
       ),
   },

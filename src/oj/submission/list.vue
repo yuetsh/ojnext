@@ -196,7 +196,15 @@ const columns = computed(() => {
       key: "username",
       minWidth: 120,
       render: (row) =>
-        h(NButton, { text: true, type: "info" }, () => row.username),
+        h(
+          NButton,
+          {
+            text: true,
+            type: "info",
+            onClick: () => router.push("/user?name=" + row.username),
+          },
+          () => row.username
+        ),
     },
   ]
   if (!route.params.contestID && userStore.isSuperAdmin) {
