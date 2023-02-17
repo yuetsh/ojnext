@@ -1,11 +1,12 @@
 import { PROBLEM_PERMISSION, STORAGE_KEY, USER_TYPE } from "utils/constants"
 import storage from "utils/storage"
+import { Profile, User } from "~/utils/types"
 import { getProfile } from "../api"
 
 export const useUserStore = defineStore("user", () => {
-  const profile = ref()
+  const profile = ref<Profile | null>(null)
   const [isFinished] = useToggle(false)
-  const user = computed(() => profile?.value?.user ?? {})
+  const user = computed<User>(() => profile!.value!.user)
   const isAuthed = computed(() => !!user.value.email)
   const isAdminRole = computed(
     () =>
@@ -28,7 +29,7 @@ export const useUserStore = defineStore("user", () => {
   }
 
   function clearProfile() {
-    profile.value = {}
+    profile.value = null
     storage.clear()
   }
   return {

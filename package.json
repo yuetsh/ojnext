@@ -22,6 +22,7 @@
     "party-js": "^2.2.0",
     "pinia": "^2.0.30",
     "vue": "^3.2.47",
+    "vue-avatar-upload": "^1.1.0",
     "vue-chartjs": "^5.2.0",
     "vue-router": "^4.1.6"
   },

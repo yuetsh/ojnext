@@ -10,7 +10,7 @@ const [loading, toggle] = useToggle()
 async function init() {
   toggle(true)
   try {
-    const res = await getProfile(route.query.name as string)
+    const res = await getProfile(<string>route.query.name)
     profile.value = res.data
     const acm = res.data.acm_problems_status.problems || {}
     const oi = res.data.oi_problems_status.problems || {}
@@ -76,6 +76,7 @@ onMounted(init)
 
 h2 {
   margin: 0;
+  font-weight: normal;
 }
 
 .desc {

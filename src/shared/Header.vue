@@ -89,11 +89,8 @@ function run() {
   <n-space v-if="isDesktop" justify="space-between" align="center">
     <n-menu mode="horizontal" :options="menus" :value="active" />
     <n-space>
-      <n-button circle @click="toggleDark()">
-        <template #icon>
-          <n-icon v-if="isDark"><i-ep-sunny /></n-icon>
-          <n-icon v-else> <i-ep-moon /></n-icon>
-        </template>
+      <n-button v-if="$route.name === 'learn'" type="primary" @click="run">
+        运行
       </n-button>
       <div v-if="userStore.isFinished">
         <n-dropdown
@@ -108,8 +105,11 @@ function run() {
           <n-button @click="toggleSignup(true)">注册</n-button>
         </n-space>
       </div>
-      <n-button v-if="$route.name === 'learn'" type="primary" @click="run">
-        运行
+      <n-button circle @click="toggleDark()">
+        <template #icon>
+          <n-icon v-if="isDark"><i-ep-sunny /></n-icon>
+          <n-icon v-else> <i-ep-moon /></n-icon>
+        </template>
       </n-button>
     </n-space>
   </n-space>
@@ -133,6 +133,12 @@ function run() {
         </template>
       </n-button>
     </n-dropdown>
+    <n-button circle @click="toggleDark()">
+      <template #icon>
+        <n-icon v-if="isDark"><i-ep-sunny /></n-icon>
+        <n-icon v-else> <i-ep-moon /></n-icon>
+      </template>
+    </n-button>
   </n-space>
 </template>
 
