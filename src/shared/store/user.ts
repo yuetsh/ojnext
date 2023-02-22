@@ -6,18 +6,18 @@ import { getProfile } from "../api"
 export const useUserStore = defineStore("user", () => {
   const profile = ref<Profile | null>(null)
   const [isFinished] = useToggle(false)
-  const user = computed<User>(() => profile!.value!.user)
-  const isAuthed = computed(() => !!user.value.email)
+  const user = computed<User | null>(() => profile.value?.user ?? null)
+  const isAuthed = computed(() => !!user.value?.email ?? false)
   const isAdminRole = computed(
     () =>
-      user.value.admin_type === USER_TYPE.ADMIN ||
-      user.value.admin_type === USER_TYPE.SUPER_ADMIN
+      user.value?.admin_type === USER_TYPE.ADMIN ||
+      user.value?.admin_type === USER_TYPE.SUPER_ADMIN
   )
   const isSuperAdmin = computed(
-    () => user.value.admin_type === USER_TYPE.SUPER_ADMIN
+    () => user.value?.admin_type === USER_TYPE.SUPER_ADMIN
   )
   const hasProblemPermission = computed(
-    () => user.value.problem_permission !== PROBLEM_PERMISSION.NONE
+    () => user.value?.problem_permission !== PROBLEM_PERMISSION.NONE
   )
 
   async function getMyProfile() {
@@ -25,7 +25,7 @@ export const useUserStore = defineStore("user", () => {
     const res = await getProfile()
     profile.value = res.data
     isFinished.value = true
-    storage.set(STORAGE_KEY.AUTHED, !!user.value.email)
+    storage.set(STORAGE_KEY.AUTHED, !!user.value?.email ?? false)
   }
 
   function clearProfile() {

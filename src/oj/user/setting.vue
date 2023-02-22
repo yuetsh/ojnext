@@ -1,25 +1,24 @@
 <script setup lang="ts">
-import VueAvatarUpload from "vue-avatar-upload"
-import "vue-avatar-upload/lib/style.css"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
 
-const [showAvatarModal] = useToggle()
 const userStore = useUserStore()
+
+function choose() {}
 </script>
 <template>
   <n-grid v-if="userStore.profile" :x-gap="20" :cols="isDesktop ? 3 : 1">
     <n-gi>
       <h3>个人信息设置</h3>
       <n-form>
-        <n-form-item label="头像">
-          <n-button @click="showAvatarModal = true">打开</n-button>
-          <n-modal v-model:show="showAvatarModal" :mask-closable="false">
-            <VueAvatarUpload
-              :avatar="userStore.profile.avatar"
-              @close="showAvatarModal = false"
-            />
-          </n-modal>
+        <n-avatar
+          round
+          :size="120"
+          :src="userStore.profile.avatar"
+          alt="头像"
+        />
+        <n-form-item>
+          <n-button @click="choose">更换头像</n-button>
         </n-form-item>
         <n-form-item label="真名">
           <n-input />

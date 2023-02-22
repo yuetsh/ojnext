@@ -79,11 +79,11 @@ function next() {
 </template>
 
 <style>
-.__layout-dark .shiki-light {
+.__layout-dark .vitesse-light {
   display: none;
 }
 
-.__layout .shiki-dark {
+.__layout .vitesse-dark {
   display: none;
 }
 
