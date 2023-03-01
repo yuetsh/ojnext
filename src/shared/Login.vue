@@ -16,7 +16,7 @@ const rules: FormRules = {
   username: [{ required: true, message: "用户名必填", trigger: "blur" }],
   password: [
     { required: true, message: "密码必填", trigger: "blur" },
-    { min: 6, max: 20, message: "长度在6到20位之间", trigger: "input" },
+    { min: 6, max: 20, message: "长度在 6 到 20 位之间", trigger: "input" },
   ],
 }
 

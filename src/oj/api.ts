@@ -144,3 +144,15 @@ export function getContestRank(
     },
   })
 }
+
+export function uploadAvatar(file: File) {
+  const form = new window.FormData()
+  form.append("image", file)
+  return http.post("upload_avatar", form, {
+    headers: { "content-type": "multipart/form-data" },
+  })
+}
+
+export function updateProfile(data: { real_name: string; mood: string }) {
+  return http.put("profile", data)
+}
