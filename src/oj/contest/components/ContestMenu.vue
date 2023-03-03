@@ -2,6 +2,7 @@
 import { DropdownOption } from "naive-ui"
 import { useContestStore } from "oj/store/contest"
 import { isDesktop } from "~/shared/composables/breakpoints"
+import { ContestStatus } from "~/utils/constants"
 
 const route = useRoute()
 const router = useRouter()
@@ -10,7 +11,7 @@ const contestStore = useContestStore()
 const contestMenuVisible = computed(() => {
   if (contestStore.isContestAdmin) return true
   if (!contestStore.isPrivate) {
-    // TODO:这里没有完成
+    return contestStore.contestStatus !== ContestStatus.not_started
   }
   return contestStore.access
 })

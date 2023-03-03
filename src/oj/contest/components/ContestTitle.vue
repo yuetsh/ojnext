@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { Contest } from "~/utils/types"
-import { ContestType } from "~/utils/constants"
+import { Contest } from "utils/types"
+import { ContestType } from "utils/constants"
 
 defineProps<{ contest: Contest }>()
 </script>
@@ -8,6 +8,7 @@ defineProps<{ contest: Contest }>()
   <n-space>
     <span>{{ contest.title }}</span>
     <n-icon
+      size="medium"
       class="lockIcon"
       v-if="contest.contest_type === ContestType.private"
     >

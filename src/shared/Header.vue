@@ -98,7 +98,7 @@ function run() {
           :options="options"
           trigger="click"
         >
-          <n-button>{{ userStore.user.username }}</n-button>
+          <n-button>{{ userStore.user!.username }}</n-button>
         </n-dropdown>
         <n-space v-else>
           <n-button @click="toggleLogin(true)">登录</n-button>
@@ -118,7 +118,7 @@ function run() {
       运行
     </n-button>
     <n-dropdown v-if="userStore.isAuthed" :options="options" trigger="click">
-      <n-button>{{ userStore.user.username }}</n-button>
+      <n-button>{{ userStore.user!.username }}</n-button>
     </n-dropdown>
     <n-space v-else>
       <n-button @click="toggleLogin(true)">登录</n-button>

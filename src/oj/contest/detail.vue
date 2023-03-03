@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CONTEST_STATUS } from "utils/constants"
+import { CONTEST_STATUS, ContestStatus } from "utils/constants"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { useContestStore } from "../store/contest"
 import ContestInfo from "./components/ContestInfo.vue"
@@ -12,7 +12,13 @@ const contestStore = useContestStore()
 
 const password = ref("")
 
-onMounted(() => contestStore.init(props.contestID))
+onMounted(() => {
+  contestStore.init(props.contestID)
+})
+
+onBeforeUnmount(() => {
+  contestStore.clear()
+})
 
 const passwordFormVisible = computed(
   () =>
@@ -26,15 +32,15 @@ const passwordFormVisible = computed(
   <div v-if="contestStore.contest">
     <n-space class="title" align="center" justify="space-between">
       <n-space align="center">
-        <n-tag :type="CONTEST_STATUS[contestStore.contest.status]['type']">
-          {{ CONTEST_STATUS[contestStore.contest.status]["name"] }}
-        </n-tag>
         <h2 class="contestTitle">{{ contestStore.contest.title }}</h2>
-        <n-icon v-if="contestStore.isPrivate" class="lockIcon">
+        <n-icon size="large" v-if="contestStore.isPrivate" class="lockIcon">
           <i-ep-lock />
         </n-icon>
+        <n-tag :type="CONTEST_STATUS[contestStore.contestStatus]['type']">
+          {{ contestStore.countdown }}
+        </n-tag>
       </n-space>
-      <n-space>
+      <n-space align="center">
         <ContestInfo />
         <ContestMenu />
       </n-space>

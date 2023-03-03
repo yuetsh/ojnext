@@ -35,11 +35,9 @@ function rowProps(row: ProblemFiltered) {
   <n-data-table
     striped
     size="small"
-    class="problems"
     :data="contestStore.problems"
     :columns="problemsColumns"
     :row-props="rowProps"
-    v-if="contestStore.problems?.length"
   />
 </template>
 

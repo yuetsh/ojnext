@@ -1,4 +1,4 @@
-import { intervalToDuration } from "date-fns"
+import { getTime, intervalToDuration, parseISO } from "date-fns"
 import { STORAGE_KEY } from "./constants"
 
 export function getACRate(acCount: number, totalCount: number) {
@@ -36,15 +36,19 @@ export function getTagColor(
   }[tag]
 }
 
-export function parseTime(utc: Date, format = "YYYY年M月D日") {
+export function parseTime(utc: Date | string, format = "YYYY年M月D日") {
   const time = useDateFormat(utc, format, { locales: "zh-CN" })
   return time.value
 }
 
-export function duration(start: Date, end: Date): string {
+export function duration(
+  start: Date | string,
+  end: Date | string,
+  showSeconds = false
+): string {
   const duration = intervalToDuration({
-    start: Date.parse(start.toString()),
-    end: Date.parse(end.toString()),
+    start: getTime(parseISO(start.toString())),
+    end: getTime(parseISO(end.toString())),
   })
   let result = ""
   if (duration.years) {
@@ -61,6 +65,9 @@ export function duration(start: Date, end: Date): string {
   }
   if (duration.minutes) {
     result += duration.minutes + "分钟"
+  }
+  if (showSeconds) {
+    result += duration.seconds + "秒"
   }
   return result
 }

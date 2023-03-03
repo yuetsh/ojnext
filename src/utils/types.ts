@@ -220,10 +220,11 @@ export interface Contest {
   description: string
   real_time_rank: boolean
   rule_type: "ACM"
-  start_time: Date
-  end_time: Date
-  create_time: Date
-  last_update_time: Date
+  start_time: string
+  end_time: string
+  create_time: string
+  now: string
+  last_update_time: string
 }
 
 interface SubmissionInfo {
