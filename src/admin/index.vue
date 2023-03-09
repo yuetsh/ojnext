@@ -1,7 +1,11 @@
 <script setup lang="ts"></script>
 
 <template>
-  <router-view></router-view>
+  <div class="container">1213</div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container {
+  height: 200vh;
+}
+</style>

@@ -215,7 +215,7 @@ const columns = computed(() => {
         h(
           NButton,
           { size: "small", onClick: () => rejudge(row.id) },
-          () => "重新评分"
+          () => "重新判题"
         ),
     })
   }

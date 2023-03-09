@@ -95,6 +95,45 @@ export const routes: RouteRecordRaw[] = [
   {
     path: "/admin",
     component: () => import("~/shared/layout/admin.vue"),
-    children: [{ path: "", component: () => import("admin/index.vue") }],
+    children: [
+      { path: "", component: () => import("admin/index.vue") },
+      { path: "user", component: () => import("admin/setting/user.vue") },
+      { path: "conf", component: () => import("admin/setting/conf.vue") },
+      { path: "problems", component: () => import("admin/problem/list.vue") },
+      {
+        path: "problem/create",
+        component: () => import("admin/problem/detail.vue"),
+      },
+      {
+        path: "problem/:problemID/edit",
+        component: () => import("admin/problem/detail.vue"),
+        props: true,
+      },
+      { path: "contests", component: () => import("admin/contest/list.vue") },
+      {
+        path: "contest/create",
+        component: () => import("admin/contest/detail.vue"),
+      },
+      {
+        path: "contest/:contestID/edit",
+        component: () => import("admin/contest/detail.vue"),
+        props: true,
+      },
+      {
+        path: "contest/:contestID/problems",
+        component: () => import("admin/contest/detail.vue"),
+        props: true,
+      },
+      {
+        path: "contest/:contestID/problem/create",
+        component: () => import("admin/problem/detail.vue"),
+        props: true,
+      },
+      {
+        path: "contest/:contestID/problem/:problemID/edit",
+        component: () => import("admin/problem/detail.vue"),
+        props: true,
+      },
+    ],
   },
 ]

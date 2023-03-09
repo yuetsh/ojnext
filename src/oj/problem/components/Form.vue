@@ -5,6 +5,7 @@ import { Problem } from "utils/types"
 import { code } from "oj/composables/code"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import Submit from "./Submit.vue"
+import { useUserStore } from "~/shared/store/user"
 
 interface Props {
   problem: Problem
@@ -13,6 +14,7 @@ interface Props {
 const props = defineProps<Props>()
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
 
 watch(() => code.language, reset)
 
@@ -23,6 +25,10 @@ function reset() {
 function goSubmissions() {
   const name = !!route.params.contestID ? "contest submissions" : "submissions"
   router.push({ name, query: { problem: props.problem._id } })
+}
+
+function edit() {
+  router.push("/admin/problem/edit/" + props.problem.id)
 }
 
 const menu: DropdownOption[] = [
@@ -88,6 +94,7 @@ function select(key: string) {
       <n-space>
         <n-button @click="reset">重置</n-button>
         <n-button @click="goSubmissions">提交信息</n-button>
+        <n-button v-if="userStore.isSuperAdmin" @click="edit">编辑</n-button>
       </n-space>
     </n-form-item>
   </n-form>

@@ -75,7 +75,14 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
       onClick: () => router.push("/setting"),
     },
   },
-  { label: "后台管理", key: "admin", show: userStore.isAdminRole },
+  {
+    label: "后台管理",
+    key: "admin",
+    show: userStore.isAdminRole,
+    props: {
+      onClick: () => router.push("/admin"),
+    },
+  },
   { type: "divider" },
   { label: "退出", key: "logout", props: { onClick: handleLogout } },
 ])
@@ -136,7 +143,7 @@ function run() {
     <n-button circle @click="toggleDark()">
       <template #icon>
         <n-icon v-if="isDark"><i-ep-sunny /></n-icon>
-        <n-icon v-else> <i-ep-moon /></n-icon>
+        <n-icon v-else><i-ep-moon /></n-icon>
       </template>
     </n-button>
   </n-space>
