@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getProblem } from "oj/api"
-import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
+import { isDesktop } from "~/shared/composables/breakpoints"
 import { Problem } from "utils/types"
 
 const Editor = defineAsyncComponent(() => import("./components/Editor.vue"))
@@ -19,11 +19,19 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   contestID: "",
 })
-const problem = ref<Problem>()
+const problem = ref<Problem | null>(null)
+const errMsg = ref("无数据")
 
 async function init() {
-  const res = await getProblem(props.problemID, props.contestID)
-  problem.value = res.data
+  try {
+    const res = await getProblem(props.problemID, props.contestID)
+    problem.value = res.data
+  } catch (err: any) {
+    problem.value = null
+    if (err.data === "Contest has not started yet.") {
+      errMsg.value = "比赛还没有开始"
+    }
+  }
 }
 onMounted(init)
 provide("problem", readonly(problem))
@@ -58,6 +66,7 @@ provide("problem", readonly(problem))
       <Editor :problem="problem" />
     </n-gi>
   </n-grid>
+  <n-empty v-else :description="errMsg"></n-empty>
 </template>
 
 <style scoped></style>

@@ -128,11 +128,7 @@ function rowProps(row: Contest) {
       />
     </n-form-item>
     <n-form-item label="搜索比赛标题">
-      <n-input
-        placeholder="输入后回车或点击搜索"
-        v-model:value="query.keyword"
-        @change="search"
-      />
+      <n-input placeholder="输入后回车或点击搜索" clearable @change="search" />
     </n-form-item>
     <n-form-item>
       <n-space>
