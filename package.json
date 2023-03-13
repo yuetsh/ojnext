@@ -19,6 +19,7 @@
     "date-fns": "^2.29.3",
     "highlight.js": "^11.7.0",
     "naive-ui": "^2.34.3",
+    "normalize.css": "^8.0.1",
     "party-js": "^2.2.0",
     "pinia": "^2.0.33",
     "vue": "^3.2.47",

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import "normalize.css"
 import { zhCN, dateZhCN, darkTheme } from "naive-ui"
 import { isDark } from "./shared/composables/dark"
 import hljs from "highlight.js/lib/core"

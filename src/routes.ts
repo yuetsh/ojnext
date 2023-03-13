@@ -1,5 +1,7 @@
 import { RouteRecordRaw } from "vue-router"
+import { getProfile } from "./shared/api"
 import { loadChart } from "./shared/composables/chart"
+import { USER_TYPE } from "./utils/constants"
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -95,42 +97,80 @@ export const routes: RouteRecordRaw[] = [
   {
     path: "/admin",
     component: () => import("~/shared/layout/admin.vue"),
+    meta: { requiresAuth: true },
+    beforeEnter: async () => {
+      const res = await getProfile()
+      if (res.data.user.admin_type === USER_TYPE.REGULAR_USER) return "/"
+    },
     children: [
-      { path: "", component: () => import("admin/index.vue") },
-      { path: "user", component: () => import("admin/setting/user.vue") },
-      { path: "conf", component: () => import("admin/setting/conf.vue") },
-      { path: "problems", component: () => import("admin/problem/list.vue") },
+      { path: "", name: "home", component: () => import("admin/index.vue") },
+      {
+        path: "config",
+        name: "config",
+        component: () => import("admin/setting/config.vue"),
+      },
+      {
+        path: "announcement",
+        name: "announcement",
+        component: () => import("admin/setting/announcement.vue"),
+      },
+      {
+        path: "user/list",
+        name: "user list",
+        component: () => import("admin/user/list.vue"),
+      },
+      {
+        path: "user/import",
+        name: "user importing",
+        component: () => import("admin/user/import.vue"),
+      },
+      {
+        path: "problem/list",
+        name: "problem list",
+        component: () => import("admin/problem/list.vue"),
+      },
       {
         path: "problem/create",
+        name: "problem create",
         component: () => import("admin/problem/detail.vue"),
       },
       {
         path: "problem/:problemID/edit",
+        name: "problem edit",
         component: () => import("admin/problem/detail.vue"),
         props: true,
       },
-      { path: "contests", component: () => import("admin/contest/list.vue") },
+      {
+        path: "contest/list",
+        name: "contest list",
+        component: () => import("admin/contest/list.vue"),
+      },
       {
         path: "contest/create",
+        name: "contest create",
         component: () => import("admin/contest/detail.vue"),
       },
       {
         path: "contest/:contestID/edit",
+        name: "contest edit",
         component: () => import("admin/contest/detail.vue"),
         props: true,
       },
       {
         path: "contest/:contestID/problems",
+        name: "contest problems",
         component: () => import("admin/contest/detail.vue"),
         props: true,
       },
       {
         path: "contest/:contestID/problem/create",
+        name: "contest problem create",
         component: () => import("admin/problem/detail.vue"),
         props: true,
       },
       {
         path: "contest/:contestID/problem/:problemID/edit",
+        name: "contest problem edit",
         component: () => import("admin/problem/detail.vue"),
         props: true,
       },
