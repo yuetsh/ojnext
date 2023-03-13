@@ -83,7 +83,7 @@ const options: MenuOption[] = [
   },
 ]
 
-const active = computed(() => (route.name as string) || "")
+const active = computed(() => (route.name as string) || "home")
 </script>
 
 <template>
