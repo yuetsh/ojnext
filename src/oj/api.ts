@@ -44,9 +44,7 @@ export async function getProblemList(
       params[element] = searchParams[element]
     }
   })
-  const res = await http.get("problem", {
-    params,
-  })
+  const res = await http.get("problem", { params })
   return {
     results: res.data.results.map(filterResult),
     total: res.data.total,

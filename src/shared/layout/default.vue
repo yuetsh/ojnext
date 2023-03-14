@@ -9,7 +9,7 @@ import Header from "../Header.vue"
     <n-layout-header bordered class="header">
       <Header />
     </n-layout-header>
-    <n-layout-content class="content">
+    <n-layout-content content-style="padding: 16px">
       <router-view></router-view>
     </n-layout-content>
     <Login />
@@ -20,8 +20,5 @@ import Header from "../Header.vue"
 <style scoped>
 .header {
   padding: 8px;
-}
-.content {
-  padding: 16px;
 }
 </style>

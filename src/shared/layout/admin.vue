@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { MenuOption } from "naive-ui"
 import { RouterLink } from "vue-router"
-import Login from "../Login.vue"
 
 const route = useRoute()
 const options: MenuOption[] = [
+  {
+    label: () => h(RouterLink, { to: "/" }, { default: () => "返回 OJ" }),
+    key: "return to OJ",
+  },
   {
     label: () => h(RouterLink, { to: "/admin" }, { default: () => "首页" }),
     key: "home",
@@ -42,7 +45,7 @@ const options: MenuOption[] = [
     label: () =>
       h(
         RouterLink,
-        { to: "/admin/user/import" },
+        { to: "/admin/user/importing" },
         { default: () => "导入用户" }
       ),
     key: "user importing",
@@ -91,15 +94,10 @@ const active = computed(() => (route.name as string) || "home")
     <n-layout-sider bordered :native-scrollbar="false">
       <n-menu :options="options" :value="active" />
     </n-layout-sider>
-    <n-layout-content :native-scrollbar="false">
+    <n-layout-content :native-scrollbar="false" content-style="padding: 16px">
       <router-view></router-view>
     </n-layout-content>
-    <Login />
   </n-layout>
 </template>
 
-<style scoped>
-.content {
-  padding: 16px;
-}
-</style>
+<style scoped></style>
