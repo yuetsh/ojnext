@@ -1,12 +1,16 @@
 <script setup lang="ts">
-import { getProblemList } from "../api"
+import { getProblemList, getProblem, editProblem } from "../api"
 import Pagination from "~/shared/Pagination.vue"
 import { DataTableColumn, NButton, NSwitch } from "naive-ui"
 import { AdminProblemFiltered } from "~/utils/types"
 import { parseTime } from "~/utils/functions"
+import DownloadTestcases from "./components/DownloadTestcases.vue"
+import DeleteProblem from "./components/DeleteProblem.vue"
+
+const router = useRouter()
 
 const total = ref(0)
-const problems = ref([])
+const problems = ref<AdminProblemFiltered[]>([])
 const query = reactive({
   limit: 10,
   page: 1,
@@ -14,10 +18,10 @@ const query = reactive({
 })
 
 const columns: DataTableColumn<AdminProblemFiltered>[] = [
-  { title: "ID", key: "id", width: 100 },
+  { title: "ID", key: "id", width: 80 },
   { title: "显示编号", key: "_id", width: 100 },
   { title: "标题", key: "title", minWidth: 300 },
-  { title: "出题人", key: "username", width: 100 },
+  { title: "出题人", key: "username", width: 120 },
   {
     title: "创建时间",
     key: "create_time",
@@ -27,30 +31,40 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   {
     title: "可见",
     key: "visible",
-    render: (row) => h(NSwitch, { value: row.visible }),
+    render: (row) =>
+      h(NSwitch, {
+        value: row.visible,
+        size: "small",
+        rubberBand: false,
+        onUpdateValue: () => toggleVisible(row.id),
+      }),
   },
   {
     key: "edit",
-    render: () =>
+    render: (row) =>
       h(
         NButton,
-        { type: "primary", size: "small", tertiary: true },
+        {
+          type: "primary",
+          size: "small",
+          tertiary: true,
+          onClick: () =>
+            router.push({
+              name: "problem edit",
+              params: { problemID: row.id },
+            }),
+        },
         { default: () => "编辑" }
       ),
   },
   {
     key: "delete",
-    render: () =>
-      h(
-        NButton,
-        { type: "error", size: "small", tertiary: true },
-        { default: () => "删除" }
-      ),
+    render: (row) =>
+      h(DeleteProblem, { problemID: row.id, onDeleted: listProblems }),
   },
   {
     key: "download",
-    render: () =>
-      h(NButton, { size: "small", tertiary: true }, { default: () => "下载" }),
+    render: (row) => h(DownloadTestcases, { problemID: row.id }),
   },
 ]
 
@@ -63,15 +77,26 @@ async function listProblems() {
   problems.value = res.results
 }
 
-onMounted(listProblems)
+// 这里比较傻逼，因为我传进来的时候 filter 了而且只有 edit problem 一个接口，所以只能先 get 再 edit
+async function toggleVisible(problemID: number) {
+  const res = await getProblem(problemID)
+  await editProblem({ ...res.data, visible: !res.data.visible })
+  problems.value = problems.value.map((it) => {
+    if (it.id === problemID) {
+      it.visible = !it.visible
+    }
+    return it
+  })
+}
 
+onMounted(listProblems)
 watch(query, listProblems, { deep: true })
 </script>
 
 <template>
   <n-form inline label-placement="left">
-    <n-form-item label="标题">
-      <n-input v-model:value="query.keyword" />
+    <n-form-item>
+      <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
     </n-form-item>
   </n-form>
   <n-data-table striped size="small" :columns="columns" :data="problems" />

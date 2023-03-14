@@ -140,7 +140,7 @@ export const routes: RouteRecordRaw[] = [
         component: () => import("admin/problem/detail.vue"),
       },
       {
-        path: "problem/:problemID/edit",
+        path: "problem/edit/:problemID",
         name: "problem edit",
         component: () => import("admin/problem/detail.vue"),
         props: true,
@@ -156,7 +156,7 @@ export const routes: RouteRecordRaw[] = [
         component: () => import("admin/contest/detail.vue"),
       },
       {
-        path: "contest/:contestID/edit",
+        path: "contest/edit/:contestID",
         name: "contest edit",
         component: () => import("admin/contest/detail.vue"),
         props: true,
@@ -174,7 +174,7 @@ export const routes: RouteRecordRaw[] = [
         props: true,
       },
       {
-        path: "contest/:contestID/problem/:problemID/edit",
+        path: "contest/:contestID/problem/edit/:problemID",
         name: "contest problem edit",
         component: () => import("admin/problem/detail.vue"),
         props: true,

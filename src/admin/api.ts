@@ -29,3 +29,15 @@ export async function getProblemList(
     total: res.data.total,
   }
 }
+
+export function deleteProblem(id: number) {
+  return http.delete("admin/problem", { params: { id } })
+}
+
+export function editProblem(problem: Problem) {
+  return http.put("admin/problem", problem)
+}
+
+export function getProblem(id: number) {
+  return http.get("admin/problem", { params: { id } })
+}

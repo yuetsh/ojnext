@@ -94,7 +94,7 @@ const active = computed(() => (route.name as string) || "home")
     <n-layout-sider bordered :native-scrollbar="false">
       <n-menu :options="options" :value="active" />
     </n-layout-sider>
-    <n-layout-content :native-scrollbar="false" content-style="padding: 16px">
+    <n-layout-content content-style="padding: 16px">
       <router-view></router-view>
     </n-layout-content>
   </n-layout>
