@@ -1,28 +1,5 @@
 import http from "utils/http"
-import { DIFFICULTY } from "~/utils/constants"
-import { getACRate } from "~/utils/functions"
 import { Problem } from "~/utils/types"
-
-function filterResult(result: Problem) {
-  const newResult = {
-    id: result.id,
-    _id: result._id,
-    title: result.title,
-    difficulty: DIFFICULTY[result.difficulty],
-    tags: result.tags,
-    submission: result.submission_number,
-    rate: getACRate(result.accepted_number, result.submission_number),
-    status: "",
-  }
-  if (result.my_status === null || result.my_status === undefined) {
-    newResult.status = "not_test"
-  } else if (result.my_status === 0) {
-    newResult.status = "passed"
-  } else {
-    newResult.status = "failed"
-  }
-  return newResult
-}
 
 export async function getProblemList(
   offset = 0,
@@ -41,7 +18,14 @@ export async function getProblemList(
   })
   const res = await http.get("admin/problem", { params })
   return {
-    results: res.data.results.map(filterResult),
+    results: res.data.results.map((result: Problem) => ({
+      id: result.id,
+      _id: result._id,
+      title: result.title,
+      username: result.created_by.username,
+      create_time: result.create_time,
+      visible: result.visible,
+    })),
     total: res.data.total,
   }
 }

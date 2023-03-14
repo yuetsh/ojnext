@@ -102,6 +102,7 @@ export interface Problem {
   share_submission: boolean
   contest: null
   my_status: number
+  visible: boolean
 }
 
 export interface ProblemFiltered {
@@ -113,6 +114,15 @@ export interface ProblemFiltered {
   submission: number
   rate: string
   status: "not_test" | "passed" | "failed"
+}
+
+export interface AdminProblemFiltered {
+  _id: string
+  id: number
+  title: string
+  visible: boolean
+  username: string
+  create_time: string
 }
 
 export interface Code {

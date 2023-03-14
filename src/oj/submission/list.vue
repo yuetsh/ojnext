@@ -214,7 +214,11 @@ const columns = computed(() => {
       render: (row) =>
         h(
           NButton,
-          { size: "small", onClick: () => rejudge(row.id) },
+          {
+            size: "small",
+            tertiary: true,
+            onClick: () => rejudge(row.id),
+          },
           () => "重新判题"
         ),
     })
