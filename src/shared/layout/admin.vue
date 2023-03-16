@@ -10,7 +10,7 @@ const options: MenuOption[] = [
   },
   {
     label: () => h(RouterLink, { to: "/admin" }, { default: () => "首页" }),
-    key: "home",
+    key: "admin home",
   },
   {
     label: "题目",
@@ -24,7 +24,7 @@ const options: MenuOption[] = [
         { to: "/admin/problem/list" },
         { default: () => "题目列表" }
       ),
-    key: "problem list",
+    key: "admin problem list",
   },
   {
     label: () =>
@@ -33,13 +33,13 @@ const options: MenuOption[] = [
         { to: "/admin/problem/create" },
         { default: () => "创建题目" }
       ),
-    key: "problem create",
+    key: "admin problem create",
   },
   { label: "用户", key: "user", disabled: true },
   {
     label: () =>
       h(RouterLink, { to: "/admin/user/list" }, { default: () => "用户列表" }),
-    key: "user list",
+    key: "admin user list",
   },
   {
     label: () =>
@@ -48,7 +48,7 @@ const options: MenuOption[] = [
         { to: "/admin/user/importing" },
         { default: () => "导入用户" }
       ),
-    key: "user importing",
+    key: "admin user importing",
   },
   { label: "比赛", key: "contest", disabled: true },
   {
@@ -58,7 +58,7 @@ const options: MenuOption[] = [
         { to: "/admin/contest/list" },
         { default: () => "比赛列表" }
       ),
-    key: "contest list",
+    key: "admin contest list",
   },
   {
     label: () =>
@@ -67,13 +67,13 @@ const options: MenuOption[] = [
         { to: "/admin/contest/create" },
         { default: () => "创建比赛" }
       ),
-    key: "contest create",
+    key: "admin contest create",
   },
   { label: "其他", key: "other", disabled: true },
   {
     label: () =>
       h(RouterLink, { to: "/admin/config" }, { default: () => "系统配置" }),
-    key: "config",
+    key: "admin config",
   },
   {
     label: () =>
@@ -82,7 +82,7 @@ const options: MenuOption[] = [
         { to: "/admin/announcement" },
         { default: () => "公告配置" }
       ),
-    key: "announcement",
+    key: "admin announcement",
   },
 ]
 
@@ -91,7 +91,7 @@ const active = computed(() => (route.name as string) || "home")
 
 <template>
   <n-layout has-sider position="absolute">
-    <n-layout-sider bordered :native-scrollbar="false">
+    <n-layout-sider width="160" bordered :native-scrollbar="false">
       <n-menu :options="options" :value="active" />
     </n-layout-sider>
     <n-layout-content content-style="padding: 16px">

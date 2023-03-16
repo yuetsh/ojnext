@@ -1,5 +1,6 @@
 import { getTime, intervalToDuration, parseISO } from "date-fns"
 import { STORAGE_KEY } from "./constants"
+import { User } from "./types"
 
 export function getACRate(acCount: number, totalCount: number) {
   let rate = totalCount === 0 ? 0.0 : ((acCount / totalCount) * 100).toFixed(2)
@@ -102,4 +103,29 @@ export function debounce(fn: Function, n = 100) {
       fn(...args)
     }, n)
   }
+}
+
+export function getUserRole(role: User["admin_type"]): {
+  type: "default" | "info" | "error"
+  tagString: "普通" | "管理员" | "超管"
+} {
+  const obj: {
+    type: "default" | "info" | "error"
+    tagString: "普通" | "管理员" | "超管"
+  } = { type: "default", tagString: "普通" }
+  switch (role) {
+    case "Regular User":
+      obj.type = "default"
+      obj.tagString = "普通"
+      break
+    case "Admin":
+      obj.type = "info"
+      obj.tagString = "管理员"
+      break
+    case "Super Admin":
+      obj.type = "error"
+      obj.tagString = "超管"
+      break
+  }
+  return obj
 }

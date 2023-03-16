@@ -1,13 +1,18 @@
 <script setup lang="ts">
 import { useUserStore } from "~/shared/store/user"
-import { filterEmptyValue, getTagColor, debounce } from "utils/functions"
+import { filterEmptyValue, getTagColor } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { getProblemList, getProblemTagList, getRandomProblemID } from "oj/api"
-
 import Pagination from "~/shared/Pagination.vue"
 import { DataTableColumn, NSpace, NTag } from "naive-ui"
 import ProblemStatus from "./components/ProblemStatus.vue"
+
+interface Tag {
+  id: number
+  name: string
+  checked: boolean
+}
 
 interface Query {
   keyword: string
@@ -30,12 +35,7 @@ const route = useRoute()
 const userStore = useUserStore()
 const problems = ref<ProblemFiltered[]>([])
 const total = ref(0)
-const tags = ref<{ id: number; name: string }[]>([])
-
-const tagOptions = computed(() => [
-  { label: "全部", value: "" },
-  ...(tags.value?.map((t) => ({ label: t.name, value: t.name })) || []),
-])
+const tags = ref<Tag[]>([])
 
 const query = reactive<Query>({
   keyword: <string>route.query.keyword ?? "",
@@ -65,7 +65,10 @@ async function listProblems() {
 
 async function listTags() {
   const res = await getProblemTagList()
-  tags.value = res.data
+  tags.value = res.data.map((r: Omit<Tag, "checked">) => ({
+    ...r,
+    checked: false,
+  }))
 }
 
 function routerPush() {
@@ -77,6 +80,18 @@ function routerPush() {
 
 function search(value: string) {
   query.keyword = value
+}
+
+function chooseTag(tag: Tag) {
+  query.tag = tag.checked ? "" : tag.name
+  tags.value = tags.value.map((t) => {
+    if (t.id === tag.id) {
+      t.checked = !t.checked
+    } else {
+      t.checked = false
+    }
+    return t
+  })
 }
 
 function clear() {
@@ -161,14 +176,7 @@ function rowProps(row: ProblemFiltered) {
         :options="difficultyOptions"
       />
     </n-form-item>
-    <n-form-item label="标签">
-      <n-select
-        class="select"
-        v-model:value="query.tag"
-        :options="tagOptions"
-      />
-    </n-form-item>
-    <n-form-item label="搜索">
+    <n-form-item>
       <n-input placeholder="输入编号或标题后回车" clearable @change="search" />
     </n-form-item>
     <n-form-item>
@@ -179,7 +187,21 @@ function rowProps(row: ProblemFiltered) {
       </n-space>
     </n-form-item>
   </n-form>
+  <n-space>
+    <div class="tagTitle">标签</div>
+    <n-button
+      @click="chooseTag(tag)"
+      v-for="tag in tags"
+      :key="tag.id"
+      size="small"
+      secondary
+      :type="tag.checked ? 'success' : 'default'"
+    >
+      {{ tag.name }}
+    </n-button>
+  </n-space>
   <n-data-table
+    class="table"
     striped
     size="small"
     :data="problems"
@@ -194,7 +216,15 @@ function rowProps(row: ProblemFiltered) {
 </template>
 
 <style scoped>
+.tagTitle {
+  line-height: 28px;
+}
+
 .select {
   width: 120px;
+}
+
+.table {
+  margin-top: 24px;
 }
 </style>

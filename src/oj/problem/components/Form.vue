@@ -94,7 +94,9 @@ function select(key: string) {
       <n-space>
         <n-button @click="reset">重置</n-button>
         <n-button @click="goSubmissions">提交信息</n-button>
-        <n-button v-if="userStore.isSuperAdmin" @click="edit">编辑</n-button>
+        <n-button type="warning" v-if="userStore.isSuperAdmin" @click="edit">
+          编辑
+        </n-button>
       </n-space>
     </n-form-item>
   </n-form>

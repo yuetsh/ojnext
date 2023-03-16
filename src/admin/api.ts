@@ -1,22 +1,10 @@
 import http from "utils/http"
 import { Problem } from "~/utils/types"
 
-export async function getProblemList(
-  offset = 0,
-  limit = 10,
-  searchParams: any = {}
-) {
-  let params: any = {
-    paging: true,
-    offset,
-    limit,
-  }
-  Object.keys(searchParams).forEach((element) => {
-    if (searchParams[element]) {
-      params[element] = searchParams[element]
-    }
+export async function getProblemList(offset = 0, limit = 10, keyword: string) {
+  const res = await http.get("admin/problem", {
+    params: { paging: true, offset, limit, keyword },
   })
-  const res = await http.get("admin/problem", { params })
   return {
     results: res.data.results.map((result: Problem) => ({
       id: result.id,
@@ -40,4 +28,10 @@ export function editProblem(problem: Problem) {
 
 export function getProblem(id: number) {
   return http.get("admin/problem", { params: { id } })
+}
+
+export function getUserList(offset = 0, limit = 10, keyword: string) {
+  return http.get("admin/user", {
+    params: { paging: true, offset, limit, keyword },
+  })
 }

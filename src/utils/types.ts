@@ -37,7 +37,7 @@ export interface User {
   id: number
   username: string
   email: string
-  admin_type: string
+  admin_type: "Regular User" | "Super Admin" | "Admin"
   problem_permission: string
   create_time: Date
   last_login: Date

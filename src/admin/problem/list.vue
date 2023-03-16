@@ -1,13 +1,10 @@
 <script setup lang="ts">
 import { getProblemList, getProblem, editProblem } from "../api"
 import Pagination from "~/shared/Pagination.vue"
-import { DataTableColumn, NButton, NSwitch } from "naive-ui"
+import { DataTableColumn, NSwitch } from "naive-ui"
 import { AdminProblemFiltered } from "~/utils/types"
 import { parseTime } from "~/utils/functions"
-import DownloadTestcases from "./components/DownloadTestcases.vue"
-import DeleteProblem from "./components/DeleteProblem.vue"
-
-const router = useRouter()
+import Actions from "./components/Actions.vue"
 
 const total = ref(0)
 const problems = ref<AdminProblemFiltered[]>([])
@@ -41,38 +38,14 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   },
   {
     key: "edit",
-    render: (row) =>
-      h(
-        NButton,
-        {
-          type: "primary",
-          size: "small",
-          tertiary: true,
-          onClick: () =>
-            router.push({
-              name: "problem edit",
-              params: { problemID: row.id },
-            }),
-        },
-        { default: () => "编辑" }
-      ),
-  },
-  {
-    key: "delete",
-    render: (row) =>
-      h(DeleteProblem, { problemID: row.id, onDeleted: listProblems }),
-  },
-  {
-    key: "download",
-    render: (row) => h(DownloadTestcases, { problemID: row.id }),
+    width: 200,
+    render: (row) => h(Actions, { problemID: row.id, onDeleted: listProblems }),
   },
 ]
 
 async function listProblems() {
   const offset = (query.page - 1) * query.limit
-  const res = await getProblemList(offset, query.limit, {
-    keyword: query.keyword,
-  })
+  const res = await getProblemList(offset, query.limit, query.keyword)
   total.value = res.total
   problems.value = res.results
 }
