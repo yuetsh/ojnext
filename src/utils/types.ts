@@ -45,6 +45,7 @@ export interface User {
   two_factor_auth: boolean
   open_api: boolean
   is_disabled: boolean
+  password?: string
 }
 
 export type LANGUAGE =
@@ -236,6 +237,7 @@ export interface Contest {
   create_time: string
   now: string
   last_update_time: string
+  visible: boolean
 }
 
 interface SubmissionInfo {

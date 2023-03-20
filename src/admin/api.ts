@@ -40,6 +40,12 @@ export function deleteUsers(userIDs: number[]) {
   return http.delete("admin/user", { params: { id: userIDs.join(",") } })
 }
 
-export function editUser(user: User & { password: string }) {
+export function editUser(user: User) {
   return http.put("admin/user", user)
+}
+
+export function getContestList(offset = 0, limit = 10, keyword: string) {
+  return http.get("admin/contest", {
+    params: { paging: true, offset, limit, keyword },
+  })
 }

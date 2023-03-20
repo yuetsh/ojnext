@@ -54,7 +54,7 @@ const columns: DataTableColumn<User>[] = [
   { title: "真名", key: "real_name", width: 100 },
   { title: "邮箱", key: "email", width: 200 },
   {
-    key: "edit",
+    key: "actions",
     title: "选项",
     width: 200,
     render: (row) =>

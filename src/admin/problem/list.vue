@@ -37,7 +37,8 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
       }),
   },
   {
-    key: "edit",
+    title: "选项",
+    key: "actions",
     width: 200,
     render: (row) => h(Actions, { problemID: row.id, onDeleted: listProblems }),
   },

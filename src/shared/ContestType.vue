@@ -4,6 +4,7 @@ import { ContestType } from "~/utils/constants"
 
 interface Props {
   contest: Contest
+  size?: "small"
 }
 
 const props = defineProps<Props>()
@@ -14,7 +15,7 @@ const isPrivate = computed(
 </script>
 
 <template>
-  <n-tag :type="isPrivate ? 'error' : 'info'">
+  <n-tag :type="isPrivate ? 'error' : 'info'" :size="props.size">
     {{ isPrivate ? "需要密码" : "公开" }}
   </n-tag>
 </template>

@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { DataTableColumn, NTag, SelectOption } from "naive-ui"
 import { getContestList } from "oj/api"
-import Pagination from "~/shared/Pagination.vue"
 import { filterEmptyValue, parseTime, duration } from "utils/functions"
 import { Contest } from "utils/types"
 import { ContestType, CONTEST_STATUS } from "~/utils/constants"
-import ContestTitle from "./components/ContestTitle.vue"
+import ContestTitle from "~/shared/ContestTitle.vue"
+import Pagination from "~/shared/Pagination.vue"
 import { useUserStore } from "~/shared/store/user"
 import { toggleLogin } from "~/shared/composables/modal"
 import { isDesktop } from "~/shared/composables/breakpoints"
