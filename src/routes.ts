@@ -127,7 +127,7 @@ export const routes: RouteRecordRaw[] = [
       {
         path: "user/importing",
         name: "admin user importing",
-        component: () => import("admin/user/import.vue"),
+        component: () => import("~/admin/user/importing.vue"),
       },
       {
         path: "problem/list",

@@ -10,8 +10,8 @@ const emit = defineEmits(["deleted"])
 const router = useRouter()
 const message = useMessage()
 
-async function handleDeleteProblem(problemID: number) {
-  await deleteProblem(problemID)
+async function handleDeleteProblem() {
+  await deleteProblem(props.problemID)
   message.success("删除成功")
   emit("deleted")
 }
@@ -32,7 +32,7 @@ function goEdit() {
     <n-button size="small" secondary type="primary" @click="goEdit">
       编辑
     </n-button>
-    <n-popconfirm @positive-click="() => handleDeleteProblem(props.problemID)">
+    <n-popconfirm @positive-click="handleDeleteProblem">
       <template #trigger>
         <n-button secondary size="small" type="error">删除</n-button>
       </template>

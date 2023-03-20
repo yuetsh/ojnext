@@ -36,6 +36,7 @@ export interface Profile {
 export interface User {
   id: number
   username: string
+  real_name: string
   email: string
   admin_type: "Regular User" | "Super Admin" | "Admin"
   problem_permission: string

@@ -7,7 +7,7 @@ import type { FormRules } from "naive-ui"
 const userStore = useUserStore()
 const loginRef = ref()
 const [isLoading] = useToggle()
-const error = ref()
+const msg = ref("")
 const form = reactive({
   username: "",
   password: "",
@@ -20,21 +20,25 @@ const rules: FormRules = {
   ],
 }
 
-const msg = computed(() => error.value && "用户名或密码不正确")
-
 async function submit() {
   loginRef.value?.validate(async (errors: FormRules | undefined) => {
     if (!errors) {
       try {
-        error.value = null
+        msg.value = ""
         isLoading.value = true
         await login(form)
-      } catch (err) {
-        error.value = err
+      } catch (err: any) {
+        if (err.data === "Your account has been disabled") {
+          msg.value = "此账号已被封禁"
+        } else if (err.data === "Invalid username or password") {
+          msg.value = "用户名或密码不正确"
+        } else {
+          msg.value = "无法登录"
+        }
       } finally {
         isLoading.value = false
       }
-      if (!error.value) {
+      if (!msg.value) {
         toggleLogin(false)
         userStore.getMyProfile()
       }

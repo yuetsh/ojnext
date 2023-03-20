@@ -1,5 +1,5 @@
 import http from "utils/http"
-import { Problem } from "~/utils/types"
+import { Problem, User } from "~/utils/types"
 
 export async function getProblemList(offset = 0, limit = 10, keyword: string) {
   const res = await http.get("admin/problem", {
@@ -34,4 +34,12 @@ export function getUserList(offset = 0, limit = 10, keyword: string) {
   return http.get("admin/user", {
     params: { paging: true, offset, limit, keyword },
   })
+}
+
+export function deleteUsers(userIDs: number[]) {
+  return http.delete("admin/user", { params: { id: userIDs.join(",") } })
+}
+
+export function editUser(user: User & { password: string }) {
+  return http.put("admin/user", user)
 }
