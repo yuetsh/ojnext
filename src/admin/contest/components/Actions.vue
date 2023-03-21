@@ -16,7 +16,7 @@ function goEdit() {
 
 function goEditProblems() {
   router.push({
-    name: "admin contest problems",
+    name: "admin contest problem list",
     params: { contestID: props.contest.id },
   })
 }

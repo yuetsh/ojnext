@@ -6,6 +6,11 @@ import { AdminProblemFiltered } from "~/utils/types"
 import { parseTime } from "~/utils/functions"
 import Actions from "./components/Actions.vue"
 
+interface Props {
+  contestID?: string
+}
+
+const props = defineProps<Props>()
 const total = ref(0)
 const problems = ref<AdminProblemFiltered[]>([])
 const query = reactive({
@@ -40,13 +45,22 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
     title: "选项",
     key: "actions",
     width: 200,
-    render: (row) => h(Actions, { problemID: row.id, onDeleted: listProblems }),
+    render: (row) =>
+      h(Actions, {
+        problemID: row.id,
+        onDeleted: listProblems,
+      }),
   },
 ]
 
 async function listProblems() {
   const offset = (query.page - 1) * query.limit
-  const res = await getProblemList(offset, query.limit, query.keyword)
+  const res = await getProblemList(
+    offset,
+    query.limit,
+    query.keyword,
+    props.contestID
+  )
   total.value = res.total
   problems.value = res.results
 }

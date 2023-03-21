@@ -162,9 +162,9 @@ export const routes: RouteRecordRaw[] = [
         props: true,
       },
       {
-        path: "contest/:contestID/problems",
-        name: "admin contest problems",
-        component: () => import("admin/contest/detail.vue"),
+        path: "contest/:contestID/problem/list",
+        name: "admin contest problem list",
+        component: () => import("admin/problem/list.vue"),
         props: true,
       },
       {

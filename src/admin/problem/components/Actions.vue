@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { deleteProblem } from "~/admin/api"
+import { deleteContestProblem, deleteProblem } from "~/admin/api"
 
 interface Props {
   problemID: number
@@ -7,13 +7,26 @@ interface Props {
 const props = defineProps<Props>()
 const emit = defineEmits(["deleted"])
 
+const route = useRoute()
 const router = useRouter()
 const message = useMessage()
 
 async function handleDeleteProblem() {
-  await deleteProblem(props.problemID)
-  message.success("删除成功")
-  emit("deleted")
+  try {
+    if (route.name === "admin contest problem list") {
+      await deleteContestProblem(props.problemID)
+    } else {
+      await deleteProblem(props.problemID)
+    }
+    message.success("删除成功")
+    emit("deleted")
+  } catch (err: any) {
+    if (err.data === "Can't delete the problem as it has submissions") {
+      message.error("这道题有提交之后，就不能被删除")
+    } else {
+      message.error("删除失败")
+    }
+  }
 }
 
 function download() {
@@ -21,10 +34,8 @@ function download() {
 }
 
 function goEdit() {
-  router.push({
-    name: "problem edit",
-    params: { problemID: props.problemID },
-  })
+  const name = route.name!.toString().replace("list", "edit")
+  router.push({ name, params: { problemID: props.problemID } })
 }
 </script>
 <template>

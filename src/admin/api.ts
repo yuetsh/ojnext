@@ -1,9 +1,15 @@
 import http from "utils/http"
 import { Problem, User } from "~/utils/types"
 
-export async function getProblemList(offset = 0, limit = 10, keyword: string) {
-  const res = await http.get("admin/problem", {
-    params: { paging: true, offset, limit, keyword },
+export async function getProblemList(
+  offset = 0,
+  limit = 10,
+  keyword: string,
+  contestID?: string
+) {
+  const endpoint = !!contestID ? "admin/contest/problem" : "admin/problem"
+  const res = await http.get(endpoint, {
+    params: { paging: true, offset, limit, keyword, contest_id: contestID },
   })
   return {
     results: res.data.results.map((result: Problem) => ({
@@ -22,12 +28,24 @@ export function deleteProblem(id: number) {
   return http.delete("admin/problem", { params: { id } })
 }
 
+export function deleteContestProblem(id: number) {
+  return http.delete("admin/contest/problem", { params: { id } })
+}
+
 export function editProblem(problem: Problem) {
   return http.put("admin/problem", problem)
 }
 
+export function editContestProblem(problem: Problem) {
+  return http.put("admin/contest/problem", problem)
+}
+
 export function getProblem(id: number) {
   return http.get("admin/problem", { params: { id } })
+}
+
+export function getContestProblem(id: number) {
+  return http.get("admin/contest/problem", { params: { id } })
 }
 
 export function getUserList(offset = 0, limit = 10, keyword: string) {
