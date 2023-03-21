@@ -1,8 +1,5 @@
 import { RouteRecordRaw } from "vue-router"
-import { getProfile } from "./shared/api"
 import { loadChart } from "./shared/composables/chart"
-import { STORAGE_KEY, USER_TYPE } from "./utils/constants"
-import storage from "./utils/storage"
 
 export const routes: RouteRecordRaw[] = [
   {
@@ -98,11 +95,6 @@ export const routes: RouteRecordRaw[] = [
   {
     path: "/admin",
     component: () => import("~/shared/layout/admin.vue"),
-    beforeEnter: async () => {
-      if (!storage.get(STORAGE_KEY.AUTHED)) return "/"
-      const res = await getProfile()
-      if (res.data.user.admin_type === USER_TYPE.REGULAR_USER) return "/"
-    },
     children: [
       {
         path: "",
@@ -125,9 +117,9 @@ export const routes: RouteRecordRaw[] = [
         component: () => import("admin/user/list.vue"),
       },
       {
-        path: "user/importing",
-        name: "admin user importing",
-        component: () => import("~/admin/user/importing.vue"),
+        path: "user/generate",
+        name: "admin user generate",
+        component: () => import("~/admin/user/generate.vue"),
       },
       {
         path: "problem/list",

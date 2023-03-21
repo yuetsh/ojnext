@@ -1,10 +1,5 @@
 <script setup lang="ts">
-import {
-  DataTableColumn,
-  DataTableRowKey,
-  messageDark,
-  SelectOption,
-} from "naive-ui"
+import { DataTableColumn, DataTableRowKey, SelectOption } from "naive-ui"
 import Pagination from "~/shared/Pagination.vue"
 import { parseTime } from "~/utils/functions"
 import { User } from "~/utils/types"
@@ -134,7 +129,7 @@ watch(query, listUsers, { deep: true })
         <template #trigger>
           <n-button type="warning">删除</n-button>
         </template>
-        确定删除这个用户吗？删除后无法恢复！
+        确定删除选中的用户吗？删除后无法恢复！
       </n-popconfirm>
     </n-form-item>
   </n-form>

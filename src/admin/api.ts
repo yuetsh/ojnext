@@ -1,6 +1,10 @@
 import http from "utils/http"
 import { Problem, User } from "~/utils/types"
 
+export function getBaseInfo() {
+  return http.get("admin/dashboard_info")
+}
+
 export async function getProblemList(
   offset = 0,
   limit = 10,
@@ -48,18 +52,26 @@ export function getContestProblem(id: number) {
   return http.get("admin/contest/problem", { params: { id } })
 }
 
+// 用户列表
 export function getUserList(offset = 0, limit = 10, keyword: string) {
   return http.get("admin/user", {
     params: { paging: true, offset, limit, keyword },
   })
 }
 
-export function deleteUsers(userIDs: number[]) {
-  return http.delete("admin/user", { params: { id: userIDs.join(",") } })
-}
-
+// 编辑用户
 export function editUser(user: User) {
   return http.put("admin/user", user)
+}
+
+// 导入用户
+export function importUsers(users: string[][]) {
+  return http.post("admin/user", { users })
+}
+
+// 批量删除用户
+export function deleteUsers(userIDs: number[]) {
+  return http.delete("admin/user", { params: { id: userIDs.join(",") } })
 }
 
 export function getContestList(offset = 0, limit = 10, keyword: string) {

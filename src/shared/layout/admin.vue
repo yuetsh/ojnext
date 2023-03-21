@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { MenuOption } from "naive-ui"
 import { RouterLink } from "vue-router"
+import { STORAGE_KEY } from "~/utils/constants"
+import storage from "~/utils/storage"
+import { useUserStore } from "../store/user"
 
 const route = useRoute()
+const router = useRouter()
+const userStore = useUserStore()
 const options: MenuOption[] = [
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "返回 OJ" }),
@@ -45,10 +50,10 @@ const options: MenuOption[] = [
     label: () =>
       h(
         RouterLink,
-        { to: "/admin/user/importing" },
-        { default: () => "导入用户" }
+        { to: "/admin/user/generate" },
+        { default: () => "批量生成" }
       ),
-    key: "admin user importing",
+    key: "admin user generate",
   },
   { label: "比赛", key: "contest", disabled: true },
   {
@@ -87,6 +92,17 @@ const options: MenuOption[] = [
 ]
 
 const active = computed(() => (route.name as string) || "home")
+
+onMounted(async () => {
+  if (!storage.get(STORAGE_KEY.AUTHED)) {
+    router.replace("/")
+  } else {
+    await userStore.getMyProfile()
+    if (!userStore.isAdminRole) {
+      router.replace("/")
+    }
+  }
+})
 </script>
 
 <template>

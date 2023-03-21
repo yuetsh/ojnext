@@ -64,8 +64,9 @@ async function saveProfile() {
       <n-button
         @click="saveProfile"
         :disabled="!userStore.profile.mood && !userStore.profile.real_name"
-        >更改信息</n-button
       >
+        更改信息
+      </n-button>
     </n-form>
   </n-space>
 </template>
