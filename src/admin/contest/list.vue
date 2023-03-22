@@ -74,9 +74,9 @@ watch(query, listContests, { deep: true })
 </script>
 
 <template>
-  <n-form>
+  <n-form inline label-placement="left">
     <n-form-item>
-      <n-input v-model:value="query.keyword" />
+      <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
     </n-form-item>
   </n-form>
   <n-data-table :columns="columns" :data="contests" size="small" />
