@@ -3,10 +3,11 @@ import { useUserStore } from "~/shared/store/user"
 import { filterEmptyValue, getTagColor } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
 import { isDesktop } from "~/shared/composables/breakpoints"
-import { getProblemList, getProblemTagList, getRandomProblemID } from "oj/api"
+import { getProblemList, getRandomProblemID } from "oj/api"
 import Pagination from "~/shared/Pagination.vue"
 import { DataTableColumn, NSpace, NTag } from "naive-ui"
 import ProblemStatus from "./components/ProblemStatus.vue"
+import { getProblemTagList } from "~/shared/api"
 
 interface Tag {
   id: number

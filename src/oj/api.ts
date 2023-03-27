@@ -51,10 +51,6 @@ export async function getProblemList(
   }
 }
 
-export function getProblemTagList() {
-  return http.get("problem/tags")
-}
-
 export function getRandomProblemID() {
   return http.get("pickone")
 }

@@ -110,7 +110,7 @@ onMounted(async () => {
     <n-layout-sider width="160" bordered :native-scrollbar="false">
       <n-menu :options="options" :value="active" />
     </n-layout-sider>
-    <n-layout-content content-style="padding: 16px">
+    <n-layout-content content-style="padding: 16px; min-width: 600px">
       <router-view></router-view>
     </n-layout-content>
   </n-layout>

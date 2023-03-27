@@ -79,3 +79,14 @@ export function getContestList(offset = 0, limit = 10, keyword: string) {
     params: { paging: true, offset, limit, keyword },
   })
 }
+
+// 上传图片
+export async function uploadImage(file: File): Promise<string> {
+  const form = new window.FormData()
+  form.append("image", file)
+  const res: { success: boolean; file_path: string; msg: "Success" } =
+    await http.post("admin/upload_image", form, {
+      headers: { "content-type": "multipart/form-data" },
+    })
+  return res.success ? res.file_path : ""
+}

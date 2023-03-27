@@ -67,6 +67,11 @@ interface SampleUser {
   real_name: string | null
 }
 
+export interface Tag {
+  id: number
+  name: string
+}
+
 export interface Problem {
   _id: string
   id: number
@@ -93,7 +98,7 @@ export interface Problem {
     io_mode: string
   }
   spj: boolean
-  spj_language: null
+  spj_language: string
   rule_type: string
   difficulty: "Low" | "Mid" | "High"
   source: string

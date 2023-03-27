@@ -129,3 +129,12 @@ export function getUserRole(role: User["admin_type"]): {
   }
   return obj
 }
+
+export function unique<T>(arr: T[]) {
+  return arr.reduce((prev: T[], curr: T) => {
+    if (!prev.includes(curr)) {
+      prev.push(curr)
+    }
+    return prev
+  }, [])
+}
