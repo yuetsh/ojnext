@@ -212,7 +212,7 @@ export const DEAD_RESULTS = {
   },
 }
 
-export const LANGUAGE_VALUE = {
+export const LANGUAGE_FORMAT_VALUE = {
   C: "c",
   "C++": "cpp",
   Java: "java",
@@ -220,4 +220,14 @@ export const LANGUAGE_VALUE = {
   Python3: "python",
   JavaScript: "javascript",
   Golang: "go",
+}
+
+export const LANGUAGE_SHOW_VALUE = {
+  C: "C",
+  "C++": "C++",
+  Java: "Java",
+  Python2: "Python",
+  Python3: "Python",
+  JavaScript: "JS",
+  Golang: "Go",
 }

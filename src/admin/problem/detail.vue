@@ -1,9 +1,13 @@
 <script setup lang="ts">
-import { SelectOption } from "naive-ui"
-import { getProblemTagList } from "~/shared/api"
 import TextEditor from "~/shared/TextEditor.vue"
+import Monaco from "~/shared/Monaco.vue"
+
+import { SelectOption } from "naive-ui"
 import { unique } from "~/utils/functions"
 import { Problem, Tag } from "~/utils/types"
+import { getProblemTagList } from "~/shared/api"
+import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
+import { cTemplate, cppTemplate, blankTemplate } from "./templates"
 
 interface AlterProblem {
   spj_language: string
@@ -39,7 +43,7 @@ const problem = reactive<Omit<Problem, ExcludeKeys> & AlterProblem>({
   visible: true,
   share_submission: false,
   tags: [],
-  languages: ["C", "C++", "Python3"],
+  languages: ["C", "Python3"],
   template: {},
   samples: [{ input: "", output: "" }],
   spj: false,
@@ -58,9 +62,12 @@ const problem = reactive<Omit<Problem, ExcludeKeys> & AlterProblem>({
   },
 })
 
+const template = shallowRef({})
+
 const existingTags = shallowRef<Tag[]>([])
 const fromExistingTags = shallowRef<string[]>([])
 const newTags = shallowRef<string[]>([])
+const [needTemplate] = useToggle(false)
 
 const difficultyOptions: SelectOption[] = [
   { label: "简单", value: "Low" },
@@ -69,12 +76,12 @@ const difficultyOptions: SelectOption[] = [
 ]
 
 const languageOptions = [
-  { label: "C", value: "C" },
-  { label: "C++", value: "C++" },
-  { label: "Python", value: "Python3" },
-  { label: "Java", value: "Java" },
-  { label: "JS", value: "JavaScript" },
-  { label: "Go", value: "Golang" },
+  { label: LANGUAGE_SHOW_VALUE["C"], value: "C" },
+  { label: LANGUAGE_SHOW_VALUE["Python3"], value: "Python3" },
+  { label: LANGUAGE_SHOW_VALUE["C++"], value: "C++" },
+  { label: LANGUAGE_SHOW_VALUE["Java"], value: "Java" },
+  { label: LANGUAGE_SHOW_VALUE["JavaScript"], value: "JavaScript" },
+  { label: LANGUAGE_SHOW_VALUE["Golang"], value: "Golang" },
 ]
 
 const tagOptions = computed(() =>
@@ -118,6 +125,11 @@ watch([fromExistingTags, newTags], (tags) => {
   const uniqueTags = unique<string>(tags[0].concat(tags[1]))
   problem.tags = uniqueTags
 })
+
+watch(
+  () => problem.languages,
+  () => {}
+)
 </script>
 
 <template>
@@ -202,6 +214,35 @@ watch([fromExistingTags, newTags], (tags) => {
     添加用例
   </n-button>
   <TextEditor v-model:value="problem.hint" title="提示" />
+  <n-space class="title">
+    <n-checkbox v-model:checked="needTemplate" label="代码模板" />
+  </n-space>
+  <n-tabs type="segment" v-if="needTemplate">
+    <n-tab-pane
+      v-for="(lang, index) in problem.languages"
+      :name="LANGUAGE_SHOW_VALUE[lang]"
+      :key="index"
+    >
+      <Monaco
+        v-if="lang === 'C'"
+        v-model:value="cTemplate"
+        :font-size="12"
+        height="320px"
+      />
+      <Monaco
+        v-else-if="lang === 'C++'"
+        v-model:value="cppTemplate"
+        :font-size="12"
+        height="320px"
+      />
+      <Monaco
+        v-else
+        v-model:value="blankTemplate"
+        :font-size="12"
+        height="320px"
+      />
+    </n-tab-pane>
+  </n-tabs>
   <n-form>
     <n-form-item label="题目的来源">
       <n-input

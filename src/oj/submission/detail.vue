@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getSubmission } from "oj/api"
 import { Submission } from "utils/types"
-import { JUDGE_STATUS, LANGUAGE_VALUE } from "utils/constants"
+import { JUDGE_STATUS, LANGUAGE_FORMAT_VALUE } from "utils/constants"
 import {
   parseTime,
   submissionMemoryFormat,
@@ -73,7 +73,7 @@ onMounted(init)
       </n-space>
       <n-code
         class="code"
-        :language="LANGUAGE_VALUE[submission.language]"
+        :language="LANGUAGE_FORMAT_VALUE[submission.language]"
         :code="submission.code"
         show-line-numbers
       />

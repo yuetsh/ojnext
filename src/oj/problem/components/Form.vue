@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { DropdownOption } from "naive-ui"
-import { SOURCES } from "utils/constants"
+import { LANGUAGE_SHOW_VALUE, SOURCES } from "utils/constants"
 import { Problem } from "utils/types"
 import { code } from "oj/composables/code"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
@@ -47,7 +47,7 @@ const options: DropdownOption[] = props.problem.languages.map((it) => ({
         transform: "translateY(3px)",
       },
     }),
-    it,
+    LANGUAGE_SHOW_VALUE[it],
   ],
   value: it,
 }))

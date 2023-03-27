@@ -15,10 +15,6 @@ const props = defineProps<Props>()
 code.language = props.problem.languages[0] || "C"
 code.value = props.problem.template[code.language] || SOURCES[code.language]
 
-function change(value: string) {
-  code.value = value
-}
-
 const editorHeight = computed(() =>
   isDesktop.value ? "calc(100vh - 150px)" : "calc(100vh - 200px)"
 )
@@ -28,9 +24,8 @@ const editorHeight = computed(() =>
   <Form :problem="props.problem" />
   <Monaco
     class="editor"
+    v-model:value="code.value"
     :language="code.language"
-    :value="code.value"
-    @change="change"
     :height="editorHeight"
   />
 </template>

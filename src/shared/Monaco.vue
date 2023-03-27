@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type * as Monaco from "monaco-editor"
-import { LANGUAGE_VALUE } from "utils/constants"
+import { LANGUAGE_FORMAT_VALUE } from "utils/constants"
 import { LANGUAGE } from "utils/types"
 import { isMobile } from "~/shared/composables/breakpoints"
 import { isDark } from "./composables/dark"
@@ -22,7 +22,7 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const emit = defineEmits<{
-  (e: "change", value: string): void
+  (e: "update:value", value: string): void
 }>()
 
 const monacoEditorRef = ref()
@@ -33,7 +33,7 @@ onMounted(async () => {
   if (!monaco.value) await init()
   model = monaco.value!.editor.createModel(
     props.value,
-    LANGUAGE_VALUE[props.language]
+    LANGUAGE_FORMAT_VALUE[props.language]
   )
 
   editor = monaco.value!.editor.create(monacoEditorRef.value, {
@@ -45,7 +45,7 @@ onMounted(async () => {
     lineNumbersMinChars: 2,
     automaticLayout: true, // 自适应布局
     tabSize: 4,
-    fontSize: isMobile.value ? 20 : 22, // 字体大小
+    fontSize: props.fontSize || (isMobile.value ? 20 : 22), // 字体大小
     scrollBeyondLastLine: false,
     lineDecorationsWidth: 0,
     scrollBeyondLastColumn: 0,
@@ -60,7 +60,7 @@ onMounted(async () => {
 
   model.onDidChangeContent(() => {
     const value = model.getValue().toString()
-    emit("change", value)
+    emit("update:value", value)
   })
 
   editor.onKeyDown((e) => {
@@ -74,7 +74,10 @@ onMounted(async () => {
 
   watchEffect(() => {
     if (!monaco.value) return
-    monaco.value.editor.setModelLanguage(model, LANGUAGE_VALUE[props.language])
+    monaco.value.editor.setModelLanguage(
+      model,
+      LANGUAGE_FORMAT_VALUE[props.language]
+    )
   })
 
   watchEffect(() => {

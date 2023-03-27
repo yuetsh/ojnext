@@ -23,6 +23,7 @@ export default defineConfig({
         manualChunks: {
           fancy: ["highlight.js", "party-js"],
           chart: ["vue-chartjs", "chart.js"],
+          editor: ["@wangeditor/editor"],
         },
       },
     },

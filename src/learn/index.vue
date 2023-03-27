@@ -32,9 +32,6 @@ watch(
   { immediate: true }
 )
 
-function change(v: string) {
-  code.value = v
-}
 function prev() {
   router.push(`/learn/step-${step.value - 1}`)
 }
@@ -59,7 +56,7 @@ function next() {
       </n-scrollbar>
     </n-gi>
     <n-gi :span="14">
-      <Monaco :value="code" @change="change" />
+      <Monaco v-model:value="code" />
     </n-gi>
   </n-grid>
   <div v-else>
@@ -74,7 +71,7 @@ function next() {
         </n-button>
       </n-space>
     </n-scrollbar>
-    <Monaco :value="code" @change="change" height="calc(50vh - 42px)" />
+    <Monaco v-model:value="code" height="calc(50vh - 42px)" />
   </div>
 </template>
 
