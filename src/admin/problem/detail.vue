@@ -128,7 +128,9 @@ watch([fromExistingTags, newTags], (tags) => {
 
 watch(
   () => problem.languages,
-  () => {}
+  () => {
+    console.log(111)
+  }
 )
 </script>
 
