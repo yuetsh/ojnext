@@ -138,3 +138,16 @@ export function unique<T>(arr: T[]) {
     return prev
   }, [])
 }
+
+export function encode(string?: string) {
+  return btoa(String.fromCharCode(...new TextEncoder().encode(string ?? "")))
+}
+
+export function decode(bytes?: string) {
+  const latin = atob(bytes ?? "")
+  return new TextDecoder("utf-8").decode(
+    Uint8Array.from({ length: latin.length }, (_, index) =>
+      latin.charCodeAt(index)
+    )
+  )
+}

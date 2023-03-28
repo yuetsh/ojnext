@@ -1,21 +1,9 @@
 import axios from "axios"
 import { DEAD_RESULTS } from "./constants"
+import { decode, encode } from "./functions"
 import { Code } from "./types"
 
 const http = axios.create({ baseURL: "https://judge0api.hyyz.izhai.net" })
-
-function encode(string?: string) {
-  return btoa(String.fromCharCode(...new TextEncoder().encode(string ?? "")))
-}
-
-function decode(bytes?: string) {
-  const latin = atob(bytes ?? "")
-  return new TextDecoder("utf-8").decode(
-    Uint8Array.from({ length: latin.length }, (_, index) =>
-      latin.charCodeAt(index)
-    )
-  )
-}
 
 export async function createTestSubmission(code: Code, input: string) {
   const encodedCode = encode(code.value)

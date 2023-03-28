@@ -231,3 +231,39 @@ export const LANGUAGE_SHOW_VALUE = {
   JavaScript: "JS",
   Golang: "Go",
 }
+
+const cTemplate = `//TEMPLATE BEGIN
+#include <stdio.h>
+
+int main() {
+  printf("黄岩一职");
+  return 0;
+}
+//TEMPLATE END`
+
+const cppTemplate = `//TEMPLATE BEGIN
+#include <iostream>
+
+int main() {
+  return 0;
+}
+//TEMPLATE END`
+
+const blankTemplate = `//PREPEND BEGIN
+//PREPEND END
+
+//TEMPLATE BEGIN
+//TEMPLATE END
+
+//APPEND BEGIN
+//APPEND END`
+
+export const CODE_TEMPLATES = {
+  C: cTemplate,
+  "C++": cppTemplate,
+  Python2: blankTemplate,
+  Python3: blankTemplate,
+  Java: blankTemplate,
+  JavaScript: blankTemplate,
+  Golang: blankTemplate,
+}
