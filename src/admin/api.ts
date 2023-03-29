@@ -1,5 +1,10 @@
 import http from "utils/http"
-import { Problem, TestcaseUploadedReturns, User } from "~/utils/types"
+import {
+  BlankProblem,
+  Problem,
+  TestcaseUploadedReturns,
+  User,
+} from "~/utils/types"
 
 export function getBaseInfo() {
   return http.get("admin/dashboard_info")
@@ -36,11 +41,11 @@ export function deleteContestProblem(id: number) {
   return http.delete("admin/contest/problem", { params: { id } })
 }
 
-export function editProblem(problem: Problem) {
+export function editProblem(problem: Problem | BlankProblem) {
   return http.put("admin/problem", problem)
 }
 
-export function editContestProblem(problem: Problem) {
+export function editContestProblem(problem: Problem | BlankProblem) {
   return http.put("admin/contest/problem", problem)
 }
 
@@ -99,4 +104,12 @@ export function uploadTestcases(file: File) {
   return http.post<TestcaseUploadedReturns>("admin/test_case", form, {
     headers: { "content-type": "multipart/form-data" },
   })
+}
+
+export function createProblem(problem: BlankProblem) {
+  return http.post("admin/problem", problem)
+}
+
+export function createContestProblem(problem: BlankProblem) {
+  return http.post("admin/contest/problem", problem)
 }

@@ -277,3 +277,27 @@ export interface Testcase {
   output_name: string
   score?: string
 }
+
+interface AlterProblem {
+  spj_language: string
+  spj_code: string
+  spj_compile_ok: boolean
+  test_case_id: string
+  test_case_score: Testcase[]
+  contest_id?: string
+}
+
+type ExcludeKeys =
+  | "id"
+  | "created_by"
+  | "create_time"
+  | "last_update_time"
+  | "my_status"
+  | "contest"
+  | "statistic_info"
+  | "accepted_number"
+  | "submission_number"
+  | "total_score"
+
+export type BlankProblem = Omit<Problem, ExcludeKeys> &
+  AlterProblem & { id?: number }

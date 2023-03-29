@@ -4,35 +4,28 @@ import Monaco from "~/shared/Monaco.vue"
 
 import { SelectOption, UploadCustomRequestOptions } from "naive-ui"
 import { unique } from "~/utils/functions"
-import { LANGUAGE, Problem, Tag, Testcase } from "~/utils/types"
+import { BlankProblem, LANGUAGE, Tag } from "~/utils/types"
 import { getProblemTagList } from "~/shared/api"
 import { LANGUAGE_SHOW_VALUE, CODE_TEMPLATES } from "~/utils/constants"
 
-import { uploadTestcases } from "../api"
+import {
+  createContestProblem,
+  createProblem,
+  editContestProblem,
+  editProblem,
+  uploadTestcases,
+} from "../api"
 
-interface AlterProblem {
-  spj_language: string
-  spj_code: string
-  spj_compile_ok: boolean
-  test_case_id: string
-  test_case_score: Testcase[]
+interface Props {
+  contestID?: string
 }
 
-type ExcludeKeys =
-  | "id"
-  | "created_by"
-  | "create_time"
-  | "last_update_time"
-  | "my_status"
-  | "contest"
-  | "statistic_info"
-  | "accepted_number"
-  | "submission_number"
-  | "total_score"
-
 const message = useMessage()
+const route = useRoute()
+const router = useRouter()
+const props = defineProps<Props>()
 
-const problem = reactive<Omit<Problem, ExcludeKeys> & AlterProblem>({
+const problem = reactive<BlankProblem>({
   _id: "",
   title: "",
   description: "",
@@ -77,7 +70,7 @@ const [needTemplate] = useToggle(false)
 
 const difficultyOptions: SelectOption[] = [
   { label: "简单", value: "Low" },
-  { label: "中等", value: "Med" },
+  { label: "中等", value: "Mid" },
   { label: "困难", value: "High" },
 ]
 
@@ -149,9 +142,60 @@ async function handleUploadTestcases({ file }: UploadCustomRequestOptions) {
   }
 }
 
+// TODO: 还没有完成
 function downloadTestcases() {}
 
-function saveProblem() {
+function detectProblemCompletion() {
+  let flag = false
+  // 标题
+  if (!problem._id || !problem.title) {
+    message.error("编号或标题没有填写")
+    flag = true
+  }
+  // 标签
+  else if (newTags.value.length === 0 && fromExistingTags.value.length === 0) {
+    message.error("标签没有填写")
+    flag = true
+  }
+  // 题目
+  else if (
+    !problem.description ||
+    !problem.input_description ||
+    !problem.output_description
+  ) {
+    message.error("题目或输入或输出没有填写")
+    flag = true
+  }
+  // 样例
+  else if (problem.samples.length == 0) {
+    message.error("样例没有填写")
+    flag = true
+  }
+  // 样例是空的
+  else if (
+    problem.samples.some(
+      (sample) => sample.output === "" || sample.input === ""
+    )
+  ) {
+    message.error("空样例没有删干净")
+    flag = true
+  }
+  // 测试用例
+  else if (problem.test_case_score.length === 0) {
+    message.error("测试用例没有上传")
+    flag = true
+  } else if (problem.languages.length === 0) {
+    message.error("编程语言没有选择")
+    flag = true
+  }
+  // 通过了
+  else {
+    flag = false
+  }
+  return flag
+}
+
+function getTemplate() {
   if (!needTemplate.value) {
     problem.template = {}
   } else {
@@ -163,7 +207,47 @@ function saveProblem() {
       }
     })
   }
-  console.log(problem.template)
+}
+
+async function submit() {
+  const notComplete = detectProblemCompletion()
+  if (notComplete) return
+  getTemplate()
+  problem.tags = [...newTags.value, ...fromExistingTags.value]
+  console.log(problem)
+  const api = {
+    "admin problem create": createProblem,
+    "admin problem edit": editProblem,
+    "admin contest problem create": createContestProblem,
+    "admin contest problem edit": editContestProblem,
+  }[<string>route.name]
+  if (
+    route.name === "admin contest problem create" ||
+    route.name === "admin contest problem edit"
+  ) {
+    problem.contest_id = props.contestID
+  }
+  try {
+    await api!(problem)
+    message.success("恭喜你 💐 出题成功")
+    if (
+      route.name === "admin problem create" ||
+      route.name === "admin problem edit"
+    ) {
+      router.push({ name: "admin problem list" })
+    } else {
+      router.push({
+        name: "admin contest problem list",
+        params: { contestID: props.contestID },
+      })
+    }
+  } catch (err: any) {
+    if (err.data === "Display ID already exists") {
+      message.error("显示编号重复了，请换一个编号")
+    } else {
+      message.error(err.data)
+    }
+  }
 }
 
 onMounted(() => {
@@ -332,7 +416,7 @@ watch([fromExistingTags, newTags], (tags) => {
       >
         <n-button type="info">上传测试用例</n-button>
       </n-upload>
-      <n-button type="primary" @click="saveProblem">保存</n-button>
+      <n-button type="primary" @click="submit">保存</n-button>
     </n-space>
   </n-space>
 </template>
