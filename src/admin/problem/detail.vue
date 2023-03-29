@@ -273,6 +273,25 @@ watch([fromExistingTags, newTags], (tags) => {
       />
     </n-tab-pane>
   </n-tabs>
+  <n-alert
+    class="box"
+    v-if="problem.test_case_score.length"
+    :show-icon="false"
+    type="info"
+  >
+    <template #header>
+      <n-space align="center">
+        <div>
+          测试组编号 {{ problem.test_case_id.slice(0, 12) }} 共有
+          {{ problem.test_case_score.length }}
+          条测试用例
+        </div>
+        <n-button tertiary type="info" size="small" @click="downloadTestcases">
+          下载
+        </n-button>
+      </n-space>
+    </template>
+  </n-alert>
   <n-space justify="space-between">
     <n-form inline label-placement="left">
       <n-form-item label="语言">
@@ -316,20 +335,6 @@ watch([fromExistingTags, newTags], (tags) => {
       <n-button type="primary" @click="saveProblem">保存</n-button>
     </n-space>
   </n-space>
-  <n-alert :show-icon="false" v-if="problem.test_case_score.length" type="info">
-    <template #header>
-      <n-space align="center">
-        <div>
-          测试组编号 {{ problem.test_case_id.slice(0, 12) }} 共有
-          {{ problem.test_case_score.length }}
-          条测试用例
-        </div>
-        <n-button tertiary type="info" size="small" @click="downloadTestcases">
-          下载
-        </n-button>
-      </n-space>
-    </template>
-  </n-alert>
 </template>
 
 <style scoped>
