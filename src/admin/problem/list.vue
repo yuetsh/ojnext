@@ -44,7 +44,7 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   {
     title: "选项",
     key: "actions",
-    width: 200,
+    width: 250,
     render: (row) =>
       h(Actions, {
         problemID: row.id,

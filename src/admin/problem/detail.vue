@@ -13,10 +13,12 @@ import {
   createProblem,
   editContestProblem,
   editProblem,
+  getProblem,
   uploadTestcases,
 } from "../api"
 
 interface Props {
+  problemID?: string
   contestID?: string
 }
 
@@ -66,7 +68,8 @@ const currentActiveTemplate = ref<LANGUAGE>("C")
 const existingTags = shallowRef<Tag[]>([])
 const fromExistingTags = shallowRef<string[]>([])
 const newTags = shallowRef<string[]>([])
-const [needTemplate] = useToggle(false)
+const [needTemplate, toggleNeedTemplate] = useToggle(false)
+const [ready, toggleReady] = useToggle(false)
 
 const difficultyOptions: SelectOption[] = [
   { label: "简单", value: "Low" },
@@ -86,6 +89,53 @@ const languageOptions = [
 const tagOptions = computed(() =>
   existingTags.value.map((tag) => ({ label: tag.name, value: tag.name }))
 )
+
+async function getProblemDetail() {
+  if (!props.problemID) return
+  const { data } = await getProblem(props.problemID)
+  toggleReady(true)
+  problem.id = data.id
+  problem._id = data._id
+  problem.title = data.title
+  problem.description = data.description
+  problem.input_description = data.input_description
+  problem.output_description = data.output_description
+  problem.time_limit = data.time_limit
+  problem.memory_limit = data.memory_limit
+  problem.memory_limit = data.memory_limit
+  problem.difficulty = data.difficulty
+  problem.visible = data.visible
+  problem.share_submission = data.share_submission
+  problem.tags = data.tags
+  problem.languages = data.languages
+  problem.template = data.template
+  problem.samples = data.samples
+  problem.samples = data.samples
+  problem.spj = data.spj
+  problem.spj_language = data.spj_language
+  problem.spj_code = data.spj_code
+  problem.spj_compile_ok = data.spj_compile_ok
+  problem.test_case_id = data.test_case_id
+  problem.test_case_score = data.test_case_score
+  problem.rule_type = data.rule_type
+  problem.hint = data.hint
+  problem.source = data.source
+  problem.io_mode = data.io_mode
+  if (problem.contest_id) {
+    problem.contest_id = problem.contest_id
+  }
+
+  // 下面是用来显示的：
+  // 代码模板 和 模板开关
+  problem.languages.forEach((lang) => {
+    if (data.template[lang]) {
+      template[lang] = data.template[lang]
+      toggleNeedTemplate(true)
+    }
+  })
+  // 标签
+  fromExistingTags.value = data.tags
+}
 
 async function listTags() {
   const res = await getProblemTagList()
@@ -145,6 +195,7 @@ async function handleUploadTestcases({ file }: UploadCustomRequestOptions) {
 // TODO: 还没有完成
 function downloadTestcases() {}
 
+// 题目是否有漏写的
 function detectProblemCompletion() {
   let flag = false
   // 标题
@@ -229,7 +280,12 @@ async function submit() {
   }
   try {
     await api!(problem)
-    message.success("恭喜你 💐 出题成功")
+    if (
+      route.name === "admin problem create" ||
+      route.name === "admin contest problem create"
+    ) {
+      message.success("恭喜你 💐 出题成功")
+    }
     if (
       route.name === "admin problem create" ||
       route.name === "admin problem edit"
@@ -252,6 +308,14 @@ async function submit() {
 
 onMounted(() => {
   listTags()
+  getProblemDetail()
+
+  if (
+    route.name === "admin problem create" ||
+    route.name === "admin contest problem create"
+  ) {
+    toggleReady(true)
+  }
 })
 
 watch([fromExistingTags, newTags], (tags) => {
@@ -293,12 +357,21 @@ watch([fromExistingTags, newTags], (tags) => {
     </n-form-item>
   </n-form>
   <TextEditor
+    v-if="ready"
     v-model:value="problem.description"
     title="题目本体"
     :min-height="300"
   />
-  <TextEditor v-model:value="problem.input_description" title="输入的描述" />
-  <TextEditor v-model:value="problem.output_description" title="输出的描述" />
+  <TextEditor
+    v-if="ready"
+    v-model:value="problem.input_description"
+    title="输入的描述"
+  />
+  <TextEditor
+    v-if="ready"
+    v-model:value="problem.output_description"
+    title="输出的描述"
+  />
   <div class="box" v-for="(sample, index) in problem.samples" :key="index">
     <n-space justify="space-between" align="center">
       <strong>测试样例 {{ index + 1 }}</strong>
@@ -329,7 +402,7 @@ watch([fromExistingTags, newTags], (tags) => {
   <n-button class="addSamples box" tertiary type="primary" @click="addSample">
     添加用例
   </n-button>
-  <TextEditor v-model:value="problem.hint" title="提示" />
+  <TextEditor v-if="ready" v-model:value="problem.hint" title="提示" />
   <n-form>
     <n-form-item label="题目的来源">
       <n-input

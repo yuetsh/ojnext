@@ -1,7 +1,7 @@
 import http from "utils/http"
 import {
+  AdminProblem,
   BlankProblem,
-  Problem,
   TestcaseUploadedReturns,
   User,
 } from "~/utils/types"
@@ -21,7 +21,7 @@ export async function getProblemList(
     params: { paging: true, offset, limit, keyword, contest_id: contestID },
   })
   return {
-    results: res.data.results.map((result: Problem) => ({
+    results: res.data.results.map((result: AdminProblem) => ({
       id: result.id,
       _id: result._id,
       title: result.title,
@@ -41,16 +41,16 @@ export function deleteContestProblem(id: number) {
   return http.delete("admin/contest/problem", { params: { id } })
 }
 
-export function editProblem(problem: Problem | BlankProblem) {
+export function editProblem(problem: AdminProblem | BlankProblem) {
   return http.put("admin/problem", problem)
 }
 
-export function editContestProblem(problem: Problem | BlankProblem) {
+export function editContestProblem(problem: AdminProblem | BlankProblem) {
   return http.put("admin/contest/problem", problem)
 }
 
-export function getProblem(id: number) {
-  return http.get("admin/problem", { params: { id } })
+export function getProblem(id: string | number) {
+  return http.get<AdminProblem>("admin/problem", { params: { id } })
 }
 
 export function getContestProblem(id: number) {

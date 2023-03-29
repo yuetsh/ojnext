@@ -72,6 +72,18 @@ export interface Tag {
   name: string
 }
 
+export interface TestcaseUploadedReturns {
+  id: string
+  info: Testcase[]
+  spj: boolean
+}
+
+export interface Testcase {
+  input_name: string
+  output_name: string
+  score: string
+}
+
 export interface Problem {
   _id: string
   id: number
@@ -111,6 +123,32 @@ export interface Problem {
   my_status: number
   visible: boolean
 }
+
+export type AdminProblem = Problem & AlterProblem
+
+interface AlterProblem {
+  spj_language: string
+  spj_code: string
+  spj_compile_ok: boolean
+  test_case_id: string
+  test_case_score: Testcase[]
+  contest_id?: string
+}
+
+type ExcludeKeys =
+  | "id"
+  | "created_by"
+  | "create_time"
+  | "last_update_time"
+  | "my_status"
+  | "contest"
+  | "statistic_info"
+  | "accepted_number"
+  | "submission_number"
+  | "total_score"
+
+export type BlankProblem = Omit<Problem, ExcludeKeys> &
+  AlterProblem & { id?: number }
 
 export interface ProblemFiltered {
   _id: string
@@ -262,42 +300,3 @@ export interface ContestRank {
   submission_info: { [key: string]: SubmissionInfo }
   contest: number
 }
-
-export interface TestcaseUploadedReturns {
-  id: string
-  info: Testcase[]
-  spj: boolean
-}
-
-export interface Testcase {
-  stripped_output_md5: string
-  input_size: number
-  output_size: number
-  input_name: string
-  output_name: string
-  score?: string
-}
-
-interface AlterProblem {
-  spj_language: string
-  spj_code: string
-  spj_compile_ok: boolean
-  test_case_id: string
-  test_case_score: Testcase[]
-  contest_id?: string
-}
-
-type ExcludeKeys =
-  | "id"
-  | "created_by"
-  | "create_time"
-  | "last_update_time"
-  | "my_status"
-  | "contest"
-  | "statistic_info"
-  | "accepted_number"
-  | "submission_number"
-  | "total_score"
-
-export type BlankProblem = Omit<Problem, ExcludeKeys> &
-  AlterProblem & { id?: number }

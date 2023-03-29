@@ -43,6 +43,7 @@ function goEdit() {
     <n-button size="small" secondary type="primary" @click="goEdit">
       编辑
     </n-button>
+    <n-button size="small" secondary type="info">查看</n-button>
     <n-popconfirm @positive-click="handleDeleteProblem">
       <template #trigger>
         <n-button secondary size="small" type="error">删除</n-button>
