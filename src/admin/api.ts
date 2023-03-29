@@ -1,5 +1,5 @@
 import http from "utils/http"
-import { Problem, User } from "~/utils/types"
+import { Problem, TestcaseUploadedReturns, User } from "~/utils/types"
 
 export function getBaseInfo() {
   return http.get("admin/dashboard_info")
@@ -89,4 +89,14 @@ export async function uploadImage(file: File): Promise<string> {
       headers: { "content-type": "multipart/form-data" },
     })
   return res.success ? res.file_path : ""
+}
+
+// 上传测试用例
+export function uploadTestcases(file: File) {
+  const form = new window.FormData()
+  form.append("file", file)
+  form.append("spj", "false")
+  return http.post<TestcaseUploadedReturns>("admin/test_case", form, {
+    headers: { "content-type": "multipart/form-data" },
+  })
 }

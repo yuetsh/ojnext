@@ -262,3 +262,18 @@ export interface ContestRank {
   submission_info: { [key: string]: SubmissionInfo }
   contest: number
 }
+
+export interface TestcaseUploadedReturns {
+  id: string
+  info: Testcase[]
+  spj: boolean
+}
+
+export interface Testcase {
+  stripped_output_md5: string
+  input_size: number
+  output_size: number
+  input_name: string
+  output_name: string
+  score?: string
+}

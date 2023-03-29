@@ -2,18 +2,20 @@
 import TextEditor from "~/shared/TextEditor.vue"
 import Monaco from "~/shared/Monaco.vue"
 
-import { SelectOption } from "naive-ui"
-import { encode, unique } from "~/utils/functions"
-import { LANGUAGE, Problem, Tag } from "~/utils/types"
+import { SelectOption, UploadCustomRequestOptions } from "naive-ui"
+import { unique } from "~/utils/functions"
+import { LANGUAGE, Problem, Tag, Testcase } from "~/utils/types"
 import { getProblemTagList } from "~/shared/api"
 import { LANGUAGE_SHOW_VALUE, CODE_TEMPLATES } from "~/utils/constants"
+
+import { uploadTestcases } from "../api"
 
 interface AlterProblem {
   spj_language: string
   spj_code: string
   spj_compile_ok: boolean
   test_case_id: string
-  test_case_score: any[]
+  test_case_score: Testcase[]
 }
 
 type ExcludeKeys =
@@ -44,7 +46,11 @@ const problem = reactive<Omit<Problem, ExcludeKeys> & AlterProblem>({
   tags: [],
   languages: ["C", "Python3"],
   template: {},
-  samples: [{ input: "", output: "" }],
+  samples: [
+    { input: "", output: "" },
+    { input: "", output: "" },
+    { input: "", output: "" },
+  ],
   spj: false,
   spj_language: "",
   spj_code: "",
@@ -62,6 +68,7 @@ const problem = reactive<Omit<Problem, ExcludeKeys> & AlterProblem>({
 })
 
 const template = reactive(JSON.parse(JSON.stringify(CODE_TEMPLATES)))
+const currentActiveTemplate = ref<LANGUAGE>("C")
 
 const existingTags = shallowRef<Tag[]>([])
 const fromExistingTags = shallowRef<string[]>([])
@@ -120,6 +127,30 @@ function resetTemplate(language: LANGUAGE) {
   template[language] = CODE_TEMPLATES[language]
 }
 
+async function handleUploadTestcases({ file }: UploadCustomRequestOptions) {
+  try {
+    const res = await uploadTestcases(file.file!)
+    // @ts-ignore:
+    if (res.error) {
+      message.error("上传测试用例失败")
+      return
+    }
+    const testcases = res.data.info
+    for (let file of testcases) {
+      file.score = (100 / testcases.length).toFixed(0)
+      if (!file.output_name && problem.spj) {
+        file.output_name = "-"
+      }
+    }
+    problem.test_case_score = testcases
+    problem.test_case_id = res.data.id
+  } catch (err) {
+    message.error("上传测试用例失败")
+  }
+}
+
+function downloadTestcases() {}
+
 function saveProblem() {
   if (!needTemplate.value) {
     problem.template = {}
@@ -148,35 +179,23 @@ watch([fromExistingTags, newTags], (tags) => {
 <template>
   <n-form inline label-placement="left">
     <n-form-item label="显示编号">
-      <n-input class="id" v-model:value="problem._id" />
+      <n-input class="w-100" v-model:value="problem._id" />
     </n-form-item>
     <n-form-item label="题目">
       <n-input class="titleInput" v-model:value="problem.title" />
     </n-form-item>
-    <n-form-item label="语言">
-      <n-checkbox-group v-model:value="problem.languages">
-        <n-space align="center">
-          <n-checkbox
-            v-for="(language, index) in languageOptions"
-            :key="index"
-            :value="language.value"
-            :label="language.label"
-          />
-        </n-space>
-      </n-checkbox-group>
-    </n-form-item>
-  </n-form>
-  <n-form inline label-placement="left">
-    <n-form-item label="可见">
-      <n-switch v-model:value="problem.visible" />
-    </n-form-item>
     <n-form-item label="难度">
       <n-select
-        class="difficulty"
+        class="w-100"
         :options="difficultyOptions"
         v-model:value="problem.difficulty"
       />
     </n-form-item>
+    <n-form-item label="可见">
+      <n-switch v-model:value="problem.visible" />
+    </n-form-item>
+  </n-form>
+  <n-form inline label-placement="left">
     <n-form-item label="现成的标签">
       <n-select
         class="tag"
@@ -191,12 +210,12 @@ watch([fromExistingTags, newTags], (tags) => {
   </n-form>
   <TextEditor
     v-model:value="problem.description"
-    title="题目"
+    title="题目本体"
     :min-height="300"
   />
   <TextEditor v-model:value="problem.input_description" title="输入的描述" />
   <TextEditor v-model:value="problem.output_description" title="输出的描述" />
-  <div class="samples" v-for="(sample, index) in problem.samples" :key="index">
+  <div class="box" v-for="(sample, index) in problem.samples" :key="index">
     <n-space justify="space-between" align="center">
       <strong>测试样例 {{ index + 1 }}</strong>
       <n-button
@@ -223,52 +242,105 @@ watch([fromExistingTags, newTags], (tags) => {
       </n-gi>
     </n-grid>
   </div>
-  <n-button class="addSamples" tertiary type="primary" @click="addSample">
+  <n-button class="addSamples box" tertiary type="primary" @click="addSample">
     添加用例
   </n-button>
   <TextEditor v-model:value="problem.hint" title="提示" />
-  <n-space class="title" align="center">
-    <n-checkbox v-model:checked="needTemplate" label="代码模板" />
-  </n-space>
-  <n-tabs type="segment" class="templateWrapper" v-if="needTemplate">
+  <n-form>
+    <n-form-item label="题目的来源">
+      <n-input
+        v-model:value="problem.source"
+        placeholder="比如来自某道题的改编等，或者网上的资料"
+      />
+    </n-form-item>
+  </n-form>
+  <n-tabs
+    type="segment"
+    class="template box"
+    v-if="needTemplate"
+    v-model:value="currentActiveTemplate"
+  >
     <n-tab-pane
       v-for="(lang, index) in problem.languages"
-      :name="LANGUAGE_SHOW_VALUE[lang]"
       :key="index"
+      :name="lang"
     >
       <Monaco
         v-model:value="template[lang]"
         :language="lang"
         :font-size="16"
-        height="300px"
+        height="200px"
       />
-      <n-button
-        size="small"
-        secondary
-        type="warning"
-        @click="resetTemplate(lang)"
-      >
-        重置 {{ LANGUAGE_SHOW_VALUE[lang] }} 代码模板
-      </n-button>
     </n-tab-pane>
   </n-tabs>
-  <n-form>
-    <n-form-item label="题目的来源">
-      <n-input
-        v-model:value="problem.source"
-        placeholder="（比如来自某道题的改编等，或者网上的资料）"
-      />
-    </n-form-item>
-  </n-form>
-  <n-space justify="end">
-    <n-button type="primary" @click="saveProblem">保存</n-button>
+  <n-space justify="space-between">
+    <n-form inline label-placement="left">
+      <n-form-item label="语言">
+        <n-checkbox-group v-model:value="problem.languages">
+          <n-space align="center">
+            <n-checkbox
+              v-for="(language, index) in languageOptions"
+              :key="index"
+              :value="language.value"
+              :label="language.label"
+            />
+          </n-space>
+        </n-checkbox-group>
+      </n-form-item>
+      <n-form-item>
+        <n-checkbox
+          v-model:checked="needTemplate"
+          label="代码模板（一般用不到）"
+        />
+      </n-form-item>
+      <n-form-item>
+        <n-button
+          v-if="needTemplate"
+          size="small"
+          tertiary
+          type="warning"
+          @click="resetTemplate(currentActiveTemplate)"
+        >
+          重置 {{ LANGUAGE_SHOW_VALUE[currentActiveTemplate] }} 代码模板
+        </n-button>
+      </n-form-item>
+    </n-form>
+    <n-space>
+      <n-upload
+        :show-file-list="false"
+        accept=".zip"
+        :custom-request="handleUploadTestcases"
+      >
+        <n-button type="info">上传测试用例</n-button>
+      </n-upload>
+      <n-button type="primary" @click="saveProblem">保存</n-button>
+    </n-space>
   </n-space>
+  <n-alert :show-icon="false" v-if="problem.test_case_score.length" type="info">
+    <template #header>
+      <n-space align="center">
+        <div>
+          测试组编号 {{ problem.test_case_id.slice(0, 12) }} 共有
+          {{ problem.test_case_score.length }}
+          条测试用例
+        </div>
+        <n-button tertiary type="info" size="small" @click="downloadTestcases">
+          下载
+        </n-button>
+      </n-space>
+    </template>
+  </n-alert>
 </template>
 
 <style scoped>
-.id {
+.box {
+  margin-bottom: 20px;
+}
+
+.w-100 {
   width: 100px;
 }
+
 .titleInput {
   width: 300px;
 }
@@ -276,24 +348,15 @@ watch([fromExistingTags, newTags], (tags) => {
 .title {
   margin-bottom: 12px;
 }
-.difficulty {
-  width: 100px;
-}
 .tag {
-  width: 300px;
-}
-
-.samples {
-  margin-bottom: 20px;
+  width: 500px;
 }
 
 .addSamples {
   width: 100%;
-  margin-bottom: 20px;
 }
 
-.templateWrapper {
-  width: 50%;
-  margin-bottom: 20px;
+.template {
+  width: 60%;
 }
 </style>
