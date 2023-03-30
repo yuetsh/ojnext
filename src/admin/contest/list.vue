@@ -58,7 +58,7 @@ const columns: DataTableColumn<Contest>[] = [
   {
     title: "选项",
     key: "actions",
-    width: 260,
+    width: 140,
     render: (row) => h(Actions, { contest: row }),
   },
 ]

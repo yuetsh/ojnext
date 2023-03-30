@@ -29,13 +29,6 @@ function goEditProblems() {
     <n-button size="small" type="info" secondary @click="goEditProblems">
       题目
     </n-button>
-    <n-button size="small" type="warning" secondary>公告</n-button>
-    <n-tooltip>
-      <template #trigger>
-        <n-button size="small" secondary>下载</n-button>
-      </template>
-      下载 AC 提交
-    </n-tooltip>
   </n-space>
 </template>
 <style scoped></style>

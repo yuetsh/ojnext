@@ -1,7 +1,9 @@
 import http from "utils/http"
 import {
   AdminProblem,
+  BlankContest,
   BlankProblem,
+  Contest,
   TestcaseUploadedReturns,
   User,
 } from "~/utils/types"
@@ -112,4 +114,18 @@ export function createProblem(problem: BlankProblem) {
 
 export function createContestProblem(problem: BlankProblem) {
   return http.post("admin/contest/problem", problem)
+}
+
+export function createContest(contest: BlankContest) {
+  return http.post("admin/contest", contest)
+}
+
+export function editContest(contest: BlankContest) {
+  return http.put("admin/contest", contest)
+}
+
+export function getContest(id: string) {
+  return http.get<Contest & { password: string }>("admin/contest", {
+    params: { id },
+  })
 }

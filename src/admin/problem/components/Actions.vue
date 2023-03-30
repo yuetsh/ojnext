@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { deleteContestProblem, deleteProblem } from "~/admin/api"
+import download from "~/utils/download"
 
 interface Props {
   problemID: number
@@ -30,8 +31,8 @@ async function handleDeleteProblem() {
   }
 }
 
-function download() {
-  console.log(props.problemID)
+function downloads() {
+  download("test_case?problem_id=" + props.problemID)
 }
 
 function goEdit() {
@@ -60,7 +61,7 @@ function goCheck() {
     </n-popconfirm>
     <n-tooltip>
       <template #trigger>
-        <n-button size="small" secondary @click="download">下载</n-button>
+        <n-button size="small" secondary @click="downloads">下载</n-button>
       </template>
       下载测试用例
     </n-tooltip>

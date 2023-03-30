@@ -91,7 +91,10 @@ const tagOptions = computed(() =>
 )
 
 async function getProblemDetail() {
-  if (!props.problemID) return
+  if (!props.problemID) {
+    toggleReady(true)
+    return
+  }
   const { data } = await getProblem(props.problemID)
   toggleReady(true)
   problem.id = data.id
@@ -307,12 +310,6 @@ async function submit() {
 }
 
 onMounted(() => {
-  if (
-    route.name === "admin problem create" ||
-    route.name === "admin contest problem create"
-  ) {
-    toggleReady(true)
-  }
   listTags()
   getProblemDetail()
 })

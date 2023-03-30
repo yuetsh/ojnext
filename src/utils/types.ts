@@ -283,6 +283,18 @@ export interface Contest {
   visible: boolean
 }
 
+export interface BlankContest {
+  title: string
+  description: string
+  start_time: string
+  end_time: string
+  rule_type: "ACM" | "OI"
+  password: string
+  real_time_rank: boolean
+  visible: boolean
+  allowed_ip_ranges: { value: string }[]
+}
+
 interface SubmissionInfo {
   is_ac: boolean
   ac_time: number

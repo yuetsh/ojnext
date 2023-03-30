@@ -1,4 +1,4 @@
-import { formatISO, getTime, intervalToDuration, parseISO } from "date-fns"
+import { formatISO, getTime, parseISO } from "date-fns"
 import { useUserStore } from "~/shared/store/user"
 import { ContestStatus, ContestType } from "~/utils/constants"
 import { duration } from "~/utils/functions"
