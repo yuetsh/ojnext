@@ -41,7 +41,16 @@ function goEdit() {
 }
 
 function goCheck() {
-  const data = router.resolve("/problem/" + props.problemDisplayID)
+  let data = router.resolve("/problem/" + props.problemDisplayID)
+  if (route.name === "admin contest problem list") {
+    data = router.resolve({
+      name: "contest problem",
+      params: {
+        contestID: route.params.contestID,
+        problemID: props.problemDisplayID,
+      },
+    })
+  }
   window.open(data.href, "_blank")
 }
 </script>

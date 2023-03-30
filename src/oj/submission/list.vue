@@ -216,7 +216,7 @@ const columns = computed(() => {
           NButton,
           {
             size: "small",
-            tertiary: true,
+            type: "primary",
             onClick: () => rejudge(row.id),
           },
           () => "重新判题"

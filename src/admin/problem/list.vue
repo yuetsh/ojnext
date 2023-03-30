@@ -5,12 +5,29 @@ import { DataTableColumn, NSwitch } from "naive-ui"
 import { AdminProblemFiltered } from "~/utils/types"
 import { parseTime } from "~/utils/functions"
 import Actions from "./components/Actions.vue"
+import Modal from "./components/Modal.vue"
 
 interface Props {
   contestID?: string
 }
 
 const props = defineProps<Props>()
+const route = useRoute()
+const router = useRouter()
+
+const title = computed(
+  () =>
+    ({
+      "admin problem list": "题目列表",
+      "admin contest problem list": "比赛题目列表",
+    }[<string>route.name])
+)
+const isContestProblemList = computed(
+  () => route.name === "admin contest problem list"
+)
+
+const [show, toggleShow] = useToggle()
+const { count, inc } = useCounter(0)
 const total = ref(0)
 const problems = ref<AdminProblemFiltered[]>([])
 const query = reactive({
@@ -78,14 +95,34 @@ async function toggleVisible(problemID: number) {
   })
 }
 
+function createContestProblem() {
+  router.push({
+    name: "admin contest problem create",
+    params: { contestID: props.contestID },
+  })
+}
+
+async function selectProblems() {
+  toggleShow(true)
+  inc()
+}
+
 onMounted(listProblems)
 watch(query, listProblems, { deep: true })
 </script>
 
 <template>
   <n-space class="titleWrapper" justify="space-between">
-    <h2 class="title">题目列表</h2>
-    <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
+    <h2 class="title">{{ title }}</h2>
+    <n-space>
+      <n-button v-if="isContestProblemList" @click="createContestProblem">
+        新建比赛题目
+      </n-button>
+      <n-button v-if="isContestProblemList" @click="selectProblems">
+        从题库中选择
+      </n-button>
+      <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
+    </n-space>
   </n-space>
   <n-data-table striped size="small" :columns="columns" :data="problems" />
   <Pagination
@@ -93,6 +130,7 @@ watch(query, listProblems, { deep: true })
     v-model:limit="query.limit"
     v-model:page="query.page"
   />
+  <Modal v-model:show="show" :count="count" @change="listProblems" />
 </template>
 
 <style scoped>

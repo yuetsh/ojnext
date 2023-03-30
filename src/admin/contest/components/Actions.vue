@@ -23,11 +23,11 @@ function goEditProblems() {
 </script>
 <template>
   <n-space>
-    <n-button size="small" type="primary" secondary @click="goEdit">
-      编辑
-    </n-button>
-    <n-button size="small" type="info" secondary @click="goEditProblems">
+    <n-button size="small" type="primary" secondary @click="goEditProblems">
       题目
+    </n-button>
+    <n-button size="small" type="info" secondary @click="goEdit">
+      编辑
     </n-button>
   </n-space>
 </template>

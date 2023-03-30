@@ -16,11 +16,19 @@ export async function getProblemList(
   offset = 0,
   limit = 10,
   keyword: string,
-  contestID?: string
+  contestID?: string,
+  ruleType?: "ACM" | "OI"
 ) {
   const endpoint = !!contestID ? "admin/contest/problem" : "admin/problem"
   const res = await http.get(endpoint, {
-    params: { paging: true, offset, limit, keyword, contest_id: contestID },
+    params: {
+      paging: true,
+      offset,
+      limit,
+      keyword,
+      contest_id: contestID,
+      rule_type: ruleType,
+    },
   })
   return {
     results: res.data.results.map((result: AdminProblem) => ({
@@ -127,5 +135,17 @@ export function editContest(contest: BlankContest) {
 export function getContest(id: string) {
   return http.get<Contest & { password: string }>("admin/contest", {
     params: { id },
+  })
+}
+
+export function addProblemForContest(
+  contestID: string,
+  problemID: number,
+  displayID: string
+) {
+  return http.post("admin/contest/add_problem_from_public", {
+    contest_id: contestID,
+    problem_id: problemID,
+    display_id: displayID,
   })
 }
