@@ -70,7 +70,7 @@ async function submit() {
   try {
     await api!(contest)
     if (route.name === "admin contest create") {
-      message.success("成功创建比赛 💐")
+      message.success("成功新建比赛 💐")
     } else {
       message.success("修改已保存")
     }
@@ -84,9 +84,12 @@ onMounted(getContestDetail)
 </script>
 
 <template>
+  <h2 class="title">
+    {{ $route.name === "admin contest create" ? "新建比赛" : "编辑比赛" }}
+  </h2>
   <n-form inline>
     <n-form-item label="标题">
-      <n-input class="title" v-model:value="contest.title" />
+      <n-input class="contestTitle" v-model:value="contest.title" />
     </n-form-item>
     <n-form-item label="开始">
       <n-date-picker v-model:value="startTime" type="datetime" />
@@ -112,6 +115,10 @@ onMounted(getContestDetail)
 
 <style scoped>
 .title {
+  margin-top: 0;
+}
+
+.contestTitle {
   width: 400px;
 }
 </style>

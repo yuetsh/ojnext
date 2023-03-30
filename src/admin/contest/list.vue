@@ -74,11 +74,10 @@ watch(query, listContests, { deep: true })
 </script>
 
 <template>
-  <n-form inline label-placement="left">
-    <n-form-item>
-      <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
-    </n-form-item>
-  </n-form>
+  <n-space justify="space-between" class="titleWrapper">
+    <h2 class="title">比赛列表</h2>
+    <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
+  </n-space>
   <n-data-table :columns="columns" :data="contests" size="small" />
   <Pagination
     :total="total"
@@ -87,4 +86,12 @@ watch(query, listContests, { deep: true })
   />
 </template>
 
-<style scoped></style>
+<style scoped>
+.titleWrapper {
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+}
+</style>

@@ -28,6 +28,10 @@ const usersToTable = computed(() => {
 })
 
 function generateUsers() {
+  if (!rawInput.value || !rawInput.value.trim()) {
+    message.info("请填写相关内容")
+    return
+  }
   // 自动加上 ks 的开头
   let myClass = ""
   if (prefix.value) {
@@ -37,7 +41,6 @@ function generateUsers() {
       myClass = prefix.value
     }
   }
-  if (!rawInput.value || !rawInput.value.trim()) return
   rawInput.value = rawInput.value.trim()
   const inputs = rawInput.value.split("\n")
   users.value = inputs.map((u, i) => {
@@ -88,7 +91,6 @@ function handleAll() {
         type="textarea"
         class="inputArea"
         placeholder="每行一个用户名"
-        autofocus
         v-model:value="rawInput"
       />
     </n-space>

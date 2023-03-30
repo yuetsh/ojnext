@@ -36,7 +36,7 @@ const options: MenuOption[] = [
       h(
         RouterLink,
         { to: "/admin/problem/create" },
-        { default: () => "创建题目" }
+        { default: () => "新建题目" }
       ),
     key: "admin problem create",
   },
@@ -70,7 +70,7 @@ const options: MenuOption[] = [
       h(
         RouterLink,
         { to: "/admin/contest/create" },
-        { default: () => "创建比赛" }
+        { default: () => "新建比赛" }
       ),
     key: "admin contest create",
   },

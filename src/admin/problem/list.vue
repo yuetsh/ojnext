@@ -83,11 +83,10 @@ watch(query, listProblems, { deep: true })
 </script>
 
 <template>
-  <n-form inline label-placement="left">
-    <n-form-item>
-      <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
-    </n-form-item>
-  </n-form>
+  <n-space class="titleWrapper" justify="space-between">
+    <h2 class="title">题目列表</h2>
+    <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
+  </n-space>
   <n-data-table striped size="small" :columns="columns" :data="problems" />
   <Pagination
     :total="total"
@@ -96,4 +95,12 @@ watch(query, listProblems, { deep: true })
   />
 </template>
 
-<style scoped></style>
+<style scoped>
+.titleWrapper {
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+}
+</style>

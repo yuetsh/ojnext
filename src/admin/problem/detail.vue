@@ -27,6 +27,15 @@ const route = useRoute()
 const router = useRouter()
 const props = defineProps<Props>()
 
+const title = computed(
+  () =>
+    ({
+      "admin problem create": "新建题目",
+      "admin problem edit": "编辑题目",
+      "admin contest problem create": "新建比赛题目",
+      "admin contest problem edit": "编辑比赛题目",
+    }[<string>route.name])
+)
 const problem = reactive<BlankProblem>({
   _id: "",
   title: "",
@@ -321,12 +330,13 @@ watch([fromExistingTags, newTags], (tags) => {
 </script>
 
 <template>
+  <h2 class="title">{{ title }}</h2>
   <n-form inline label-placement="left">
     <n-form-item label="显示编号">
       <n-input class="w-100" v-model:value="problem._id" />
     </n-form-item>
     <n-form-item label="题目">
-      <n-input class="titleInput" v-model:value="problem.title" />
+      <n-input class="problemTitleInput" v-model:value="problem.title" />
     </n-form-item>
     <n-form-item label="难度">
       <n-select
@@ -497,6 +507,10 @@ watch([fromExistingTags, newTags], (tags) => {
 </template>
 
 <style scoped>
+.title {
+  margin-top: 0;
+}
+
 .box {
   margin-bottom: 20px;
 }
@@ -505,13 +519,10 @@ watch([fromExistingTags, newTags], (tags) => {
   width: 100px;
 }
 
-.titleInput {
+.problemTitleInput {
   width: 300px;
 }
 
-.title {
-  margin-bottom: 12px;
-}
 .tag {
   width: 500px;
 }

@@ -120,19 +120,21 @@ watch(query, listUsers, { deep: true })
 </script>
 
 <template>
-  <n-form inline label-placement="left">
-    <n-form-item>
-      <n-input placeholder="请输入关键字搜索" v-model:value="query.keyword" />
-    </n-form-item>
-    <n-form-item v-if="userIDs.length">
-      <n-popconfirm @positive-click="onDeleteUsers(userIDs)">
+  <n-space class="titleWrapper" justify="space-between">
+    <h2 class="title">用户列表</h2>
+    <n-space>
+      <n-popconfirm
+        v-if="userIDs.length"
+        @positive-click="onDeleteUsers(userIDs)"
+      >
         <template #trigger>
           <n-button type="warning">删除</n-button>
         </template>
         确定删除选中的用户吗？删除后无法恢复！
       </n-popconfirm>
-    </n-form-item>
-  </n-form>
+      <n-input placeholder="请输入关键字搜索" v-model:value="query.keyword" />
+    </n-space>
+  </n-space>
   <n-data-table
     :data="users"
     :columns="columns"
@@ -183,4 +185,12 @@ watch(query, listUsers, { deep: true })
   </n-modal>
 </template>
 
-<style scoped></style>
+<style scoped>
+.titleWrapper {
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+}
+</style>

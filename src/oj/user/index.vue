@@ -44,13 +44,13 @@ onMounted(init)
     :column="2"
     label-style="width: 50%"
   >
-    <n-descriptions-item label="已解决的问题数量">
+    <n-descriptions-item label="已解决的题目数量">
       {{ profile.accepted_number }}
     </n-descriptions-item>
     <n-descriptions-item label="总提交数">
       {{ profile.submission_number }}
     </n-descriptions-item>
-    <n-descriptions-item v-if="problems.length" label="已解决的问题" :span="2">
+    <n-descriptions-item v-if="problems.length" label="已解决的题目" :span="2">
       <n-space>
         <n-button
           v-for="id in problems"
