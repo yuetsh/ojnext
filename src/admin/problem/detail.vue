@@ -7,7 +7,7 @@ import { unique } from "~/utils/functions"
 import { BlankProblem, LANGUAGE, Tag } from "~/utils/types"
 import { getProblemTagList } from "~/shared/api"
 import { LANGUAGE_SHOW_VALUE, CODE_TEMPLATES } from "~/utils/constants"
-
+import download from "~/utils/download"
 import {
   createContestProblem,
   createProblem,
@@ -192,8 +192,9 @@ async function handleUploadTestcases({ file }: UploadCustomRequestOptions) {
   }
 }
 
-// TODO: 还没有完成
-function downloadTestcases() {}
+function downloadTestcases() {
+  download("test_case?problem_id=" + problem.id)
+}
 
 // 题目是否有漏写的
 function detectProblemCompletion() {
@@ -265,7 +266,6 @@ async function submit() {
   if (notComplete) return
   getTemplate()
   problem.tags = [...newTags.value, ...fromExistingTags.value]
-  console.log(problem)
   const api = {
     "admin problem create": createProblem,
     "admin problem edit": editProblem,
@@ -299,7 +299,7 @@ async function submit() {
     }
   } catch (err: any) {
     if (err.data === "Display ID already exists") {
-      message.error("显示编号重复了，请换一个编号")
+      message.error("显示编号重复了，请换一个显示编号")
     } else {
       message.error(err.data)
     }
@@ -307,15 +307,14 @@ async function submit() {
 }
 
 onMounted(() => {
-  listTags()
-  getProblemDetail()
-
   if (
     route.name === "admin problem create" ||
     route.name === "admin contest problem create"
   ) {
     toggleReady(true)
   }
+  listTags()
+  getProblemDetail()
 })
 
 watch([fromExistingTags, newTags], (tags) => {
@@ -443,7 +442,13 @@ watch([fromExistingTags, newTags], (tags) => {
           {{ problem.test_case_score.length }}
           条测试用例
         </div>
-        <n-button tertiary type="info" size="small" @click="downloadTestcases">
+        <n-button
+          v-if="problem.id"
+          tertiary
+          type="info"
+          size="small"
+          @click="downloadTestcases"
+        >
           下载
         </n-button>
       </n-space>

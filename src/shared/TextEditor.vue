@@ -39,6 +39,12 @@ onBeforeUnmount(() => {
   if (editor) editor.destroy()
 })
 
+function onClick() {
+  if (!editorRef.value) return
+  editorRef.value.blur()
+  editorRef.value.focus()
+}
+
 function handleCreated(editor: IDomEditor) {
   editorRef.value = editor
 }
@@ -66,6 +72,7 @@ async function customUpload(file: File, insertFn: InsertFnType) {
       mode="simple"
     />
     <Editor
+      @click="onClick"
       :style="{ minHeight: props.minHeight + 'px' }"
       v-model="rawHtml"
       :defaultConfig="editorConfig"

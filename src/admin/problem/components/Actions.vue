@@ -3,6 +3,7 @@ import { deleteContestProblem, deleteProblem } from "~/admin/api"
 
 interface Props {
   problemID: number
+  problemDisplayID: string
 }
 const props = defineProps<Props>()
 const emit = defineEmits(["deleted"])
@@ -37,13 +38,20 @@ function goEdit() {
   const name = route.name!.toString().replace("list", "edit")
   router.push({ name, params: { problemID: props.problemID } })
 }
+
+function goCheck() {
+  const data = router.resolve("/problem/" + props.problemDisplayID)
+  window.open(data.href, "_blank")
+}
 </script>
 <template>
   <n-space align="center">
     <n-button size="small" secondary type="primary" @click="goEdit">
       编辑
     </n-button>
-    <n-button size="small" secondary type="info">查看</n-button>
+    <n-button size="small" secondary type="info" @click="goCheck">
+      查看
+    </n-button>
     <n-popconfirm @positive-click="handleDeleteProblem">
       <template #trigger>
         <n-button secondary size="small" type="error">删除</n-button>

@@ -48,6 +48,7 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
     render: (row) =>
       h(Actions, {
         problemID: row.id,
+        problemDisplayID: row._id,
         onDeleted: listProblems,
       }),
   },

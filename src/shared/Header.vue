@@ -28,7 +28,7 @@ async function handleLogout() {
 
 onMounted(userStore.getMyProfile)
 
-const menus: MenuOption[] = [
+const menus = computed<MenuOption[]>(() => [
   {
     label: () =>
       h(RouterLink, { to: "/learn/step-1" }, { default: () => "自学" }),
@@ -51,9 +51,14 @@ const menus: MenuOption[] = [
     label: () => h(RouterLink, { to: "/rank" }, { default: () => "排名" }),
     key: "rank",
   },
-]
+  {
+    label: () => h(RouterLink, { to: "/admin" }, { default: () => "后台" }),
+    show: userStore.isAdminRole,
+    key: "admin",
+  },
+])
 
-const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
+const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的主页",
     key: "home",
@@ -75,17 +80,9 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
       onClick: () => router.push("/setting"),
     },
   },
-  {
-    label: "后台管理",
-    key: "admin",
-    show: userStore.isAdminRole,
-    props: {
-      onClick: () => router.push("/admin"),
-    },
-  },
   { type: "divider" },
   { label: "退出", key: "logout", props: { onClick: handleLogout } },
-])
+]
 
 function run() {
   console.log(code.value)
