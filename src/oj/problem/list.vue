@@ -2,7 +2,7 @@
 import { useUserStore } from "~/shared/store/user"
 import { filterEmptyValue, getTagColor } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
-import { isDesktop } from "~/shared/composables/breakpoints"
+import { isMobile } from "~/shared/composables/breakpoints"
 import { getProblemList, getRandomProblemID } from "oj/api"
 import Pagination from "~/shared/Pagination.vue"
 import { DataTableColumn, NSpace, NTag } from "naive-ui"
@@ -169,25 +169,33 @@ function rowProps(row: ProblemFiltered) {
 </script>
 
 <template>
-  <n-form :inline="isDesktop" label-placement="left">
-    <n-form-item label="难度">
-      <n-select
-        class="select"
-        v-model:value="query.difficulty"
-        :options="difficultyOptions"
-      />
-    </n-form-item>
-    <n-form-item>
-      <n-input placeholder="输入编号或标题后回车" clearable @change="search" />
-    </n-form-item>
-    <n-form-item>
-      <n-space>
-        <n-button @click="search(query.keyword)">搜索</n-button>
-        <n-button @click="clear">重置</n-button>
-        <n-button @click="getRandom">随机一题</n-button>
-      </n-space>
-    </n-form-item>
-  </n-form>
+  <n-space :vertical="isMobile">
+    <n-form inline label-placement="left">
+      <n-form-item label="难度">
+        <n-select
+          class="select"
+          v-model:value="query.difficulty"
+          :options="difficultyOptions"
+        />
+      </n-form-item>
+      <n-form-item>
+        <n-input
+          placeholder="输入编号或标题后回车"
+          clearable
+          @change="search"
+        />
+      </n-form-item>
+    </n-form>
+    <n-form inline label-placement="left">
+      <n-form-item>
+        <n-space>
+          <n-button @click="search(query.keyword)">搜索</n-button>
+          <n-button @click="clear">重置</n-button>
+          <n-button @click="getRandom">随机一题</n-button>
+        </n-space>
+      </n-form-item>
+    </n-form>
+  </n-space>
   <n-space>
     <div class="tagTitle">标签</div>
     <n-button

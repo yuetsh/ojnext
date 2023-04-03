@@ -8,10 +8,12 @@ import { Problem, Submission, SubmitCodePayload } from "utils/types"
 import { getSubmission, submitCode } from "oj/api"
 import SubmissionResultTag from "~/shared/SubmissionResultTag.vue"
 import type { DataTableColumn } from "naive-ui"
+import { useUserStore } from "~/shared/store/user"
+
+const userStore = useUserStore()
+const route = useRoute()
 
 const problem = inject<Ref<Problem>>("problem")
-
-const route = useRoute()
 const contestID = <string>route.params.contestID ?? ""
 
 const submissionId = ref("")
@@ -60,6 +62,9 @@ const submitting = computed(
 )
 
 const submitDisabled = computed(() => {
+  if (!userStore.isAuthed) {
+    return true
+  }
   const value = code.value
   if (
     value.trim() === "" ||
@@ -81,6 +86,9 @@ const submitDisabled = computed(() => {
 })
 
 const submitLabel = computed(() => {
+  if (!userStore.isAuthed) {
+    return "请先登录"
+  }
   if (submitting.value) {
     return "正在提交"
   }
@@ -154,6 +162,9 @@ const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
 ]
 
 async function submit() {
+  if (!userStore.isAuthed) {
+    return
+  }
   const data: SubmitCodePayload = {
     problem_id: problem!.value.id,
     language: code.language,

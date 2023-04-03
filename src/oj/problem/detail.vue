@@ -41,7 +41,7 @@ provide("problem", readonly(problem))
   <n-grid v-if="problem" x-gap="16" :cols="2">
     <n-gi :span="isDesktop ? 1 : 2">
       <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
-        <n-tabs default-value="content">
+        <n-tabs default-value="content" type="segment">
           <n-tab-pane name="content" tab="题目描述">
             <ProblemContent :problem="problem" />
           </n-tab-pane>
@@ -50,7 +50,7 @@ provide("problem", readonly(problem))
           </n-tab-pane>
         </n-tabs>
       </n-scrollbar>
-      <n-tabs v-else default-value="content">
+      <n-tabs v-else default-value="content" type="segment">
         <n-tab-pane name="content" tab="题目描述">
           <ProblemContent :problem="problem" />
         </n-tab-pane>

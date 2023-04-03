@@ -71,7 +71,7 @@ const options = {
       </n-space>
     </n-descriptions-item>
   </n-descriptions>
-  <div class="pie">
+  <div class="pie" v-if="problem.submission_number > 0">
     <Pie :data="data" :options="options" />
   </div>
 </template>
