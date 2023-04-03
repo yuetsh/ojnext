@@ -1,6 +1,7 @@
 import { defineConfig } from "vite"
 import path from "path"
 import Vue from "@vitejs/plugin-vue"
+import legacy from "@vitejs/plugin-legacy"
 import AutoImport from "unplugin-auto-import/vite"
 import Components from "unplugin-vue-components/vite"
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
@@ -39,6 +40,7 @@ export default defineConfig({
   },
   plugins: [
     Vue({ include: [/\.vue$/, /\.md$/] }),
+    legacy({ targets: ["chrome 66", "not IE 11"] }),
     AutoImport({
       imports: [
         "vue",
