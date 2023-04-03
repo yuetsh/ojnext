@@ -152,3 +152,12 @@ export function decode(bytes?: string) {
     )
   )
 }
+
+function getChromeVersion() {
+  var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)
+  return raw ? parseInt(raw[2], 10) : 0
+}
+
+export const isLowVersion = getChromeVersion() < 80
+
+export const protocol = isLowVersion ? "http" : "https"

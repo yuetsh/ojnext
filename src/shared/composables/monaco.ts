@@ -1,10 +1,14 @@
 import loader, { Monaco } from "@monaco-editor/loader"
+import { isLowVersion, protocol } from "~/utils/functions"
 
 export const monaco = ref<Monaco>()
 
 export async function init() {
+  const version = isLowVersion ? "0.30.1" : "0.36.1"
   loader.config({
-    paths: { vs: "https://cdn.staticfile.org/monaco-editor/0.36.1/min/vs" },
+    paths: {
+      vs: `${protocol}://cdn.staticfile.org/monaco-editor/${version}/min/vs`,
+    },
     "vs/nls": { availableLanguages: { "*": "zh-cn" } },
   })
 
