@@ -312,3 +312,28 @@ export interface ContestRank {
   submission_info: { [key: string]: SubmissionInfo }
   contest: number
 }
+
+export interface WebsiteConfig {
+  website_base_url: string
+  website_name: string
+  website_name_shortcut: string
+  website_footer: string
+  allow_register: boolean
+  submission_list_show_all: boolean
+}
+
+export interface Server {
+  id: number
+  status: "abnormal" | "normal"
+  hostname: string
+  ip: string
+  judger_version: string
+  cpu_core: number
+  memory_usage: number
+  cpu_usage: number
+  last_heartbeat: Date
+  create_time: Date
+  task_number: number
+  service_url: string
+  is_disabled: boolean
+}

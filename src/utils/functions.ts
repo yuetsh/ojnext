@@ -37,6 +37,7 @@ export function getTagColor(
   }[tag]
 }
 
+// 2023-04-03T02:43:28.673156Z
 export function parseTime(utc: Date | string, format = "YYYY年M月D日") {
   const time = useDateFormat(utc, format, { locales: "zh-CN" })
   return time.value

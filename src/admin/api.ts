@@ -4,8 +4,10 @@ import {
   BlankContest,
   BlankProblem,
   Contest,
+  Server,
   TestcaseUploadedReturns,
   User,
+  WebsiteConfig,
 } from "~/utils/types"
 
 export function getBaseInfo() {
@@ -148,4 +150,28 @@ export function addProblemForContest(
     problem_id: problemID,
     display_id: displayID,
   })
+}
+
+export function getWebsite() {
+  return http.get<WebsiteConfig>("admin/website")
+}
+
+export function editWebsite(data: WebsiteConfig) {
+  return http.post("admin/website", data)
+}
+
+export function listInvalidTestcases() {
+  return http.get("admin/prune_test_case")
+}
+
+export function pruneInvalidTestcases(id?: string) {
+  return http.delete("admin/prune_test_case", { params: { id } })
+}
+
+export function getJudgeServer() {
+  return http.get<{ token: string; servers: Server[] }>("admin/judge_server")
+}
+
+export function deleteJudgeServer(hostname: string) {
+  return http.delete("admin/judge_server", { params: { hostname } })
 }

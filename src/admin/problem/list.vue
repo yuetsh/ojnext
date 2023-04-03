@@ -118,7 +118,11 @@ watch(query, listProblems, { deep: true })
       <n-button v-if="isContestProblemList" @click="createContestProblem">
         新建比赛题目
       </n-button>
-      <n-button v-if="isContestProblemList" @click="selectProblems">
+      <n-button
+        v-if="isContestProblemList"
+        type="primary"
+        @click="selectProblems"
+      >
         从题库中选择
       </n-button>
       <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />

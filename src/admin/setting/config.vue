@@ -1,7 +1,233 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { DataTableColumn, NButton, NTag } from "naive-ui"
+import {
+  editWebsite,
+  getJudgeServer,
+  deleteJudgeServer,
+  getWebsite,
+  listInvalidTestcases,
+  pruneInvalidTestcases,
+} from "../api"
+import { Server } from "~/utils/types"
+import { parseTime } from "~/utils/functions"
+
+const message = useMessage()
+
+const columns: DataTableColumn<any>[] = [
+  { title: "上次修改时间", key: "create_time" },
+  { title: "ID", key: "id" },
+  {
+    title: "选项",
+    key: "delete",
+    render: (row) =>
+      h(
+        NButton,
+        { size: "small", onClick: () => deleteTestcase(row.id) },
+        () => "删除"
+      ),
+  },
+]
+
+const statusMap: {
+  [key in "normal" | "abnormal"]: { color: "primary" | "error"; label: string }
+} = {
+  normal: { color: "primary", label: "正常" },
+  abnormal: { color: "error", label: "异常" },
+}
+
+const serverColumns: DataTableColumn<Server>[] = [
+  {
+    title: "状态",
+    key: "status",
+    render: (row) =>
+      h(
+        NTag,
+        { type: statusMap[row.status].color, size: "small" },
+        () => statusMap[row.status].label
+      ),
+  },
+  {
+    title: "选项",
+    key: "options",
+    render: (row) =>
+      h(
+        NButton,
+        {
+          type: "primary",
+          size: "small",
+          disabled: row.status === "normal",
+          onClick: () => delJudgeServer(row.hostname),
+        },
+        () => "删除"
+      ),
+  },
+  { title: "主机", key: "hostname", width: 130 },
+  {
+    title: "内存占用",
+    key: "memory_usage",
+    render: (row) => row.memory_usage + "%",
+    width: 80,
+  },
+  { title: "IP", key: "ip", width: 100 },
+  { title: "判题机版本", key: "judger_version" },
+  { title: "服务器 URL", key: "service_url" },
+  {
+    title: "上一次心跳",
+    key: "last_heartbeat",
+    render: (row) => parseTime(row.last_heartbeat, "YYYY-MM-DD hh:mm:ss"),
+    width: 120,
+  },
+  {
+    title: "创建时间",
+    key: "create_time",
+    render: (row) => parseTime(row.create_time, "YYYY-MM-DD hh:mm:ss"),
+    width: 120,
+  },
+]
+
+const testcases = ref([])
+const token = ref("")
+const servers = ref<Server[]>([])
+
+const websiteConfig = reactive({
+  website_base_url: "https://oj.hyyz.izhai.net",
+  website_name: "徐越的判题狗",
+  website_name_shortcut: "徐越的判题狗",
+  website_footer: "所有权归属于徐越，感谢青岛大学开源 OJ 系统，感谢开源社区",
+  allow_register: true,
+  submission_list_show_all: true,
+})
+
+async function getWebsiteConfig() {
+  const res = await getWebsite()
+  websiteConfig.website_base_url = res.data.website_base_url
+  websiteConfig.website_name = res.data.website_name
+  websiteConfig.website_name_shortcut = res.data.website_name_shortcut
+  websiteConfig.website_footer = res.data.website_footer
+  websiteConfig.allow_register = res.data.allow_register
+  websiteConfig.submission_list_show_all = res.data.submission_list_show_all
+}
+
+async function saveWebsiteConfig() {
+  await editWebsite(websiteConfig)
+  message.success("网站配置保存成功")
+}
+
+async function deleteTestcase(id?: string) {
+  await pruneInvalidTestcases(id)
+  message.success("删除成功")
+}
+
+async function getTestcases() {
+  const res = await listInvalidTestcases()
+  testcases.value = res.data
+}
+
+async function getJudgeServerData() {
+  const res = await getJudgeServer()
+  token.value = res.data.token
+  servers.value = res.data.servers
+}
+
+async function delJudgeServer(hostname: string) {
+  await deleteJudgeServer(hostname)
+  message.success("删除成功")
+}
+
+onMounted(() => {
+  getWebsiteConfig()
+  getTestcases()
+  getJudgeServerData()
+})
+</script>
 
 <template>
-  <div>conf</div>
+  <n-card class="box">
+    <template #header>
+      <n-space align="center">
+        网站设置
+        <n-button type="primary" size="small" @click="saveWebsiteConfig">
+          保存
+        </n-button>
+      </n-space>
+    </template>
+    <n-form inline label-placement="left">
+      <n-form-item label="网站 URL">
+        <n-input class="url" v-model:value="websiteConfig.website_base_url" />
+      </n-form-item>
+      <n-form-item label="网站名">
+        <n-input v-model:value="websiteConfig.website_name" />
+      </n-form-item>
+      <n-form-item label="网站简称">
+        <n-input v-model:value="websiteConfig.website_name_shortcut" />
+      </n-form-item>
+    </n-form>
+    <n-form label-placement="left">
+      <n-form-item label="页脚">
+        <n-input v-model:value="websiteConfig.website_footer" />
+      </n-form-item>
+    </n-form>
+    <n-space align="center">
+      <n-space align="center">
+        <span>是否允许注册</span>
+        <n-switch v-model:value="websiteConfig.allow_register" />
+      </n-space>
+      <n-space align="center">
+        <span>显示全部题目的提交</span>
+        <n-switch v-model:value="websiteConfig.submission_list_show_all" />
+      </n-space>
+    </n-space>
+  </n-card>
+  <n-card class="box" title="判题服务器">
+    <div class="serverToken">
+      接口凭证 <n-tag size="small">{{ token }}</n-tag>
+    </div>
+    <n-data-table
+      :single-line="false"
+      striped
+      size="small"
+      :columns="serverColumns"
+      :data="servers"
+    />
+  </n-card>
+  <n-card class="box">
+    <template #header>
+      <n-space align="center">
+        无效的测试用例
+        <n-button
+          v-if="testcases.length"
+          size="small"
+          type="primary"
+          @click="() => deleteTestcase()"
+        >
+          全部删除
+        </n-button>
+      </n-space>
+    </template>
+    <n-data-table
+      striped
+      size="small"
+      class="table"
+      :columns="columns"
+      :data="testcases"
+    />
+  </n-card>
 </template>
 
-<style scoped></style>
+<style scoped>
+.url {
+  width: 200px;
+}
+
+.box {
+  margin-bottom: 16px;
+}
+
+.table {
+  width: 40%;
+}
+
+.serverToken {
+  margin-bottom: 16px;
+}
+</style>
