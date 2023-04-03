@@ -9,7 +9,7 @@ import Header from "../Header.vue"
     <n-layout-header bordered class="header">
       <Header />
     </n-layout-header>
-    <n-layout-content content-style="padding: 16px">
+    <n-layout-content content-style="padding: 16px; overflow-x: initial">
       <router-view></router-view>
     </n-layout-content>
     <Login />
