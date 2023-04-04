@@ -34,7 +34,6 @@ function rowProps(row: ProblemFiltered) {
 <template>
   <n-data-table
     striped
-    size="small"
     :data="contestStore.problems"
     :columns="problemsColumns"
     :row-props="rowProps"

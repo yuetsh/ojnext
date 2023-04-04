@@ -227,7 +227,6 @@ watch(
       <n-card v-if="msg" embedded class="msg">{{ msg }}</n-card>
       <n-data-table
         v-if="infoTable.length"
-        size="small"
         striped
         :data="infoTable"
         :columns="columns"

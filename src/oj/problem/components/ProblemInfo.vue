@@ -65,7 +65,7 @@ const options = {
     </n-descriptions-item>
     <n-descriptions-item :span="3" label="标签">
       <n-space>
-        <n-tag type="info" v-for="tag in problem.tags" :key="tag">
+        <n-tag size="small" type="info" v-for="tag in problem.tags" :key="tag">
           {{ tag }}
         </n-tag>
       </n-space>

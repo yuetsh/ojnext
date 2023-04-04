@@ -73,7 +73,7 @@ onMounted(listRanks)
 
 <template>
   <Chart v-if="!!chart.length" :rankData="chart" />
-  <n-data-table striped size="small" :data="data" :columns="columns" />
+  <n-data-table striped :data="data" :columns="columns" />
   <Pagination
     :total="total"
     v-model:page="query.page"

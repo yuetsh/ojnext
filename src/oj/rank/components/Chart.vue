@@ -69,6 +69,7 @@ const data = computed(() => ({
 }))
 
 const options = {
+  maintainAspectRatio: false,
   plugins: {
     title: {
       text: "全校前十名的用户（不包括超管）",
@@ -79,10 +80,13 @@ const options = {
 }
 </script>
 <template>
-  <Bar class="chart" :data="data" :options="options" />
+  <div class="chart">
+    <Bar :data="data" :options="options" />
+  </div>
 </template>
 <style scoped>
 .chart {
-  margin-bottom: 24px;
+  height: 400px;
+  margin-bottom: 20px;
 }
 </style>

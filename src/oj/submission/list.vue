@@ -128,6 +128,7 @@ const columns = computed(() => {
     {
       title: "编号",
       key: "id",
+      minWidth: 160,
       render: (row) => {
         if (row.show_link) {
           return h(
@@ -215,6 +216,7 @@ const columns = computed(() => {
         h(
           NButton,
           {
+            quaternary: true,
             size: "small",
             type: "primary",
             onClick: () => rejudge(row.id),
@@ -227,28 +229,32 @@ const columns = computed(() => {
 })
 </script>
 <template>
-  <n-form :inline="isDesktop" label-placement="left">
-    <n-form-item label="提交状态">
-      <n-select
-        class="select"
-        v-model:value="query.result"
-        :options="options"
-      />
-    </n-form-item>
-    <n-form-item label="只看自己">
-      <n-switch v-model:value="query.myself" />
-    </n-form-item>
-    <n-form-item label="搜索用户">
-      <n-input @change="search" clearable placeholder="输入后回车或点击搜索" />
-    </n-form-item>
-    <n-form-item>
-      <n-space>
-        <n-button @click="search(query.username)">搜索</n-button>
-        <n-button @click="clear">重置</n-button>
-      </n-space>
-    </n-form-item>
-  </n-form>
-  <n-data-table striped size="small" :columns="columns" :data="submissions" />
+  <n-space>
+    <n-form :show-feedback="false" inline label-placement="left">
+      <n-form-item label="提交状态">
+        <n-select
+          class="select"
+          v-model:value="query.result"
+          :options="options"
+        />
+      </n-form-item>
+      <n-form-item label="只看自己">
+        <n-switch v-model:value="query.myself" />
+      </n-form-item>
+    </n-form>
+    <n-form inline label-placement="left">
+      <n-form-item label="搜索用户">
+        <n-input clearable @change="search" />
+      </n-form-item>
+      <n-form-item>
+        <n-space>
+          <n-button @click="search(query.username)">搜索</n-button>
+          <n-button @click="clear">重置</n-button>
+        </n-space>
+      </n-form-item>
+    </n-form>
+  </n-space>
+  <n-data-table striped :columns="columns" :data="submissions" />
   <Pagination
     :total="total"
     v-model:limit="query.limit"

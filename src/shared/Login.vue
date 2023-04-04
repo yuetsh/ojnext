@@ -6,7 +6,7 @@ import type { FormRules } from "naive-ui"
 
 const userStore = useUserStore()
 const loginRef = ref()
-const [isLoading] = useToggle()
+const [isLoading, toggleLoading] = useToggle()
 const msg = ref("")
 const form = reactive({
   username: "",
@@ -21,11 +21,11 @@ const rules: FormRules = {
 }
 
 async function submit() {
-  loginRef.value?.validate(async (errors: FormRules | undefined) => {
+  loginRef.value!.validate(async (errors: FormRules | undefined) => {
     if (!errors) {
       try {
         msg.value = ""
-        isLoading.value = true
+        toggleLoading(true)
         await login(form)
       } catch (err: any) {
         if (err.data === "Your account has been disabled") {
@@ -36,7 +36,7 @@ async function submit() {
           msg.value = "无法登录"
         }
       } finally {
-        isLoading.value = false
+        toggleLoading(false)
       }
       if (!msg.value) {
         toggleLogin(false)
@@ -85,7 +85,7 @@ function goSignup() {
           <n-button type="primary" :loading="isLoading" @click="submit">
             登录
           </n-button>
-          <n-button @click="goSignup">没有账号，立即注册</n-button>
+          <n-button @click="goSignup">没有账号？立即注册</n-button>
         </n-space>
       </n-form-item>
     </n-form>

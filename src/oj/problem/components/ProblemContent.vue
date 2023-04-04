@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { Promotion, CloseBold, Select } from "@element-plus/icons-vue"
 import Copy from "~/shared/Copy.vue"
 import { code } from "oj/composables/code"
 import { SOURCES } from "utils/constants"
@@ -78,18 +77,22 @@ async function test(sample: Sample, index: number) {
   })
 }
 
-const icon = (status: ProblemStatus) =>
-  ({
-    not_test: Promotion,
-    failed: CloseBold,
-    passed: Select,
-  }[status])
-const type = (status: ProblemStatus) =>
-  ({
+function label(status: ProblemStatus, loading: boolean) {
+  if (loading) return "测试中"
+  return {
+    not_test: "测试",
+    failed: "不通过",
+    passed: "通过",
+  }[status]
+}
+
+function type(status: ProblemStatus) {
+  return {
     not_test: "",
     failed: "error",
     passed: "success",
-  }[status] as "warning" | "error" | "success")
+  }[status] as "warning" | "error" | "success"
+}
 </script>
 
 <template>
@@ -120,15 +123,12 @@ const type = (status: ProblemStatus) =>
       <n-tooltip trigger="hover">
         <template #trigger>
           <n-button
+            size="small"
             :type="type(sample.status)"
             :disabled="disabled"
-            :loading="sample.loading"
-            circle
             @click="test(sample, index)"
           >
-            <template #icon>
-              <component :is="icon(sample.status)"></component>
-            </template>
+            {{ label(sample.status, sample.loading) }}
           </n-button>
         </template>
         点击测试

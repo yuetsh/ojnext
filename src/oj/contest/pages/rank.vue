@@ -165,7 +165,6 @@ onMounted(() => {
     striped
     :single-line="false"
     :scroll-x="1200"
-    size="small"
     :columns="columns"
     :data="data"
   />

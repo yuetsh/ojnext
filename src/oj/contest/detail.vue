@@ -29,14 +29,17 @@ const passwordFormVisible = computed(
 </script>
 
 <template>
-  <div v-if="contestStore.contest">
-    <n-space class="title" align="center" justify="space-between">
+  <n-space vertical v-if="contestStore.contest">
+    <n-space align="center" justify="space-between">
       <n-space align="center">
         <h2 class="contestTitle">{{ contestStore.contest.title }}</h2>
         <n-icon size="large" v-if="contestStore.isPrivate" class="lockIcon">
           <i-ep-lock />
         </n-icon>
-        <n-tag :type="CONTEST_STATUS[contestStore.contestStatus]['type']">
+        <n-tag
+          size="small"
+          :type="CONTEST_STATUS[contestStore.contestStatus]['type']"
+        >
           {{ contestStore.countdown }}
         </n-tag>
       </n-space>
@@ -67,14 +70,10 @@ const passwordFormVisible = computed(
       </n-form-item>
     </n-form>
     <router-view></router-view>
-  </div>
+  </n-space>
 </template>
 
 <style scoped>
-.title {
-  margin-bottom: 16px;
-}
-
 .contestTitle {
   font-weight: 500;
   margin: 0;

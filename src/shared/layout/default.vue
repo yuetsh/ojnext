@@ -5,7 +5,7 @@ import Header from "../Header.vue"
 </script>
 
 <template>
-  <n-layout>
+  <n-layout position="absolute">
     <n-layout-header bordered class="header">
       <Header />
     </n-layout-header>

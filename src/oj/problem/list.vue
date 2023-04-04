@@ -2,7 +2,6 @@
 import { useUserStore } from "~/shared/store/user"
 import { filterEmptyValue, getTagColor } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
-import { isMobile } from "~/shared/composables/breakpoints"
 import { getProblemList, getRandomProblemID } from "oj/api"
 import Pagination from "~/shared/Pagination.vue"
 import { DataTableColumn, NSpace, NTag } from "naive-ui"
@@ -169,8 +168,8 @@ function rowProps(row: ProblemFiltered) {
 </script>
 
 <template>
-  <n-space :vertical="isMobile">
-    <n-form inline label-placement="left">
+  <n-space>
+    <n-form :show-feedback="false" inline label-placement="left">
       <n-form-item label="难度">
         <n-select
           class="select"
@@ -178,12 +177,8 @@ function rowProps(row: ProblemFiltered) {
           :options="difficultyOptions"
         />
       </n-form-item>
-      <n-form-item>
-        <n-input
-          placeholder="输入编号或标题后回车"
-          clearable
-          @change="search"
-        />
+      <n-form-item label="搜索">
+        <n-input clearable @change="search" />
       </n-form-item>
     </n-form>
     <n-form inline label-placement="left">
@@ -212,7 +207,6 @@ function rowProps(row: ProblemFiltered) {
   <n-data-table
     class="table"
     striped
-    size="small"
     :data="problems"
     :columns="columns"
     :row-props="rowProps"

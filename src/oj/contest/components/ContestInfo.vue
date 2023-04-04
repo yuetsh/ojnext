@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { parseTime } from "utils/functions"
 import { useContestStore } from "oj/store/contest"
-import ContestTypeVue from "~/shared/ContestType.vue"
+import ContestType from "~/shared/ContestType.vue"
 
 const contestStore = useContestStore()
 </script>
@@ -27,7 +27,7 @@ const contestStore = useContestStore()
         {{ parseTime(contestStore.contest.end_time, "YYYY年M月D日 hh:mm:ss") }}
       </n-descriptions-item>
       <n-descriptions-item label="比赛类型">
-        <ContestTypeVue :contest="contestStore.contest" />
+        <ContestType :contest="contestStore.contest" />
       </n-descriptions-item>
       <n-descriptions-item label="发起人">
         {{ contestStore.contest.created_by.username }}

@@ -119,31 +119,29 @@ function rowProps(row: Contest) {
 }
 </script>
 <template>
-  <n-form label-placement="left" :inline="isDesktop">
-    <n-form-item label="状态">
-      <n-select
-        class="select"
-        :options="options"
-        v-model:value="query.status"
-      />
-    </n-form-item>
-    <n-form-item label="搜索比赛标题">
-      <n-input placeholder="输入后回车或点击搜索" clearable @change="search" />
-    </n-form-item>
-    <n-form-item>
-      <n-space>
-        <n-button @click="search(query.keyword)">搜索</n-button>
-        <n-button @click="clear">重置</n-button>
-      </n-space>
-    </n-form-item>
-  </n-form>
-  <n-data-table
-    size="small"
-    striped
-    :columns="columns"
-    :data="data"
-    :row-props="rowProps"
-  />
+  <n-space>
+    <n-form :show-feedback="false" label-placement="left" inline>
+      <n-form-item label="比赛状态">
+        <n-select
+          class="select"
+          :options="options"
+          v-model:value="query.status"
+        />
+      </n-form-item>
+      <n-form-item label="搜索">
+        <n-input clearable @change="search" />
+      </n-form-item>
+    </n-form>
+    <n-form label-placement="left" inline>
+      <n-form-item>
+        <n-space>
+          <n-button @click="search(query.keyword)">搜索</n-button>
+          <n-button @click="clear">重置</n-button>
+        </n-space>
+      </n-form-item>
+    </n-form>
+  </n-space>
+  <n-data-table striped :columns="columns" :data="data" :row-props="rowProps" />
   <Pagination
     v-model:limit="query.limit"
     v-model:page="query.page"

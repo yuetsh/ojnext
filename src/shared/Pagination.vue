@@ -41,7 +41,7 @@ watch(page, () => emit("update:page", page))
 </template>
 <style scoped>
 .margin {
-  margin-top: 24px;
+  margin: 20px 0;
 }
 .right {
   float: right;

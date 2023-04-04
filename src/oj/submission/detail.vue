@@ -67,7 +67,12 @@ onMounted(init)
     </n-alert>
     <n-card embedded>
       <n-space justify="end">
-        <n-button type="primary" @click="handleCopy(submission!.code)">
+        <n-button
+          quaternary
+          class="copyBtn"
+          type="primary"
+          @click="handleCopy(submission!.code)"
+        >
           {{ copied ? "已复制" : "复制代码" }}
         </n-button>
       </n-space>
@@ -89,5 +94,9 @@ onMounted(init)
 <style scoped>
 .code {
   font-size: 20px;
+}
+
+.copyBtn {
+  margin-bottom: 16px;
 }
 </style>
