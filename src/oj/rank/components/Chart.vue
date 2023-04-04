@@ -86,7 +86,7 @@ const options = {
 </template>
 <style scoped>
 .chart {
-  height: 400px;
+  height: 500px;
   margin-bottom: 20px;
 }
 </style>

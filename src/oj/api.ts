@@ -29,6 +29,10 @@ function filterResult(result: Problem) {
   return newResult
 }
 
+export function getWebsiteConfig() {
+  return http.get("website")
+}
+
 export async function getProblemList(
   offset = 0,
   limit = 10,

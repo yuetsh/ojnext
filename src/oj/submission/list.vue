@@ -13,6 +13,7 @@ import { Submission } from "utils/types"
 import { adminRejudge, getSubmissions } from "oj/api"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
+import { useConfigStore } from "~/shared/store/config"
 
 interface Query {
   username: string
@@ -25,6 +26,7 @@ interface Query {
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const configStore = useConfigStore()
 const message = useMessage()
 
 const submissions = ref([])
