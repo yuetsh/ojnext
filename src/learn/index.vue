@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import Monaco from "~/shared/Monaco.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { code } from "~/shared/composables/learn"
+
+const Monaco = defineAsyncComponent(() => import("~/shared/Monaco.vue"))
 
 const route = useRoute()
 const router = useRouter()

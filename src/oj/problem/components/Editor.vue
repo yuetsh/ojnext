@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { SOURCES } from "utils/constants"
 import { Problem } from "utils/types"
-import Monaco from "~/shared/Monaco.vue"
 import { code } from "oj/composables/code"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import Form from "./Form.vue"
+
+const Monaco = defineAsyncComponent(() => import("~/shared/Monaco.vue"))
 
 interface Props {
   problem: Problem

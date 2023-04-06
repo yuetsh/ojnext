@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import TextEditor from "~/shared/TextEditor.vue"
-import Monaco from "~/shared/Monaco.vue"
 
 import { SelectOption, UploadCustomRequestOptions } from "naive-ui"
 import { unique } from "~/utils/functions"
@@ -16,6 +15,8 @@ import {
   getProblem,
   uploadTestcases,
 } from "../api"
+
+const Monaco = defineAsyncComponent(() => import("~/shared/Monaco.vue"))
 
 interface Props {
   problemID?: string
