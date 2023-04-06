@@ -4,7 +4,6 @@ import { code } from "oj/composables/code"
 import { SOURCES } from "utils/constants"
 import { Problem, ProblemStatus } from "utils/types"
 import { createTestSubmission } from "utils/judge"
-import { submissionExists } from "oj/api"
 import { useThemeVars } from "naive-ui"
 
 interface Props {
@@ -18,14 +17,8 @@ type Sample = Problem["samples"][number] & {
 }
 
 const props = defineProps<Props>()
-const route = useRoute()
 const theme = useThemeVars()
 const style = computed(() => "color: " + theme.value.primaryColor)
-const solved = ref(false)
-
-onMounted(() => {
-  if (route.params.contestID) checkSubmission()
-})
 
 const samples = ref<Sample[]>(
   props.problem.samples.map((sample, index) => ({
@@ -45,11 +38,6 @@ const disabled = computed(
       code.value === SOURCES[code.language]
     )
 )
-
-async function checkSubmission() {
-  const res = await submissionExists(props.problem.id)
-  solved.value = res.data
-}
 
 async function test(sample: Sample, index: number) {
   samples.value = samples.value.map((sample) => {
@@ -97,7 +85,7 @@ function type(status: ProblemStatus) {
 
 <template>
   <n-alert
-    v-if="problem.my_status === 0 || (route.params.contestID && solved)"
+    v-if="problem.my_status === 0"
     type="success"
     title="🎉 本 题 已 经 被 你 解 决 啦"
   />

@@ -25,6 +25,7 @@ export default defineConfig({
           fancy: ["highlight.js", "party-js"],
           chart: ["vue-chartjs", "chart.js"],
           editor: ["@wangeditor/editor"],
+          monaco: ["monaco-editor"],
         },
       },
     },
@@ -36,6 +37,7 @@ export default defineConfig({
       oj: path.resolve(__dirname, "./src/oj"),
       admin: path.resolve(__dirname, "./src/admin"),
       learn: path.resolve(__dirname, "./src/learn"),
+      play: path.relative(__dirname, "./src/play"),
     },
   },
   plugins: [

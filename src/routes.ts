@@ -93,6 +93,11 @@ export const routes: RouteRecordRaw[] = [
     ],
   },
   {
+    path: "/play",
+    component: () => import("~/play/index.vue"),
+    name: "play",
+  },
+  {
     path: "/admin",
     component: () => import("~/shared/layout/admin.vue"),
     children: [

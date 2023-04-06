@@ -75,10 +75,6 @@ export function getSubmission(id: string) {
   })
 }
 
-export function submissionExists(problemID: number) {
-  return http.get("submission_exists", { params: { problem_id: problemID } })
-}
-
 export function submitCode(data: SubmitCodePayload) {
   return http.post("submission", data)
 }

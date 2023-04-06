@@ -27,6 +27,11 @@ function goSubmissions() {
   router.push({ name, query: { problem: props.problem._id } })
 }
 
+function goTestCat() {
+  const data = router.resolve({ name: "play" })
+  window.open(data.href, "_blank")
+}
+
 function edit() {
   router.push("/admin/problem/edit/" + props.problem.id)
 }
@@ -94,6 +99,7 @@ function select(key: string) {
       <n-space>
         <n-button @click="reset">重置</n-button>
         <n-button @click="goSubmissions">提交信息</n-button>
+        <n-button type="info" @click="goTestCat">自测猫</n-button>
         <n-button type="warning" v-if="userStore.isSuperAdmin" @click="edit">
           编辑
         </n-button>
