@@ -230,32 +230,34 @@ const columns = computed(() => {
 })
 </script>
 <template>
-  <n-space>
-    <n-form :show-feedback="false" inline label-placement="left">
-      <n-form-item label="提交状态">
-        <n-select
-          class="select"
-          v-model:value="query.result"
-          :options="options"
-        />
-      </n-form-item>
-      <n-form-item label="只看自己">
-        <n-switch v-model:value="query.myself" />
-      </n-form-item>
-    </n-form>
-    <n-form inline label-placement="left">
-      <n-form-item label="搜索用户">
-        <n-input clearable @change="search" />
-      </n-form-item>
-      <n-form-item>
-        <n-space>
-          <n-button @click="search(query.username)">搜索</n-button>
-          <n-button @click="clear">重置</n-button>
-        </n-space>
-      </n-form-item>
-    </n-form>
+  <n-space vertical size="large">
+    <n-space>
+      <n-form :show-feedback="false" inline label-placement="left">
+        <n-form-item label="提交状态">
+          <n-select
+            class="select"
+            v-model:value="query.result"
+            :options="options"
+          />
+        </n-form-item>
+        <n-form-item label="只看自己">
+          <n-switch v-model:value="query.myself" />
+        </n-form-item>
+      </n-form>
+      <n-form :show-feedback="false" inline label-placement="left">
+        <n-form-item label="搜索用户">
+          <n-input clearable @change="search" />
+        </n-form-item>
+        <n-form-item>
+          <n-space>
+            <n-button @click="search(query.username)">搜索</n-button>
+            <n-button @click="clear">重置</n-button>
+          </n-space>
+        </n-form-item>
+      </n-form>
+    </n-space>
+    <n-data-table striped :columns="columns" :data="submissions" />
   </n-space>
-  <n-data-table striped :columns="columns" :data="submissions" />
   <Pagination
     :total="total"
     v-model:limit="query.limit"

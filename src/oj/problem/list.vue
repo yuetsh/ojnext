@@ -168,49 +168,50 @@ function rowProps(row: ProblemFiltered) {
 </script>
 
 <template>
-  <n-space>
-    <n-form :show-feedback="false" inline label-placement="left">
-      <n-form-item label="难度">
-        <n-select
-          class="select"
-          v-model:value="query.difficulty"
-          :options="difficultyOptions"
-        />
-      </n-form-item>
-      <n-form-item label="搜索">
-        <n-input clearable @change="search" />
-      </n-form-item>
-    </n-form>
-    <n-form inline label-placement="left">
-      <n-form-item>
-        <n-space>
-          <n-button @click="search(query.keyword)">搜索</n-button>
-          <n-button @click="clear">重置</n-button>
-          <n-button @click="getRandom">随机一题</n-button>
-        </n-space>
-      </n-form-item>
-    </n-form>
+  <n-space vertical size="large">
+    <n-space>
+      <n-form :show-feedback="false" inline label-placement="left">
+        <n-form-item label="难度">
+          <n-select
+            class="select"
+            v-model:value="query.difficulty"
+            :options="difficultyOptions"
+          />
+        </n-form-item>
+        <n-form-item label="搜索">
+          <n-input clearable @change="search" />
+        </n-form-item>
+      </n-form>
+      <n-form :show-feedback="false" inline label-placement="left">
+        <n-form-item>
+          <n-space>
+            <n-button @click="search(query.keyword)">搜索</n-button>
+            <n-button @click="clear">重置</n-button>
+            <n-button @click="getRandom">随机一题</n-button>
+          </n-space>
+        </n-form-item>
+      </n-form>
+    </n-space>
+    <n-space>
+      <div class="tagTitle">标签</div>
+      <n-button
+        @click="chooseTag(tag)"
+        v-for="tag in tags"
+        :key="tag.id"
+        size="small"
+        secondary
+        :type="tag.checked ? 'success' : 'default'"
+      >
+        {{ tag.name }}
+      </n-button>
+    </n-space>
+    <n-data-table
+      striped
+      :data="problems"
+      :columns="columns"
+      :row-props="rowProps"
+    />
   </n-space>
-  <n-space>
-    <div class="tagTitle">标签</div>
-    <n-button
-      @click="chooseTag(tag)"
-      v-for="tag in tags"
-      :key="tag.id"
-      size="small"
-      secondary
-      :type="tag.checked ? 'success' : 'default'"
-    >
-      {{ tag.name }}
-    </n-button>
-  </n-space>
-  <n-data-table
-    class="table"
-    striped
-    :data="problems"
-    :columns="columns"
-    :row-props="rowProps"
-  />
   <Pagination
     :total="total"
     v-model:limit="query.limit"
@@ -225,9 +226,5 @@ function rowProps(row: ProblemFiltered) {
 
 .select {
   width: 120px;
-}
-
-.table {
-  margin-top: 24px;
 }
 </style>

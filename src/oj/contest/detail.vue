@@ -29,7 +29,7 @@ const passwordFormVisible = computed(
 </script>
 
 <template>
-  <n-space vertical v-if="contestStore.contest">
+  <n-space vertical size="large" v-if="contestStore.contest">
     <n-space align="center" justify="space-between">
       <n-space align="center">
         <h2 class="contestTitle">{{ contestStore.contest.title }}</h2>

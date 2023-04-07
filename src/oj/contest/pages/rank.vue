@@ -70,6 +70,7 @@ async function listRanks() {
   const res = await getContestRank(props.contestID, {
     limit: query.limit,
     offset: query.limit * (query.page - 1),
+    force_refresh: "0",
   })
   total.value = res.data.total
   data.value = res.data.results
@@ -81,7 +82,7 @@ async function listRanks() {
 async function addColumns() {
   try {
     problems.value = await getContestProblems(props.contestID)
-    problems.value.map((problem, index) => {
+    problems.value.map((problem) => {
       columns.value.push({
         align: "center",
         title: () =>
@@ -99,7 +100,7 @@ async function addColumns() {
                   },
                 }),
             },
-            () => `${index + 1}`
+            () => problem.title
           ),
         render: (row) => {
           if (row.submission_info[problem.id]) {
@@ -138,6 +139,7 @@ async function addColumns() {
         },
         key: problem.id,
         width: 150,
+        ellipsis: true,
       })
     })
   } catch (err) {
