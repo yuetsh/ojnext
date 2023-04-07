@@ -430,7 +430,7 @@ watch([fromExistingTags, newTags], (tags) => {
       :name="lang"
     >
       <CodeEditor
-        v-model:value="template[lang]"
+        v-model="template[lang]"
         :language="lang"
         :font-size="16"
         height="200px"

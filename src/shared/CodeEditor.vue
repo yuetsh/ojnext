@@ -4,8 +4,11 @@ import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
 import { java } from "@codemirror/lang-java"
 import { javascript } from "@codemirror/lang-javascript"
-import { LANGUAGE } from "~/utils/types"
 import { EditorView } from "@codemirror/view"
+import { oneDark } from "./themes/oneDark"
+import { smoothy } from "./themes/smoothy"
+import { LANGUAGE } from "~/utils/types"
+import { isDark } from "./composables/dark"
 
 const styleTheme = EditorView.baseTheme({
   "&.cm-editor.cm-focused": {
@@ -14,7 +17,7 @@ const styleTheme = EditorView.baseTheme({
 })
 
 interface Props {
-  value: string
+  modelValue: string
   language?: LANGUAGE
   fontSize?: number
   height?: string
@@ -26,8 +29,14 @@ const props = withDefaults(defineProps<Props>(), {
   height: "100%",
 })
 
-const code = ref(props.value)
-const emit = defineEmits(["update:value"])
+const code = ref(props.modelValue)
+watch(
+  () => props.modelValue,
+  (v) => {
+    code.value = v
+  }
+)
+const emit = defineEmits(["update:modelValue"])
 
 const lang = computed(() => {
   if (props.language === "C" || props.language === "C++") return cpp()
@@ -37,13 +46,13 @@ const lang = computed(() => {
 })
 
 function onChange(v: string) {
-  emit("update:value", v)
+  emit("update:modelValue", v)
 }
 </script>
 <template>
   <Codemirror
     v-model="code"
-    :extensions="[styleTheme, lang]"
+    :extensions="[styleTheme, lang, isDark ? oneDark : smoothy]"
     indentWithTab
     :tabSize="4"
     @change="onChange"

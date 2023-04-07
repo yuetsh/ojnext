@@ -63,6 +63,22 @@ async function test(sample: Sample, index: number) {
       return sample
     }
   })
+
+  const id = setTimeout(() => {
+    clearTimeout(id)
+    samples.value = samples.value.map((sample) => {
+      if (sample.id === index) {
+        return {
+          ...sample,
+          msg: res.output,
+          status: "not_test",
+          loading: false,
+        }
+      } else {
+        return sample
+      }
+    })
+  }, 2000)
 }
 
 function label(status: ProblemStatus, loading: boolean) {
@@ -108,19 +124,14 @@ function type(status: ProblemStatus) {
   <div v-for="(sample, index) of samples" :key="index">
     <n-space align="center">
       <p class="title testcaseTitle" :style="style">测试用例 {{ index + 1 }}</p>
-      <n-tooltip trigger="hover">
-        <template #trigger>
-          <n-button
-            size="small"
-            :type="type(sample.status)"
-            :disabled="disabled"
-            @click="test(sample, index)"
-          >
-            {{ label(sample.status, sample.loading) }}
-          </n-button>
-        </template>
-        点击测试
-      </n-tooltip>
+      <n-button
+        size="small"
+        :type="type(sample.status)"
+        :disabled="disabled"
+        @click="test(sample, index)"
+      >
+        {{ label(sample.status, sample.loading) }}
+      </n-button>
     </n-space>
     <n-descriptions
       bordered
@@ -145,7 +156,7 @@ function type(status: ProblemStatus) {
         </template>
         <div class="testcase">{{ sample.output }}</div>
       </n-descriptions-item>
-      <n-descriptions-item label="运行结果" v-if="sample.status === 'failed'">
+      <n-descriptions-item label="运行结果" v-if="sample.msg">
         <div class="testcase">{{ sample.msg }}</div>
       </n-descriptions-item>
     </n-descriptions>

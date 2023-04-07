@@ -57,7 +57,7 @@ function next() {
       </n-scrollbar>
     </n-gi>
     <n-gi :span="14">
-      <CodeEditor v-model:value="code" />
+      <CodeEditor v-model="code" />
     </n-gi>
   </n-grid>
   <div v-else>
@@ -72,7 +72,7 @@ function next() {
         </n-button>
       </n-space>
     </n-scrollbar>
-    <CodeEditor v-model:value="code" height="calc(50vh - 42px)" />
+    <CodeEditor v-model="code" height="calc(50vh - 42px)" />
   </div>
 </template>
 

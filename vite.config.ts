@@ -26,7 +26,7 @@ export default defineConfig({
           chart: ["vue-chartjs", "chart.js"],
           editor: ["@wangeditor/editor"],
           codemirror: [
-            "vue-codemirror6",
+            "vue-codemirror",
             "codemirror",
             "@codemirror/autocomplete",
             "@codemirror/commands",

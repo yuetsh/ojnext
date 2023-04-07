@@ -24,7 +24,7 @@ const editorHeight = computed(() =>
 <template>
   <Form :problem="props.problem" />
   <CodeEditor
-    v-model:value="code.value"
+    v-model="code.value"
     :language="code.language"
     :height="editorHeight"
   />
