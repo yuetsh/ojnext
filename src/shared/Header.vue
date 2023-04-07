@@ -35,7 +35,6 @@ onMounted(() => {
 
 const menus = computed<MenuOption[]>(() => [
   {
-    show: false,
     label: () =>
       h(RouterLink, { to: "/learn/step-1" }, { default: () => "自学" }),
     key: "learn",

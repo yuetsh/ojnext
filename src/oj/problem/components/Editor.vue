@@ -5,7 +5,7 @@ import { code } from "oj/composables/code"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import Form from "./Form.vue"
 
-const Monaco = defineAsyncComponent(() => import("~/shared/Monaco.vue"))
+const CodeEditor = defineAsyncComponent(() => import("~/shared/CodeEditor.vue"))
 
 interface Props {
   problem: Problem
@@ -23,16 +23,11 @@ const editorHeight = computed(() =>
 
 <template>
   <Form :problem="props.problem" />
-  <Monaco
-    class="editor"
+  <CodeEditor
     v-model:value="code.value"
     :language="code.language"
     :height="editorHeight"
   />
 </template>
 
-<style scoped>
-.editor {
-  min-height: 200px;
-}
-</style>
+<style scoped></style>

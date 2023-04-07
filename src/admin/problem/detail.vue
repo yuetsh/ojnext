@@ -16,7 +16,7 @@ import {
   uploadTestcases,
 } from "../api"
 
-const Monaco = defineAsyncComponent(() => import("~/shared/Monaco.vue"))
+const CodeEditor = defineAsyncComponent(() => import("~/shared/CodeEditor.vue"))
 
 interface Props {
   problemID?: string
@@ -429,7 +429,7 @@ watch([fromExistingTags, newTags], (tags) => {
       :key="index"
       :name="lang"
     >
-      <Monaco
+      <CodeEditor
         v-model:value="template[lang]"
         :language="lang"
         :font-size="16"

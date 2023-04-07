@@ -2,7 +2,7 @@
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { code } from "~/shared/composables/learn"
 
-const Monaco = defineAsyncComponent(() => import("~/shared/Monaco.vue"))
+const CodeEditor = defineAsyncComponent(() => import("~/shared/CodeEditor.vue"))
 
 const route = useRoute()
 const router = useRouter()
@@ -57,7 +57,7 @@ function next() {
       </n-scrollbar>
     </n-gi>
     <n-gi :span="14">
-      <Monaco v-model:value="code" />
+      <CodeEditor v-model:value="code" />
     </n-gi>
   </n-grid>
   <div v-else>
@@ -72,7 +72,7 @@ function next() {
         </n-button>
       </n-space>
     </n-scrollbar>
-    <Monaco v-model:value="code" height="calc(50vh - 42px)" />
+    <CodeEditor v-model:value="code" height="calc(50vh - 42px)" />
   </div>
 </template>
 

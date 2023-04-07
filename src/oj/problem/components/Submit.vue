@@ -2,7 +2,7 @@
 import { code } from "oj/composables/code"
 import party from "party-js"
 import { Ref } from "vue"
-import { SOURCES, JUDGE_STATUS, SubmissionStatus } from "utils/constants"
+import { JUDGE_STATUS, SubmissionStatus } from "utils/constants"
 import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
 import { Problem, Submission, SubmitCodePayload } from "utils/types"
 import { getSubmission, submitCode } from "oj/api"
@@ -65,12 +65,7 @@ const submitDisabled = computed(() => {
   if (!userStore.isAuthed) {
     return true
   }
-  const value = code.value
-  if (
-    value.trim() === "" ||
-    value === problem!.value.template[code.language] ||
-    value === SOURCES[code.language]
-  ) {
+  if (code.value.trim() === "") {
     return true
   }
   if (judging.value || pending.value || submitting.value) {
