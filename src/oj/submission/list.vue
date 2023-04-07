@@ -15,7 +15,6 @@ import { isDesktop } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
 
 interface Query {
-  problem: string
   username: string
   result: string
   limit: number
@@ -31,7 +30,6 @@ const message = useMessage()
 const submissions = ref([])
 const total = ref(0)
 const query = reactive<Query>({
-  problem: <string>route.query.problem ?? "",
   result: <string>route.query.result ?? "",
   page: parseInt(<string>route.query.page) || 1,
   limit: parseInt(<string>route.query.limit) || 10,
@@ -48,7 +46,6 @@ const options: SelectOption[] = [
 ]
 
 async function listSubmissions() {
-  query.problem = <string>route.query.problem ?? ""
   query.result = <string>route.query.result ?? ""
   query.page = parseInt(<string>route.query.page) || 1
   query.limit = parseInt(<string>route.query.limit) || 10
@@ -74,6 +71,7 @@ function routerPush() {
   const newQuery = {
     ...query,
     myself: query.myself ? "1" : "0",
+    problem: route.query.problem,
   }
   router.push({
     path: route.path,
