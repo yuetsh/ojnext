@@ -30,15 +30,6 @@ const samples = ref<Sample[]>(
   }))
 )
 
-const disabled = computed(
-  () =>
-    !!(
-      code.value.trim() === "" ||
-      code.value === props.problem.template[code.language] ||
-      code.value === SOURCES[code.language]
-    )
-)
-
 async function test(sample: Sample, index: number) {
   samples.value = samples.value.map((sample) => {
     if (sample.id === index) {
@@ -127,7 +118,6 @@ function type(status: ProblemStatus) {
       <n-button
         size="small"
         :type="type(sample.status)"
-        :disabled="disabled"
         @click="test(sample, index)"
       >
         {{ label(sample.status, sample.loading) }}
