@@ -73,7 +73,13 @@ export default defineConfig({
             "useLoadingBar",
           ],
         },
+        {
+          from: "vue-router",
+          imports: ["RouteLocationRaw"],
+          type: true,
+        },
       ],
+      dirs: ["./src/utils"],
       dts: "./src/auto-imports.d.ts",
     }),
     Components({
