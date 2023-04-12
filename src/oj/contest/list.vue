@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DataTableColumn, NTag, SelectOption } from "naive-ui"
+import { NTag } from "naive-ui"
 import { getContestList } from "oj/api"
 import { filterEmptyValue, parseTime, duration } from "utils/functions"
 import { Contest } from "utils/types"

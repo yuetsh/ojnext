@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DataTableColumn, DataTableRowKey, SelectOption } from "naive-ui"
+import { DataTableRowKey, SelectOption } from "naive-ui"
 import Pagination from "~/shared/Pagination.vue"
 import { parseTime } from "~/utils/functions"
 import { User } from "~/utils/types"

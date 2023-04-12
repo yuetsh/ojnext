@@ -7,7 +7,6 @@ import {
   submissionMemoryFormat,
   submissionTimeFormat,
 } from "utils/functions"
-import { DataTableColumn, NAlert, NDataTable } from "naive-ui"
 import copy from "copy-text-to-clipboard"
 import SubmissionResultTag from "~/shared/SubmissionResultTag.vue"
 

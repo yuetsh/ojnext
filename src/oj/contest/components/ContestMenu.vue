@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { DropdownOption } from "naive-ui"
 import { useContestStore } from "oj/store/contest"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { ContestStatus } from "~/utils/constants"

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DataTableColumn, NButton, NTag } from "naive-ui"
+import { NButton, NTag } from "naive-ui"
 import {
   editWebsite,
   getJudgeServer,

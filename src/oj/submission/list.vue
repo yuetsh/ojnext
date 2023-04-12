@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { DataTableColumn, SelectOption } from "naive-ui"
 import { NButton } from "naive-ui"
 import SubmissionResultTag from "~/shared/SubmissionResultTag.vue"
 import Pagination from "~/shared/Pagination.vue"

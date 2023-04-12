@@ -7,7 +7,6 @@ import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
 import { Problem, Submission, SubmitCodePayload } from "utils/types"
 import { getSubmission, submitCode } from "oj/api"
 import SubmissionResultTag from "~/shared/SubmissionResultTag.vue"
-import type { DataTableColumn } from "naive-ui"
 import { useUserStore } from "~/shared/store/user"
 
 const userStore = useUserStore()

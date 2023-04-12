@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { DataTableColumn, NAlert } from "naive-ui"
 import { importUsers } from "../api"
 
 const possibleChars = "0123456789"

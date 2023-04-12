@@ -1,7 +1,5 @@
 <script setup lang="ts">
 import TextEditor from "~/shared/TextEditor.vue"
-
-import { SelectOption, UploadCustomRequestOptions } from "naive-ui"
 import { unique } from "~/utils/functions"
 import { BlankProblem, LANGUAGE, Tag } from "~/utils/types"
 import { getProblemTagList } from "~/shared/api"

@@ -2,7 +2,6 @@
 import { getCaptcha, signup, login } from "./api"
 import { signupModal, toggleLogin, toggleSignup } from "./composables/modal"
 import { useUserStore } from "./store/user"
-import type { FormItemRule, FormRules } from "naive-ui"
 
 const userStore = useUserStore()
 const signupRef = ref()

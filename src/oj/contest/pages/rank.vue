@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DataTableColumn, NButton } from "naive-ui"
+import { NButton } from "naive-ui"
 import Pagination from "~/shared/Pagination.vue"
 import AcAndSubmission from "../components/AcAndSubmission.vue"
 import { getContestProblems, getContestRank } from "oj/api"

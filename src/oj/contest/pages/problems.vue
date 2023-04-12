@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { DataTableColumn } from "naive-ui"
 import { ProblemFiltered } from "utils/types"
 import ProblemStatus from "~/oj/problem/components/ProblemStatus.vue"
 import { useContestStore } from "~/oj/store/contest"

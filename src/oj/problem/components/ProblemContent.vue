@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import Copy from "~/shared/Copy.vue"
 import { code } from "oj/composables/code"
-import { SOURCES } from "utils/constants"
 import { Problem, ProblemStatus } from "utils/types"
 import { createTestSubmission } from "utils/judge"
 import { useThemeVars } from "naive-ui"

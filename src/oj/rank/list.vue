@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DataTableColumn, NButton } from "naive-ui"
+import { NButton } from "naive-ui"
 import Chart from "./components/Chart.vue"
 import Pagination from "~/shared/Pagination.vue"
 import { Rank } from "utils/types"

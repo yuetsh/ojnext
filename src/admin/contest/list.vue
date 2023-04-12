@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { DataTableColumn, NSwitch, NTag } from "naive-ui"
+import { NSwitch, NTag } from "naive-ui"
 import Pagination from "~/shared/Pagination.vue"
 import { Contest } from "~/utils/types"
 import { getContestList } from "../api"

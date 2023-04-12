@@ -4,7 +4,7 @@ import { filterEmptyValue, getTagColor } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
 import { getProblemList, getRandomProblemID } from "oj/api"
 import Pagination from "~/shared/Pagination.vue"
-import { DataTableColumn, NSpace, NTag } from "naive-ui"
+import { NSpace, NTag } from "naive-ui"
 import ProblemStatus from "./components/ProblemStatus.vue"
 import { getProblemTagList } from "~/shared/api"
 

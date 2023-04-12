@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { UploadCustomRequestOptions, UploadFileInfo } from "naive-ui"
 import { useUserStore } from "~/shared/store/user"
 import { updateProfile, uploadAvatar } from "oj/api"
 

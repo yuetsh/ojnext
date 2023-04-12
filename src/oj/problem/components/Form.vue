@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { DropdownOption } from "naive-ui"
 import { LANGUAGE_SHOW_VALUE, SOURCES } from "utils/constants"
 import { Problem } from "utils/types"
 import { code } from "oj/composables/code"

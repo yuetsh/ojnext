@@ -4,11 +4,6 @@ import { useUserStore } from "./store/user"
 import { useConfigStore } from "./store/config"
 import { isDark, toggleDark } from "~/shared/composables/dark"
 import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
-import type {
-  MenuOption,
-  DropdownOption,
-  DropdownDividerOption,
-} from "naive-ui"
 import { RouterLink } from "vue-router"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { code } from "~/shared/composables/learn"

@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-import { DataTableColumn } from "naive-ui"
 import { getProblemList } from "~/admin/api"
 import { AdminProblemFiltered } from "~/utils/types"
 import Pagination from "~/shared/Pagination.vue"
