@@ -96,7 +96,10 @@ function type(status: ProblemStatus) {
     title="🎉 本 题 已 经 被 你 解 决 啦"
   />
 
-  <h1>{{ problem.title }}</h1>
+  <n-space align="center">
+    <n-tag>{{ problem._id }}</n-tag>
+    <h1>{{ problem.title }}</h1>
+  </n-space>
   <p class="title" :style="style">描述</p>
   <div class="content" v-html="problem.description"></div>
 

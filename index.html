@@ -5,24 +5,8 @@
     <link rel="icon" type="image/svg+xml" href="/vite.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>OJ</title>
-    <script>
-      this.globalThis || (this.globalThis = window)
-      if (!Object.fromEntries) {
-        Object.defineProperty(Object, 'fromEntries', {
-          value(entries) {
-            if (!entries || !entries[Symbol.iterator]) {throw new Error('Object.fromEntries() requires a single iterable argument'); }
-            const o = {};
-            Object.keys(entries).forEach((key) => {
-              const [k, v] = entries[key];
-              o[k] = v;
-            });
-            return o;
-          },
-        });
-      }
-    </script>
   </head>
-  <body style="height: 100vh">
+  <body>
     <div id="app"></div>
     <script type="module" src="/src/main.ts"></script>
   </body>

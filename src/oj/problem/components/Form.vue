@@ -31,8 +31,9 @@ function goTestCat() {
   window.open(data.href, "_blank")
 }
 
-function edit() {
-  router.push("/admin/problem/edit/" + props.problem.id)
+function goEdit() {
+  const data = router.resolve("/admin/problem/edit/" + props.problem.id)
+  window.open(data.href, "_blank")
 }
 
 const menu: DropdownOption[] = [
@@ -99,7 +100,7 @@ function select(key: string) {
         <n-button @click="reset">重置</n-button>
         <n-button @click="goSubmissions">提交信息</n-button>
         <n-button type="info" @click="goTestCat">自测猫</n-button>
-        <n-button type="warning" v-if="userStore.isSuperAdmin" @click="edit">
+        <n-button type="warning" v-if="userStore.isSuperAdmin" @click="goEdit">
           编辑
         </n-button>
       </n-space>
