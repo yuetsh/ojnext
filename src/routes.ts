@@ -56,6 +56,13 @@ export const routes: RouteRecordRaw[] = [
             meta: { requiresAuth: true },
             name: "contest rank",
           },
+          {
+            path: "helper",
+            component: () => import("~/oj/contest/pages/helper.vue"),
+            props: true,
+            meta: { requiresAuth: true },
+            name: "contest helper",
+          },
         ],
       },
       {

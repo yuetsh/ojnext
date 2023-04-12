@@ -24,11 +24,12 @@ function getCurrentType(name: string): "primary" | "default" {
   return "default"
 }
 
-const options: DropdownOption[] = [
+const options = computed<DropdownOption[]>(() => [
   { label: "比赛题目", key: "problems" },
   { label: "提交信息", key: "submissions" },
   { label: "比赛排名", key: "rank" },
-]
+  { label: "管理员助手", key: "helper", show: contestStore.isContestAdmin },
+])
 </script>
 <template>
   <div v-if="contestMenuVisible">
@@ -44,6 +45,13 @@ const options: DropdownOption[] = [
       </n-button>
       <n-button :type="getCurrentType('rank')" @click="goto('rank')">
         比赛排名
+      </n-button>
+      <n-button
+        v-if="contestStore.isContestAdmin"
+        :type="getCurrentType('helper')"
+        @click="goto('helper')"
+      >
+        管理员助手
       </n-button>
     </n-space>
     <n-dropdown v-else :options="options" trigger="click" @select="goto">

@@ -8,7 +8,6 @@ import ContestTitle from "~/shared/ContestTitle.vue"
 import Pagination from "~/shared/Pagination.vue"
 import { useUserStore } from "~/shared/store/user"
 import { toggleLogin } from "~/shared/composables/modal"
-import { isDesktop } from "~/shared/composables/breakpoints"
 
 const route = useRoute()
 const router = useRouter()

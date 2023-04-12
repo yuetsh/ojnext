@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CONTEST_STATUS, ContestStatus } from "utils/constants"
+import { CONTEST_STATUS } from "utils/constants"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { useContestStore } from "../store/contest"
 import ContestInfo from "./components/ContestInfo.vue"
