@@ -11,6 +11,7 @@ export const smoothy = createTheme({
     selection: "#FFFD0054",
     gutterBackground: "#FFFFFF",
     gutterForeground: "#00000070",
+    gutterBorderRight: "none",
     lineHighlight: "#00000008",
   },
   styles: [

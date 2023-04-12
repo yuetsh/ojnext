@@ -60,6 +60,8 @@ interface Settings {
    * Text color inside gutter.
    */
   gutterForeground: string
+
+  gutterBorderRight: string
 }
 
 export const createTheme = ({
@@ -89,6 +91,7 @@ export const createTheme = ({
       },
       ".cm-gutters": {
         backgroundColor: settings.gutterBackground,
+        borderRight: settings.gutterBorderRight,
         color: settings.gutterForeground,
       },
       ".cm-activeLineGutter": {
