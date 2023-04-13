@@ -11,6 +11,9 @@ import { LANGUAGE } from "~/utils/types"
 import { isDark } from "./composables/dark"
 
 const styleTheme = EditorView.baseTheme({
+  "&": {
+    "font-family": 'Menlo, Monaco, Consolas, "Courier New", monospace',
+  },
   "&.cm-editor.cm-focused": {
     outline: "none",
   },
