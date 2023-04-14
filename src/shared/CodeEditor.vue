@@ -9,10 +9,13 @@ import { oneDark } from "./themes/oneDark"
 import { smoothy } from "./themes/smoothy"
 import { LANGUAGE } from "~/utils/types"
 import { isDark } from "./composables/dark"
+import { useThemeVars } from "naive-ui"
+
+const theme = useThemeVars()
 
 const styleTheme = EditorView.baseTheme({
   "&": {
-    "font-family": 'Menlo, Monaco, Consolas, "Courier New", monospace',
+    "font-family": theme.value.fontFamilyMono,
   },
   "&.cm-editor.cm-focused": {
     outline: "none",
