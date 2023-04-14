@@ -91,6 +91,7 @@ function type(status: ProblemStatus) {
 
 <template>
   <n-alert
+    class="success"
     v-if="problem.my_status === 0"
     type="success"
     title="🎉 本 题 已 经 被 你 解 决 啦"
@@ -98,7 +99,7 @@ function type(status: ProblemStatus) {
 
   <n-space align="center">
     <n-tag>{{ problem._id }}</n-tag>
-    <h1>{{ problem.title }}</h1>
+    <h1 class="problemTitle">{{ problem.title }}</h1>
   </n-space>
   <p class="title" :style="style">描述</p>
   <div class="content" v-html="problem.description"></div>
@@ -161,9 +162,13 @@ function type(status: ProblemStatus) {
 </template>
 
 <style scoped>
+.problemTitle {
+  margin: 0;
+}
+
 .title {
   font-size: 20px;
-  margin: 24px 0 16px 0;
+  margin: 12px 0;
 }
 
 .testcaseTitle {
@@ -178,5 +183,9 @@ function type(status: ProblemStatus) {
 .testcase {
   font-size: 14px;
   white-space: pre;
+}
+
+.success {
+  margin-bottom: 8px;
 }
 </style>

@@ -14,7 +14,12 @@ const contestStore = useContestStore()
     :show-arrow="false"
   >
     <template #trigger>
-      <n-button>比赛信息</n-button>
+      <n-button>
+        <template #icon>
+          <i-ep-warning />
+        </template>
+        比赛信息
+      </n-button>
     </template>
     <div v-html="contestStore.contest.description"></div>
     <n-descriptions bordered label-placement="left" :column="1">

@@ -17,17 +17,19 @@ code.language = props.problem.languages[0] || "C"
 code.value = props.problem.template[code.language] || SOURCES[code.language]
 
 const editorHeight = computed(() =>
-  isDesktop.value ? "calc(100vh - 150px)" : "calc(100vh - 200px)"
+  isDesktop.value ? "calc(100vh - 133px)" : "calc(100vh - 180px)"
 )
 </script>
 
 <template>
-  <Form :problem="props.problem" />
-  <CodeEditor
-    v-model="code.value"
-    :language="code.language"
-    :height="editorHeight"
-  />
+  <n-space vertical>
+    <Form :problem="props.problem" />
+    <CodeEditor
+      v-model="code.value"
+      :language="code.language"
+      :height="editorHeight"
+    />
+  </n-space>
 </template>
 
 <style scoped></style>

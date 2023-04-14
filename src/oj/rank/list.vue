@@ -5,6 +5,7 @@ import Pagination from "~/shared/Pagination.vue"
 import { Rank } from "utils/types"
 import { getRank } from "oj/api"
 import { getACRate } from "utils/functions"
+import Index from "./components/Index.vue"
 
 const router = useRouter()
 const data = ref<Rank[]>([])
@@ -29,9 +30,10 @@ const columns: DataTableColumn<Rank>[] = [
   {
     title: "排名",
     key: "index",
-    width: 100,
+    width: 80,
+    align: "center",
     render: (_, index) =>
-      h("span", {}, index + (query.page - 1) * query.limit + 1),
+      h(Index, { index, page: query.page, limit: query.limit }),
   },
   {
     title: "用户",

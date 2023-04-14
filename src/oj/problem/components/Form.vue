@@ -39,6 +39,7 @@ function goEdit() {
 const menu: DropdownOption[] = [
   { label: "重置", key: "reset" },
   { label: "提交信息", key: "submissions" },
+  { label: "自测猫", key: "testcat" },
 ]
 
 const options: DropdownOption[] = props.problem.languages.map((it) => ({
@@ -65,22 +66,21 @@ function select(key: string) {
     case "submissions":
       goSubmissions()
       break
+    case "testcat":
+      goTestCat()
+      break
   }
 }
 </script>
 
 <template>
-  <n-form inline label-placement="left">
-    <n-form-item>
-      <n-select
-        class="language"
-        v-model:value="code.language"
-        :options="options"
-      />
-    </n-form-item>
-    <n-form-item>
-      <Submit />
-    </n-form-item>
+  <n-space>
+    <n-select
+      class="language"
+      v-model:value="code.language"
+      :options="options"
+    />
+    <Submit />
     <n-dropdown
       v-if="isMobile"
       trigger="click"
@@ -95,17 +95,17 @@ function select(key: string) {
         </template>
       </n-button>
     </n-dropdown>
-    <n-form-item v-if="isDesktop">
-      <n-space>
-        <n-button @click="reset">重置</n-button>
-        <n-button @click="goSubmissions">提交信息</n-button>
-        <n-button type="info" @click="goTestCat">自测猫</n-button>
-        <n-button type="warning" v-if="userStore.isSuperAdmin" @click="goEdit">
-          编辑
-        </n-button>
-      </n-space>
-    </n-form-item>
-  </n-form>
+    <n-button v-if="isDesktop" @click="reset">重置</n-button>
+    <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
+    <n-button v-if="isDesktop" type="info" @click="goTestCat">自测猫</n-button>
+    <n-button
+      type="warning"
+      v-if="isDesktop && userStore.isSuperAdmin"
+      @click="goEdit"
+    >
+      编辑
+    </n-button>
+  </n-space>
 </template>
 
 <style scoped>
