@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { NButton } from "naive-ui"
+import { NButton, NIcon, NSpace } from "naive-ui"
+import { GoldMedal } from "@element-plus/icons-vue"
 import Pagination from "~/shared/Pagination.vue"
 import AcAndSubmission from "../components/AcAndSubmission.vue"
 import { getContestProblems, getContestRank } from "oj/api"
@@ -91,14 +92,16 @@ async function addColumns() {
             {
               text: true,
               type: "primary",
-              onClick: () =>
-                router.push({
+              onClick: () => {
+                const data = router.resolve({
                   name: "contest problem",
                   params: {
                     contestID: route.params.contestID,
                     problemID: problem._id,
                   },
-                }),
+                })
+                window.open(data.href, "_blank")
+              },
             },
             () => problem.title
           ),
@@ -109,6 +112,16 @@ async function addColumns() {
             let errorNumber
             if (status.is_ac) {
               acTime = h("span", secondsToDuration(status.ac_time))
+            }
+            if (status.is_first_ac) {
+              acTime = [
+                h(
+                  NIcon,
+                  { size: 16, style: "transform: translate(-2px, 3px)" },
+                  () => h(GoldMedal)
+                ),
+                secondsToDuration(status.ac_time),
+              ]
             }
             if (status.error_number) {
               errorNumber = h(
