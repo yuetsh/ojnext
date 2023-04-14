@@ -11,7 +11,7 @@ import { LANGUAGE } from "~/utils/types"
 import { isDark } from "./composables/dark"
 
 const styleTheme = EditorView.baseTheme({
-  "&.cm-scroller": {
+  "& .cm-scroller": {
     "font-family": "Consolas",
   },
   "&.cm-editor.cm-focused": {
