@@ -13,13 +13,10 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
-const emit = defineEmits(["reset"])
-
-watch(() => code.language, reset)
+const emit = defineEmits(["changeLanguage"])
 
 function reset() {
   code.value = problem.value!.template[code.language] || SOURCES[code.language]
-  emit("reset")
 }
 
 function goSubmissions() {
@@ -71,6 +68,7 @@ function select(key: string) {
 
 function changeLanguage(v: LANGUAGE) {
   storage.set(STORAGE_KEY.LANGUAGE, v)
+  emit("changeLanguage", v)
 }
 </script>
 
