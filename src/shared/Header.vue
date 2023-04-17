@@ -87,12 +87,18 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
 function run() {
   console.log(code.value)
 }
+
+function goHome() {
+  router.push("/")
+}
 </script>
 
 <template>
   <n-space justify="space-between" align="center">
     <n-space align="center">
-      <div class="websiteTitle">{{ configStore.config?.website_name }}</div>
+      <div class="websiteTitle" @click="goHome">
+        {{ configStore.config?.website_name }}
+      </div>
       <n-menu
         v-if="isDesktop"
         mode="horizontal"
@@ -139,5 +145,6 @@ function run() {
 .websiteTitle {
   font-size: 18px;
   margin-left: 8px;
+  cursor: pointer;
 }
 </style>
