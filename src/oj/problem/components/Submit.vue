@@ -1,10 +1,11 @@
 <script setup lang="ts">
-import { code } from "oj/composables/code"
 import party from "party-js"
-import { Ref } from "vue"
+import { code } from "oj/composables/code"
+import { problem } from "oj/composables/problem"
+import { isDesktop } from "~/shared/composables/breakpoints"
 import { JUDGE_STATUS, SubmissionStatus } from "utils/constants"
 import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
-import { Problem, Submission, SubmitCodePayload } from "utils/types"
+import { Submission, SubmitCodePayload } from "utils/types"
 import { getSubmission, submitCode } from "oj/api"
 import SubmissionResultTag from "~/shared/SubmissionResultTag.vue"
 import { useUserStore } from "~/shared/store/user"
@@ -12,7 +13,6 @@ import { useUserStore } from "~/shared/store/user"
 const userStore = useUserStore()
 const route = useRoute()
 
-const problem = inject<Ref<Problem>>("problem")
 const contestID = <string>route.params.contestID ?? ""
 
 const submissionId = ref("")
@@ -92,7 +92,7 @@ const submitLabel = computed(() => {
   if (isPending.value) {
     return "运行结果"
   }
-  return "点击提交"
+  return "提交评测"
 })
 
 const msg = computed(() => {
@@ -160,7 +160,7 @@ async function submit() {
     return
   }
   const data: SubmitCodePayload = {
-    problem_id: problem!.value.id,
+    problem_id: problem.value!.id,
     language: code.language,
     code: code.value,
   }
@@ -199,7 +199,12 @@ watch(
     style="max-height: 600px"
   >
     <template #trigger>
-      <n-button type="primary" :disabled="submitDisabled" @click="submit">
+      <n-button
+        :size="isDesktop ? 'medium' : 'small'"
+        type="primary"
+        :disabled="submitDisabled"
+        @click="submit"
+      >
         <template #icon>
           <n-icon>
             <i-ep-loading v-if="judging || pending || submitting" />

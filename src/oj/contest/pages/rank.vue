@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NButton, NIcon, NSpace } from "naive-ui"
+import { NButton, NIcon } from "naive-ui"
 import { GoldMedal } from "@element-plus/icons-vue"
 import Pagination from "~/shared/Pagination.vue"
 import AcAndSubmission from "../components/AcAndSubmission.vue"

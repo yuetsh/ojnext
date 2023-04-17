@@ -2,16 +2,11 @@
 import { Pie } from "vue-chartjs"
 import { DIFFICULTY, JUDGE_STATUS } from "utils/constants"
 import { getACRate, getTagColor, parseTime } from "utils/functions"
+import { problem } from "oj/composables/problem"
 import { isDesktop } from "~/shared/composables/breakpoints"
-import { Problem } from "utils/types"
-
-interface Props {
-  problem: Problem
-}
-const props = defineProps<Props>()
 
 const data = computed(() => {
-  const status = props.problem.statistic_info
+  const status = problem.value!.statistic_info
   const labels = []
   for (let i in status) {
     if (status[i] !== 0) {
@@ -33,7 +28,12 @@ const options = {
 </script>
 
 <template>
-  <n-descriptions bordered label-placement="left" :column="isDesktop ? 3 : 1">
+  <n-descriptions
+    bordered
+    label-placement="left"
+    :column="isDesktop ? 3 : 1"
+    v-if="problem"
+  >
     <n-descriptions-item label="编号">
       {{ problem._id }}
     </n-descriptions-item>
@@ -71,7 +71,7 @@ const options = {
       </n-space>
     </n-descriptions-item>
   </n-descriptions>
-  <div class="pie" v-if="problem.submission_number > 0">
+  <div class="pie" v-if="problem && problem.submission_number > 0">
     <Pie :data="data" :options="options" />
   </div>
 </template>

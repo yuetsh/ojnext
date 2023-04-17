@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { getProblem } from "oj/api"
 import { isDesktop } from "~/shared/composables/breakpoints"
-import { Problem } from "utils/types"
+import { problem } from "../composables/problem"
 
 const Editor = defineAsyncComponent(() => import("./components/Editor.vue"))
 const ProblemContent = defineAsyncComponent(
@@ -19,7 +19,7 @@ interface Props {
 const props = withDefaults(defineProps<Props>(), {
   contestID: "",
 })
-const problem = ref<Problem | null>(null)
+
 const errMsg = ref("无数据")
 
 async function init() {
@@ -34,7 +34,6 @@ async function init() {
   }
 }
 onMounted(init)
-provide("problem", readonly(problem))
 </script>
 
 <template>
@@ -43,27 +42,27 @@ provide("problem", readonly(problem))
       <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
         <n-tabs default-value="content" type="segment">
           <n-tab-pane name="content" tab="题目描述">
-            <ProblemContent :problem="problem" />
+            <ProblemContent />
           </n-tab-pane>
-          <n-tab-pane name="info" tab="题目信息">
-            <ProblemInfo :problem="problem" />
+          <n-tab-pane name="info" tab="题目统计">
+            <ProblemInfo />
           </n-tab-pane>
         </n-tabs>
       </n-scrollbar>
       <n-tabs v-else default-value="content" type="segment">
         <n-tab-pane name="content" tab="题目描述">
-          <ProblemContent :problem="problem" />
+          <ProblemContent />
         </n-tab-pane>
         <n-tab-pane name="editor" tab="代码编辑">
-          <Editor :problem="problem" />
+          <Editor />
         </n-tab-pane>
-        <n-tab-pane name="info" tab="题目信息">
-          <ProblemInfo :problem="problem" />
+        <n-tab-pane name="info" tab="题目统计">
+          <ProblemInfo />
         </n-tab-pane>
       </n-tabs>
     </n-gi>
     <n-gi v-if="isDesktop">
-      <Editor :problem="problem" />
+      <Editor />
     </n-gi>
   </n-grid>
   <n-empty v-else :description="errMsg"></n-empty>
