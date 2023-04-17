@@ -4,7 +4,6 @@ import { code } from "oj/composables/code"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { problem } from "oj/composables/problem"
 import storage from "~/utils/storage"
-import { LANGUAGE } from "~/utils/types"
 
 const Form = defineAsyncComponent(() => import("./Form.vue"))
 const CodeEditor = defineAsyncComponent(() => import("~/shared/CodeEditor.vue"))
