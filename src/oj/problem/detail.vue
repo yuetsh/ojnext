@@ -34,6 +34,10 @@ async function init() {
   }
 }
 onMounted(init)
+onBeforeUnmount(() => {
+  problem.value = null
+  errMsg.value = "无数据"
+})
 </script>
 
 <template>

@@ -120,7 +120,7 @@ export const PROBLEM_PERMISSION = {
 
 export const STORAGE_KEY = {
   AUTHED: "authed",
-  PROBLEM_CODE: "problemCode",
+  LANGUAGE: "problemLanguage",
 }
 
 export const DIFFICULTY = {

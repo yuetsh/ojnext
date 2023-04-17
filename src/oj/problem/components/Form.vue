@@ -5,15 +5,21 @@ import { problem } from "oj/composables/problem"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
 import Submit from "./Submit.vue"
+import storage from "~/utils/storage"
+import { STORAGE_KEY } from "utils/constants"
+import { LANGUAGE } from "~/utils/types"
 
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
+const emit = defineEmits(["reset"])
+
 watch(() => code.language, reset)
 
 function reset() {
   code.value = problem.value!.template[code.language] || SOURCES[code.language]
+  emit("reset")
 }
 
 function goSubmissions() {
@@ -62,14 +68,19 @@ function select(key: string) {
       break
   }
 }
+
+function changeLanguage(v: LANGUAGE) {
+  storage.set(STORAGE_KEY.LANGUAGE, v)
+}
 </script>
 
 <template>
   <n-space>
     <n-select
       class="language"
-      :size="isDesktop ? 'medium' : 'small'"
       v-model:value="code.language"
+      @update:value="changeLanguage"
+      :size="isDesktop ? 'medium' : 'small'"
       :options="options"
     />
     <Submit />
