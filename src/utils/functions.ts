@@ -17,13 +17,6 @@ export function filterEmptyValue(object: any) {
   return query
 }
 
-export function buildProblemCodeKey(problemID: string, contestID = "") {
-  if (contestID) {
-    return `${STORAGE_KEY.PROBLEM_CODE}_${contestID}_${problemID}`
-  }
-  return `${STORAGE_KEY.PROBLEM_CODE}_NaN_${problemID}`
-}
-
 export function getTagColor(
   tag: "Low" | "Mid" | "High" | "简单" | "中等" | "困难"
 ) {

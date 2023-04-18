@@ -38,8 +38,6 @@ export default defineConfig({
           ],
           "codemirror-lang": [
             "@codemirror/lang-cpp",
-            "@codemirror/lang-javascript",
-            "@codemirror/lang-java",
             "@codemirror/lang-python",
           ],
         },

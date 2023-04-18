@@ -1,23 +1,17 @@
 <script setup lang="ts">
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { code } from "~/shared/composables/learn"
+import { useLearnStore } from "./store"
 
 const CodeEditor = defineAsyncComponent(() => import("~/shared/CodeEditor.vue"))
 
 const route = useRoute()
 const router = useRouter()
+const learnStore = useLearnStore()
 
-const TOTAL = 3
-
-const Mds = Array.from({ length: TOTAL }, (_, i) => i + 1).map((v) =>
+const Mds = Array.from({ length: learnStore.total }, (_, i) => i + 1).map((v) =>
   defineAsyncComponent(() => import(`./step-${v}/index.md`))
 )
-const step = computed(() => {
-  if (!route.params.step || !route.params.step.length) return 1
-  else {
-    return parseInt(route.params.step[0].split("-")[1])
-  }
-})
 
 watch(
   () => route.params.step,
@@ -32,45 +26,38 @@ watch(
   },
   { immediate: true }
 )
-
-function prev() {
-  router.push(`/learn/step-${step.value - 1}`)
-}
-function next() {
-  router.push(`/learn/step-${step.value + 1}`)
-}
 </script>
 
 <template>
-  <n-grid v-if="isDesktop" :cols="24">
-    <n-gi :span="10">
+  <n-grid v-if="isDesktop" :cols="22">
+    <n-gi :span="2">
       <n-scrollbar style="max-height: calc(100vh - 92px)">
-        <component :is="Mds[step - 1]"></component>
-        <n-space justify="space-around">
-          <n-button v-if="step !== 1" text type="primary" @click="prev">
-            上一步
-          </n-button>
-          <n-button v-if="step !== TOTAL" text type="primary" @click="next">
-            下一步
+        <n-space vertical>
+          <span>目录</span>
+          <n-button
+            text
+            :type="learnStore.current === title.key ? 'primary' : 'default'"
+            v-for="title in learnStore.menu"
+            :key="title.key"
+            @click="title.props?.onClick"
+          >
+            {{ title.label }}
           </n-button>
         </n-space>
       </n-scrollbar>
     </n-gi>
-    <n-gi :span="14">
-      <CodeEditor v-model="code" />
+    <n-gi :span="10">
+      <n-scrollbar style="max-height: calc(100vh - 92px)">
+        <component :is="Mds[learnStore.current - 1]"></component>
+      </n-scrollbar>
+    </n-gi>
+    <n-gi :span="10">
+      <CodeEditor v-model="code" height="calc(100vh - 92px)" />
     </n-gi>
   </n-grid>
   <div v-else>
     <n-scrollbar style="height: calc(50vh - 42px)">
-      <component :is="Mds[step - 1]"></component>
-      <n-space justify="space-around">
-        <n-button v-if="step !== 1" text type="primary" @click="prev">
-          上一步
-        </n-button>
-        <n-button v-if="step !== TOTAL" text type="primary" @click="next">
-          下一步
-        </n-button>
-      </n-space>
+      <component :is="Mds[learnStore.current - 1]"></component>
     </n-scrollbar>
     <CodeEditor v-model="code" height="calc(50vh - 42px)" />
   </div>

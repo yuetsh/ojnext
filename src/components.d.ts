@@ -9,6 +9,7 @@ export {}
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    IEpArrowRightBold: typeof import('~icons/ep/arrow-right-bold')['default']
     IEpBell: typeof import('~icons/ep/bell')['default']
     IEpCaretRight: typeof import('~icons/ep/caret-right')['default']
     IEpLoading: typeof import('~icons/ep/loading')['default']

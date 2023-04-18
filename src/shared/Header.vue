@@ -7,9 +7,11 @@ import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
 import { RouterLink } from "vue-router"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { code } from "~/shared/composables/learn"
+import { useLearnStore } from "~/learn/store"
 
 const userStore = useUserStore()
 const configStore = useConfigStore()
+const learnStore = useLearnStore()
 const route = useRoute()
 const router = useRouter()
 const active = computed(() => {
@@ -96,7 +98,7 @@ function goHome() {
 <template>
   <n-space justify="space-between" align="center">
     <n-space align="center">
-      <div class="websiteTitle" @click="goHome">
+      <div v-if="isDesktop" class="websiteTitle" @click="goHome">
         {{ configStore.config?.website_name }}
       </div>
       <n-menu
@@ -107,9 +109,23 @@ function goHome() {
       />
     </n-space>
     <n-space align="center">
-      <n-button v-if="$route.name === 'learn'" type="primary" @click="run">
-        运行
-      </n-button>
+      <n-dropdown
+        v-if="$route.name === 'learn' && isMobile"
+        trigger="click"
+        :options="learnStore.menu"
+      >
+        <n-button>目录</n-button>
+      </n-dropdown>
+      <div v-if="$route.name === 'learn'">
+        <n-button v-if="isDesktop" type="primary" @click="run">
+          运行代码
+        </n-button>
+        <n-button v-else circle @click="run">
+          <n-icon>
+            <i-ep-arrow-right-bold />
+          </n-icon>
+        </n-button>
+      </div>
       <n-dropdown v-if="isMobile" :options="menus" trigger="click">
         <n-button>菜单</n-button>
       </n-dropdown>
