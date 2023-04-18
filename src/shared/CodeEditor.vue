@@ -2,8 +2,6 @@
 import { Codemirror } from "vue-codemirror"
 import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
-import { java } from "@codemirror/lang-java"
-import { javascript } from "@codemirror/lang-javascript"
 import { EditorView } from "@codemirror/view"
 import { oneDark } from "./themes/oneDark"
 import { smoothy } from "./themes/smoothy"
@@ -42,10 +40,10 @@ watch(
 const emit = defineEmits(["update:modelValue"])
 
 const lang = computed(() => {
-  if (props.language === "C" || props.language === "C++") return cpp()
-  if (props.language === "Java") return java()
-  if (props.language === "JavaScript") return javascript()
-  return python()
+  if (props.language === "Python3" || props.language === "Python2") {
+    return python()
+  }
+  return cpp()
 })
 
 function onChange(v: string) {

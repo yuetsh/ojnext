@@ -248,10 +248,10 @@ const columns = computed(() => {
           <n-input clearable @change="search" />
         </n-form-item>
         <n-form-item>
-          <n-space>
-            <n-button @click="search(query.username)">搜索</n-button>
-            <n-button @click="clear">重置</n-button>
-          </n-space>
+          <n-button @click="search(query.username)">搜索</n-button>
+        </n-form-item>
+        <n-form-item>
+          <n-button @click="clear">重置</n-button>
         </n-form-item>
       </n-form>
     </n-space>

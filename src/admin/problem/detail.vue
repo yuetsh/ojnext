@@ -88,10 +88,6 @@ const difficultyOptions: SelectOption[] = [
 const languageOptions = [
   { label: LANGUAGE_SHOW_VALUE["C"], value: "C" },
   { label: LANGUAGE_SHOW_VALUE["Python3"], value: "Python3" },
-  { label: LANGUAGE_SHOW_VALUE["C++"], value: "C++" },
-  { label: LANGUAGE_SHOW_VALUE["Java"], value: "Java" },
-  { label: LANGUAGE_SHOW_VALUE["JavaScript"], value: "JavaScript" },
-  { label: LANGUAGE_SHOW_VALUE["Golang"], value: "Golang" },
 ]
 
 const tagOptions = computed(() =>
@@ -461,7 +457,7 @@ watch([fromExistingTags, newTags], (tags) => {
     </template>
   </n-alert>
   <n-space justify="space-between">
-    <n-form inline label-placement="left">
+    <n-form inline label-placement="left" :show-feedback="false">
       <n-form-item label="语言">
         <n-checkbox-group v-model:value="problem.languages">
           <n-space align="center">
