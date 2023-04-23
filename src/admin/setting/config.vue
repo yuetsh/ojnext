@@ -11,9 +11,14 @@ import {
 import { Server } from "~/utils/types"
 import { parseTime } from "~/utils/functions"
 
+interface Testcase {
+  id: string
+  create_time: string
+}
+
 const message = useMessage()
 
-const columns: DataTableColumn<any>[] = [
+const testcaseColumns: DataTableColumn<Testcase>[] = [
   { title: "上次修改时间", key: "create_time" },
   { title: "ID", key: "id" },
   {
@@ -68,7 +73,7 @@ const serverColumns: DataTableColumn<Server>[] = [
     render: (row) => row.memory_usage + "%",
     width: 80,
   },
-  { title: "IP", key: "ip", width: 100 },
+  { title: "IP", key: "ip", width: 140 },
   { title: "判题机版本", key: "judger_version" },
   { title: "服务器 URL", key: "service_url" },
   {
@@ -85,9 +90,12 @@ const serverColumns: DataTableColumn<Server>[] = [
   },
 ]
 
-const testcases = ref([])
+const testcases = ref<Testcase[]>([])
 const token = ref("")
 const servers = ref<Server[]>([])
+const abnormalServers = computed(() =>
+  servers.value.filter((item) => item.status === "abnormal")
+)
 
 const websiteConfig = reactive({
   website_base_url: "https://oj.hyyz.izhai.net",
@@ -131,6 +139,14 @@ async function getJudgeServerData() {
 
 async function delJudgeServer(hostname: string) {
   await deleteJudgeServer(hostname)
+  message.success("删除成功")
+}
+
+async function deleteAbnormalServers() {
+  const dels = abnormalServers.value.map((item) =>
+    deleteJudgeServer(item.hostname)
+  )
+  await Promise.all(dels)
   message.success("删除成功")
 }
 
@@ -178,8 +194,21 @@ onMounted(() => {
       </n-space>
     </n-space>
   </n-card>
-  <n-card class="box" title="判题服务器">
-    <div class="serverToken">
+  <n-card class="box">
+    <template #header>
+      <n-space align="center">
+        判题服务器
+        <n-button
+          v-if="abnormalServers.length"
+          size="small"
+          type="warning"
+          @click="deleteAbnormalServers"
+        >
+          删除无效服务器
+        </n-button>
+      </n-space>
+    </template>
+    <div class="box">
       接口凭证 <n-tag size="small">{{ token }}</n-tag>
     </div>
     <n-data-table
@@ -190,16 +219,11 @@ onMounted(() => {
       :data="servers"
     />
   </n-card>
-  <n-card class="box">
+  <n-card class="box" v-if="testcases.length">
     <template #header>
       <n-space align="center">
         无效的测试用例
-        <n-button
-          v-if="testcases.length"
-          size="small"
-          type="primary"
-          @click="() => deleteTestcase()"
-        >
+        <n-button size="small" type="warning" @click="() => deleteTestcase()">
           全部删除
         </n-button>
       </n-space>
@@ -208,7 +232,7 @@ onMounted(() => {
       striped
       size="small"
       class="table"
-      :columns="columns"
+      :columns="testcaseColumns"
       :data="testcases"
     />
   </n-card>
@@ -225,9 +249,5 @@ onMounted(() => {
 
 .table {
   width: 40%;
-}
-
-.serverToken {
-  margin-bottom: 16px;
 }
 </style>
