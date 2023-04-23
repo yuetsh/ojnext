@@ -10,6 +10,9 @@ const ProblemContent = defineAsyncComponent(
 const ProblemInfo = defineAsyncComponent(
   () => import("./components/ProblemInfo.vue")
 )
+const ProblemSubmission = defineAsyncComponent(
+  () => import("./components/ProblemSubmission.vue")
+)
 
 interface Props {
   problemID: string
@@ -51,6 +54,9 @@ onBeforeUnmount(() => {
           <n-tab-pane name="info" tab="题目统计">
             <ProblemInfo />
           </n-tab-pane>
+          <n-tab-pane name="submission" tab="我的提交">
+            <ProblemSubmission />
+          </n-tab-pane>
         </n-tabs>
       </n-scrollbar>
       <n-tabs v-else default-value="content" type="segment">
@@ -62,6 +68,9 @@ onBeforeUnmount(() => {
         </n-tab-pane>
         <n-tab-pane name="info" tab="题目统计">
           <ProblemInfo />
+        </n-tab-pane>
+        <n-tab-pane name="submission" tab="我的提交">
+          <ProblemSubmission />
         </n-tab-pane>
       </n-tabs>
     </n-gi>

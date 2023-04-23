@@ -65,16 +65,6 @@ onMounted(init)
       </n-space>
     </n-alert>
     <n-card embedded>
-      <n-space justify="end">
-        <n-button
-          quaternary
-          class="copyBtn"
-          type="primary"
-          @click="handleCopy(submission!.code)"
-        >
-          {{ copied ? "已复制" : "复制代码" }}
-        </n-button>
-      </n-space>
       <n-code
         class="code"
         :language="LANGUAGE_FORMAT_VALUE[submission.language]"
@@ -82,6 +72,9 @@ onMounted(init)
         show-line-numbers
       />
     </n-card>
+    <n-button type="primary" @click="handleCopy(submission!.code)">
+      {{ copied ? "成功复制" : "复制代码" }}
+    </n-button>
     <n-data-table
       v-if="submission.info && submission.info.data"
       :columns="columns"
@@ -93,9 +86,5 @@ onMounted(init)
 <style scoped>
 .code {
   font-size: 20px;
-}
-
-.copyBtn {
-  margin-bottom: 16px;
 }
 </style>

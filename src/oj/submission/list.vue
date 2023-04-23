@@ -12,6 +12,7 @@ import { Submission } from "utils/types"
 import { adminRejudge, getSubmissions } from "oj/api"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
+import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
 
 interface Query {
   username: string
@@ -136,9 +137,7 @@ const columns = computed(() => {
             {
               text: true,
               type: "info",
-              onClick: () => {
-                router.push("/submission/" + row.id)
-              },
+              onClick: () => router.push("/submission/" + row.id),
             },
             () => row.id.slice(0, 12)
           )
@@ -191,7 +190,12 @@ const columns = computed(() => {
       width: 120,
       render: (row) => submissionMemoryFormat(row.statistic_info.memory_cost),
     },
-    { title: "语言", key: "language", width: 120 },
+    {
+      title: "语言",
+      key: "language",
+      width: 120,
+      render: (row) => LANGUAGE_SHOW_VALUE[row.language],
+    },
     {
       title: "用户",
       key: "username",

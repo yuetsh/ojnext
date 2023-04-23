@@ -18,6 +18,7 @@ const active = computed(() => {
   const path = route.path.split("/")[1] || "problem"
   return !["user", "setting"].includes(path) ? path : ""
 })
+const hiddenTitle = computed(() => isMobile.value && route.name === "learn")
 
 async function handleLogout() {
   await logout()
@@ -98,7 +99,7 @@ function goHome() {
 <template>
   <n-space justify="space-between" align="center">
     <n-space align="center">
-      <div v-if="isDesktop" class="websiteTitle" @click="goHome">
+      <div v-if="!hiddenTitle" class="websiteTitle" @click="goHome">
         {{ configStore.config?.website_name }}
       </div>
       <n-menu
