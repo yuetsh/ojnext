@@ -19,6 +19,17 @@ const total = ref(0)
 const data = ref<ContestRank[]>([])
 const chart = ref<ContestRank[]>([])
 const problems = ref<ProblemFiltered[]>([])
+const [autoRefresh] = useToggle()
+const { resume, pause } = useIntervalFn(
+  () => {
+    query.page = 1
+    listRanks()
+  },
+  10000,
+  {
+    immediate: false,
+  }
+)
 
 const query = reactive({
   limit: 50,
@@ -168,6 +179,7 @@ watch(
     listRanks()
   }
 )
+watch(autoRefresh, (checked) => (checked ? resume() : pause()))
 
 onMounted(() => {
   listRanks()
@@ -183,11 +195,18 @@ onMounted(() => {
     :columns="columns"
     :data="data"
   />
-  <Pagination
-    :total="total"
-    v-model:page="query.page"
-    v-model:limit="query.limit"
-  />
+  <n-space justify="end" align="center">
+    <n-form label-placement="left" inline :show-feedback="false">
+      <n-form-item label="开启自动刷新">
+        <n-switch v-model:value="autoRefresh" />
+      </n-form-item>
+    </n-form>
+    <Pagination
+      :total="total"
+      v-model:page="query.page"
+      v-model:limit="query.limit"
+    />
+  </n-space>
 </template>
 
 <style scoped></style>
