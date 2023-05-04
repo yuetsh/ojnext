@@ -6,6 +6,8 @@ import AcAndSubmission from "../components/AcAndSubmission.vue"
 import { getContestProblems, getContestRank } from "oj/api"
 import { ContestRank, ProblemFiltered } from "~/utils/types"
 import { secondsToDuration } from "utils/functions"
+import { ContestStatus } from "~/utils/constants"
+import { useContestStore } from "~/oj/store/contest"
 
 interface Props {
   contestID: string
@@ -15,6 +17,9 @@ const props = defineProps<Props>()
 
 const route = useRoute()
 const router = useRouter()
+
+const contestStore = useContestStore()
+
 const total = ref(0)
 const data = ref<ContestRank[]>([])
 const chart = ref<ContestRank[]>([])
@@ -196,7 +201,12 @@ onMounted(() => {
     :data="data"
   />
   <n-space justify="end" align="center">
-    <n-form label-placement="left" inline :show-feedback="false">
+    <n-form
+      label-placement="left"
+      inline
+      :show-feedback="false"
+      v-if="contestStore.contestStatus === ContestStatus.underway"
+    >
       <n-form-item label="开启自动刷新">
         <n-switch v-model:value="autoRefresh" />
       </n-form-item>
