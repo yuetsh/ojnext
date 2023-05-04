@@ -23,6 +23,7 @@ interface Props {
   fontSize?: number
   height?: string
   readonly?: boolean
+  placeholder?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -30,6 +31,7 @@ const props = withDefaults(defineProps<Props>(), {
   fontSize: 20,
   height: "100%",
   readonly: false,
+  placeholder: "",
 })
 
 const code = ref(props.modelValue)
@@ -55,11 +57,12 @@ function onChange(v: string) {
 <template>
   <Codemirror
     v-model="code"
-    :extensions="[styleTheme, lang, isDark ? oneDark : smoothy]"
     indentWithTab
+    :extensions="[styleTheme, lang, isDark ? oneDark : smoothy]"
     :disabled="props.readonly"
     :tabSize="4"
-    @change="onChange"
+    :placeholder="props.placeholder"
     :style="{ height: props.height, fontSize: props.fontSize + 'px' }"
+    @change="onChange"
   />
 </template>

@@ -5,6 +5,7 @@ import { problem } from "oj/composables/problem"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
 import Submit from "./Submit.vue"
+import TestCat from "./TestCat.vue"
 import storage from "~/utils/storage"
 import { STORAGE_KEY } from "utils/constants"
 import { LANGUAGE } from "~/utils/types"
@@ -24,20 +25,14 @@ function goSubmissions() {
   router.push({ name, query: { problem: problem.value!._id } })
 }
 
-function goTestCat() {
-  const data = router.resolve({ name: "play" })
-  window.open(data.href, "_blank")
-}
+function goTestCat() {}
 
 function goEdit() {
   const data = router.resolve("/admin/problem/edit/" + problem.value!.id)
   window.open(data.href, "_blank")
 }
 
-const menu: DropdownOption[] = [
-  { label: "提交信息", key: "submissions" },
-  { label: "自测猫", key: "testcat" },
-]
+const menu: DropdownOption[] = [{ label: "提交信息", key: "submissions" }]
 
 const options: DropdownOption[] = problem.value!.languages.map((it) => ({
   label: () => [
@@ -60,9 +55,6 @@ function select(key: string) {
     case "submissions":
       goSubmissions()
       break
-    case "testcat":
-      goTestCat()
-      break
   }
 }
 
@@ -73,7 +65,7 @@ function changeLanguage(v: LANGUAGE) {
 </script>
 
 <template>
-  <n-space>
+  <n-space align="center">
     <n-select
       class="language"
       v-model:value="code.language"
@@ -99,17 +91,11 @@ function changeLanguage(v: LANGUAGE) {
         </template>
       </n-button>
     </n-dropdown>
+    <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
+    <TestCat />
     <n-button
-      :size="isDesktop ? 'medium' : 'small'"
-      v-if="isDesktop"
-      @click="goSubmissions"
-    >
-      提交信息
-    </n-button>
-    <n-button
-      type="warning"
-      :size="isDesktop ? 'medium' : 'small'"
       v-if="isDesktop && userStore.isSuperAdmin"
+      type="warning"
       @click="goEdit"
     >
       编辑
