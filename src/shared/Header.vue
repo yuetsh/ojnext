@@ -59,6 +59,15 @@ const menus = computed<MenuOption[]>(() => [
     show: userStore.isAdminRole,
     key: "admin",
   },
+  {
+    label: () =>
+      h(
+        RouterLink,
+        { to: "/play", target: "_blank" },
+        { default: () => "自测" }
+      ),
+    key: "play",
+  },
 ])
 
 const options: Array<DropdownOption | DropdownDividerOption> = [

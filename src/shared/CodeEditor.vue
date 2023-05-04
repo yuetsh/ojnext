@@ -22,12 +22,14 @@ interface Props {
   language?: LANGUAGE
   fontSize?: number
   height?: string
+  readonly?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   language: "C",
   fontSize: 20,
   height: "100%",
+  readonly: false,
 })
 
 const code = ref(props.modelValue)
@@ -55,11 +57,9 @@ function onChange(v: string) {
     v-model="code"
     :extensions="[styleTheme, lang, isDark ? oneDark : smoothy]"
     indentWithTab
+    :disabled="props.readonly"
     :tabSize="4"
     @change="onChange"
-    :style="{
-      height: props.height,
-      fontSize: props.fontSize + 'px',
-    }"
+    :style="{ height: props.height, fontSize: props.fontSize + 'px' }"
   />
 </template>
