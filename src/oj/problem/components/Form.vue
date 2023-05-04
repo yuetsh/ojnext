@@ -92,7 +92,7 @@ function changeLanguage(v: LANGUAGE) {
       </n-button>
     </n-dropdown>
     <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
-    <TestCat />
+    <TestCat v-if="isDesktop" />
     <n-button
       v-if="isDesktop && userStore.isSuperAdmin"
       type="warning"
