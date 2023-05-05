@@ -27,7 +27,7 @@ function clear() {
     @clickoutside="clear"
   >
     <template #trigger>
-      <n-button>输入输出</n-button>
+      <n-button>自测</n-button>
     </template>
     <n-space vertical>
       <n-input type="textarea" v-model:value="input" />

@@ -25,8 +25,6 @@ function goSubmissions() {
   router.push({ name, query: { problem: problem.value!._id } })
 }
 
-function goTestCat() {}
-
 function goEdit() {
   const data = router.resolve("/admin/problem/edit/" + problem.value!.id)
   window.open(data.href, "_blank")
@@ -91,8 +89,8 @@ function changeLanguage(v: LANGUAGE) {
         </template>
       </n-button>
     </n-dropdown>
-    <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
     <TestCat v-if="isDesktop" />
+    <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
     <n-button
       v-if="isDesktop && userStore.isSuperAdmin"
       type="warning"
