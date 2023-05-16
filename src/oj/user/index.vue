@@ -3,6 +3,7 @@ import { getProfile } from "~/shared/api"
 import { Profile } from "~/utils/types"
 
 const route = useRoute()
+const router = useRouter()
 const profile = ref<Profile | null>(null)
 const problems = ref<string[]>([])
 const [loading, toggle] = useToggle()
@@ -55,7 +56,7 @@ onMounted(init)
         <n-button
           v-for="id in problems"
           key="id"
-          @click="$router.push('/problem/' + id)"
+          @click="router.push('/problem/' + id)"
         >
           {{ id }}
         </n-button>
@@ -64,7 +65,7 @@ onMounted(init)
   </n-descriptions>
   <n-empty v-if="!loading && !profile" description="该用户不存在">
     <template #extra>
-      <n-button @click="$router.push('/')">返回主页</n-button>
+      <n-button @click="router.push('/')">返回主页</n-button>
     </template>
   </n-empty>
 </template>

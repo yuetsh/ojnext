@@ -16,6 +16,7 @@ const color = computed(() => {
 const Icon = computed(() => {
   if (props.status === "passed") return Select
   if (props.status === "failed") return SemiSelect
+  return {}
 })
 </script>
 

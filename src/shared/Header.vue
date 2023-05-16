@@ -111,13 +111,13 @@ function goHome() {
     </n-space>
     <n-space align="center">
       <n-dropdown
-        v-if="$route.name === 'learn' && isMobile"
+        v-if="route.name === 'learn' && isMobile"
         trigger="click"
         :options="learnStore.menu"
       >
         <n-button>目录</n-button>
       </n-dropdown>
-      <div v-if="$route.name === 'learn'">
+      <div v-if="route.name === 'learn'">
         <n-button v-if="isDesktop" type="primary" @click="run">
           运行代码
         </n-button>

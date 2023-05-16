@@ -7,6 +7,7 @@ const userCount = ref(0)
 const submissionCount = ref(0)
 const contestCount = ref(0)
 const userStore = useUserStore()
+const router = useRouter()
 
 party.resolvableShapes["fries"] = `<span style="font-size: 100px">🍟</span>`
 party.resolvableShapes["joker"] = `<span style="font-size: 100px">🤡</span>`
@@ -47,8 +48,8 @@ onMounted(async () => {
   </h2>
   <n-space align="center">
     <span>我猜你要：</span>
-    <n-button @click="$router.push('/admin/problem/create')">新题目</n-button>
-    <n-button @click="$router.push('/admin/contest/create')">新比赛</n-button>
+    <n-button @click="router.push('/admin/problem/create')">新题目</n-button>
+    <n-button @click="router.push('/admin/contest/create')">新比赛</n-button>
     <n-button @click="partyBegin1">来点薯条</n-button>
     <n-button @click="partyBegin2">做回自己</n-button>
   </n-space>

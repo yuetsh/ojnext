@@ -84,7 +84,7 @@ onMounted(getContestDetail)
 
 <template>
   <h2 class="title">
-    {{ $route.name === "admin contest create" ? "新建比赛" : "编辑比赛" }}
+    {{ route.name === "admin contest create" ? "新建比赛" : "编辑比赛" }}
   </h2>
   <n-form inline>
     <n-form-item label="标题">
