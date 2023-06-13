@@ -4,14 +4,14 @@ import { createPinia } from "pinia"
 import storage from "utils/storage"
 import { STORAGE_KEY } from "utils/constants"
 
-import { routes } from "./routes"
+import { ojs, admins } from "./routes"
 import App from "./App.vue"
 
 import { toggleLogin } from "./shared/composables/modal"
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: [routes],
+  routes: [ojs, admins],
 })
 
 router.beforeEach((to, from, next) => {
