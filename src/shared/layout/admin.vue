@@ -106,7 +106,7 @@ onMounted(async () => {
 
 <template>
   <n-layout has-sider position="absolute">
-    <n-layout-sider width="160" bordered :native-scrollbar="false">
+    <n-layout-sider width="140" bordered :native-scrollbar="false">
       <n-menu :options="options" :value="active" />
     </n-layout-sider>
     <n-layout-content content-style="padding: 16px; min-width: 600px">
