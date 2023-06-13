@@ -9,10 +9,6 @@ const router = useRouter()
 const userStore = useUserStore()
 const options: MenuOption[] = [
   {
-    label: () => h(RouterLink, { to: "/" }, { default: () => "返回 OJ" }),
-    key: "return to OJ",
-  },
-  {
     label: () => h(RouterLink, { to: "/admin" }, { default: () => "首页" }),
     key: "admin home",
   },
@@ -105,14 +101,19 @@ onMounted(async () => {
 </script>
 
 <template>
-  <n-layout has-sider position="absolute">
-    <n-layout-sider width="160" bordered :native-scrollbar="false">
+  <div class="admin">
+    <n-layout-sider width="160" bordered>
       <n-menu :options="options" :value="active" />
     </n-layout-sider>
     <n-layout-content content-style="padding: 16px; min-width: 600px">
       <router-view></router-view>
     </n-layout-content>
-  </n-layout>
+  </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.admin {
+  margin: -16px;
+  display: flex;
+}
+</style>

@@ -36,6 +36,7 @@ const menus = computed<MenuOption[]>(() => [
     label: () =>
       h(RouterLink, { to: "/learn/step-1" }, { default: () => "自学" }),
     key: "learn",
+    show: false,
   },
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "题库" }),

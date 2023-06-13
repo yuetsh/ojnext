@@ -113,6 +113,6 @@ function handleAll() {
 <style scoped>
 .inputArea {
   width: 200px;
-  height: calc(100vh - 108px);
+  height: 500px;
 }
 </style>

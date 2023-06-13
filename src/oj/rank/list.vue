@@ -50,7 +50,7 @@ const columns: DataTableColumn<Rank>[] = [
         () => row.user.username
       ),
   },
-  { title: "骚话", key: "mood", minWidth: 200 },
+  { title: "自我介绍", key: "mood", minWidth: 200 },
   { title: "已解决", key: "accepted_number", width: 100 },
   { title: "提交数", key: "submission_number", width: 100 },
   {

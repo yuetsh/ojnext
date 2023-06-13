@@ -127,7 +127,7 @@ const columns = computed(() => {
         ),
     },
     {
-      title: "编号",
+      title: "提交编号",
       key: "id",
       minWidth: 160,
       render: (row) => {

@@ -11,7 +11,7 @@ import { toggleLogin } from "./shared/composables/modal"
 
 const router = createRouter({
   history: createWebHistory(),
-  routes,
+  routes: [routes],
 })
 
 router.beforeEach((to, from, next) => {
