@@ -87,7 +87,7 @@ function type(status: ProblemStatus) {
 </script>
 
 <template>
-  <div v-if="problem">
+  <div v-if="problem" class="problemContent">
     <n-alert
       class="success"
       v-if="problem.my_status === 0"
@@ -160,27 +160,95 @@ function type(status: ProblemStatus) {
   </div>
 </template>
 
-<style scoped>
-.problemTitle {
+<style>
+.problemContent .problemTitle {
   margin: 0;
 }
 
-.title {
+.problemContent .title {
   font-size: 16px;
   margin: 12px 0;
 }
 
-.content {
+.problemContent .content {
   font-size: 16px;
   line-height: 2;
 }
 
-.testcase {
+.problemContent .testcase {
   font-size: 14px;
   white-space: pre;
 }
 
-.success {
+.problemContent .success {
   margin-bottom: 8px;
+}
+
+.problemContent > .content > blockquote {
+  border-left: 3px solid #bbbec4;
+  padding-left: 10px;
+  margin: 10px 0;
+  color: #7b7b7b;
+}
+
+.problemContent > .content > pre {
+  width: 100%;
+  background-color: rgb(250, 250, 252);
+  border: 1px solid rgb(239, 239, 245);
+  word-break: break-word;
+  box-sizing: border-box;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.__layout-dark .problemContent > .content > pre {
+  background-color: rgb(24, 24, 28);
+  border-color: rgba(255, 255, 255, 0.09);
+}
+
+.problemContent > .content > table {
+  width: 100%;
+  border-spacing: 0;
+  border: 1px solid rgba(239, 239, 245, 1);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.problemContent > .content > table th {
+  background-color: rgba(250, 250, 252, 1);
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.__layout-dark .problemContent > .content > table th {
+  background-color: rgba(38, 38, 42, 1);
+}
+
+.problemContent > .content > table td {
+  padding: 8px;
+}
+
+.problemContent > .content > table td,
+.problemContent > .content > table th {
+  border-right: 1px solid rgba(239, 239, 245, 1);
+  border-bottom: 1px solid rgba(239, 239, 245, 1);
+}
+
+.problemContent > .content > table th:last-child,
+.problemContent > .content > table td:last-child {
+  border-right: 0px solid rgba(239, 239, 245, 1);
+}
+
+.problemContent > .content > table tr:last-child td {
+  border-bottom: 0px solid rgba(239, 239, 245, 1);
+}
+
+.problemContent > .content > p > code {
+  font-size: 90%;
+  padding: 2px 5px;
+  margin: 0px 4px;
+  background-color: rgba(27, 31, 35, 0.05);
+  border-radius: 3px;
+  line-height: 1.5;
 }
 </style>
