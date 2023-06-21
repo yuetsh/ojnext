@@ -115,7 +115,7 @@ function type(status: ProblemStatus) {
 
     <div v-for="(sample, index) of samples" :key="index">
       <n-space align="center">
-        <p class="title" :style="style">测试用例 {{ index + 1 }}</p>
+        <p class="title" :style="style">测试样例 {{ index + 1 }}</p>
         <n-button
           size="small"
           :type="type(sample.status)"
