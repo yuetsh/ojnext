@@ -5,6 +5,7 @@ import { isDark } from "./shared/composables/dark"
 import hljs from "highlight.js/lib/core"
 import c from "highlight.js/lib/languages/c"
 import python from "highlight.js/lib/languages/python"
+import "./index.css"
 
 const theme = computed(() => (isDark.value ? darkTheme : null))
 

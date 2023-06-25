@@ -136,7 +136,7 @@ function rowProps(row: Contest) {
         <n-form-item>
           <n-space>
             <n-button @click="search(query.keyword)">搜索</n-button>
-            <n-button @click="clear">重置</n-button>
+            <n-button @click="clear" quaternary>重置</n-button>
           </n-space>
         </n-form-item>
       </n-form>

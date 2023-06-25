@@ -166,7 +166,7 @@ function type(status: ProblemStatus) {
 }
 
 .problemContent .title {
-  font-size: 16px;
+  font-size: 20px;
   margin: 12px 0;
 }
 

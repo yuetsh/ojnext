@@ -184,10 +184,10 @@ function rowProps(row: ProblemFiltered) {
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item>
-          <n-space>
+          <n-space align="center">
             <n-button @click="search(query.keyword)">搜索</n-button>
-            <n-button @click="clear">重置</n-button>
-            <n-button @click="getRandom">随机一题</n-button>
+            <n-button @click="clear" quaternary>重置</n-button>
+            <n-button @click="getRandom" quaternary>试试手气</n-button>
           </n-space>
         </n-form-item>
       </n-form>
