@@ -10,7 +10,7 @@ import Icons from "unplugin-icons/vite"
 import Markdown from "vite-plugin-vue-markdown"
 import Shiki from "markdown-it-shiki"
 
-const url = "https://oj.hyyz.izhai.net"
+const url = "https://ojtest.hyyz.izhai.net"
 const proxyConfig = {
   target: url,
   changeOrigin: true,

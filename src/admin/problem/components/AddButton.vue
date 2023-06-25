@@ -24,6 +24,8 @@ async function addProblem() {
   } catch (err: any) {
     if (err.data === "Duplicate display id in this contest") {
       message.error("显示编号重复了，请重新写一个")
+    } else if (err.data === "Contest has ended") {
+      message.error("这场比赛已经结束了，不能添加题目")
     } else {
       message.error(err.data)
     }

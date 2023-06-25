@@ -362,7 +362,7 @@ watch([fromExistingTags, newTags], (tags) => {
   <TextEditor
     v-if="ready"
     v-model:value="problem.description"
-    title="题目本体"
+    title="题目的描述"
     :min-height="300"
   />
   <TextEditor
