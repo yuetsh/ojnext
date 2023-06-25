@@ -35,7 +35,7 @@ const columns: DataTableColumn<User>[] = [
     title: "创建时间",
     key: "create_time",
     width: 200,
-    render: (row) => parseTime(row.create_time, "YYYY-MM-DD hh:mm:ss"),
+    render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
   },
   {
     title: "上次登录",
@@ -43,7 +43,7 @@ const columns: DataTableColumn<User>[] = [
     width: 200,
     render: (row) =>
       row.last_login
-        ? parseTime(row.last_login, "YYYY-MM-DD hh:mm:ss")
+        ? parseTime(row.last_login, "YYYY-MM-DD HH:mm:ss")
         : "从未登录",
   },
   { title: "真名", key: "real_name", width: 100 },

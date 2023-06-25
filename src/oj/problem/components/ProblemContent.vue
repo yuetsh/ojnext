@@ -184,6 +184,10 @@ function type(status: ProblemStatus) {
   margin-bottom: 8px;
 }
 
+.problemContent > .content > p {
+  margin: 0;
+}
+
 .problemContent > .content > blockquote {
   border-left: 3px solid #bbbec4;
   padding-left: 10px;
@@ -250,5 +254,9 @@ function type(status: ProblemStatus) {
   background-color: rgba(27, 31, 35, 0.05);
   border-radius: 3px;
   line-height: 1.5;
+}
+
+.problemContent > .content a {
+  color: #18a058;
 }
 </style>

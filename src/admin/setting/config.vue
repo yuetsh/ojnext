@@ -79,13 +79,13 @@ const serverColumns: DataTableColumn<Server>[] = [
   {
     title: "上一次心跳",
     key: "last_heartbeat",
-    render: (row) => parseTime(row.last_heartbeat, "YYYY-MM-DD hh:mm:ss"),
+    render: (row) => parseTime(row.last_heartbeat, "YYYY-MM-DD HH:mm:ss"),
     width: 120,
   },
   {
     title: "创建时间",
     key: "create_time",
-    render: (row) => parseTime(row.create_time, "YYYY-MM-DD hh:mm:ss"),
+    render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
     width: 120,
   },
 ]

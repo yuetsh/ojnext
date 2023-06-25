@@ -45,7 +45,7 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
     title: "创建时间",
     key: "create_time",
     width: 200,
-    render: (row) => parseTime(row.create_time, "YYYY-MM-DD hh:mm:ss"),
+    render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
   },
   {
     title: "可见",

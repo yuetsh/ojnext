@@ -269,10 +269,12 @@ function getTemplate() {
 }
 
 async function submit() {
-  const notComplete = detectProblemCompletion()
-  if (notComplete) return
+  const notCompleted = detectProblemCompletion()
+  if (notCompleted) return
   getTemplate()
   problem.tags = [...newTags.value, ...fromExistingTags.value]
+  // 因为编辑器的问题，删掉空白的 hint
+  if ((problem.hint = "<p><br></p>")) problem.hint = ""
   const api = {
     "admin problem create": createProblem,
     "admin problem edit": editProblem,

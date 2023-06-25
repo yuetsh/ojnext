@@ -4,5 +4,5 @@ import { Code } from "~/utils/types"
 
 export const code = reactive<Code>({
   value: "",
-  language: storage.get(STORAGE_KEY.LANGUAGE) || "C",
+  language: storage.get(STORAGE_KEY.LANGUAGE) || "Python3",
 })

@@ -25,11 +25,11 @@ const contestStore = useContestStore()
     <n-descriptions bordered label-placement="left" :column="1">
       <n-descriptions-item label="开始时间">
         {{
-          parseTime(contestStore.contest.start_time, "YYYY年M月D日 hh:mm:ss")
+          parseTime(contestStore.contest.start_time, "YYYY年M月D日 HH:mm:ss")
         }}
       </n-descriptions-item>
       <n-descriptions-item label="结束时间">
-        {{ parseTime(contestStore.contest.end_time, "YYYY年M月D日 hh:mm:ss") }}
+        {{ parseTime(contestStore.contest.end_time, "YYYY年M月D日 HH:mm:ss") }}
       </n-descriptions-item>
       <n-descriptions-item label="比赛类型">
         <ContestType :contest="contestStore.contest" />
