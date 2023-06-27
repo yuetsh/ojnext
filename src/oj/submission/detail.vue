@@ -86,5 +86,6 @@ onMounted(init)
 <style scoped>
 .code {
   font-size: 20px;
+  overflow: auto;
 }
 </style>
