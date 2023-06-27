@@ -204,6 +204,9 @@ function type(status: ProblemStatus) {
   box-sizing: border-box;
   transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.problemContent > .content > pre > code {
   font-family: "Consolas";
 }
 
