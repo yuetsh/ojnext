@@ -13,12 +13,12 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: 20
+          node-version: "current"
           cache: "npm"
       - run: npm install
       - run: npm run build
 
-      - uses: easingthemes/ssh-deploy@v2.2.11
+      - uses: easingthemes/ssh-deploy@main
         env:
           SSH_PRIVATE_KEY: ${{ secrets.KEY }}
           REMOTE_HOST: ${{ secrets.HOST }}
