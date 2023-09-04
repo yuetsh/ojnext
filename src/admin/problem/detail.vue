@@ -273,8 +273,6 @@ async function submit() {
   if (notCompleted) return
   getTemplate()
   problem.tags = [...newTags.value, ...fromExistingTags.value]
-  // 因为编辑器的问题，删掉空白的 hint
-  if ((problem.hint = "<p><br></p>")) problem.hint = ""
   const api = {
     "admin problem create": createProblem,
     "admin problem edit": editProblem,
@@ -405,7 +403,11 @@ watch([fromExistingTags, newTags], (tags) => {
   <n-button class="addSamples box" tertiary type="primary" @click="addSample">
     添加用例
   </n-button>
-  <TextEditor v-if="ready" v-model:value="problem.hint" title="提示" />
+  <n-form>
+    <n-form-item label="提示">
+      <n-input v-model:value="problem.hint"/>
+    </n-form-item>
+  </n-form>
   <n-form>
     <n-form-item label="题目的来源">
       <n-input
