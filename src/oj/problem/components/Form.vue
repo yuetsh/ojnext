@@ -5,7 +5,7 @@ import { problem } from "oj/composables/problem"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
 import Submit from "./Submit.vue"
-import TestCat from "./TestCat.vue"
+import TestCat from "./TestCat2.vue"
 import storage from "~/utils/storage"
 import { STORAGE_KEY } from "utils/constants"
 import { LANGUAGE } from "~/utils/types"
@@ -72,9 +72,6 @@ function changeLanguage(v: LANGUAGE) {
       :options="options"
     />
     <Submit />
-    <n-button :size="isDesktop ? 'medium' : 'small'" @click="reset">
-      重置
-    </n-button>
     <n-dropdown
       v-if="isMobile"
       trigger="click"
@@ -89,8 +86,15 @@ function changeLanguage(v: LANGUAGE) {
         </template>
       </n-button>
     </n-dropdown>
-    <TestCat v-if="isDesktop" />
+    <TestCat
+      v-if="isDesktop"
+      :lang="code.language"
+      :input="problem?.samples[0].input"
+    />
     <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
+    <n-button :size="isDesktop ? 'medium' : 'small'" @click="reset">
+      重置
+    </n-button>
     <n-button
       v-if="isDesktop && userStore.isSuperAdmin"
       type="warning"
