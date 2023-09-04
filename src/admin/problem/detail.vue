@@ -405,7 +405,7 @@ watch([fromExistingTags, newTags], (tags) => {
   </n-button>
   <n-form>
     <n-form-item label="提示">
-      <n-input v-model:value="problem.hint"/>
+      <n-input type="textarea" v-model:value="problem.hint" />
     </n-form-item>
   </n-form>
   <n-form>
