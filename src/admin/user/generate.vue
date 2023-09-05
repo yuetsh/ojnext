@@ -1,8 +1,6 @@
 <script setup lang="ts">
 import { importUsers } from "../api"
 
-const possibleChars = "0123456789"
-
 const message = useMessage()
 const prefix = ref("")
 const rawInput = ref("")
@@ -45,10 +43,8 @@ function generateUsers() {
   users.value = inputs.map((u, i) => {
     const username = myClass + u
     let password = ""
-    for (let i = 0; i < 6; i++) {
-      password += possibleChars.charAt(
-        Math.floor(Math.random() * possibleChars.length)
-      )
+    for (var i = 0; i < 6; i++) {
+      password += parseInt(Math.random() * 10 + "")
     }
     const realName = u
     const email = `${myClass}.${i + 1}@example.com`
