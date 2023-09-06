@@ -43,7 +43,7 @@ function generateUsers() {
   users.value = inputs.map((u, i) => {
     const username = myClass + u
     let password = ""
-    for (var i = 0; i < 6; i++) {
+    for (let j = 0; j < 6; j++) {
       password += parseInt(Math.random() * 10 + "")
     }
     const realName = u
