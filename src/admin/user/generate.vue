@@ -44,7 +44,7 @@ function generateUsers() {
     const username = myClass + u
     let password = ""
     for (let j = 0; j < 6; j++) {
-      password += parseInt(Math.random() * 10 + "")
+      password += "123456789".charAt(Math.floor(Math.random() * 9))
     }
     const realName = u
     const email = `${myClass}.${i + 1}@example.com`
