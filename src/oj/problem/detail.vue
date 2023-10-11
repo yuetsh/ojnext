@@ -1,17 +1,19 @@
 <script setup lang="ts">
 import { getProblem } from "oj/api"
 import { isDesktop } from "~/shared/composables/breakpoints"
+import { screenMode } from "~/shared/composables/switchScreen"
 import { problem } from "../composables/problem"
+import { ScreenMode } from "utils/constants"
 
 const Editor = defineAsyncComponent(() => import("./components/Editor.vue"))
 const ProblemContent = defineAsyncComponent(
-  () => import("./components/ProblemContent.vue")
+  () => import("./components/ProblemContent.vue"),
 )
 const ProblemInfo = defineAsyncComponent(
-  () => import("./components/ProblemInfo.vue")
+  () => import("./components/ProblemInfo.vue"),
 )
 const ProblemSubmission = defineAsyncComponent(
-  () => import("./components/ProblemSubmission.vue")
+  () => import("./components/ProblemSubmission.vue"),
 )
 
 interface Props {
@@ -44,8 +46,17 @@ onBeforeUnmount(() => {
 </script>
 
 <template>
-  <n-grid v-if="problem" x-gap="16" :cols="2">
-    <n-gi :span="isDesktop ? 1 : 2">
+  <n-grid
+    v-if="problem"
+    x-gap="16"
+    :cols="screenMode === ScreenMode.both ? 2 : 1"
+  >
+    <n-gi
+      :span="isDesktop ? 1 : 2"
+      v-show="
+        screenMode === ScreenMode.both || screenMode === ScreenMode.problem
+      "
+    >
       <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
         <n-tabs default-value="content" type="segment">
           <n-tab-pane name="content" tab="题目描述">
@@ -74,7 +85,10 @@ onBeforeUnmount(() => {
         </n-tab-pane>
       </n-tabs>
     </n-gi>
-    <n-gi v-if="isDesktop">
+    <n-gi
+      v-if="isDesktop"
+      v-show="screenMode === ScreenMode.both || screenMode === ScreenMode.code"
+    >
       <Editor />
     </n-gi>
   </n-grid>

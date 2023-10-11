@@ -267,3 +267,9 @@ export const CODE_TEMPLATES = {
   JavaScript: blankTemplate,
   Golang: blankTemplate,
 }
+
+export enum ScreenMode {
+  problem,
+  code,
+  both,
+}

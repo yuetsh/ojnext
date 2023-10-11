@@ -6,6 +6,7 @@ import { isDark, toggleDark } from "~/shared/composables/dark"
 import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
 import { RouterLink } from "vue-router"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
+import { screenSwitchLabel, switchScreenMode } from "~/shared/composables/switchScreen"
 import { code } from "~/shared/composables/learn"
 import { useLearnStore } from "~/learn/store"
 
@@ -95,6 +96,8 @@ function run() {
 function goHome() {
   router.push("/")
 }
+
+function switchScreen() {}
 </script>
 
 <template>
@@ -131,6 +134,15 @@ function goHome() {
       <n-dropdown v-if="isMobile" :options="menus" trigger="click">
         <n-button>菜单</n-button>
       </n-dropdown>
+      <n-button
+        v-if="
+          isDesktop &&
+          (route.name === 'problem' || route.name === 'contest problem')
+        "
+        @click="switchScreenMode"
+      >
+        {{ screenSwitchLabel }}
+      </n-button>
       <div v-if="userStore.isFinished">
         <n-dropdown
           v-if="userStore.isAuthed"
