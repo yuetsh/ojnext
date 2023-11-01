@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { useUserStore } from "~/shared/store/user"
+import { NSpace, NTag } from "naive-ui"
 import { filterEmptyValue, getTagColor } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
 import { getProblemList, getRandomProblemID } from "oj/api"
-import Pagination from "~/shared/Pagination.vue"
-import { NSpace, NTag } from "naive-ui"
 import ProblemStatus from "./components/ProblemStatus.vue"
+import { useUserStore } from "~/shared/store/user"
 import { getProblemTagList } from "~/shared/api"
+import Pagination from "~/shared/Pagination.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
 
 interface Tag {
@@ -69,7 +69,7 @@ async function listTags() {
   const res = await getProblemTagList()
   tags.value = res.data.map((r: Omit<Tag, "checked">) => ({
     ...r,
-    checked: false,
+    checked: query.tag === r.name,
   }))
 }
 
@@ -114,6 +114,16 @@ watch(
   () => {
     query.page = 1
     routerPush()
+  },
+)
+
+watch(
+  () => query.tag,
+  () => {
+    tags.value = tags.value.map((r: Omit<Tag, "checked">) => ({
+      ...r,
+      checked: query.tag === r.name,
+    }))
   },
 )
 
@@ -186,8 +196,8 @@ function rowProps(row: ProblemFiltered) {
             :options="difficultyOptions"
           />
         </n-form-item>
-        <n-form-item label="搜索">
-          <n-input clearable @change="search" />
+        <n-form-item>
+          <n-input clearable @change="search" placeholder="标题或序号" />
         </n-form-item>
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
@@ -199,20 +209,28 @@ function rowProps(row: ProblemFiltered) {
           </n-space>
         </n-form-item>
       </n-form>
-      <n-button @click="toggleShowTag()" quaternary>标签</n-button>
+      <n-button @click="toggleShowTag()" quaternary icon-placement="right">
+        <template #icon>
+          <n-icon>
+            <i-ep-arrow-down v-if="showTag" />
+            <i-ep-arrow-up v-else />
+          </n-icon>
+        </template>
+        标签
+      </n-button>
     </n-space>
     <n-collapse-transition :show="showTag">
       <n-space>
-        <n-button
-          @click="chooseTag(tag)"
+        <n-tag
           v-for="tag in tags"
+          :closable="tag.checked"
+          @close="chooseTag(tag)"
+          @click="chooseTag(tag)"
           :key="tag.id"
-          size="small"
-          secondary
           :type="tag.checked ? 'success' : 'default'"
         >
           {{ tag.name }}
-        </n-button>
+        </n-tag>
       </n-space>
     </n-collapse-transition>
     <n-data-table

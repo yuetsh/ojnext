@@ -7,7 +7,10 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    IEpArrowD: typeof import('~icons/ep/arrow-d')['default']
+    IEpArrowDown: typeof import('~icons/ep/arrow-down')['default']
     IEpArrowRightBold: typeof import('~icons/ep/arrow-right-bold')['default']
+    IEpArrowUp: typeof import('~icons/ep/arrow-up')['default']
     IEpBell: typeof import('~icons/ep/bell')['default']
     IEpCaretRight: typeof import('~icons/ep/caret-right')['default']
     IEpLoading: typeof import('~icons/ep/loading')['default']

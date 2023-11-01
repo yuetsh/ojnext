@@ -27,6 +27,18 @@ const props = withDefaults(defineProps<Props>(), {
 
 const errMsg = ref("无数据")
 
+const onlyDetail = computed(
+  () =>
+    screenMode.value === ScreenMode.both ||
+    screenMode.value === ScreenMode.problem,
+)
+
+const onlyCode = computed(
+  () =>
+    screenMode.value === ScreenMode.both ||
+    screenMode.value === ScreenMode.code,
+)
+
 async function init() {
   try {
     const res = await getProblem(props.problemID, props.contestID)
@@ -51,12 +63,7 @@ onBeforeUnmount(() => {
     x-gap="16"
     :cols="screenMode === ScreenMode.both ? 2 : 1"
   >
-    <n-gi
-      :span="isDesktop ? 1 : 2"
-      v-show="
-        screenMode === ScreenMode.both || screenMode === ScreenMode.problem
-      "
-    >
+    <n-gi :span="isDesktop ? 1 : 2" v-show="onlyDetail">
       <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
         <n-tabs default-value="content" type="segment">
           <n-tab-pane name="content" tab="题目描述">
@@ -85,14 +92,9 @@ onBeforeUnmount(() => {
         </n-tab-pane>
       </n-tabs>
     </n-gi>
-    <n-gi
-      v-if="isDesktop"
-      v-show="screenMode === ScreenMode.both || screenMode === ScreenMode.code"
-    >
+    <n-gi v-if="isDesktop" v-show="onlyCode">
       <Editor />
     </n-gi>
   </n-grid>
   <n-empty v-else :description="errMsg"></n-empty>
 </template>
-
-<style scoped></style>
