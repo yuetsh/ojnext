@@ -189,7 +189,7 @@ function rowProps(row: ProblemFiltered) {
   <n-space vertical size="large">
     <n-space>
       <n-form :show-feedback="false" inline label-placement="left">
-        <n-form-item label="难度">
+        <n-form-item label="题目难度">
           <n-select
             class="select"
             v-model:value="query.difficulty"

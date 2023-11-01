@@ -248,8 +248,8 @@ const columns = computed(() => {
         </n-form-item>
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
-        <n-form-item label="搜索用户">
-          <n-input clearable @change="search" />
+        <n-form-item>
+          <n-input clearable @change="search" placeholder="用户" />
         </n-form-item>
         <n-form-item>
           <n-button @click="search(query.username)">搜索</n-button>

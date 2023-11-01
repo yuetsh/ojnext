@@ -128,8 +128,8 @@ function rowProps(row: Contest) {
             v-model:value="query.status"
           />
         </n-form-item>
-        <n-form-item label="搜索">
-          <n-input clearable @change="search" />
+        <n-form-item>
+          <n-input clearable @change="search" placeholder="比赛标题" />
         </n-form-item>
       </n-form>
       <n-form :show-feedback="false" label-placement="left" inline>
