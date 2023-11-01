@@ -11,13 +11,13 @@ export const useUserStore = defineStore("user", () => {
   const isAdminRole = computed(
     () =>
       user.value?.admin_type === USER_TYPE.ADMIN ||
-      user.value?.admin_type === USER_TYPE.SUPER_ADMIN
+      user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
   )
   const isSuperAdmin = computed(
-    () => user.value?.admin_type === USER_TYPE.SUPER_ADMIN
+    () => user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
   )
   const hasProblemPermission = computed(
-    () => user.value?.problem_permission !== PROBLEM_PERMISSION.NONE
+    () => user.value?.problem_permission !== PROBLEM_PERMISSION.NONE,
   )
 
   async function getMyProfile() {

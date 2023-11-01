@@ -39,7 +39,7 @@ watch(
   () => props.modelValue,
   (v) => {
     code.value = v
-  }
+  },
 )
 const emit = defineEmits(["update:modelValue"])
 

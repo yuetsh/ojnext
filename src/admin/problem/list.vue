@@ -20,10 +20,10 @@ const title = computed(
     ({
       "admin problem list": "题目列表",
       "admin contest problem list": "比赛题目列表",
-    }[<string>route.name])
+    })[<string>route.name],
 )
 const isContestProblemList = computed(
-  () => route.name === "admin contest problem list"
+  () => route.name === "admin contest problem list",
 )
 
 const [show, toggleShow] = useToggle()
@@ -77,7 +77,7 @@ async function listProblems() {
     offset,
     query.limit,
     query.keyword,
-    props.contestID
+    props.contestID,
   )
   total.value = res.total
   problems.value = res.results

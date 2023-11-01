@@ -33,7 +33,7 @@ const title = computed(
       "admin problem edit": "编辑题目",
       "admin contest problem create": "新建比赛题目",
       "admin contest problem edit": "编辑比赛题目",
-    }[<string>route.name])
+    })[<string>route.name],
 )
 const problem = reactive<BlankProblem>({
   _id: "",
@@ -91,7 +91,7 @@ const languageOptions = [
 ]
 
 const tagOptions = computed(() =>
-  existingTags.value.map((tag) => ({ label: tag.name, value: tag.name }))
+  existingTags.value.map((tag) => ({ label: tag.name, value: tag.name })),
 )
 
 async function getProblemDetail() {
@@ -233,7 +233,7 @@ function detectProblemCompletion() {
   // 样例是空的
   else if (
     problem.samples.some(
-      (sample) => sample.output === "" || sample.input === ""
+      (sample) => sample.output === "" || sample.input === "",
     )
   ) {
     message.error("空样例没有删干净")

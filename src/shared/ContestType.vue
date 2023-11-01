@@ -10,7 +10,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const isPrivate = computed(
-  () => props.contest.contest_type === ContestType.private
+  () => props.contest.contest_type === ContestType.private,
 )
 </script>
 

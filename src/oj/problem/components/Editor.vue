@@ -13,7 +13,7 @@ const contestID = !!route.params.contestID ? route.params.contestID : null
 
 const storageKey = computed(
   () =>
-    `problem_${problem.value!._id}_contest_${contestID}_lang_${code.language}`
+    `problem_${problem.value!._id}_contest_${contestID}_lang_${code.language}`,
 )
 
 onMounted(() => {
@@ -26,7 +26,7 @@ onMounted(() => {
 })
 
 const editorHeight = computed(() =>
-  isDesktop.value ? "calc(100vh - 133px)" : "calc(100vh - 172px)"
+  isDesktop.value ? "calc(100vh - 133px)" : "calc(100vh - 172px)",
 )
 
 function changeCode(v: string) {

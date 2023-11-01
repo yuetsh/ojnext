@@ -48,11 +48,11 @@ export const useContestStore = defineStore("contest", () => {
     () =>
       userStore.isSuperAdmin ||
       (userStore.isAuthed &&
-        contest.value?.created_by.id === userStore.user!.id)
+        contest.value?.created_by.id === userStore.user!.id),
   )
 
   const isPrivate = computed(
-    () => contest.value!.contest_type === ContestType.private
+    () => contest.value!.contest_type === ContestType.private,
   )
 
   async function init(contestID: string) {

@@ -28,7 +28,7 @@ const testcaseColumns: DataTableColumn<Testcase>[] = [
       h(
         NButton,
         { size: "small", onClick: () => deleteTestcase(row.id) },
-        () => "删除"
+        () => "删除",
       ),
   },
 ]
@@ -48,7 +48,7 @@ const serverColumns: DataTableColumn<Server>[] = [
       h(
         NTag,
         { type: statusMap[row.status].color, size: "small" },
-        () => statusMap[row.status].label
+        () => statusMap[row.status].label,
       ),
   },
   {
@@ -63,7 +63,7 @@ const serverColumns: DataTableColumn<Server>[] = [
           disabled: row.status === "normal",
           onClick: () => delJudgeServer(row.hostname),
         },
-        () => "删除"
+        () => "删除",
       ),
   },
   { title: "主机", key: "hostname", width: 130 },
@@ -94,7 +94,7 @@ const testcases = ref<Testcase[]>([])
 const token = ref("")
 const servers = ref<Server[]>([])
 const abnormalServers = computed(() =>
-  servers.value.filter((item) => item.status === "abnormal")
+  servers.value.filter((item) => item.status === "abnormal"),
 )
 
 const websiteConfig = reactive({
@@ -144,7 +144,7 @@ async function delJudgeServer(hostname: string) {
 
 async function deleteAbnormalServers() {
   const dels = abnormalServers.value.map((item) =>
-    deleteJudgeServer(item.hostname)
+    deleteJudgeServer(item.hostname),
   )
   await Promise.all(dels)
   message.success("删除成功")

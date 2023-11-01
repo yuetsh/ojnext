@@ -24,7 +24,7 @@ const passwordFormVisible = computed(
   () =>
     contestStore.isPrivate &&
     !contestStore.access &&
-    !contestStore.isContestAdmin
+    !contestStore.isContestAdmin,
 )
 </script>
 

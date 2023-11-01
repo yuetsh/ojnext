@@ -36,7 +36,7 @@ export function getWebsiteConfig() {
 export async function getProblemList(
   offset = 0,
   limit = 10,
-  searchParams: any = {}
+  searchParams: any = {},
 ) {
   let params: any = {
     paging: true,
@@ -129,7 +129,7 @@ export async function getContestProblems(contestID: string) {
 
 export function getContestRank(
   contestID: string,
-  query: { limit: number; offset: number; force_refresh: "1" | "0" }
+  query: { limit: number; offset: number; force_refresh: "1" | "0" },
 ) {
   return http.get("contest_rank", {
     params: {

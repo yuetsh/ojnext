@@ -7,6 +7,7 @@ import Pagination from "~/shared/Pagination.vue"
 import { NSpace, NTag } from "naive-ui"
 import ProblemStatus from "./components/ProblemStatus.vue"
 import { getProblemTagList } from "~/shared/api"
+import { isDesktop } from "~/shared/composables/breakpoints"
 
 interface Tag {
   id: number
@@ -36,6 +37,7 @@ const userStore = useUserStore()
 const problems = ref<ProblemFiltered[]>([])
 const total = ref(0)
 const tags = ref<Tag[]>([])
+const [showTag, toggleShowTag] = useToggle(isDesktop.value)
 
 const query = reactive<Query>({
   keyword: <string>route.query.keyword ?? "",
@@ -112,14 +114,14 @@ watch(
   () => {
     query.page = 1
     routerPush()
-  }
+  },
 )
 
 watch(
   () => route.path === "/" && route.query,
   (newVal) => {
     if (newVal) listProblems()
-  }
+  },
 )
 
 // TODO: 这里会在登录时候执行两次，有BUG
@@ -130,7 +132,7 @@ onMounted(() => {
   listTags()
 })
 
-const columns: DataTableColumn<ProblemFiltered>[] = [
+const baseColumns: DataTableColumn<ProblemFiltered>[] = [
   {
     title: "状态",
     key: "status",
@@ -156,6 +158,12 @@ const columns: DataTableColumn<ProblemFiltered>[] = [
   { title: "提交数", key: "submission", width: 100 },
   { title: "通过率", key: "rate", width: 100 },
 ]
+
+const columns = computed(() =>
+  userStore.isAuthed
+    ? baseColumns
+    : baseColumns.filter((c: any) => c.key !== "status"),
+)
 
 function rowProps(row: ProblemFiltered) {
   return {
@@ -191,20 +199,22 @@ function rowProps(row: ProblemFiltered) {
           </n-space>
         </n-form-item>
       </n-form>
+      <n-button @click="toggleShowTag()" quaternary>标签</n-button>
     </n-space>
-    <n-space>
-      <div class="tagTitle">标签</div>
-      <n-button
-        @click="chooseTag(tag)"
-        v-for="tag in tags"
-        :key="tag.id"
-        size="small"
-        secondary
-        :type="tag.checked ? 'success' : 'default'"
-      >
-        {{ tag.name }}
-      </n-button>
-    </n-space>
+    <n-collapse-transition :show="showTag">
+      <n-space>
+        <n-button
+          @click="chooseTag(tag)"
+          v-for="tag in tags"
+          :key="tag.id"
+          size="small"
+          secondary
+          :type="tag.checked ? 'success' : 'default'"
+        >
+          {{ tag.name }}
+        </n-button>
+      </n-space>
+    </n-collapse-transition>
     <n-data-table
       striped
       :data="problems"

@@ -39,17 +39,21 @@ const { start: fetchSubmission } = useTimeoutFn(
     }
   },
   2000,
-  { immediate: false }
+  { immediate: false },
 )
 
 const judging = computed(
   () =>
-    !!(submission.value && submission.value.result === SubmissionStatus.judging)
+    !!(
+      submission.value && submission.value.result === SubmissionStatus.judging
+    ),
 )
 
 const pending = computed(
   () =>
-    !!(submission.value && submission.value.result === SubmissionStatus.pending)
+    !!(
+      submission.value && submission.value.result === SubmissionStatus.pending
+    ),
 )
 
 const submitting = computed(
@@ -57,7 +61,7 @@ const submitting = computed(
     !!(
       submission.value &&
       submission.value.result === SubmissionStatus.submitting
-    )
+    ),
 )
 
 const submitDisabled = computed(() => {
@@ -186,7 +190,7 @@ watch(
         size: party.variation.skew(2, 0.3),
       })
     }
-  }
+  },
 )
 </script>
 

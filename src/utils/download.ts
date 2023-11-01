@@ -12,7 +12,7 @@ async function download(url: string) {
   const headers = res.headers
   const link = document.createElement("a")
   link.href = window.URL.createObjectURL(
-    new window.Blob([res.data], { type: headers["content-type"] })
+    new window.Blob([res.data], { type: headers["content-type"] }),
   )
   link.download = (headers["content-disposition"] || "").split("filename=")[1]
   document.body.appendChild(link)

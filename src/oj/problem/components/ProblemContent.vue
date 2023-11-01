@@ -23,7 +23,7 @@ const samples = ref<Sample[]>(
     msg: "",
     status: "not_test",
     loading: false,
-  }))
+  })),
 )
 
 async function test(sample: Sample, index: number) {
@@ -202,7 +202,8 @@ function type(status: ProblemStatus) {
   border: 1px solid rgb(239, 239, 245);
   word-break: break-word;
   box-sizing: border-box;
-  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+  transition:
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -219,13 +220,15 @@ function type(status: ProblemStatus) {
   width: 100%;
   border-spacing: 0;
   border: 1px solid rgba(239, 239, 245, 1);
-  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+  transition:
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .problemContent > .content > table th {
   background-color: rgba(250, 250, 252, 1);
-  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+  transition:
+    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 

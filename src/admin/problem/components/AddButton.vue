@@ -18,7 +18,7 @@ async function addProblem() {
     await addProblemForContest(
       props.contestID,
       props.problemID,
-      displayID.value
+      displayID.value,
     )
     emit("added")
   } catch (err: any) {

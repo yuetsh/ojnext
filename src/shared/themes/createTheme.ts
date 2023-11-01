@@ -100,7 +100,7 @@ export const createTheme = ({
     },
     {
       dark: variant === "dark",
-    }
+    },
   )
 
   const highlightStyle = HighlightStyle.define(styles)

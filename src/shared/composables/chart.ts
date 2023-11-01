@@ -22,7 +22,7 @@ export function loadChart() {
     Colors,
     Title,
     Tooltip,
-    Legend
+    Legend,
   )
   isLoaded.value = true
 }

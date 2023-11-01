@@ -33,7 +33,7 @@ const { resume, pause } = useIntervalFn(
   10000,
   {
     immediate: false,
-  }
+  },
 )
 
 const query = reactive({
@@ -64,7 +64,7 @@ const columns = ref<DataTableColumn<ContestRank>[]>([
           type: "info",
           onClick: () => router.push("/user?name=" + row.user.username),
         },
-        () => row.user.username
+        () => row.user.username,
       ),
   },
   {
@@ -119,7 +119,7 @@ async function addColumns() {
                 window.open(data.href, "_blank")
               },
             },
-            () => problem.title
+            () => problem.title,
           ),
         render: (row) => {
           if (row.submission_info[problem.id]) {
@@ -134,7 +134,7 @@ async function addColumns() {
                 h(
                   NIcon,
                   { size: 16, style: "transform: translate(-2px, 3px)" },
-                  () => h(GoldMedal)
+                  () => h(GoldMedal),
                 ),
                 secondsToDuration(status.ac_time),
               ]
@@ -143,7 +143,7 @@ async function addColumns() {
               errorNumber = h(
                 "p",
                 { style: "margin: 0" },
-                `(-${status.error_number})`
+                `(-${status.error_number})`,
               )
             }
             return h("div", [acTime, errorNumber])
@@ -182,7 +182,7 @@ watch(
   () => {
     query.page = 1
     listRanks()
-  }
+  },
 )
 watch(autoRefresh, (checked) => (checked ? resume() : pause()))
 

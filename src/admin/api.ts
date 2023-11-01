@@ -19,7 +19,7 @@ export async function getProblemList(
   limit = 10,
   keyword: string,
   contestID?: string,
-  ruleType?: "ACM" | "OI"
+  ruleType?: "ACM" | "OI",
 ) {
   const endpoint = !!contestID ? "admin/contest/problem" : "admin/problem"
   const res = await http.get(endpoint, {
@@ -143,7 +143,7 @@ export function getContest(id: string) {
 export function addProblemForContest(
   contestID: string,
   problemID: number,
-  displayID: string
+  displayID: string,
 ) {
   return http.post("admin/contest/add_problem_from_public", {
     contest_id: contestID,

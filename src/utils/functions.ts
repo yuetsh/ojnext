@@ -18,7 +18,7 @@ export function filterEmptyValue(object: any) {
 }
 
 export function getTagColor(
-  tag: "Low" | "Mid" | "High" | "简单" | "中等" | "困难"
+  tag: "Low" | "Mid" | "High" | "简单" | "中等" | "困难",
 ) {
   return <"success" | "info" | "error">{
     Low: "success",
@@ -39,7 +39,7 @@ export function parseTime(utc: Date | string, format = "YYYY年M月D日") {
 export function duration(
   start: Date | string,
   end: Date | string,
-  showSeconds = false
+  showSeconds = false,
 ): string {
   const duration = intervalToDuration({
     start: getTime(parseISO(start.toString())),
@@ -141,8 +141,8 @@ export function decode(bytes?: string) {
   const latin = atob(bytes ?? "")
   return new TextDecoder("utf-8").decode(
     Uint8Array.from({ length: latin.length }, (_, index) =>
-      latin.charCodeAt(index)
-    )
+      latin.charCodeAt(index),
+    ),
   )
 }
 

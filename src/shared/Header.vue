@@ -6,7 +6,10 @@ import { isDark, toggleDark } from "~/shared/composables/dark"
 import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
 import { RouterLink } from "vue-router"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
-import { screenSwitchLabel, switchScreenMode } from "~/shared/composables/switchScreen"
+import {
+  screenSwitchLabel,
+  switchScreenMode,
+} from "~/shared/composables/switchScreen"
 import { code } from "~/shared/composables/learn"
 import { useLearnStore } from "~/learn/store"
 

@@ -37,7 +37,7 @@ const columns: DataTableColumn<Contest>[] = [
       h(
         NTag,
         { type: CONTEST_STATUS[row.status]["type"] },
-        () => CONTEST_STATUS[row.status]["name"]
+        () => CONTEST_STATUS[row.status]["name"],
       ),
   },
   {
@@ -95,13 +95,13 @@ watch(
   () => {
     query.page = 1
     routerPush()
-  }
+  },
 )
 watch(
   () => route.name === "contests" && route.query,
   (newVal) => {
     if (newVal) listContests()
-  }
+  },
 )
 
 function rowProps(row: Contest) {

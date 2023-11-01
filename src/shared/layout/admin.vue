@@ -26,7 +26,7 @@ const options: MenuOption[] = [
       h(
         RouterLink,
         { to: "/admin/problem/list" },
-        { default: () => "题目列表" }
+        { default: () => "题目列表" },
       ),
     key: "admin problem list",
   },
@@ -35,7 +35,7 @@ const options: MenuOption[] = [
       h(
         RouterLink,
         { to: "/admin/problem/create" },
-        { default: () => "新建题目" }
+        { default: () => "新建题目" },
       ),
     key: "admin problem create",
   },
@@ -50,7 +50,7 @@ const options: MenuOption[] = [
       h(
         RouterLink,
         { to: "/admin/user/generate" },
-        { default: () => "批量生成" }
+        { default: () => "批量生成" },
       ),
     key: "admin user generate",
   },
@@ -60,7 +60,7 @@ const options: MenuOption[] = [
       h(
         RouterLink,
         { to: "/admin/contest/list" },
-        { default: () => "比赛列表" }
+        { default: () => "比赛列表" },
       ),
     key: "admin contest list",
   },
@@ -69,7 +69,7 @@ const options: MenuOption[] = [
       h(
         RouterLink,
         { to: "/admin/contest/create" },
-        { default: () => "新建比赛" }
+        { default: () => "新建比赛" },
       ),
     key: "admin contest create",
   },
@@ -84,7 +84,7 @@ const options: MenuOption[] = [
       h(
         RouterLink,
         { to: "/admin/announcement" },
-        { default: () => "公告配置" }
+        { default: () => "公告配置" },
       ),
     key: "admin announcement",
   },

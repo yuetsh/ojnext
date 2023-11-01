@@ -19,7 +19,7 @@ http.interceptors.response.use(
   },
   (err) => {
     return Promise.reject(err)
-  }
+  },
 )
 
 export default http

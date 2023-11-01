@@ -47,7 +47,7 @@ async function getList() {
     query.limit,
     query.keyword,
     "",
-    "ACM"
+    "ACM",
   )
   total.value = res.total
   problems.value = res.results
@@ -56,7 +56,7 @@ watch(
   () => props.show,
   (value) => {
     if (value) getList()
-  }
+  },
 )
 watch(query, getList, { deep: true })
 </script>

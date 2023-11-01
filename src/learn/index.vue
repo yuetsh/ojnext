@@ -10,7 +10,7 @@ const router = useRouter()
 const learnStore = useLearnStore()
 
 const Mds = Array.from({ length: learnStore.total }, (_, i) => i + 1).map((v) =>
-  defineAsyncComponent(() => import(`./step-${v}/index.md`))
+  defineAsyncComponent(() => import(`./step-${v}/index.md`)),
 )
 
 watch(
@@ -24,7 +24,7 @@ watch(
       router.replace("/learn/step-1")
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 </script>
 

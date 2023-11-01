@@ -47,7 +47,7 @@ const columns: DataTableColumn<Rank>[] = [
           type: "info",
           onClick: () => router.push("/user?name=" + row.user.username),
         },
-        () => row.user.username
+        () => row.user.username,
       ),
   },
   { title: "自我介绍", key: "mood", minWidth: 200 },
@@ -67,7 +67,7 @@ watch(
   () => {
     query.page = 1
     listRanks()
-  }
+  },
 )
 
 onMounted(listRanks)

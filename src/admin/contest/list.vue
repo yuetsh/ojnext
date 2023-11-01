@@ -40,7 +40,7 @@ const columns: DataTableColumn<Contest>[] = [
       h(
         NTag,
         { type: CONTEST_STATUS[row.status]["type"], size: "small" },
-        () => CONTEST_STATUS[row.status]["name"]
+        () => CONTEST_STATUS[row.status]["name"],
       ),
   },
   {

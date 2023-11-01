@@ -102,7 +102,7 @@ watch(
   () => {
     query.page = 1
     routerPush()
-  }
+  },
 )
 
 watch(
@@ -111,7 +111,7 @@ watch(
     route.query,
   (newVal) => {
     if (newVal) listSubmissions()
-  }
+  },
 )
 
 const columns = computed(() => {
@@ -123,7 +123,7 @@ const columns = computed(() => {
       render: (row) =>
         parseTime(
           row.create_time,
-          isDesktop ? "YYYY-MM-DD HH:mm:ss" : "M-D hh:mm"
+          isDesktop ? "YYYY-MM-DD HH:mm:ss" : "M-D hh:mm",
         ),
     },
     {
@@ -139,7 +139,7 @@ const columns = computed(() => {
               type: "info",
               onClick: () => router.push("/submission/" + row.id),
             },
-            () => row.id.slice(0, 12)
+            () => row.id.slice(0, 12),
           )
         } else {
           return row.id.slice(0, 12)
@@ -175,7 +175,7 @@ const columns = computed(() => {
               }
             },
           },
-          () => row.problem
+          () => row.problem,
         ),
     },
     {
@@ -208,7 +208,7 @@ const columns = computed(() => {
             type: "info",
             onClick: () => router.push("/user?name=" + row.username),
           },
-          () => row.username
+          () => row.username,
         ),
     },
   ]
@@ -225,7 +225,7 @@ const columns = computed(() => {
             type: "primary",
             onClick: () => rejudge(row.id),
           },
-          () => "重新判题"
+          () => "重新判题",
         ),
     })
   }
