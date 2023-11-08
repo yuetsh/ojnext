@@ -13,7 +13,7 @@ jobs:
 
       - uses: actions/setup-node@v3
         with:
-          node-version: lts
+          node-version: 20
           cache: npm
       - run: npm install
       - run: CI=false npm run build
