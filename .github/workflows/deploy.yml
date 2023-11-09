@@ -19,7 +19,7 @@ jobs:
       - run: CI=false npm run build
 
       - uses: easingthemes/ssh-deploy@main
-        env:
+        with:
           SSH_PRIVATE_KEY: ${{ secrets.KEY }}
           REMOTE_HOST: ${{ secrets.HOST }}
           ARGS: "-avzr --delete"
