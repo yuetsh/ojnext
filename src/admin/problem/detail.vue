@@ -268,9 +268,17 @@ function getTemplate() {
   }
 }
 
+function filterHint() {
+  // 编辑器会自动添加一段 HTML
+  if (problem.hint === '<p><br></p>') {
+    problem.hint = ""
+  }
+}
+
 async function submit() {
   const notCompleted = detectProblemCompletion()
   if (notCompleted) return
+  filterHint()
   getTemplate()
   problem.tags = [...newTags.value, ...fromExistingTags.value]
   const api = {
@@ -403,11 +411,7 @@ watch([fromExistingTags, newTags], (tags) => {
   <n-button class="addSamples box" tertiary type="primary" @click="addSample">
     添加用例
   </n-button>
-  <n-form>
-    <n-form-item label="提示">
-      <n-input type="textarea" v-model:value="problem.hint" />
-    </n-form-item>
-  </n-form>
+  <TextEditor v-if="ready" v-model:value="problem.hint" title="提示" />
   <n-form>
     <n-form-item label="题目的来源">
       <n-input
