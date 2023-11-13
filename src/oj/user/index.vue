@@ -33,7 +33,13 @@ async function init() {
 onMounted(init)
 </script>
 <template>
-  <n-space vertical justify="center" align="center" v-if="!loading && profile">
+  <n-space
+    class="wrapper"
+    vertical
+    justify="center"
+    align="center"
+    v-if="!loading && profile"
+  >
     <n-avatar round :size="140" :src="profile.avatar" />
     <h2>{{ profile.user.username }}</h2>
     <p class="desc">{{ profile.mood }}</p>
