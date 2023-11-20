@@ -57,7 +57,7 @@ async function saveProfile() {
       <n-form-item label="真名">
         <n-input v-model:value="userStore.profile.real_name" />
       </n-form-item>
-      <n-form-item label="自我介绍">
+      <n-form-item label="个性签名">
         <n-input v-model:value="userStore.profile.mood" />
       </n-form-item>
       <n-button
