@@ -9,6 +9,9 @@ import { Submission, SubmitCodePayload } from "utils/types"
 import { getSubmission, submitCode } from "oj/api"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 import { useUserStore } from "~/shared/store/user"
+import Loading from "~/shared/icons/Loading.vue"
+import Bulb from "~/shared/icons/Bulb.vue"
+import Play from "~/shared/icons/Play.vue"
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -211,9 +214,9 @@ watch(
       >
         <template #icon>
           <n-icon>
-            <i-ep-loading v-if="judging || pending || submitting" />
-            <i-ep-bell v-else-if="isPending" />
-            <i-ep-caret-right v-else />
+            <Loading v-if="judging || pending || submitting" />
+            <Bulb v-else-if="isPending" />
+            <Play v-else />
           </n-icon>
         </template>
         {{ submitLabel }}

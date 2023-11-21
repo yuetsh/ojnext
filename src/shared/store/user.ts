@@ -7,7 +7,7 @@ export const useUserStore = defineStore("user", () => {
   const profile = ref<Profile | null>(null)
   const [isFinished] = useToggle(false)
   const user = computed<User | null>(() => profile.value?.user ?? null)
-  const isAuthed = computed(() => !!user.value?.email ?? false)
+  const isAuthed = computed(() => !!user.value?.email)
   const isAdminRole = computed(
     () =>
       user.value?.admin_type === USER_TYPE.ADMIN ||
@@ -25,7 +25,7 @@ export const useUserStore = defineStore("user", () => {
     const res = await getProfile()
     profile.value = res.data
     isFinished.value = true
-    storage.set(STORAGE_KEY.AUTHED, !!user.value?.email ?? false)
+    storage.set(STORAGE_KEY.AUTHED, !!user.value?.email)
   }
 
   function clearProfile() {

@@ -8,6 +8,8 @@ import { useUserStore } from "~/shared/store/user"
 import { getProblemTagList } from "~/shared/api"
 import Pagination from "~/shared/components/Pagination.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
+import ArrowUp from "~/shared/icons/ArrowUp.vue"
+import ArrowDown from "~/shared/icons/ArrowDown.vue"
 
 interface Tag {
   id: number
@@ -212,8 +214,8 @@ function rowProps(row: ProblemFiltered) {
       <n-button @click="toggleShowTag()" quaternary icon-placement="right">
         <template #icon>
           <n-icon>
-            <i-ep-arrow-down v-if="showTag" />
-            <i-ep-arrow-up v-else />
+            <ArrowDown v-if="showTag" />
+            <ArrowUp v-else />
           </n-icon>
         </template>
         标签

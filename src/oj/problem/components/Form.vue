@@ -9,6 +9,7 @@ import TestCat from "./TestCat2.vue"
 import storage from "~/utils/storage"
 import { STORAGE_KEY } from "utils/constants"
 import { LANGUAGE } from "~/utils/types"
+import More from "~/shared/icons/More.vue"
 
 const route = useRoute()
 const router = useRouter()
@@ -81,7 +82,7 @@ function changeLanguage(v: LANGUAGE) {
       <n-button :size="isDesktop ? 'medium' : 'small'">
         <template #icon>
           <n-icon>
-            <i-ep-more-filled />
+            <More />
           </n-icon>
         </template>
       </n-button>

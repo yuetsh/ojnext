@@ -12,6 +12,9 @@ import {
 } from "~/shared/composables/switchScreen"
 import { code } from "~/shared/composables/learn"
 import { useLearnStore } from "~/learn/store"
+import Play from "../icons/Play.vue"
+import Sunny from "../icons/Sunny.vue"
+import Moon from "../icons/Moon.vue"
 
 const userStore = useUserStore()
 const configStore = useConfigStore()
@@ -130,7 +133,7 @@ function switchScreen() {}
         </n-button>
         <n-button v-else circle @click="run">
           <n-icon>
-            <i-ep-arrow-right-bold />
+            <Play />
           </n-icon>
         </n-button>
       </div>
@@ -166,8 +169,8 @@ function switchScreen() {}
       </div>
       <n-button circle @click="toggleDark()">
         <template #icon>
-          <n-icon v-if="isDark"><i-ep-sunny /></n-icon>
-          <n-icon v-else> <i-ep-moon /></n-icon>
+          <n-icon v-if="isDark"><Sunny /></n-icon>
+          <n-icon v-else> <Moon /></n-icon>
         </template>
       </n-button>
     </n-space>

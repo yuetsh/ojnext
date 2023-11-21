@@ -5,8 +5,6 @@ import legacy from "@vitejs/plugin-legacy"
 import AutoImport from "unplugin-auto-import/vite"
 import Components from "unplugin-vue-components/vite"
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
-import IconsResolver from "unplugin-icons/resolver"
-import Icons from "unplugin-icons/vite"
 import Markdown from "unplugin-vue-markdown/vite"
 import Shiki from "markdown-it-shiki"
 
@@ -90,13 +88,9 @@ export default defineConfig({
       dts: "./src/auto-imports.d.ts",
     }),
     Components({
-      resolvers: [
-        NaiveUiResolver(),
-        IconsResolver({ enabledCollections: ["ep"] }),
-      ],
+      resolvers: [NaiveUiResolver()],
       dts: "./src/components.d.ts",
     }),
-    Icons({ autoInstall: true }),
     Markdown({
       markdownItSetup(md) {
         md.use(Shiki, {

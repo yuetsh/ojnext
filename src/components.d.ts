@@ -7,18 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    IEpArrowDown: typeof import('~icons/ep/arrow-down')['default']
-    IEpArrowRightBold: typeof import('~icons/ep/arrow-right-bold')['default']
-    IEpArrowUp: typeof import('~icons/ep/arrow-up')['default']
-    IEpBell: typeof import('~icons/ep/bell')['default']
-    IEpCaretRight: typeof import('~icons/ep/caret-right')['default']
-    IEpLoading: typeof import('~icons/ep/loading')['default']
-    IEpLock: typeof import('~icons/ep/lock')['default']
-    IEpMedal: typeof import('~icons/ep/medal')['default']
-    IEpMoon: typeof import('~icons/ep/moon')['default']
-    IEpMoreFilled: typeof import('~icons/ep/more-filled')['default']
-    IEpSunny: typeof import('~icons/ep/sunny')['default']
-    IEpWarning: typeof import('~icons/ep/warning')['default']
     NAlert: typeof import('naive-ui')['NAlert']
     NAvatar: typeof import('naive-ui')['NAvatar']
     NButton: typeof import('naive-ui')['NButton']

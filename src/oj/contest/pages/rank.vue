@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { NButton, NIcon } from "naive-ui"
-import { GoldMedal } from "@element-plus/icons-vue"
 import Pagination from "~/shared/components/Pagination.vue"
 import AcAndSubmission from "../components/AcAndSubmission.vue"
 import { getContestProblems, getContestRank } from "oj/api"
@@ -8,6 +7,7 @@ import { ContestRank, ProblemFiltered } from "~/utils/types"
 import { secondsToDuration } from "utils/functions"
 import { ContestStatus } from "~/utils/constants"
 import { useContestStore } from "~/oj/store/contest"
+import Medal1 from "~/shared/icons/Medal1.vue"
 
 interface Props {
   contestID: string
@@ -133,8 +133,8 @@ async function addColumns() {
               acTime = [
                 h(
                   NIcon,
-                  { size: 16, style: "transform: translate(-2px, 3px)" },
-                  () => h(GoldMedal),
+                  { size: 16, style: "transform: translate(-2px, 2px)" },
+                  () => h(Medal1),
                 ),
                 secondsToDuration(status.ac_time),
               ]

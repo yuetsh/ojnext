@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { Select, SemiSelect } from "@element-plus/icons-vue"
 import { useThemeVars } from "naive-ui"
+import Select from "~/shared/icons/Select.vue"
+import SemiSelect from "~/shared/icons/SemiSelect.vue"
 
 const theme = useThemeVars()
 const props = defineProps<{

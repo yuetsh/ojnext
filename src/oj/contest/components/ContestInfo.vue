@@ -2,6 +2,7 @@
 import { parseTime } from "utils/functions"
 import { useContestStore } from "oj/store/contest"
 import ContestType from "~/shared/components/ContestType.vue"
+import Info from "~/shared/icons/Info.vue"
 
 const contestStore = useContestStore()
 </script>
@@ -16,7 +17,7 @@ const contestStore = useContestStore()
     <template #trigger>
       <n-button>
         <template #icon>
-          <i-ep-warning />
+          <Info />
         </template>
         比赛信息
       </n-button>

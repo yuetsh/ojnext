@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Contest } from "utils/types"
 import { ContestType } from "utils/constants"
+import Lock from "~/shared/icons/Lock.vue"
 
 defineProps<{ contest: Contest }>()
 </script>
@@ -8,11 +9,11 @@ defineProps<{ contest: Contest }>()
   <n-space>
     <span>{{ contest.title }}</span>
     <n-icon
-      size="medium"
+      size="large"
       class="lockIcon"
       v-if="contest.contest_type === ContestType.private"
     >
-      <i-ep-lock />
+      <Lock />
     </n-icon>
   </n-space>
 </template>

@@ -62,6 +62,9 @@ async function getContestDetail() {
 }
 
 async function submit() {
+  if (contest.description === '<p><br></p>') {
+    contest.description = ""
+  }
   const api = {
     "admin contest create": createContest,
     "admin contest edit": editContest,

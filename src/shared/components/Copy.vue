@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { DocumentCopy, Select } from "@element-plus/icons-vue"
 import copy from "copy-text-to-clipboard"
+import Select from "~/shared/icons/Select.vue"
+import Copy from "~/shared/icons/Copy.vue"
 
 defineProps<{ value: string }>()
 const [copied, toggle] = useToggle()
@@ -16,7 +17,7 @@ function handleClick(value: string) {
   <n-tooltip trigger="hover">
     <template #trigger>
       <n-icon class="icon" @click="handleClick(value)">
-        <component :is="copied ? Select : DocumentCopy"></component>
+        <component :is="copied ? Select : Copy"></component>
       </n-icon>
     </template>
     {{ copied ? "已复制" : "复制" }}
