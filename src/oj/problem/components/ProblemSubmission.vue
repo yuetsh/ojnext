@@ -5,8 +5,8 @@ import { parseTime } from "~/utils/functions"
 import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
 import { getSubmissions } from "~/oj/api"
 import { isDesktop } from "~/shared/composables/breakpoints"
-import SubmissionResultTag from "~/shared/SubmissionResultTag.vue"
-import Pagination from "~/shared/Pagination.vue"
+import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
+import Pagination from "~/shared/components/Pagination.vue"
 import { NButton } from "naive-ui"
 
 const userStore = useUserStore()

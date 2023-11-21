@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { login } from "./api"
-import { loginModal, toggleLogin, toggleSignup } from "./composables/modal"
-import { useUserStore } from "./store/user"
+import { login } from "../api"
+import { loginModal, toggleLogin, toggleSignup } from "../composables/modal"
+import { useUserStore } from "../store/user"
 
 const userStore = useUserStore()
 const loginRef = ref()

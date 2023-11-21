@@ -3,10 +3,10 @@ import { Codemirror } from "vue-codemirror"
 import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
 import { EditorView } from "@codemirror/view"
-import { oneDark } from "./themes/oneDark"
-import { smoothy } from "./themes/smoothy"
+import { oneDark } from "../themes/oneDark"
+import { smoothy } from "../themes/smoothy"
 import { LANGUAGE } from "~/utils/types"
-import { isDark } from "./composables/dark"
+import { isDark } from "../composables/dark"
 
 const styleTheme = EditorView.baseTheme({
   "& .cm-scroller": {

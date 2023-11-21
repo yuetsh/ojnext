@@ -7,7 +7,7 @@ import { JUDGE_STATUS, SubmissionStatus } from "utils/constants"
 import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
 import { Submission, SubmitCodePayload } from "utils/types"
 import { getSubmission, submitCode } from "oj/api"
-import SubmissionResultTag from "~/shared/SubmissionResultTag.vue"
+import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 import { useUserStore } from "~/shared/store/user"
 
 const userStore = useUserStore()

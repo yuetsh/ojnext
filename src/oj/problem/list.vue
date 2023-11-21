@@ -6,7 +6,7 @@ import { getProblemList, getRandomProblemID } from "oj/api"
 import ProblemStatus from "./components/ProblemStatus.vue"
 import { useUserStore } from "~/shared/store/user"
 import { getProblemTagList } from "~/shared/api"
-import Pagination from "~/shared/Pagination.vue"
+import Pagination from "~/shared/components/Pagination.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
 
 interface Tag {

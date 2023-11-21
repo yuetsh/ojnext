@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { logout } from "./api"
-import { useUserStore } from "./store/user"
-import { useConfigStore } from "./store/config"
+import { logout } from "../api"
+import { useUserStore } from "../store/user"
+import { useConfigStore } from "../store/config"
 import { isDark, toggleDark } from "~/shared/composables/dark"
 import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
 import { RouterLink } from "vue-router"

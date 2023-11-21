@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { NSwitch, NTag } from "naive-ui"
-import Pagination from "~/shared/Pagination.vue"
+import Pagination from "~/shared/components/Pagination.vue"
 import { Contest } from "~/utils/types"
 import { getContestList } from "../api"
-import ContestType from "~/shared/ContestType.vue"
-import ContestTitle from "~/shared/ContestTitle.vue"
+import ContestType from "~/shared/components/ContestType.vue"
+import ContestTitle from "~/shared/components/ContestTitle.vue"
 import { CONTEST_STATUS } from "~/utils/constants"
 import Actions from "./components/Actions.vue"
 

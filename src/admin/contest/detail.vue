@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { formatISO } from "date-fns"
-import TextEditor from "~/shared/TextEditor.vue"
+import TextEditor from "~/shared/components/TextEditor.vue"
 import { BlankContest } from "~/utils/types"
 import { createContest, editContest, getContest } from "../api"
 

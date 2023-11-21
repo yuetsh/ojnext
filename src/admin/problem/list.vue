@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getProblemList, getProblem, editProblem } from "../api"
-import Pagination from "~/shared/Pagination.vue"
+import Pagination from "~/shared/components/Pagination.vue"
 import { NSwitch } from "naive-ui"
 import { AdminProblemFiltered } from "~/utils/types"
 import { parseTime } from "~/utils/functions"

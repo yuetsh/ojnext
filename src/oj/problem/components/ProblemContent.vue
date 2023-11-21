@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Copy from "~/shared/Copy.vue"
+import Copy from "~/shared/components/Copy.vue"
 import { code } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
 import { Problem, ProblemStatus } from "utils/types"

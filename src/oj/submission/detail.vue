@@ -8,7 +8,7 @@ import {
   submissionTimeFormat,
 } from "utils/functions"
 import copy from "copy-text-to-clipboard"
-import SubmissionResultTag from "~/shared/SubmissionResultTag.vue"
+import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 
 const props = defineProps<{
   submissionID: string

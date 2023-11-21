@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NButton } from "naive-ui"
 import Chart from "./components/Chart.vue"
-import Pagination from "~/shared/Pagination.vue"
+import Pagination from "~/shared/components/Pagination.vue"
 import { Rank } from "utils/types"
 import { getRank } from "oj/api"
 import { getACRate } from "utils/functions"

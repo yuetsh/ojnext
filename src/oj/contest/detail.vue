@@ -4,6 +4,7 @@ import { isDesktop } from "~/shared/composables/breakpoints"
 import { useContestStore } from "../store/contest"
 import ContestInfo from "./components/ContestInfo.vue"
 import ContestMenu from "./components/ContestMenu.vue"
+import Lock from "~/shared/icons/Lock.vue"
 
 const props = defineProps<{
   contestID: string
@@ -34,7 +35,7 @@ const passwordFormVisible = computed(
       <n-space align="center">
         <h2 class="contestTitle">{{ contestStore.contest.title }}</h2>
         <n-icon size="large" v-if="contestStore.isPrivate" class="lockIcon">
-          <i-ep-lock />
+          <Lock />
         </n-icon>
         <n-tag
           size="small"

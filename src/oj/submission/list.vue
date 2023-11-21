@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NButton } from "naive-ui"
-import SubmissionResultTag from "~/shared/SubmissionResultTag.vue"
-import Pagination from "~/shared/Pagination.vue"
+import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
+import Pagination from "~/shared/components/Pagination.vue"
 import {
   submissionMemoryFormat,
   submissionTimeFormat,

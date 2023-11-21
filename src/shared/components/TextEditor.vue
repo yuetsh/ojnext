@@ -2,7 +2,7 @@
 import "@wangeditor/editor/dist/css/style.css"
 import { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/editor"
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue"
-import { uploadImage } from "../admin/api"
+import { uploadImage } from "../../admin/api"
 
 interface Props {
   value: string

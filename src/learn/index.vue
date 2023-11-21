@@ -3,7 +3,7 @@ import { isDesktop } from "~/shared/composables/breakpoints"
 import { code } from "~/shared/composables/learn"
 import { useLearnStore } from "./store"
 
-const CodeEditor = defineAsyncComponent(() => import("~/shared/CodeEditor.vue"))
+const CodeEditor = defineAsyncComponent(() => import("~/shared/components/CodeEditor.vue"))
 
 const route = useRoute()
 const router = useRouter()

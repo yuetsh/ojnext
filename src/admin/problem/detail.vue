@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import TextEditor from "~/shared/TextEditor.vue"
+import TextEditor from "~/shared/components/TextEditor.vue"
 import { unique } from "~/utils/functions"
 import { BlankProblem, LANGUAGE, Tag } from "~/utils/types"
 import { getProblemTagList } from "~/shared/api"
@@ -14,7 +14,7 @@ import {
   uploadTestcases,
 } from "../api"
 
-const CodeEditor = defineAsyncComponent(() => import("~/shared/CodeEditor.vue"))
+const CodeEditor = defineAsyncComponent(() => import("~/shared/components/CodeEditor.vue"))
 
 interface Props {
   problemID?: string

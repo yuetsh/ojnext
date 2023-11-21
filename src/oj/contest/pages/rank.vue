@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NButton, NIcon } from "naive-ui"
 import { GoldMedal } from "@element-plus/icons-vue"
-import Pagination from "~/shared/Pagination.vue"
+import Pagination from "~/shared/components/Pagination.vue"
 import AcAndSubmission from "../components/AcAndSubmission.vue"
 import { getContestProblems, getContestRank } from "oj/api"
 import { ContestRank, ProblemFiltered } from "~/utils/types"
