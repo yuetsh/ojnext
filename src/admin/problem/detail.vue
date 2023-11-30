@@ -14,7 +14,9 @@ import {
   uploadTestcases,
 } from "../api"
 
-const CodeEditor = defineAsyncComponent(() => import("~/shared/components/CodeEditor.vue"))
+const CodeEditor = defineAsyncComponent(
+  () => import("~/shared/components/CodeEditor.vue"),
+)
 
 interface Props {
   problemID?: string
@@ -270,7 +272,7 @@ function getTemplate() {
 
 function filterHint() {
   // 编辑器会自动添加一段 HTML
-  if (problem.hint === '<p><br></p>') {
+  if (problem.hint === "<p><br></p>") {
     problem.hint = ""
   }
 }

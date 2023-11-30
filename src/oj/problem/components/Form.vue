@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import copy from "copy-text-to-clipboard"
 import { LANGUAGE_SHOW_VALUE, SOURCES } from "utils/constants"
 import { code } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
@@ -9,8 +10,8 @@ import TestCat from "./TestCat2.vue"
 import storage from "~/utils/storage"
 import { STORAGE_KEY } from "utils/constants"
 import { LANGUAGE } from "~/utils/types"
-import More from "~/shared/icons/More.vue"
 
+const message = useMessage()
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
@@ -19,6 +20,7 @@ const emit = defineEmits(["changeLanguage"])
 
 function reset() {
   code.value = problem.value!.template[code.language] || SOURCES[code.language]
+  message.success("代码重置成功")
 }
 
 function goSubmissions() {
@@ -31,7 +33,13 @@ function goEdit() {
   window.open(data.href, "_blank")
 }
 
-const menu: DropdownOption[] = [{ label: "提交信息", key: "submissions" }]
+const menu = computed<DropdownOption[]>(() => [
+  { label: "提交信息", key: "submissions", show: isMobile.value },
+  { label: "自测猫", key: "test", show: isMobile.value },
+  { label: "复制代码", key: "copy" },
+  { label: "粘贴代码", key: "paste" },
+  { label: "重置代码", key: "reset" },
+])
 
 const options: DropdownOption[] = problem.value!.languages.map((it) => ({
   label: () => [
@@ -49,10 +57,29 @@ const options: DropdownOption[] = problem.value!.languages.map((it) => ({
   value: it,
 }))
 
-function select(key: string) {
+async function select(key: string) {
   switch (key) {
     case "submissions":
       goSubmissions()
+      break
+    case "reset":
+      reset()
+      break
+    case "copy":
+      copy(code.value)
+      message.success("代码复制成功")
+      break
+    case "paste":
+      try {
+        const text = await navigator.clipboard.readText()
+        code.value = text
+        message.success("代码粘贴成功")
+      } catch (err) {
+        message.warning("请长按代码区，手动粘贴")
+      }
+      break
+    case "test":
+      window.open("https://code.hyyz.izhai.net", "_blank")
       break
   }
 }
@@ -73,29 +100,15 @@ function changeLanguage(v: LANGUAGE) {
       :options="options"
     />
     <Submit />
-    <n-dropdown
-      v-if="isMobile"
-      trigger="click"
-      :options="menu"
-      @select="select"
-    >
-      <n-button :size="isDesktop ? 'medium' : 'small'">
-        <template #icon>
-          <n-icon>
-            <More />
-          </n-icon>
-        </template>
-      </n-button>
-    </n-dropdown>
     <TestCat
       v-if="isDesktop"
       :lang="code.language"
       :input="problem?.samples[0].input"
     />
     <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
-    <n-button :size="isDesktop ? 'medium' : 'small'" @click="reset">
-      重置
-    </n-button>
+    <n-dropdown :options="menu" @select="select">
+      <n-button :size="isDesktop ? 'medium' : 'small'">操作</n-button>
+    </n-dropdown>
     <n-button
       v-if="isDesktop && userStore.isSuperAdmin"
       type="warning"

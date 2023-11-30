@@ -6,7 +6,9 @@ import { problem } from "oj/composables/problem"
 import storage from "~/utils/storage"
 
 const Form = defineAsyncComponent(() => import("./Form.vue"))
-const CodeEditor = defineAsyncComponent(() => import("~/shared/components/CodeEditor.vue"))
+const CodeEditor = defineAsyncComponent(
+  () => import("~/shared/components/CodeEditor.vue"),
+)
 
 const route = useRoute()
 const contestID = !!route.params.contestID ? route.params.contestID : null

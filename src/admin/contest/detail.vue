@@ -62,7 +62,7 @@ async function getContestDetail() {
 }
 
 async function submit() {
-  if (contest.description === '<p><br></p>') {
+  if (contest.description === "<p><br></p>") {
     contest.description = ""
   }
   const api = {
