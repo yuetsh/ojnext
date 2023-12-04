@@ -74,7 +74,6 @@ function routerPush() {
   const newQuery = {
     ...query,
     myself: query.myself ? "1" : "0",
-    problem: query.problem || route.query.problem,
   }
   router.push({
     path: route.path,
