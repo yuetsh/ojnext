@@ -14,11 +14,20 @@ import Header from "../components/Header.vue"
     </n-layout-content>
     <Login />
     <Signup />
+    <n-space justify="center" class="beian">
+      <n-a href="https://beian.miit.gov.cn" target="_blank">
+        浙ICP备2023044109号
+      </n-a>
+    </n-space>
   </n-layout>
 </template>
 
 <style scoped>
 .header {
   padding: 8px;
+}
+
+.beian {
+  margin-bottom: 20px;
 }
 </style>

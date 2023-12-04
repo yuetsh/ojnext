@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    NA: typeof import('naive-ui')['NA']
     NAlert: typeof import('naive-ui')['NAlert']
     NAvatar: (typeof import("naive-ui"))["NAvatar"]
     NButton: typeof import('naive-ui')['NButton']
@@ -38,6 +39,7 @@ declare module 'vue' {
     NMenu: typeof import('naive-ui')['NMenu']
     NMessageProvider: typeof import('naive-ui')['NMessageProvider']
     NModal: typeof import('naive-ui')['NModal']
+    NP: typeof import('naive-ui')['NP']
     NPagination: typeof import('naive-ui')['NPagination']
     NPopconfirm: (typeof import("naive-ui"))["NPopconfirm"]
     NPopover: typeof import('naive-ui')['NPopover']
