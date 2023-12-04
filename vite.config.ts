@@ -20,7 +20,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          fancy: ["highlight.js", "party-js"],
+          fancy: ["highlight.js", "canvas-confetti"],
           chart: ["vue-chartjs", "chart.js"],
           editor: ["@wangeditor/editor"],
           codemirror: [

@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import party from "party-js"
 import { code } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
 import { isDesktop } from "~/shared/composables/breakpoints"
@@ -12,6 +11,8 @@ import { useUserStore } from "~/shared/store/user"
 import Loading from "~/shared/icons/Loading.vue"
 import Bulb from "~/shared/icons/Bulb.vue"
 import Play from "~/shared/icons/Play.vue"
+// @ts-ignore
+import confetti from "canvas-confetti"
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -188,9 +189,12 @@ watch(
   () => submission?.value?.result,
   (result) => {
     if (result === SubmissionStatus.accepted) {
-      party.confetti(document.body, {
-        count: party.variation.range(200, 400),
-        size: party.variation.skew(2, 0.3),
+      confetti({
+        particleCount: 300,
+        startVelocity: 30,
+        gravity: 0.5,
+        spread: 350,
+        origin: { x: 0.5, y: 0.4 },
       })
     }
   },
