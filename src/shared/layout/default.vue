@@ -2,6 +2,10 @@
 import Login from "../components/Login.vue"
 import Signup from "../components/Signup.vue"
 import Header from "../components/Header.vue"
+
+function goICP() {
+  window.open("https://beian.miit.gov.cn", "_balnk")
+}
 </script>
 
 <template>
@@ -15,9 +19,7 @@ import Header from "../components/Header.vue"
     <Login />
     <Signup />
     <n-space justify="center" class="beian">
-      <n-a href="https://beian.miit.gov.cn" target="_blank">
-        浙ICP备2023044109号
-      </n-a>
+      <n-button text @click="goICP"> 浙ICP备2023044109号 </n-button>
     </n-space>
   </n-layout>
 </template>
@@ -28,6 +30,10 @@ import Header from "../components/Header.vue"
 }
 
 .beian {
-  margin-bottom: 20px;
+  margin-bottom: 12px;
+}
+
+.beian > a {
+  text-decoration: none;
 }
 </style>
