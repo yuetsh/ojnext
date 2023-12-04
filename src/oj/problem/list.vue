@@ -199,7 +199,7 @@ function rowProps(row: ProblemFiltered) {
           />
         </n-form-item>
         <n-form-item>
-          <n-input clearable @change="search" placeholder="标题或序号" />
+          <n-input clearable @change="search" placeholder="题号或者标题" />
         </n-form-item>
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">

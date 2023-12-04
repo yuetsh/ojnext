@@ -6,6 +6,9 @@ import Header from "../components/Header.vue"
 function goICP() {
   window.open("https://beian.miit.gov.cn", "_balnk")
 }
+
+const route = useRoute()
+const hiddenICP = computed(() => ["problem", "contest problem"].includes(<string>route.name))
 </script>
 
 <template>
@@ -18,8 +21,8 @@ function goICP() {
     </n-layout-content>
     <Login />
     <Signup />
-    <n-space justify="center" class="beian">
-      <n-button text @click="goICP"> 浙ICP备2023044109号 </n-button>
+    <n-space v-if="!hiddenICP" justify="center" class="beian">
+      <n-button text @click="goICP">浙ICP备2023044109号</n-button>
     </n-space>
   </n-layout>
 </template>

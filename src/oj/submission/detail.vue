@@ -46,7 +46,6 @@ const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
     key: "real_time",
     render: (row) => submissionTimeFormat(row.real_time),
   },
-  { title: "信号", key: "signal" },
 ]
 
 onMounted(init)

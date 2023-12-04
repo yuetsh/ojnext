@@ -20,6 +20,7 @@ interface Query {
   limit: number
   page: number
   myself: boolean
+  problem: string
 }
 
 const route = useRoute()
@@ -35,6 +36,7 @@ const query = reactive<Query>({
   limit: parseInt(<string>route.query.limit) || 10,
   username: <string>route.query.username ?? "",
   myself: route.query.myself === "1",
+  problem: <string>route.query.problem ?? ""
 })
 
 const options: SelectOption[] = [
@@ -51,6 +53,7 @@ async function listSubmissions() {
   query.limit = parseInt(<string>route.query.limit) || 10
   query.username = <string>route.query.username ?? ""
   query.myself = route.query.myself === "1"
+  query.problem = <string>route.query.problem ?? ""
 
   if (query.page < 1) query.page = 1
   const offset = query.limit * (query.page - 1)
@@ -71,7 +74,7 @@ function routerPush() {
   const newQuery = {
     ...query,
     myself: query.myself ? "1" : "0",
-    problem: route.query.problem,
+    problem: query.problem || route.query.problem,
   }
   router.push({
     path: route.path,
@@ -79,14 +82,24 @@ function routerPush() {
   })
 }
 
-function search(value: string) {
+function searchUser(value: string) {
   query.username = value
+}
+
+function searchProblem(value: string) {
+  query.problem = value
+}
+
+function search(username: string, problem: string) {
+  query.username = username
+  query.problem = problem
 }
 
 function clear() {
   query.username = ""
   query.myself = false
   query.result = ""
+  query.problem = ""
 }
 
 async function rejudge(submissionID: string) {
@@ -98,7 +111,7 @@ async function rejudge(submissionID: string) {
 watch(() => query.page, routerPush)
 
 watch(
-  () => [query.limit, query.myself, query.username, query.result],
+  () => [query.limit, query.myself, query.username, query.result, query.problem],
   () => {
     query.page = 1
     routerPush()
@@ -249,10 +262,15 @@ const columns = computed(() => {
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item>
-          <n-input clearable @change="search" placeholder="用户" />
+          <n-input clearable @change="searchUser" placeholder="用户" />
         </n-form-item>
         <n-form-item>
-          <n-button @click="search(query.username)">搜索</n-button>
+          <n-input clearable @change="searchProblem" placeholder="题号" />
+        </n-form-item>
+      </n-form>
+      <n-form :show-feedback="false" inline label-placement="left">
+        <n-form-item>
+          <n-button @click="search(query.username, query.problem)">搜索</n-button>
         </n-form-item>
         <n-form-item>
           <n-button @click="clear" quaternary>重置</n-button>
