@@ -264,6 +264,11 @@ function type(status: ProblemStatus) {
   line-height: 1.5;
 }
 
+.problemContent > .content img {
+  max-width: 100% !important;
+  height: 100% !important;
+}
+
 .problemContent > .content a {
   color: #18a058;
 }
