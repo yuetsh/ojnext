@@ -5,8 +5,6 @@ import legacy from "@vitejs/plugin-legacy"
 import AutoImport from "unplugin-auto-import/vite"
 import Components from "unplugin-vue-components/vite"
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
-import Markdown from "unplugin-vue-markdown/vite"
-import Shiki from "markdown-it-shiki"
 
 const url = "https://oj.hyyz.izhai.net"
 const proxyConfig = {
@@ -20,7 +18,6 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          fancy: ["highlight.js", "canvas-confetti"],
           chart: ["vue-chartjs", "chart.js"],
           editor: ["@wangeditor/editor"],
           codemirror: [
@@ -88,17 +85,6 @@ export default defineConfig({
     Components({
       resolvers: [NaiveUiResolver()],
       dts: "./src/components.d.ts",
-    }),
-    Markdown({
-      markdownItSetup(md) {
-        md.use(Shiki, {
-          highlightLines: true,
-          theme: {
-            dark: "vitesse-dark",
-            light: "vitesse-light",
-          },
-        })
-      },
     }),
   ],
   server: {
