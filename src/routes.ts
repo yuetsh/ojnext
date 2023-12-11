@@ -80,15 +80,6 @@ export const ojs: RouteRecordRaw = {
       component: () => import("oj/user/setting.vue"),
       meta: { requiresAuth: true },
     },
-    {
-      path: "learn",
-      redirect: "learn/step-1",
-    },
-    {
-      path: "learn/:step+",
-      component: () => import("learn/index.vue"),
-      name: "learn",
-    },
   ],
 }
 

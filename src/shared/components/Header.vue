@@ -10,22 +10,17 @@ import {
   screenSwitchLabel,
   switchScreenMode,
 } from "~/shared/composables/switchScreen"
-import { code } from "~/shared/composables/learn"
-import { useLearnStore } from "~/learn/store"
-import Play from "../icons/Play.vue"
 import Sunny from "../icons/Sunny.vue"
 import Moon from "../icons/Moon.vue"
 
 const userStore = useUserStore()
 const configStore = useConfigStore()
-const learnStore = useLearnStore()
 const route = useRoute()
 const router = useRouter()
 const active = computed(() => {
   const path = route.path.split("/")[1] || "problem"
   return !["user", "setting"].includes(path) ? path : ""
 })
-const hiddenTitle = computed(() => isMobile.value && route.name === "learn")
 
 async function handleLogout() {
   await logout()
@@ -39,12 +34,6 @@ onMounted(() => {
 })
 
 const menus = computed<MenuOption[]>(() => [
-  {
-    label: () =>
-      h(RouterLink, { to: "/learn/step-1" }, { default: () => "自学" }),
-    key: "learn",
-    show: false,
-  },
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "题库" }),
     key: "problem",
@@ -95,10 +84,6 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   { label: "退出", key: "logout", props: { onClick: handleLogout } },
 ]
 
-function run() {
-  console.log(code.value)
-}
-
 function goHome() {
   router.push("/")
 }
@@ -109,7 +94,7 @@ function switchScreen() {}
 <template>
   <n-space justify="space-between" align="center">
     <n-space align="center">
-      <div v-if="!hiddenTitle" class="websiteTitle" @click="goHome">
+      <div class="websiteTitle" @click="goHome">
         {{ configStore.config?.website_name }}
       </div>
       <n-menu
@@ -120,23 +105,6 @@ function switchScreen() {}
       />
     </n-space>
     <n-space align="center">
-      <n-dropdown
-        v-if="route.name === 'learn' && isMobile"
-        trigger="click"
-        :options="learnStore.menu"
-      >
-        <n-button>目录</n-button>
-      </n-dropdown>
-      <div v-if="route.name === 'learn'">
-        <n-button v-if="isDesktop" type="primary" @click="run">
-          运行代码
-        </n-button>
-        <n-button v-else circle @click="run">
-          <n-icon>
-            <Play />
-          </n-icon>
-        </n-button>
-      </div>
       <n-dropdown v-if="isMobile" :options="menus" trigger="click">
         <n-button>菜单</n-button>
       </n-dropdown>

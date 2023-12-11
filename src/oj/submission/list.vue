@@ -36,7 +36,7 @@ const query = reactive<Query>({
   limit: parseInt(<string>route.query.limit) || 10,
   username: <string>route.query.username ?? "",
   myself: route.query.myself === "1",
-  problem: <string>route.query.problem ?? ""
+  problem: <string>route.query.problem ?? "",
 })
 
 const options: SelectOption[] = [
@@ -110,7 +110,13 @@ async function rejudge(submissionID: string) {
 watch(() => query.page, routerPush)
 
 watch(
-  () => [query.limit, query.myself, query.username, query.result, query.problem],
+  () => [
+    query.limit,
+    query.myself,
+    query.username,
+    query.result,
+    query.problem,
+  ],
   () => {
     query.page = 1
     routerPush()
@@ -269,7 +275,9 @@ const columns = computed(() => {
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item>
-          <n-button @click="search(query.username, query.problem)">搜索</n-button>
+          <n-button @click="search(query.username, query.problem)">
+            搜索
+          </n-button>
         </n-form-item>
         <n-form-item>
           <n-button @click="clear" quaternary>重置</n-button>

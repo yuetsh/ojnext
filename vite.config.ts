@@ -48,8 +48,6 @@ export default defineConfig({
       utils: path.resolve(__dirname, "./src/utils"),
       oj: path.resolve(__dirname, "./src/oj"),
       admin: path.resolve(__dirname, "./src/admin"),
-      learn: path.resolve(__dirname, "./src/learn"),
-      play: path.relative(__dirname, "./src/play"),
     },
   },
   plugins: [

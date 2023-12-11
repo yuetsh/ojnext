@@ -26,5 +26,3 @@ hljs.registerLanguage("python", python)
     </n-message-provider>
   </n-config-provider>
 </template>
-
-<style scoped></style>

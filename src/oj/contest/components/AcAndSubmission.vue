@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ContestRank, ProblemFiltered } from "~/utils/types"
+import { ContestRank } from "~/utils/types"
 
 interface Props {
   rank: ContestRank

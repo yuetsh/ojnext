@@ -10,7 +10,7 @@
 //   input: "",
 // })
 function gotoTestCat() {
-  const url = "https://code.hyyz.izhai.net/"
+  const url = "https://code.xuyue.cc"
   // let id = 50
   // const lang = props.lang
   // if (lang === "Python3") id = 71

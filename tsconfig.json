@@ -17,8 +17,6 @@
       "utils/*": ["./src/utils/*"],
       "oj/*": ["./src/oj/*"],
       "admin/*": ["./src/admin/*"],
-      "learn/*": ["./src/learn/*"],
-      "play/*": ["./src/play/*"],
     },
     "types": ["naive-ui/volar"]
   },
