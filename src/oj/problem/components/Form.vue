@@ -37,7 +37,6 @@ const menu = computed<DropdownOption[]>(() => [
   { label: "提交信息", key: "submissions", show: isMobile.value },
   { label: "自测猫", key: "test", show: isMobile.value },
   { label: "复制代码", key: "copy" },
-  { label: "粘贴代码", key: "paste" },
   { label: "重置代码", key: "reset" },
 ])
 
@@ -68,15 +67,6 @@ async function select(key: string) {
     case "copy":
       copy(code.value)
       message.success("代码复制成功")
-      break
-    case "paste":
-      try {
-        const text = await navigator.clipboard.readText()
-        code.value = text
-        message.success("代码粘贴成功")
-      } catch (err) {
-        message.warning("请长按代码区，手动粘贴")
-      }
       break
     case "test":
       window.open("https://code.hyyz.izhai.net", "_blank")
