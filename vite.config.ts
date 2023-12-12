@@ -23,15 +23,6 @@ export default defineConfig({
           codemirror: [
             "vue-codemirror",
             "codemirror",
-            "@codemirror/autocomplete",
-            "@codemirror/commands",
-            "@codemirror/language",
-            "@codemirror/lint",
-            "@codemirror/search",
-            "@codemirror/state",
-            "@codemirror/view",
-          ],
-          "codemirror-lang": [
             "@codemirror/lang-cpp",
             "@codemirror/lang-python",
           ],
