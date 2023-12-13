@@ -4,7 +4,7 @@
     <div>
       <img src="/备案图标.png" alt="备案图标" />
       <n-button text @click="goPublicSecurity">
-        浙公网安备33100402331786
+        浙公网安备33100402331786号
       </n-button>
     </div>
   </n-space>
