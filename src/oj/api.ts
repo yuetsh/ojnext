@@ -90,9 +90,9 @@ export function adminRejudge(id: string) {
   })
 }
 
-export function getRank(offset: number, limit: number) {
+export function getRank(offset: number, limit: number, username?: string) {
   return http.get("user_rank", {
-    params: { offset, limit, rule: "acm" },
+    params: { offset, limit, rule: "acm", username },
   })
 }
 
