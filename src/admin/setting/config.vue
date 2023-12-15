@@ -98,7 +98,7 @@ const abnormalServers = computed(() =>
 )
 
 const websiteConfig = reactive({
-  website_base_url: "https://oj.hyyz.izhai.net",
+  website_base_url: "https://oj.xuyue.cc",
   website_name: "徐越的判题狗",
   website_name_shortcut: "徐越的判题狗",
   website_footer: "所有权归属于徐越，感谢青岛大学开源 OJ 系统，感谢开源社区",

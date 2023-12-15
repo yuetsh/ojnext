@@ -6,7 +6,7 @@ import AutoImport from "unplugin-auto-import/vite"
 import Components from "unplugin-vue-components/vite"
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
 
-const url = "https://oj.hyyz.izhai.net"
+const url = "https://oj.xuyue.cc"
 const proxyConfig = {
   target: url,
   changeOrigin: true,

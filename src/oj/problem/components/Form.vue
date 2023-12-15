@@ -69,7 +69,7 @@ async function select(key: string) {
       message.success("代码复制成功")
       break
     case "test":
-      window.open("https://code.hyyz.izhai.net", "_blank")
+      window.open("https://code.xuyue.cc", "_blank")
       break
   }
 }
