@@ -1,5 +1,4 @@
 import { getTime, intervalToDuration, parseISO } from "date-fns"
-import { STORAGE_KEY } from "./constants"
 import { User } from "./types"
 
 export function getACRate(acCount: number, totalCount: number) {

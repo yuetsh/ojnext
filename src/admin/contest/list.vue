@@ -2,7 +2,7 @@
 import { NSwitch, NTag } from "naive-ui"
 import Pagination from "~/shared/components/Pagination.vue"
 import { Contest } from "~/utils/types"
-import { getContestList } from "../api"
+import { getContestList, editContest } from "../api"
 import ContestType from "~/shared/components/ContestType.vue"
 import ContestTitle from "~/shared/components/ContestTitle.vue"
 import { CONTEST_STATUS } from "~/utils/constants"
@@ -16,7 +16,10 @@ const query = reactive({
   keyword: "",
 })
 
-function toggleVisible(id: number) {}
+function toggleVisible(contest: Contest) {
+  contest.visible = !contest.visible
+  editContest(contest)
+}
 
 const columns: DataTableColumn<Contest>[] = [
   { title: "ID", key: "id", width: 60 },
@@ -52,7 +55,7 @@ const columns: DataTableColumn<Contest>[] = [
         value: row.visible,
         size: "small",
         rubberBand: false,
-        onUpdateValue: () => toggleVisible(row.id),
+        onUpdateValue: () => toggleVisible(row),
       }),
   },
   {

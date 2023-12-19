@@ -266,21 +266,14 @@ export interface Rank {
   submission_number: number
 }
 
-export interface Contest {
+export interface Contest extends BlankContest {
   id: number
   created_by: SampleUser
   status: ContestStatus
   contest_type: ContestType
-  title: string
-  description: string
-  real_time_rank: boolean
-  rule_type: "ACM"
-  start_time: string
-  end_time: string
   create_time: string
   now: string
   last_update_time: string
-  visible: boolean
 }
 
 export interface BlankContest {

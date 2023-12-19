@@ -130,7 +130,7 @@ export function createContest(contest: BlankContest) {
   return http.post("admin/contest", contest)
 }
 
-export function editContest(contest: BlankContest) {
+export function editContest(contest: Contest | BlankContest) {
   return http.put("admin/contest", contest)
 }
 
