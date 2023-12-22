@@ -91,8 +91,6 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
 function goHome() {
   router.push("/")
 }
-
-function switchScreen() {}
 </script>
 
 <template>
