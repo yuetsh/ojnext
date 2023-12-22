@@ -98,11 +98,6 @@ export const admins: RouteRecordRaw = {
       component: () => import("admin/setting/config.vue"),
     },
     {
-      path: "announcement",
-      name: "admin announcement",
-      component: () => import("admin/setting/announcement.vue"),
-    },
-    {
       path: "user/list",
       name: "admin user list",
       component: () => import("admin/user/list.vue"),
@@ -160,6 +155,22 @@ export const admins: RouteRecordRaw = {
       path: "contest/:contestID/problem/edit/:problemID",
       name: "admin contest problem edit",
       component: () => import("admin/problem/detail.vue"),
+      props: true,
+    },
+    {
+      path: "announcement/list",
+      name: "admin announcement list",
+      component: () => import("admin/announcement/list.vue"),
+    },
+    {
+      path: "announcement/create",
+      name: "admin announcement create",
+      component: () => import("admin/announcement/detail.vue"),
+    },
+    {
+      path: "announcement/edit/:announcementID",
+      name: "admin announcement edit",
+      component: () => import("admin/announcement/detail.vue"),
       props: true,
     },
   ],

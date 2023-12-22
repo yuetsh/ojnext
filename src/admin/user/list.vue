@@ -3,7 +3,7 @@ import { DataTableRowKey, SelectOption } from "naive-ui"
 import Pagination from "~/shared/components/Pagination.vue"
 import { parseTime } from "~/utils/functions"
 import { User } from "~/utils/types"
-import { getUserList, deleteUsers, editUser } from "../api"
+import { getUserList, deleteUsers, editUser, importUsers } from "../api"
 import Actions from "./components/Actions.vue"
 import Name from "./components/Name.vue"
 
@@ -17,6 +17,7 @@ const query = reactive({
   page: 1,
   keyword: "",
 })
+const [create, toggleCreate] = useToggle(false)
 const password = ref("")
 const userIDs = ref<DataTableRowKey[]>([])
 
@@ -93,14 +94,34 @@ async function onUserBanned(user: User) {
   })
 }
 
-async function onOpenEditModal(user: User) {
+function createNewUser() {
+  toggleCreate(true)
+  userEditing.value = {
+    id: 0,
+    username: "",
+    real_name: "",
+    email: "",
+    admin_type: "Regular User",
+    problem_permission: "",
+    create_time: new Date(),
+    last_login: new Date(),
+    two_factor_auth: false,
+    open_api: false,
+    is_disabled: false,
+    password: "",
+  }
+  password.value = ""
+}
+
+function onOpenEditModal(user: User) {
   userEditing.value = user
   password.value = ""
 }
 
-async function onCloseEditModal() {
+function onCloseEditModal() {
   userEditing.value = null
   password.value = ""
+  toggleCreate(false)
 }
 
 async function handleEditUser() {
@@ -109,10 +130,24 @@ async function handleEditUser() {
     message.error("密码长度不得小于 6")
     return
   }
-  const user = Object.assign(userEditing.value, { password: password.value })
-  await editUser(user)
+  if (create) {
+    const newUser = [
+      [
+        userEditing.value.username,
+        password.value,
+        userEditing.value.email,
+        userEditing.value.real_name,
+      ],
+    ]
+    await importUsers(newUser)
+    listUsers()
+  } else {
+    const user = Object.assign(userEditing.value, { password: password.value })
+    await editUser(user)
+  }
   userEditing.value = null
   password.value = ""
+  toggleCreate(false)
 }
 
 onMounted(listUsers)
@@ -121,7 +156,10 @@ watch(query, listUsers, { deep: true })
 
 <template>
   <n-space class="titleWrapper" justify="space-between">
-    <h2 class="title">用户列表</h2>
+    <n-space>
+      <h2 class="title">用户列表</h2>
+      <n-button type="primary" @click="createNewUser">新建用户</n-button>
+    </n-space>
     <n-space>
       <n-popconfirm
         v-if="userIDs.length"
@@ -152,7 +190,7 @@ watch(query, listUsers, { deep: true })
     :mask-closable="false"
     :show="!!userEditing"
     preset="card"
-    title="编辑用户"
+    :title="create ? '新建用户' : '编辑用户'"
     style="width: 700px"
     @close="onCloseEditModal"
   >
@@ -173,7 +211,7 @@ watch(query, listUsers, { deep: true })
         <n-form-item-gi :span="1" label="类型">
           <n-select v-model:value="userEditing.admin_type" :options="options" />
         </n-form-item-gi>
-        <n-form-item-gi :span="1" label="是否封禁">
+        <n-form-item-gi v-if="!create" :span="1" label="是否封禁">
           <n-switch v-model:value="userEditing.is_disabled">封号</n-switch>
         </n-form-item-gi>
       </n-grid>

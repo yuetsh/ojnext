@@ -330,3 +330,20 @@ export interface Server {
   service_url: string
   is_disabled: boolean
 }
+
+export interface Announcement {
+  id: number
+  created_by: SampleUser
+  title: string
+  content: string
+  create_time: Date
+  last_update_time: Date
+  visible: boolean
+}
+
+export interface AnnouncementEdit {
+  id: number
+  title: string
+  content: string
+  visible: boolean
+}

@@ -29,7 +29,7 @@ const contest = reactive<BlankContest & { id: number }>({
   rule_type: "ACM",
   password: "",
   real_time_rank: true,
-  visible: true,
+  visible: false,
   allowed_ip_ranges: [],
 })
 
@@ -112,7 +112,9 @@ onMounted(getContestDetail)
     v-model:value="contest.description"
     :min-height="200"
   />
-  <n-button type="primary" @click="submit">保存</n-button>
+  <n-space justify="end">
+    <n-button type="primary" @click="submit">保存</n-button>
+  </n-space>
 </template>
 
 <style scoped>

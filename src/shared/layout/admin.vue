@@ -16,11 +16,7 @@ const options: MenuOption[] = [
     label: () => h(RouterLink, { to: "/admin" }, { default: () => "首页" }),
     key: "admin home",
   },
-  {
-    label: "题目",
-    key: "problem",
-    disabled: true,
-  },
+  { label: "题目", key: "problem", disabled: true },
   {
     label: () =>
       h(
@@ -73,20 +69,30 @@ const options: MenuOption[] = [
       ),
     key: "admin contest create",
   },
-  { label: "其他", key: "other", disabled: true },
+  { label: "公告", key: "announcement", disabled: true },
   {
     label: () =>
-      h(RouterLink, { to: "/admin/config" }, { default: () => "系统配置" }),
-    key: "admin config",
+      h(
+        RouterLink,
+        { to: "/admin/announcement/list" },
+        { default: () => "公告列表" },
+      ),
+    key: "admin announcement list",
   },
   {
     label: () =>
       h(
         RouterLink,
-        { to: "/admin/announcement" },
-        { default: () => "公告配置" },
+        { to: "/admin/announcement/create" },
+        { default: () => "新建公告" },
       ),
-    key: "admin announcement",
+    key: "admin announcement create",
+  },
+  { label: "其他", key: "other", disabled: true },
+  {
+    label: () =>
+      h(RouterLink, { to: "/admin/config" }, { default: () => "系统配置" }),
+    key: "admin config",
   },
 ]
 

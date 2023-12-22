@@ -46,7 +46,7 @@ const problem = reactive<BlankProblem>({
   time_limit: 1000,
   memory_limit: 64,
   difficulty: "Low",
-  visible: true,
+  visible: false,
   share_submission: false,
   tags: [],
   languages: ["C", "Python3"],

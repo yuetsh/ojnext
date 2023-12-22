@@ -1,6 +1,8 @@
 import http from "utils/http"
 import {
   AdminProblem,
+  Announcement,
+  AnnouncementEdit,
   BlankContest,
   BlankProblem,
   Contest,
@@ -174,4 +176,26 @@ export function getJudgeServer() {
 
 export function deleteJudgeServer(hostname: string) {
   return http.delete("admin/judge_server", { params: { hostname } })
+}
+
+export function getAnnouncementList(offset = 0, limit = 10) {
+  return http.get("admin/announcement", {
+    params: { paging: true, offset, limit },
+  })
+}
+
+export function getAnnouncement(id: number) {
+  return http.get<Announcement>("admin/announcement", { params: { id } })
+}
+
+export function deleteAnnouncement(id: number) {
+  return http.delete("admin/announcement", { params: { id } })
+}
+
+export function editAnnouncement(announcement: AnnouncementEdit) {
+  return http.put("admin/announcement", announcement)
+}
+
+export function createAnnouncement(announcement: AnnouncementEdit) {
+  return http.post("admin/announcement", announcement)
 }
