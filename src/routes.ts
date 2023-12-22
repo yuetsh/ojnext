@@ -71,6 +71,10 @@ export const ojs: RouteRecordRaw = {
       beforeEnter: loadChart,
     },
     {
+      path: "announcement",
+      component: () => import("oj/announcement/list.vue"),
+    },
+    {
       path: "user",
       component: () => import("oj/user/index.vue"),
       meta: { requiresAuth: true },

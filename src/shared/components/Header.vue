@@ -52,6 +52,10 @@ const menus = computed<MenuOption[]>(() => [
     key: "rank",
   },
   {
+    label: () => h(RouterLink, { to: "/announcement" }, { default: () => "公告" }),
+    key: "announcement",
+  },
+  {
     label: () => h(RouterLink, { to: "/admin" }, { default: () => "后台" }),
     show: userStore.isAdminRole,
     key: "admin",

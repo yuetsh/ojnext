@@ -150,3 +150,7 @@ export function uploadAvatar(file: File) {
 export function updateProfile(data: { real_name: string; mood: string }) {
   return http.put("profile", data)
 }
+
+export function getAnnouncementList(offset = 10, limit = 10) {
+  return http.get("announcement", { params: { limit, offset } })
+}
