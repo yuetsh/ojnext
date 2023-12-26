@@ -130,7 +130,7 @@ async function handleEditUser() {
     message.error("密码长度不得小于 6")
     return
   }
-  if (create) {
+  if (create.value) {
     const newUser = [
       [
         userEditing.value.username,
