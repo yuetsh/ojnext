@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { login } from "../api"
+import { useConfigStore } from "../store/config"
 import { loginModal, toggleLogin, toggleSignup } from "../composables/modal"
 import { useUserStore } from "../store/user"
 
 const userStore = useUserStore()
+const configStore = useConfigStore()
 const loginRef = ref()
 const [isLoading, toggleLoading] = useToggle()
 const msg = ref("")
@@ -84,7 +86,9 @@ function goSignup() {
           <n-button type="primary" :loading="isLoading" @click="submit">
             登录
           </n-button>
-          <n-button @click="goSignup">没有账号？立即注册</n-button>
+          <n-button v-if="configStore.config?.allow_register" @click="goSignup">
+            没有账号？立即注册
+          </n-button>
         </n-space>
       </n-form-item>
     </n-form>
