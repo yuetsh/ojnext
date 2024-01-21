@@ -40,7 +40,7 @@ export default defineConfig({
     },
   },
   plugins: [
-    Vue({ include: [/\.vue$/, /\.md$/] }),
+    Vue(),
     legacy({ targets: ["chrome 66", "not IE 11"] }),
     AutoImport({
       imports: [
