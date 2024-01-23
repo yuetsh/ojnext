@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NButton, NIcon } from "naive-ui"
+import { NButton, NIcon, useThemeVars } from "naive-ui"
 import Pagination from "~/shared/components/Pagination.vue"
 import AcAndSubmission from "../components/AcAndSubmission.vue"
 import { getContestProblems, getContestRank } from "oj/api"
@@ -17,6 +17,7 @@ const props = defineProps<Props>()
 
 const route = useRoute()
 const router = useRouter()
+const theme = useThemeVars()
 
 const contestStore = useContestStore()
 
@@ -74,13 +75,13 @@ const columns = ref<DataTableColumn<ContestRank>[]>([
     align: "center",
     render: (row) => h(AcAndSubmission, { rank: row }),
   },
-  {
-    title: "总时间",
-    key: "total_time",
-    width: 120,
-    align: "center",
-    render: (row) => secondsToDuration(row.total_time),
-  },
+  // {
+  //   title: "总时间",
+  //   key: "total_time",
+  //   width: 120,
+  //   align: "center",
+  //   render: (row) => secondsToDuration(row.total_time),
+  // },
 ])
 
 async function listRanks() {
@@ -151,17 +152,16 @@ async function addColumns() {
         },
         cellProps: (row) => {
           let backgroundColor = ""
-          let color = ""
+          let color = theme.value.textColorBase
           if (row.submission_info[problem.id]) {
             const status = row.submission_info[problem.id]
             if (status.is_first_ac) {
-              backgroundColor = "#3c9"
-              color = "#3c763d"
+              backgroundColor = theme.value.primaryColor
             } else if (status.is_ac) {
               backgroundColor = "#dff0d8"
             } else {
-              backgroundColor = "#f2dede"
-              color = "#a94442"
+              backgroundColor = theme.value.warningColor
+              color = theme.value.errorColor
             }
           }
           return { style: { backgroundColor, color } }

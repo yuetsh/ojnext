@@ -67,11 +67,9 @@ export function duration(
 }
 
 export function secondsToDuration(seconds: number): string {
-  const epoch = new Date(0)
-  const secondsAfterEpoch = new Date(seconds * 1000)
   const duration = intervalToDuration({
-    start: epoch,
-    end: secondsAfterEpoch,
+    start: 0,
+    end: seconds * 1000,
   })
   return [duration.hours, duration.minutes, duration.seconds].join(":")
 }
