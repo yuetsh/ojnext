@@ -10,7 +10,7 @@ import { isDark } from "../composables/dark"
 
 const styleTheme = EditorView.baseTheme({
   "& .cm-scroller": {
-    "font-family": "Consolas",
+    "font-family": "Monaco",
   },
   "&.cm-editor.cm-focused": {
     outline: "none",
