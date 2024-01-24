@@ -42,6 +42,6 @@ function clear() {
 .testcase {
   white-space: pre;
   font-size: 16px;
-  font-family: "Consolas";
+  font-family: "Monaco";
 }
 </style>

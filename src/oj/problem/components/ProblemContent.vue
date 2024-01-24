@@ -178,7 +178,7 @@ function type(status: ProblemStatus) {
 .problemContent .testcase {
   font-size: 14px;
   white-space: pre;
-  font-family: "Consolas";
+  font-family: "Monaco";
 }
 
 .problemContent .success {
@@ -208,7 +208,7 @@ function type(status: ProblemStatus) {
 }
 
 .problemContent > .content > pre > code {
-  font-family: "Consolas";
+  font-family: "Monaco";
 }
 
 .__layout-dark .problemContent > .content > pre {
