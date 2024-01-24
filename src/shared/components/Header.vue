@@ -2,7 +2,6 @@
 import { logout } from "../api"
 import { useUserStore } from "../store/user"
 import { useConfigStore } from "../store/config"
-import { isDark, toggleDark } from "~/shared/composables/dark"
 import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
 import { RouterLink } from "vue-router"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
@@ -13,6 +12,8 @@ import {
 import Sunny from "../icons/Sunny.vue"
 import Moon from "../icons/Moon.vue"
 
+const isDark = useDark()
+const toggleDark = useToggle(isDark)
 const userStore = useUserStore()
 const configStore = useConfigStore()
 const route = useRoute()
@@ -52,7 +53,8 @@ const menus = computed<MenuOption[]>(() => [
     key: "rank",
   },
   {
-    label: () => h(RouterLink, { to: "/announcement" }, { default: () => "公告" }),
+    label: () =>
+      h(RouterLink, { to: "/announcement" }, { default: () => "公告" }),
     key: "announcement",
   },
   {

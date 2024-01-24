@@ -6,7 +6,6 @@ import { EditorView } from "@codemirror/view"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
 import { LANGUAGE } from "~/utils/types"
-import { isDark } from "../composables/dark"
 
 const styleTheme = EditorView.baseTheme({
   "& .cm-scroller": {
@@ -38,6 +37,9 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const code = ref(props.modelValue)
+
+const isDark = useDark()
+
 watch(
   () => props.modelValue,
   (v) => {
