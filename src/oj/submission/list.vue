@@ -214,7 +214,7 @@ const columns = computed(() => {
     {
       title: "用户",
       key: "username",
-      minWidth: 120,
+      minWidth: 150,
       render: (row) =>
         h(
           ButtonWithSearch,
