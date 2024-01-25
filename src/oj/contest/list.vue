@@ -91,11 +91,19 @@ function clear() {
 onMounted(listContests)
 watch(() => query.page, routerPush)
 watch(
-  () => [query.limit, query.keyword, query.status],
+  () => [query.limit, query.status],
   () => {
     query.page = 1
     routerPush()
   },
+)
+watchDebounced(
+  () => [query.keyword],
+  () => {
+    query.page = 1
+    routerPush()
+  },
+  { debounce: 500, maxWait: 1000 },
 )
 watch(
   () => route.name === "contests" && route.query,
@@ -129,7 +137,11 @@ function rowProps(row: Contest) {
           />
         </n-form-item>
         <n-form-item>
-          <n-input clearable @change="search" placeholder="比赛标题" />
+          <n-input
+            clearable
+            v-model:value="query.keyword"
+            placeholder="比赛标题"
+          />
         </n-form-item>
       </n-form>
       <n-form :show-feedback="false" label-placement="left" inline>

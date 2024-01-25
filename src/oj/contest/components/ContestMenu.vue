@@ -46,7 +46,7 @@ const options: DropdownOption[] = [
         比赛排名
       </n-button>
     </n-space>
-    <n-dropdown v-else :options="options" trigger="click" @select="goto">
+    <n-dropdown v-else :options="options" @select="goto">
       <n-button>菜单</n-button>
     </n-dropdown>
   </div>

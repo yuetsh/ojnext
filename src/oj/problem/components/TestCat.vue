@@ -19,7 +19,6 @@ function clear() {
 </script>
 <template>
   <n-popover
-    trigger="click"
     placement="bottom-end"
     scrollable
     :show-arrow="false"

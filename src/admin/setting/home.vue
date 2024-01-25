@@ -102,7 +102,12 @@ watch(
     <span>我猜你要：</span>
     <n-button @click="router.push('/admin/problem/create')">新题目</n-button>
     <n-button @click="router.push('/admin/contest/create')">新比赛</n-button>
-    <n-input clearable v-model:value="query.username" placeholder="班级前缀" />
+    <n-input
+      clearable
+      @change="listRanks"
+      v-model:value="query.username"
+      placeholder="班级前缀"
+    />
     <n-button @click="listRanks">用户排名</n-button>
     <Pagination
       class="pagination"

@@ -110,15 +110,21 @@ async function getRandom() {
 }
 
 watch(() => query.page, routerPush)
-
 watch(
-  () => [query.tag, query.difficulty, query.limit, query.keyword],
+  () => [query.tag, query.difficulty, query.limit],
   () => {
     query.page = 1
     routerPush()
   },
 )
-
+watchDebounced(
+  () => [query.keyword],
+  () => {
+    query.page = 1
+    routerPush()
+  },
+  { debounce: 500, maxWait: 1000 },
+)
 watch(
   () => query.tag,
   () => {
@@ -128,7 +134,6 @@ watch(
     }))
   },
 )
-
 watch(
   () => route.path === "/" && route.query,
   (newVal) => {
@@ -199,7 +204,11 @@ function rowProps(row: ProblemFiltered) {
           />
         </n-form-item>
         <n-form-item>
-          <n-input clearable @change="search" placeholder="题号或者标题" />
+          <n-input
+            clearable
+            v-model:value="query.keyword"
+            placeholder="题号或者标题"
+          />
         </n-form-item>
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">

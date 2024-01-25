@@ -218,7 +218,7 @@ export interface Submission {
   ip: string
   // TODO: 这里不知道是什么
   contest: null
-  problem: number
+  problem: string
   can_unshare: boolean
 }
 

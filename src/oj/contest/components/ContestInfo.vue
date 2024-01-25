@@ -10,7 +10,6 @@ const contestStore = useContestStore()
 <template>
   <n-popover
     v-if="contestStore.contest"
-    trigger="click"
     placement="bottom-end"
     :show-arrow="false"
   >

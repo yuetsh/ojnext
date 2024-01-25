@@ -13,6 +13,7 @@ import { adminRejudge, getSubmissions } from "oj/api"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
 import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
+import ButtonWithSearch from "./components/ButtonWithSearch.vue"
 
 interface Query {
   username: string
@@ -81,14 +82,6 @@ function routerPush() {
   })
 }
 
-function searchUser(value: string) {
-  query.username = value
-}
-
-function searchProblem(value: string) {
-  query.problem = value
-}
-
 function search(username: string, problem: string) {
   query.username = username
   query.problem = problem
@@ -107,20 +100,36 @@ async function rejudge(submissionID: string) {
   listSubmissions()
 }
 
+function problemClicked(row: Submission) {
+  if (route.name === "contest submissions") {
+    router.push({
+      name: "contest problem",
+      params: {
+        problemID: row.problem,
+      },
+    })
+  } else {
+    router.push("/problem/" + row.problem)
+  }
+}
+
 watch(() => query.page, routerPush)
 
 watch(
-  () => [
-    query.limit,
-    query.myself,
-    query.username,
-    query.result,
-    query.problem,
-  ],
+  () => [query.limit, query.myself, query.result],
   () => {
     query.page = 1
     routerPush()
   },
+)
+
+watchDebounced(
+  () => [query.username, query.problem],
+  () => {
+    query.page = 1
+    routerPush()
+  },
+  { debounce: 500, maxWait: 1000 },
 )
 
 watch(
@@ -176,22 +185,10 @@ const columns = computed(() => {
       width: 120,
       render: (row) =>
         h(
-          NButton,
+          ButtonWithSearch,
           {
-            text: true,
-            type: "info",
-            onClick: () => {
-              if (route.name === "contest submissions") {
-                router.push({
-                  name: "contest problem",
-                  params: {
-                    problemID: row.problem,
-                  },
-                })
-              } else {
-                router.push("/problem/" + row.problem)
-              }
-            },
+            onClick: () => problemClicked(row),
+            onSearch: () => (query.problem = row.problem),
           },
           () => row.problem,
         ),
@@ -220,11 +217,10 @@ const columns = computed(() => {
       minWidth: 120,
       render: (row) =>
         h(
-          NButton,
+          ButtonWithSearch,
           {
-            text: true,
-            type: "info",
             onClick: () => router.push("/user?name=" + row.username),
+            onSearch: () => (query.username = row.username),
           },
           () => row.username,
         ),
@@ -267,10 +263,14 @@ const columns = computed(() => {
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item>
-          <n-input clearable @change="searchUser" placeholder="用户" />
+          <n-input
+            clearable
+            v-model:value="query.username"
+            placeholder="用户"
+          />
         </n-form-item>
         <n-form-item>
-          <n-input clearable @change="searchProblem" placeholder="题号" />
+          <n-input clearable v-model:value="query.problem" placeholder="题号" />
         </n-form-item>
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">

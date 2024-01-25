@@ -40,13 +40,13 @@ const menus = computed<MenuOption[]>(() => [
     key: "problem",
   },
   {
-    label: () => h(RouterLink, { to: "/contest" }, { default: () => "比赛" }),
-    key: "contest",
-  },
-  {
     label: () =>
       h(RouterLink, { to: "/submission" }, { default: () => "提交" }),
     key: "submission",
+  },
+  {
+    label: () => h(RouterLink, { to: "/contest" }, { default: () => "比赛" }),
+    key: "contest",
   },
   {
     label: () => h(RouterLink, { to: "/rank" }, { default: () => "排名" }),
@@ -109,7 +109,7 @@ function goHome() {
       />
     </n-space>
     <n-space align="center">
-      <n-dropdown v-if="isMobile" :options="menus" trigger="click">
+      <n-dropdown v-if="isMobile" :options="menus">
         <n-button>菜单</n-button>
       </n-dropdown>
       <n-button
@@ -122,11 +122,7 @@ function goHome() {
         {{ screenSwitchLabel }}
       </n-button>
       <div v-if="userStore.isFinished">
-        <n-dropdown
-          v-if="userStore.isAuthed"
-          :options="options"
-          trigger="click"
-        >
+        <n-dropdown v-if="userStore.isAuthed" :options="options">
           <n-button>{{ userStore.user!.username }}</n-button>
         </n-dropdown>
         <n-space align="center" v-else>
