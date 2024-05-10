@@ -423,7 +423,7 @@ watch([fromExistingTags, newTags], (tags) => {
     </n-form-item>
   </n-form>
   <n-tabs
-    type="line"
+    type="segment"
     default-value="C"
     class="template box"
     v-if="needTemplate"
