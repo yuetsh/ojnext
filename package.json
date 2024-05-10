@@ -10,36 +10,36 @@
   },
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.2",
-    "@codemirror/lang-python": "^6.1.5",
+    "@codemirror/lang-python": "^6.1.6",
     "@vueuse/core": "^10.9.0",
     "@wangeditor/editor": "^5.1.23",
     "@wangeditor/editor-for-vue": "5.1.12",
     "axios": "^1.6.8",
-    "canvas-confetti": "^1.9.2",
+    "canvas-confetti": "^1.9.3",
     "chart.js": "^4.4.2",
     "codemirror": "^6.0.1",
     "copy-text-to-clipboard": "^3.2.0",
     "date-fns": "^2.30.0",
     "highlight.js": "^11.9.0",
-    "naive-ui": "^2.38.1",
+    "naive-ui": "^2.38.2",
     "normalize.css": "^8.0.1",
     "pinia": "^2.1.7",
-    "vue": "^3.4.21",
+    "vue": "^3.4.27",
     "vue-chartjs": "^5.3.1",
     "vue-codemirror": "^6.1.1",
-    "vue-router": "^4.3.0"
+    "vue-router": "^4.3.2"
   },
   "devDependencies": {
-    "@types/node": "^20.12.7",
-    "@vitejs/plugin-legacy": "^5.3.2",
+    "@types/node": "^20.12.11",
+    "@vitejs/plugin-legacy": "^5.4.0",
     "@vitejs/plugin-vue": "^5.0.4",
     "prettier": "^3.2.5",
-    "terser": "^5.30.3",
+    "terser": "^5.31.0",
     "typescript": "^5.4.5",
     "unplugin-auto-import": "^0.17.5",
-    "unplugin-vue-components": "^0.26.0",
-    "unplugin-vue-markdown": "^0.26.0",
-    "vite": "^5.2.8",
-    "vue-tsc": "^2.0.12"
+    "unplugin-vue-components": "^0.27.0",
+    "unplugin-vue-markdown": "^0.26.2",
+    "vite": "^5.2.11",
+    "vue-tsc": "^2.0.16"
   }
 }

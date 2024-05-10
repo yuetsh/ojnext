@@ -25,4 +25,4 @@ jobs:
           ARGS: "-avzr --delete"
           SOURCE: dist/
           REMOTE_USER: root
-          TARGET: /root/OnlineJudgeDeploy/data/clientnext
+          TARGET: /root/OJDeploy/data/clientnext
