@@ -42,15 +42,6 @@ const query = reactive<Query>({
 })
 const [show, toggleStatisticPanel] = useToggle(false)
 
-const panelTitle = computed(() => {
-  let p = ""
-  if (query.username) p = `用户 ${query.username} 的`
-  if (query.problem) p = `题号 ${query.problem} 的`
-  if (query.username && query.problem)
-    p = `用户 ${query.username} 关于题号 ${query.problem} 的`
-  return `${p}提交记录统计`
-})
-
 const options: SelectOption[] = [
   { label: "全部", value: "" },
   { label: "答案正确", value: "0" },
@@ -311,7 +302,7 @@ const columns = computed(() => {
     preset="card"
     :style="{ maxWidth: isDesktop && '70vw', maxHeight: '80vh' }"
     :content-style="{ overflow: 'auto' }"
-    :title="panelTitle"
+    title="提交记录的统计"
   >
     <StatisticsPanel :problem="query.problem" :username="query.username" />
   </n-modal>

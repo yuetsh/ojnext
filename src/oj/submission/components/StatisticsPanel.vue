@@ -23,10 +23,17 @@
         />
       </n-form-item>
       <n-form-item>
+        <n-select
+          style="width: 120px"
+          v-model:value="query.groupby"
+          :options="groupbys"
+        />
+      </n-form-item>
+      <n-form-item>
         <n-button type="primary" @click="handleStatistics">统计</n-button>
       </n-form-item>
     </n-form>
-    <n-space v-if="visble" size="large">
+    <n-space v-if="count.total > 0" size="large">
       <n-h1>
         <n-gradient-text type="primary">
           答案正确数：{{ count.accepted }}
@@ -39,14 +46,19 @@
       </n-h1>
       <n-h1>
         <n-gradient-text type="warning">
-          正确率：{{ count.rate * 100 }}%
+          正确率：{{ count.rate }}
         </n-gradient-text>
+      </n-h1>
+    </n-space>
+    <n-space v-else>
+      <n-h1>
+        <n-gradient-text type="primary">暂无提交</n-gradient-text>
       </n-h1>
     </n-space>
   </n-space>
 </template>
 <script setup lang="ts">
-import { formatISO, sub } from "date-fns"
+import { formatISO, sub, type Duration } from "date-fns"
 import { getSubmissionStatistics } from "oj/api"
 
 interface Props {
@@ -62,12 +74,19 @@ const options: SelectOption[] = [
   { label: "一天内", value: "days:1" },
   { label: "一周内", value: "weeks:1" },
   { label: "一个月内", value: "months:1" },
+  { label: "一年内", value: "years:1" },
+]
+
+const groupbys: SelectOption[] = [
+  { label: "用户分组", value: "problem" },
+  { label: "题目分组", value: "username" },
 ]
 
 const query = reactive({
   username: props.username,
   problem: props.problem,
-  duration: options[4].value,
+  duration: options[options.length - 1].value,
+  groupby: groupbys[0].value,
 })
 
 const count = reactive({
@@ -75,7 +94,6 @@ const count = reactive({
   accepted: 0,
   rate: 0,
 })
-const [visble, toggleVisble] = useToggle()
 
 const subOptions = computed<Duration>(() => {
   let dur = options.find((it) => it.value === query.duration) ?? options[0]
@@ -86,7 +104,6 @@ const subOptions = computed<Duration>(() => {
 })
 
 async function handleStatistics() {
-  toggleVisble(false)
   const current = Date.now()
   const end = formatISO(current)
   const start = formatISO(sub(current, subOptions.value))
@@ -95,7 +112,6 @@ async function handleStatistics() {
     query.problem,
     query.username,
   )
-  toggleVisble(true)
   count.total = res.data.submission_count
   count.accepted = res.data.accepted_count
   count.rate = res.data.correct_rate
