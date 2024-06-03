@@ -14,6 +14,7 @@ import { isDesktop } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
 import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
 import ButtonWithSearch from "./components/ButtonWithSearch.vue"
+import StatisticsPanel from "./components/StatisticsPanel.vue"
 
 interface Query {
   username: string
@@ -38,6 +39,16 @@ const query = reactive<Query>({
   username: <string>route.query.username ?? "",
   myself: route.query.myself === "1",
   problem: <string>route.query.problem ?? "",
+})
+const [show, toggleStatisticPanel] = useToggle(false)
+
+const panelTitle = computed(() => {
+  let p = ""
+  if (query.username) p = `用户 ${query.username} 的`
+  if (query.problem) p = `题号 ${query.problem} 的`
+  if (query.username && query.problem)
+    p = `用户 ${query.username} 关于题号 ${query.problem} 的`
+  return `${p}提交记录统计`
 })
 
 const options: SelectOption[] = [
@@ -279,6 +290,9 @@ const columns = computed(() => {
             搜索
           </n-button>
         </n-form-item>
+        <n-form-item v-if="userStore.isSuperAdmin">
+          <n-button @click="toggleStatisticPanel(true)">数据统计</n-button>
+        </n-form-item>
         <n-form-item>
           <n-button @click="clear" quaternary>重置</n-button>
         </n-form-item>
@@ -291,6 +305,16 @@ const columns = computed(() => {
     v-model:limit="query.limit"
     v-model:page="query.page"
   />
+  <n-modal
+    v-if="userStore.isSuperAdmin"
+    v-model:show="show"
+    preset="card"
+    :style="{ maxWidth: isDesktop && '70vw', maxHeight: '80vh' }"
+    :content-style="{ overflow: 'auto' }"
+    :title="panelTitle"
+  >
+    <StatisticsPanel :problem="query.problem" :username="query.username" />
+  </n-modal>
 </template>
 <style scoped>
 .select {

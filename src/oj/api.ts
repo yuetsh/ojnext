@@ -90,6 +90,20 @@ export function adminRejudge(id: string) {
   })
 }
 
+export function getSubmissionStatistics(
+  duration: { start: string; end: string },
+  problemID?: string,
+  username?: string,
+) {
+  return http.get("admin/submission/statistics", {
+    params: {
+      ...duration,
+      problem_id: problemID,
+      username,
+    },
+  })
+}
+
 export function getRank(offset: number, limit: number, username?: string) {
   return http.get("user_rank", {
     params: { offset, limit, rule: "acm", username },
