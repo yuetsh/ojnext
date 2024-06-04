@@ -27,17 +27,17 @@
       </n-form-item>
     </n-form>
     <n-space v-if="count.total > 0" size="large">
-      <n-h1>
+      <n-h1 style="margin-bottom: 0">
         <n-gradient-text type="primary">
           正确提交数：{{ count.accepted }}
         </n-gradient-text>
       </n-h1>
-      <n-h1>
+      <n-h1 style="margin-bottom: 0">
         <n-gradient-text type="info">
           总提交数：{{ count.total }}
         </n-gradient-text>
       </n-h1>
-      <n-h1>
+      <n-h1 style="margin-bottom: 0">
         <n-gradient-text type="warning">
           正确率：{{ count.rate }}
         </n-gradient-text>
