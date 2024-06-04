@@ -23,20 +23,13 @@
         />
       </n-form-item>
       <n-form-item>
-        <n-select
-          style="width: 120px"
-          v-model:value="query.groupby"
-          :options="groupbys"
-        />
-      </n-form-item>
-      <n-form-item>
         <n-button type="primary" @click="handleStatistics">统计</n-button>
       </n-form-item>
     </n-form>
     <n-space v-if="count.total > 0" size="large">
       <n-h1>
         <n-gradient-text type="primary">
-          答案正确数：{{ count.accepted }}
+          正确提交数：{{ count.accepted }}
         </n-gradient-text>
       </n-h1>
       <n-h1>
@@ -50,11 +43,35 @@
         </n-gradient-text>
       </n-h1>
     </n-space>
-    <n-space v-else>
+    <n-space v-if="count.total > 0" size="large">
       <n-h1>
-        <n-gradient-text type="primary">暂无提交</n-gradient-text>
+        <n-gradient-text type="error">
+          回答正确的人数：{{ list.length }}
+        </n-gradient-text>
+      </n-h1>
+      <n-h1 v-if="person.count > 0">
+        <n-gradient-text type="warning">
+          班级人数：{{ person.count }}
+        </n-gradient-text>
+      </n-h1>
+      <n-h1 v-if="person.count > 0">
+        <n-gradient-text type="success">
+          班级完成度：{{ person.rate }}
+        </n-gradient-text>
       </n-h1>
     </n-space>
+    <n-space v-if="count.total === 0">
+      <n-h1>
+        <n-gradient-text type="primary">暂无数据统计</n-gradient-text>
+      </n-h1>
+    </n-space>
+    <n-data-table
+      v-if="list.length"
+      striped
+      size="small"
+      :columns="columns"
+      :data="list"
+    />
   </n-space>
 </template>
 <script setup lang="ts">
@@ -74,19 +91,19 @@ const options: SelectOption[] = [
   { label: "一天内", value: "days:1" },
   { label: "一周内", value: "weeks:1" },
   { label: "一个月内", value: "months:1" },
-  { label: "一年内", value: "years:1" },
 ]
 
-const groupbys: SelectOption[] = [
-  { label: "用户分组", value: "problem" },
-  { label: "题目分组", value: "username" },
+const columns: DataTableColumn[] = [
+  { title: "用户", key: "username" },
+  { title: "提交数", key: "submission_count" },
+  { title: "已解决", key: "accepted_count" },
+  { title: "正确率", key: "correct_rate" },
 ]
 
 const query = reactive({
   username: props.username,
   problem: props.problem,
-  duration: options[options.length - 1].value,
-  groupby: groupbys[0].value,
+  duration: options[0].value,
 })
 
 const count = reactive({
@@ -94,6 +111,11 @@ const count = reactive({
   accepted: 0,
   rate: 0,
 })
+const person = reactive({
+  count: 0,
+  rate: 0,
+})
+const list = ref([])
 
 const subOptions = computed<Duration>(() => {
   let dur = options.find((it) => it.value === query.duration) ?? options[0]
@@ -115,5 +137,8 @@ async function handleStatistics() {
   count.total = res.data.submission_count
   count.accepted = res.data.accepted_count
   count.rate = res.data.correct_rate
+  list.value = res.data.data
+  person.count = res.data.person_count
+  person.rate = res.data.person_rate
 }
 </script>
