@@ -7,7 +7,7 @@ import Components from "unplugin-vue-components/vite"
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
 
 const dev = false
-const url = dev ? "https://ojtest.hyyz.izhai.net" : "https://oj.xuyue.cc"
+const url = dev ? "http://localhost:8080" : "https://oj.xuyue.cc"
 const proxyConfig = {
   target: url,
   changeOrigin: true,

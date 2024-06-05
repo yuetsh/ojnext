@@ -15,6 +15,8 @@ import { useUserStore } from "~/shared/store/user"
 import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
 import ButtonWithSearch from "./components/ButtonWithSearch.vue"
 import StatisticsPanel from "./components/StatisticsPanel.vue"
+import SubmissionLink from "./components/SubmissionLink.vue"
+import SubmissionDetail from "./detail.vue"
 
 interface Query {
   username: string
@@ -40,7 +42,9 @@ const query = reactive<Query>({
   myself: route.query.myself === "1",
   problem: <string>route.query.problem ?? "",
 })
-const [show, toggleStatisticPanel] = useToggle(false)
+const submissionID = ref("")
+const [statisticPanel, toggleStatisticPanel] = useToggle(false)
+const [codePanel, toggleCodePanel] = useToggle(false)
 
 const options: SelectOption[] = [
   { label: "全部", value: "" },
@@ -115,6 +119,11 @@ function problemClicked(row: Submission) {
   }
 }
 
+function showCodePanel(id: string) {
+  toggleCodePanel(true)
+  submissionID.value = id
+}
+
 watch(() => query.page, routerPush)
 
 watch(
@@ -159,32 +168,22 @@ const columns = computed(() => {
       title: "提交编号",
       key: "id",
       minWidth: 160,
-      render: (row) => {
-        if (row.show_link) {
-          return h(
-            NButton,
-            {
-              text: true,
-              type: "info",
-              onClick: () => router.push("/submission/" + row.id),
-            },
-            () => row.id.slice(0, 12),
-          )
-        } else {
-          return row.id.slice(0, 12)
-        }
-      },
+      render: (row) =>
+        h(SubmissionLink, {
+          submission: row,
+          onShowCode: () => showCodePanel(row.id),
+        }),
     },
     {
       title: "状态",
       key: "status",
-      width: 120,
+      width: 160,
       render: (row) => h(SubmissionResultTag, { result: row.result }),
     },
     {
       title: "题目",
       key: "problem",
-      width: 120,
+      width: 160,
       render: (row) =>
         h(
           ButtonWithSearch,
@@ -216,7 +215,7 @@ const columns = computed(() => {
     {
       title: "用户",
       key: "username",
-      minWidth: 150,
+      minWidth: 160,
       render: (row) =>
         h(
           ButtonWithSearch,
@@ -298,7 +297,7 @@ const columns = computed(() => {
   />
   <n-modal
     v-if="userStore.isSuperAdmin"
-    v-model:show="show"
+    v-model:show="statisticPanel"
     preset="card"
     :style="{ maxWidth: isDesktop && '70vw', maxHeight: '80vh' }"
     :content-style="{ overflow: 'auto' }"
@@ -306,9 +305,23 @@ const columns = computed(() => {
   >
     <StatisticsPanel :problem="query.problem" :username="query.username" />
   </n-modal>
+  <n-modal
+    v-model:show="codePanel"
+    preset="card"
+    :style="{ maxWidth: isDesktop && '70vw', maxHeight: '80vh' }"
+    :content-style="{ overflow: 'auto' }"
+    title="代码详情"
+  >
+    <SubmissionDetail :submissionID="submissionID" hideList />
+  </n-modal>
 </template>
 <style scoped>
 .select {
   width: 120px;
+}
+
+.code {
+  font-size: 20px;
+  overflow: auto;
 }
 </style>

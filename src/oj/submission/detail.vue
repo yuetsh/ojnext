@@ -12,6 +12,7 @@ import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 
 const props = defineProps<{
   submissionID: string
+  hideList: boolean
 }>()
 
 const submission = ref<Submission>()
@@ -75,7 +76,7 @@ onMounted(init)
       {{ copied ? "成功复制" : "复制代码" }}
     </n-button>
     <n-data-table
-      v-if="submission.info && submission.info.data"
+      v-if="!hideList && submission.info && submission.info.data"
       :columns="columns"
       :data="submission.info.data"
     />
