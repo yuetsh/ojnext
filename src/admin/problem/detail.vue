@@ -422,26 +422,30 @@ watch([fromExistingTags, newTags], (tags) => {
       />
     </n-form-item>
   </n-form>
-  <n-tabs
-    type="line"
-    default-value="C"
-    class="template box"
-    v-if="needTemplate"
-    v-model:value="currentActiveTemplate"
-  >
-    <n-tab-pane
-      v-for="(lang, index) in problem.languages"
-      :key="index"
-      :name="lang"
-    >
-      <CodeEditor
-        v-model="template[lang]"
-        :language="lang"
-        :font-size="16"
-        height="200px"
-      />
-    </n-tab-pane>
-  </n-tabs>
+  <n-form v-if="needTemplate">
+    <n-form-item label="编写代码模板">
+      <n-tabs
+        type="segment"
+        default-value="C"
+        class="template box"
+        v-model:value="currentActiveTemplate"
+      >
+        <n-tab-pane
+          v-for="(lang, index) in problem.languages"
+          :key="index"
+          :name="lang"
+        >
+          <CodeEditor
+            v-model="template[lang]"
+            :language="lang"
+            :font-size="16"
+            height="200px"
+          />
+        </n-tab-pane>
+      </n-tabs>
+    </n-form-item>
+  </n-form>
+
   <n-alert
     class="box"
     v-if="problem.test_case_score.length"

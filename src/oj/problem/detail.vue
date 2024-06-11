@@ -65,7 +65,7 @@ onBeforeUnmount(() => {
   >
     <n-gi :span="isDesktop ? 1 : 2" v-show="onlyDetail">
       <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
-        <n-tabs default-value="content" type="line">
+        <n-tabs default-value="content" type="segment">
           <n-tab-pane name="content" tab="题目描述">
             <ProblemContent />
           </n-tab-pane>
@@ -77,7 +77,7 @@ onBeforeUnmount(() => {
           </n-tab-pane>
         </n-tabs>
       </n-scrollbar>
-      <n-tabs v-else default-value="content" type="line">
+      <n-tabs v-else default-value="content" type="segment">
         <n-tab-pane name="content" tab="题目描述">
           <ProblemContent />
         </n-tab-pane>

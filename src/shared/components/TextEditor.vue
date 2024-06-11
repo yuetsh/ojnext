@@ -24,7 +24,35 @@ watch(rawHtml, () => emit("update:value", rawHtml.value))
 const editorRef = shallowRef<IDomEditor>()
 
 const toolbarConfig: Partial<IToolbarConfig> = {
-  excludeKeys: ["todo", "insertVideo", "fullScreen"],
+  toolbarKeys: [
+    "blockquote",
+    "headerSelect",
+    "fontSize",
+    "lineHeight",
+    "|",
+    "bold",
+    "underline",
+    "italic",
+    "through",
+    "color",
+    "bgColor",
+    "|",
+    "bulletedList",
+    "numberedList",
+    "justifyLeft",
+    "justifyCenter",
+    "justifyRight",
+    "|",
+    "uploadImage",
+    "emotion",
+    "insertLink",
+    "insertTable",
+    "divider",
+    "|",
+    "clearStyle",
+    "undo",
+    "redo",
+  ],
 }
 
 const editorConfig: Partial<IEditorConfig> = {
