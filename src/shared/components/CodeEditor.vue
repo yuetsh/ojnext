@@ -20,7 +20,6 @@ const styleTheme = EditorView.baseTheme({
 })
 
 interface Props {
-  modelValue: string
   language?: LANGUAGE
   fontSize?: number
   height?: string
@@ -36,17 +35,9 @@ const props = withDefaults(defineProps<Props>(), {
   placeholder: "",
 })
 
-const code = ref(props.modelValue)
+const code = defineModel<string>("value")
 
 const isDark = useDark()
-
-watch(
-  () => props.modelValue,
-  (v) => {
-    code.value = v
-  },
-)
-const emit = defineEmits(["update:modelValue"])
 
 const lang = computed(() => {
   if (props.language === "Python3" || props.language === "Python2") {
@@ -54,10 +45,6 @@ const lang = computed(() => {
   }
   return cpp()
 })
-
-function onChange(v: string) {
-  emit("update:modelValue", v)
-}
 </script>
 <template>
   <Codemirror
@@ -68,6 +55,5 @@ function onChange(v: string) {
     :tabSize="4"
     :placeholder="props.placeholder"
     :style="{ height: props.height, fontSize: props.fontSize + 'px' }"
-    @change="onChange"
   />
 </template>

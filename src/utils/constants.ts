@@ -121,6 +121,8 @@ export const PROBLEM_PERMISSION = {
 export const STORAGE_KEY = {
   AUTHED: "authed",
   LANGUAGE: "problemLanguage",
+  ADMIN_PROBLEM: "adminProblem",
+  ADMIN_PROBLEM_TAGS: "adminProblemTags",
 }
 
 export const DIFFICULTY = {

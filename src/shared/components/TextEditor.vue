@@ -5,21 +5,18 @@ import { Editor, Toolbar } from "@wangeditor/editor-for-vue"
 import { uploadImage } from "../../admin/api"
 
 interface Props {
-  value: string
   title: string
   minHeight?: number
 }
 
+const rawHtml = defineModel<string>("value")
 type InsertFnType = (url: string, alt: string, href: string) => void
 
 const props = withDefaults(defineProps<Props>(), {
   minHeight: 0,
 })
-const emit = defineEmits(["update:value"])
 
 const message = useMessage()
-const rawHtml = ref(props.value)
-watch(rawHtml, () => emit("update:value", rawHtml.value))
 
 const editorRef = shallowRef<IDomEditor>()
 

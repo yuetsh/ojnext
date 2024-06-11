@@ -3,7 +3,11 @@ import TextEditor from "~/shared/components/TextEditor.vue"
 import { unique } from "~/utils/functions"
 import { BlankProblem, LANGUAGE, Tag } from "~/utils/types"
 import { getProblemTagList } from "~/shared/api"
-import { LANGUAGE_SHOW_VALUE, CODE_TEMPLATES } from "~/utils/constants"
+import {
+  LANGUAGE_SHOW_VALUE,
+  CODE_TEMPLATES,
+  STORAGE_KEY,
+} from "~/utils/constants"
 import download from "~/utils/download"
 import {
   createContestProblem,
@@ -37,7 +41,7 @@ const title = computed(
       "admin contest problem edit": "编辑比赛题目",
     })[<string>route.name],
 )
-const problem = reactive<BlankProblem>({
+const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
   _id: "",
   title: "",
   description: "",
@@ -75,9 +79,19 @@ const problem = reactive<BlankProblem>({
 const template = reactive(JSON.parse(JSON.stringify(CODE_TEMPLATES)))
 const currentActiveTemplate = ref<LANGUAGE>("C")
 
-const existingTags = shallowRef<Tag[]>([])
-const fromExistingTags = shallowRef<string[]>([])
-const newTags = shallowRef<string[]>([])
+// 从服务器来的tag列表
+const tagList = shallowRef<Tag[]>([])
+
+interface Tags {
+  select: string[]
+  upload: string[]
+}
+// 选择的 和 新的
+const tags = useLocalStorage<Tags>(STORAGE_KEY.ADMIN_PROBLEM_TAGS, {
+  select: [],
+  upload: [],
+})
+
 const [needTemplate, toggleNeedTemplate] = useToggle(false)
 const [ready, toggleReady] = useToggle(false)
 
@@ -93,7 +107,7 @@ const languageOptions = [
 ]
 
 const tagOptions = computed(() =>
-  existingTags.value.map((tag) => ({ label: tag.name, value: tag.name })),
+  tagList.value.map((tag) => ({ label: tag.name, value: tag.name })),
 )
 
 async function getProblemDetail() {
@@ -103,76 +117,76 @@ async function getProblemDetail() {
   }
   const { data } = await getProblem(props.problemID)
   toggleReady(true)
-  problem.id = data.id
-  problem._id = data._id
-  problem.title = data.title
-  problem.description = data.description
-  problem.input_description = data.input_description
-  problem.output_description = data.output_description
-  problem.time_limit = data.time_limit
-  problem.memory_limit = data.memory_limit
-  problem.memory_limit = data.memory_limit
-  problem.difficulty = data.difficulty
-  problem.visible = data.visible
-  problem.share_submission = data.share_submission
-  problem.tags = data.tags
-  problem.languages = data.languages
-  problem.template = data.template
-  problem.samples = data.samples
-  problem.samples = data.samples
-  problem.spj = data.spj
-  problem.spj_language = data.spj_language
-  problem.spj_code = data.spj_code
-  problem.spj_compile_ok = data.spj_compile_ok
-  problem.test_case_id = data.test_case_id
-  problem.test_case_score = data.test_case_score
-  problem.rule_type = data.rule_type
-  problem.hint = data.hint
-  problem.source = data.source
-  problem.io_mode = data.io_mode
-  if (problem.contest_id) {
-    problem.contest_id = problem.contest_id
+  problem.value.id = data.id
+  problem.value._id = data._id
+  problem.value.title = data.title
+  problem.value.description = data.description
+  problem.value.input_description = data.input_description
+  problem.value.output_description = data.output_description
+  problem.value.time_limit = data.time_limit
+  problem.value.memory_limit = data.memory_limit
+  problem.value.memory_limit = data.memory_limit
+  problem.value.difficulty = data.difficulty
+  problem.value.visible = data.visible
+  problem.value.share_submission = data.share_submission
+  problem.value.tags = data.tags
+  problem.value.languages = data.languages
+  problem.value.template = data.template
+  problem.value.samples = data.samples
+  problem.value.samples = data.samples
+  problem.value.spj = data.spj
+  problem.value.spj_language = data.spj_language
+  problem.value.spj_code = data.spj_code
+  problem.value.spj_compile_ok = data.spj_compile_ok
+  problem.value.test_case_id = data.test_case_id
+  problem.value.test_case_score = data.test_case_score
+  problem.value.rule_type = data.rule_type
+  problem.value.hint = data.hint
+  problem.value.source = data.source
+  problem.value.io_mode = data.io_mode
+  if (problem.value.contest_id) {
+    problem.value.contest_id = problem.value.contest_id
   }
 
   // 下面是用来显示的：
   // 代码模板 和 模板开关
-  problem.languages.forEach((lang) => {
+  problem.value.languages.forEach((lang) => {
     if (data.template[lang]) {
       template[lang] = data.template[lang]
       toggleNeedTemplate(true)
     }
   })
   // 标签
-  fromExistingTags.value = data.tags
+  tags.value.select = data.tags
 }
 
-async function listTags() {
+async function getTagList() {
   const res = await getProblemTagList()
-  existingTags.value = res.data
+  tagList.value = res.data
 }
 
 function updateNewTags(v: string[]) {
   const blanks = []
   const uniqueTags = unique(v)
-  const tags = existingTags.value.map((t) => t.name)
+  const items = tagList.value.map((t) => t.name)
   for (let i = 0; i < uniqueTags.length; i++) {
     const tag = uniqueTags[i]
-    if (tags.indexOf(tag) < 0) {
+    if (items.indexOf(tag) < 0) {
       blanks.push(tag)
     } else {
       message.error("已经存在标签：" + tag)
       break
     }
   }
-  newTags.value = blanks
+  tags.value.upload = blanks
 }
 
 function addSample() {
-  problem.samples.push({ input: "", output: "" })
+  problem.value.samples.push({ input: "", output: "" })
 }
 
 function removeSample(index: number) {
-  problem.samples.splice(index, 1)
+  problem.value.samples.splice(index, 1)
 }
 
 function resetTemplate(language: LANGUAGE) {
@@ -182,7 +196,7 @@ function resetTemplate(language: LANGUAGE) {
 async function handleUploadTestcases({ file }: UploadCustomRequestOptions) {
   try {
     const res = await uploadTestcases(file.file!)
-    // @ts-ignore:
+    // @ts-ignore
     if (res.error) {
       message.error("上传测试用例失败")
       return
@@ -190,51 +204,51 @@ async function handleUploadTestcases({ file }: UploadCustomRequestOptions) {
     const testcases = res.data.info
     for (let file of testcases) {
       file.score = (100 / testcases.length).toFixed(0)
-      if (!file.output_name && problem.spj) {
+      if (!file.output_name && problem.value.spj) {
         file.output_name = "-"
       }
     }
-    problem.test_case_score = testcases
-    problem.test_case_id = res.data.id
+    problem.value.test_case_score = testcases
+    problem.value.test_case_id = res.data.id
   } catch (err) {
     message.error("上传测试用例失败")
   }
 }
 
 function downloadTestcases() {
-  download("test_case?problem_id=" + problem.id)
+  download("test_case?problem_id=" + problem.value.id)
 }
 
 // 题目是否有漏写的
 function detectProblemCompletion() {
   let flag = false
   // 标题
-  if (!problem._id || !problem.title) {
+  if (!problem.value._id || !problem.value.title) {
     message.error("编号或标题没有填写")
     flag = true
   }
   // 标签
-  else if (newTags.value.length === 0 && fromExistingTags.value.length === 0) {
+  else if (tags.value.upload.length === 0 && tags.value.select.length === 0) {
     message.error("标签没有填写")
     flag = true
   }
   // 题目
   else if (
-    !problem.description ||
-    !problem.input_description ||
-    !problem.output_description
+    !problem.value.description ||
+    !problem.value.input_description ||
+    !problem.value.output_description
   ) {
     message.error("题目或输入或输出没有填写")
     flag = true
   }
   // 样例
-  else if (problem.samples.length == 0) {
+  else if (problem.value.samples.length == 0) {
     message.error("样例没有填写")
     flag = true
   }
   // 样例是空的
   else if (
-    problem.samples.some(
+    problem.value.samples.some(
       (sample) => sample.output === "" || sample.input === "",
     )
   ) {
@@ -242,10 +256,10 @@ function detectProblemCompletion() {
     flag = true
   }
   // 测试用例
-  else if (problem.test_case_score.length === 0) {
+  else if (problem.value.test_case_score.length === 0) {
     message.error("测试用例没有上传")
     flag = true
-  } else if (problem.languages.length === 0) {
+  } else if (problem.value.languages.length === 0) {
     message.error("编程语言没有选择")
     flag = true
   }
@@ -258,13 +272,13 @@ function detectProblemCompletion() {
 
 function getTemplate() {
   if (!needTemplate.value) {
-    problem.template = {}
+    problem.value.template = {}
   } else {
-    problem.languages.forEach((lang) => {
+    problem.value.languages.forEach((lang) => {
       if (CODE_TEMPLATES[lang] !== template[lang]) {
-        problem.template[lang] = template[lang]
+        problem.value.template[lang] = template[lang]
       } else {
-        delete problem.template[lang]
+        delete problem.value.template[lang]
       }
     })
   }
@@ -272,8 +286,8 @@ function getTemplate() {
 
 function filterHint() {
   // 编辑器会自动添加一段 HTML
-  if (problem.hint === "<p><br></p>") {
-    problem.hint = ""
+  if (problem.value.hint === "<p><br></p>") {
+    problem.value.hint = ""
   }
 }
 
@@ -282,7 +296,6 @@ async function submit() {
   if (notCompleted) return
   filterHint()
   getTemplate()
-  problem.tags = [...newTags.value, ...fromExistingTags.value]
   const api = {
     "admin problem create": createProblem,
     "admin problem edit": editProblem,
@@ -293,10 +306,12 @@ async function submit() {
     route.name === "admin contest problem create" ||
     route.name === "admin contest problem edit"
   ) {
-    problem.contest_id = props.contestID
+    problem.value.contest_id = props.contestID
   }
   try {
-    await api!(problem)
+    await api!(problem.value)
+    problem.value = null
+    tags.value = null
     if (
       route.name === "admin problem create" ||
       route.name === "admin contest problem create"
@@ -323,19 +338,38 @@ async function submit() {
   }
 }
 
+const showClear = computed(
+  () =>
+    route.name === "admin problem create" ||
+    route.name === "admin contest problem create",
+)
+
+function clear() {
+  problem.value = null
+  tags.value = null
+  // TODO: 这里是 TextEditor 不更新，所以刷一下页面
+  location.reload()
+}
+
 onMounted(() => {
-  listTags()
+  getTagList()
   getProblemDetail()
 })
 
-watch([fromExistingTags, newTags], (tags) => {
-  const uniqueTags = unique<string>(tags[0].concat(tags[1]))
-  problem.tags = uniqueTags
-})
+watch(
+  () => [tags.value.select, tags.value.upload],
+  (tags) => {
+    const uniqueTags = unique<string>(tags[0].concat(tags[1]))
+    problem.value.tags = uniqueTags
+  },
+)
 </script>
 
 <template>
-  <h2 class="title">{{ title }}</h2>
+  <n-flex>
+    <h2 class="title">{{ title }}</h2>
+    <n-button v-if="showClear" @click="clear">清空缓存</n-button>
+  </n-flex>
   <n-form inline label-placement="left">
     <n-form-item label="显示编号">
       <n-input class="w-100" v-model:value="problem._id" />
@@ -359,12 +393,15 @@ watch([fromExistingTags, newTags], (tags) => {
       <n-select
         class="tag"
         multiple
-        v-model:value="fromExistingTags"
+        v-model:value="tags.select"
         :options="tagOptions"
       />
     </n-form-item>
     <n-form-item label="新增的标签">
-      <n-dynamic-tags v-model:value="newTags" @update:value="updateNewTags" />
+      <n-dynamic-tags
+        v-model:value="tags.upload"
+        @update:value="updateNewTags"
+      />
     </n-form-item>
   </n-form>
   <TextEditor
@@ -436,7 +473,7 @@ watch([fromExistingTags, newTags], (tags) => {
           :name="lang"
         >
           <CodeEditor
-            v-model="template[lang]"
+            v-model:value="template[lang]"
             :language="lang"
             :font-size="16"
             height="200px"
@@ -503,7 +540,13 @@ watch([fromExistingTags, newTags], (tags) => {
         </n-button>
       </n-form-item>
     </n-form>
-    <n-space>
+    <n-space align="center">
+      <n-tooltip placement="left">
+        <template #trigger>
+          <n-button text>温馨提醒</n-button>
+        </template>
+        【测试用例】最好要有10个，要考虑边界情况，不要跟【测试样例】一模一样
+      </n-tooltip>
       <n-upload
         :show-file-list="false"
         accept=".zip"
@@ -511,7 +554,7 @@ watch([fromExistingTags, newTags], (tags) => {
       >
         <n-button type="info">上传测试用例</n-button>
       </n-upload>
-      <n-button type="primary" @click="submit">保存</n-button>
+      <n-button type="primary" @click="submit">提交</n-button>
     </n-space>
   </n-space>
 </template>
