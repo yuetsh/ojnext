@@ -4,11 +4,8 @@ import { code } from "oj/composables/code"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { problem } from "oj/composables/problem"
 import storage from "~/utils/storage"
-
-const Form = defineAsyncComponent(() => import("./Form.vue"))
-const CodeEditor = defineAsyncComponent(
-  () => import("~/shared/components/CodeEditor.vue"),
-)
+import Form from "./Form.vue"
+import CodeEditor from "~/shared/components/CodeEditor.vue"
 
 const route = useRoute()
 const contestID = !!route.params.contestID ? route.params.contestID : null
@@ -50,9 +47,9 @@ function changeLanguage(v: string) {
 
 <template>
   <n-space vertical>
-    <Form @change-language="changeLanguage" />
+    <Form :storage-key="storageKey" @change-language="changeLanguage" />
     <CodeEditor
-      v-model="code.value"
+      v-model:value="code.value"
       @update:model-value="changeCode"
       :language="code.language"
       :height="editorHeight"

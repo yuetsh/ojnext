@@ -16,10 +16,12 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
+const props = defineProps<{ storageKey: string }>()
 const emit = defineEmits(["changeLanguage"])
 
 function reset() {
   code.value = problem.value!.template[code.language] || SOURCES[code.language]
+  storage.remove(props.storageKey)
   message.success("代码重置成功")
 }
 
