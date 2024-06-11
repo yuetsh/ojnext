@@ -12,7 +12,7 @@ import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 
 const props = defineProps<{
   submissionID: string
-  hideList: boolean
+  hideList?: boolean
 }>()
 
 const submission = ref<Submission>()
@@ -72,7 +72,11 @@ onMounted(init)
         show-line-numbers
       />
     </n-card>
-    <n-button type="primary" @click="handleCopy(submission!.code)">
+    <n-button
+      v-if="!hideList"
+      type="primary"
+      @click="handleCopy(submission!.code)"
+    >
       {{ copied ? "成功复制" : "复制代码" }}
     </n-button>
     <n-data-table
