@@ -72,9 +72,9 @@ const options = {
   maintainAspectRatio: false,
   plugins: {
     title: {
-      text: "全校前十名的用户（不包括超管）",
+      text: "国服前十",
       display: true,
-      font: { size: 20 },
+      font: { size: 24 },
     },
   },
 }
