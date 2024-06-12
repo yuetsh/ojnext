@@ -104,9 +104,14 @@ export function getSubmissionStatistics(
   })
 }
 
-export function getRank(offset: number, limit: number, username?: string) {
+export function getRank(
+  offset: number,
+  limit: number,
+  n: number,
+  username?: string,
+) {
   return http.get("user_rank", {
-    params: { offset, limit, rule: "acm", username },
+    params: { offset, limit, rule: "acm", username, n },
   })
 }
 

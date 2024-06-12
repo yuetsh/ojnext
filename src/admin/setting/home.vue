@@ -63,7 +63,7 @@ onMounted(async () => {
 
 async function listRanks() {
   const offset = (query.page - 1) * query.limit
-  const res = await getRank(offset, query.limit, query.username)
+  const res = await getRank(offset, query.limit, 0, query.username)
   data.value = res.data.results
   total.value = res.data.total
 }
