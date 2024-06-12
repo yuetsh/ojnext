@@ -18,7 +18,7 @@ const chart = ref<Rank[]>([])
 
 async function listRanks() {
   const offset = (query.page - 1) * query.limit
-  const res = await getRank(offset, query.limit, 30)
+  const res = await getRank(offset, query.limit, 100)
   data.value = res.data.results
   total.value = res.data.total
   if (query.page === 1) {
