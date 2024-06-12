@@ -168,3 +168,7 @@ export function updateProfile(data: { real_name: string; mood: string }) {
 export function getAnnouncementList(offset = 10, limit = 10) {
   return http.get("announcement", { params: { limit, offset } })
 }
+
+export function getAnnouncement(id: number) {
+  return http.get("announcement", { params: { id } })
+}

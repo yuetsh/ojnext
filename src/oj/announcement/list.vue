@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { getAnnouncementList } from "~/oj/api"
+import { getAnnouncementList, getAnnouncement } from "~/oj/api"
 import Pagination from "~/shared/components/Pagination.vue"
 import { parseTime } from "~/utils/functions"
 import { Announcement } from "~/utils/types"
@@ -19,13 +19,19 @@ const columns: DataTableColumn<Announcement>[] = [
     key: "create_time",
     title: "发布时间",
     render: (row) => parseTime(row.create_time),
-    width: 160,
+    width: 180,
+  },
+  {
+    key: "last_update_time",
+    title: "更新时间",
+    render: (row) => parseTime(row.last_update_time),
+    width: 180,
   },
   {
     key: "username",
     title: "发布人",
     render: (row) => row.created_by.username,
-    width: 100,
+    width: 120,
   },
 ]
 function rowProps(row: Announcement) {
@@ -35,10 +41,11 @@ function rowProps(row: Announcement) {
   }
 }
 
-function showContent(announcement: Announcement) {
+async function showContent(announcement: Announcement) {
+  const res = await getAnnouncement(announcement.id)
   toggleShow(true)
   title.value = announcement.title
-  content.value = announcement.content
+  content.value = res.data.content
 }
 const announcements = ref<Announcement[]>([])
 
