@@ -41,6 +41,7 @@ const title = computed(
       "admin contest problem edit": "编辑比赛题目",
     })[<string>route.name],
 )
+
 const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
   _id: "",
   title: "",
@@ -76,9 +77,6 @@ const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
   },
 })
 
-const template = reactive(JSON.parse(JSON.stringify(CODE_TEMPLATES)))
-const currentActiveTemplate = ref<LANGUAGE>("C")
-
 // 从服务器来的tag列表
 const tagList = shallowRef<Tag[]>([])
 
@@ -86,13 +84,18 @@ interface Tags {
   select: string[]
   upload: string[]
 }
-// 选择的 和 新的
+// 从 tagList 中选择的 和 新上传的
 const tags = useLocalStorage<Tags>(STORAGE_KEY.ADMIN_PROBLEM_TAGS, {
   select: [],
   upload: [],
 })
 
+// 这三个用的少，就不缓存本地了
 const [needTemplate, toggleNeedTemplate] = useToggle(false)
+const template = reactive(JSON.parse(JSON.stringify(CODE_TEMPLATES)))
+const currentActiveTemplate = ref<LANGUAGE>("C")
+
+// 给 TextEditor 用
 const [ready, toggleReady] = useToggle(false)
 
 const difficultyOptions: SelectOption[] = [
@@ -347,7 +350,7 @@ const showClear = computed(
 function clear() {
   problem.value = null
   tags.value = null
-  // TODO: 这里是 TextEditor 不更新，所以刷一下页面
+  // 为了给所有状态初始化，刷新页面
   location.reload()
 }
 
