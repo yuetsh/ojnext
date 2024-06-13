@@ -16,9 +16,15 @@ const [ready, toggleReady] = useToggle()
 const announcement = reactive<AnnouncementEdit>({
   id: 0,
   title: "",
+  tag: "",
   content: "",
   visible: false,
 })
+
+const tags: SelectOption[] = [
+  { label: "空白", value: "" },
+  { label: "更新", value: "更新" },
+]
 
 async function init() {
   if (!props.announcementID) {
@@ -69,6 +75,9 @@ onMounted(init)
     <n-form-item label="标题">
       <n-input class="contestTitle" v-model:value="announcement.title" />
     </n-form-item>
+    <n-form-item label="标签">
+      <n-select class="select" v-model:value="announcement.tag" :options="tags" />
+    </n-form-item>
     <n-form-item label="可见">
       <n-switch v-model:value="announcement.visible" />
     </n-form-item>
@@ -86,6 +95,10 @@ onMounted(init)
 <style scoped>
 .title {
   margin-top: 0;
+}
+
+.select {
+  width: 100px;
 }
 
 .contestTitle {

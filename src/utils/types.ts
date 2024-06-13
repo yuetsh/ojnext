@@ -331,19 +331,16 @@ export interface Server {
   is_disabled: boolean
 }
 
-export interface Announcement {
-  id: number
-  created_by: SampleUser
-  title: string
-  content: string
-  create_time: Date
-  last_update_time: Date
-  visible: boolean
-}
-
 export interface AnnouncementEdit {
   id: number
   title: string
+  tag: string
   content: string
   visible: boolean
+}
+
+export interface Announcement extends AnnouncementEdit {
+  created_by: SampleUser
+  create_time: Date
+  last_update_time: Date
 }

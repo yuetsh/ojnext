@@ -16,6 +16,7 @@ const announcements = ref<Announcement[]>([])
 const columns: DataTableColumn<Announcement>[] = [
   { title: "ID", key: "id", width: 60 },
   { title: "标题", key: "title", minWidth: 300 },
+  { title: "标签", key: "tag", width: 120 },
   {
     title: "创建时间",
     key: "create_time",
@@ -59,6 +60,7 @@ async function toggleVisible(announcement: Announcement) {
   editAnnouncement({
     id: announcement.id,
     title: announcement.title,
+    tag: announcement.tag,
     content: announcement.content,
     visible: announcement.visible,
   })

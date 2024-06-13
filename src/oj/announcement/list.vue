@@ -4,6 +4,7 @@ import Pagination from "~/shared/components/Pagination.vue"
 import { parseTime } from "~/utils/functions"
 import { Announcement } from "~/utils/types"
 import { isDesktop } from "~/shared/composables/breakpoints"
+import { NTag } from "naive-ui"
 
 const total = ref(0)
 const content = ref("")
@@ -15,6 +16,11 @@ const query = reactive({
 })
 const columns: DataTableColumn<Announcement>[] = [
   { key: "title", title: "公告标题", minWidth: 300 },
+  {
+    key: "tag",
+    title: "标签",
+    render: (row) => h(NTag, row.tag || "公告"),
+  },
   {
     key: "create_time",
     title: "发布时间",
