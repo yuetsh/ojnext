@@ -100,7 +100,7 @@ const submitLabel = computed(() => {
   if (isPending.value) {
     return "运行结果"
   }
-  return "提交评测"
+  return "提交代码"
 })
 
 const msg = computed(() => {
@@ -203,6 +203,7 @@ watch(
 
 <template>
   <n-popover
+    trigger="click"
     placement="bottom-end"
     scrollable
     :show-arrow="false"
