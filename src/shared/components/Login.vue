@@ -10,9 +10,18 @@ const loginRef = ref()
 const [isLoading, toggleLoading] = useToggle()
 const msg = ref("")
 const form = reactive({
+  class: "",
   username: "",
   password: "",
 })
+const classList: SelectOption[] = [
+  { label: "不用填", value: "" },
+  { label: "23计算机1班", value: "ks231" },
+  { label: "23计算机2班", value: "ks232" },
+  { label: "23计算机4班", value: "ks234" },
+  { label: "23计算机5班", value: "ks235" },
+  { label: "23计算机6班", value: "ks236" },
+]
 const rules: FormRules = {
   username: [{ required: true, message: "用户名必填", trigger: "blur" }],
   password: [
@@ -27,7 +36,14 @@ async function submit() {
       try {
         msg.value = ""
         toggleLoading(true)
-        await login(form)
+        const merged = {
+          username: form.username,
+          password: form.password,
+        }
+        if (form.class) {
+          merged.username = form.class + form.username
+        }
+        await login(merged)
       } catch (err: any) {
         if (err.data === "Your account has been disabled") {
           msg.value = "此账号已被封禁"
@@ -63,6 +79,18 @@ function goSignup() {
     :auto-focus="false"
   >
     <n-form ref="loginRef" :model="form" :rules="rules" show-require-mark>
+      <n-form-item label="选择班级" path="class" :show-require-mark="false">
+        <n-select
+          v-model:value="form.class"
+          :options="classList"
+          clearable
+          name="login class"
+        />
+      </n-form-item>
+      <n-alert :show-icon="false" class="tip">
+        如果是自己的号就选【不用填】 <br />
+        如果是上课统一生成的账号，但选项中没有你的班级，也选择【不用填】，但是用户名要写：ks班级+姓名，比如23计算机1班张三，就写ks231张三
+      </n-alert>
       <n-form-item label="用户名" path="username">
         <n-input
           v-model:value="form.username"
@@ -95,4 +123,8 @@ function goSignup() {
   </n-modal>
 </template>
 
-<style scoped></style>
+<style scoped>
+.tip {
+  margin-bottom: 20px;
+}
+</style>
