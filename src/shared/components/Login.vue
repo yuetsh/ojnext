@@ -79,6 +79,11 @@ function goSignup() {
     :auto-focus="false"
   >
     <n-form ref="loginRef" :model="form" :rules="rules" show-require-mark>
+      <n-alert :show-icon="false" class="tip">
+        关于【选择班级】的提醒：<br />
+        如果是自己的号就选【不用填】 <br />
+        如果是上课统一生成的账号，但选项中没有你的班级，也选择【不用填】，但是用户名要写：ks班级+姓名，比如23计算机1班张三，就写ks231张三
+      </n-alert>
       <n-form-item label="选择班级" path="class" :show-require-mark="false">
         <n-select
           v-model:value="form.class"
@@ -87,10 +92,6 @@ function goSignup() {
           name="login class"
         />
       </n-form-item>
-      <n-alert :show-icon="false" class="tip">
-        如果是自己的号就选【不用填】 <br />
-        如果是上课统一生成的账号，但选项中没有你的班级，也选择【不用填】，但是用户名要写：ks班级+姓名，比如23计算机1班张三，就写ks231张三
-      </n-alert>
       <n-form-item label="用户名" path="username">
         <n-input
           v-model:value="form.username"
