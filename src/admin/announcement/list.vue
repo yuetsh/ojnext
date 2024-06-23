@@ -17,6 +17,7 @@ const columns: DataTableColumn<Announcement>[] = [
   { title: "ID", key: "id", width: 60 },
   { title: "标题", key: "title", minWidth: 300 },
   { title: "标签", key: "tag", width: 120 },
+  { title: "置顶", key: "top", render: (row) => (row.top ? "置顶" : ""), width: 120 },
   {
     title: "创建时间",
     key: "create_time",
@@ -32,8 +33,8 @@ const columns: DataTableColumn<Announcement>[] = [
   {
     title: "作者",
     key: "created_by",
-    width: 80,
     render: (row) => row.created_by.username,
+    width: 80,
   },
   {
     title: "可见",
