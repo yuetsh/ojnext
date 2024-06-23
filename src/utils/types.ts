@@ -337,6 +337,7 @@ export interface AnnouncementEdit {
   tag: string
   content: string
   visible: boolean
+  top: boolean
 }
 
 export interface Announcement extends AnnouncementEdit {

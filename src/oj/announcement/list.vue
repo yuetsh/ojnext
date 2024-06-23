@@ -5,6 +5,7 @@ import { parseTime } from "~/utils/functions"
 import { Announcement } from "~/utils/types"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { NTag } from "naive-ui"
+import TitleWithTag from "./components/TitleWithTag.vue"
 
 const total = ref(0)
 const content = ref("")
@@ -15,7 +16,12 @@ const query = reactive({
   page: 1,
 })
 const columns: DataTableColumn<Announcement>[] = [
-  { key: "title", title: "公告标题", minWidth: 300 },
+  {
+    key: "title",
+    title: "公告标题",
+    render: (row) => h(TitleWithTag, { title: row.title, top: row.top }),
+    minWidth: 300,
+  },
   {
     key: "tag",
     title: "标签",

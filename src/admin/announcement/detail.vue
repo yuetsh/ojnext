@@ -19,6 +19,7 @@ const announcement = reactive<AnnouncementEdit>({
   tag: "公告",
   content: "",
   visible: false,
+  top: false,
 })
 
 const tags: SelectOption[] = [
@@ -38,6 +39,7 @@ async function init() {
   announcement.title = res.data.title
   announcement.content = res.data.content
   announcement.visible = res.data.visible
+  announcement.top = res.data.top
 }
 
 async function submit() {
@@ -84,6 +86,9 @@ onMounted(init)
     </n-form-item>
     <n-form-item label="可见">
       <n-switch v-model:value="announcement.visible" />
+    </n-form-item>
+    <n-form-item label="置顶">
+      <n-switch v-model:value="announcement.top" />
     </n-form-item>
   </n-form>
   <TextEditor
