@@ -63,6 +63,7 @@ async function toggleVisible(announcement: Announcement) {
     tag: announcement.tag,
     content: announcement.content,
     visible: announcement.visible,
+    top: announcement.top,
   })
 }
 
