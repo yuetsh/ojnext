@@ -170,10 +170,22 @@ export function updateProfile(data: { real_name: string; mood: string }) {
   return http.put("profile", data)
 }
 
-export function getAnnouncementList(offset = 10, limit = 10) {
+export function getAnnouncementList(offset = 0, limit = 10) {
   return http.get("announcement", { params: { limit, offset } })
 }
 
 export function getAnnouncement(id: number) {
   return http.get("announcement", { params: { id } })
+}
+
+export function createMessage(data: {
+  recipient: number
+  message: string
+  submission: string
+}) {
+  return http.post("message", data)
+}
+
+export function getMessageList(offset = 0, limit = 10) {
+  return http.get("message", { params: { limit, offset } })
 }

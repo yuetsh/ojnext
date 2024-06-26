@@ -6,6 +6,7 @@ import { uploadImage } from "../../admin/api"
 
 interface Props {
   title: string
+  simple?: boolean
   minHeight?: number
 }
 
@@ -14,6 +15,7 @@ type InsertFnType = (url: string, alt: string, href: string) => void
 
 const props = withDefaults(defineProps<Props>(), {
   minHeight: 0,
+  simple: false,
 })
 
 const message = useMessage()
@@ -46,6 +48,20 @@ const toolbarConfig: Partial<IToolbarConfig> = {
     "insertTable",
     "divider",
     "|",
+    "clearStyle",
+    "undo",
+    "redo",
+  ],
+}
+
+const toolbarConfigSimple: Partial<IToolbarConfig> = {
+  toolbarKeys: [
+    "bold",
+    "color",
+    "bgColor",
+    "emotion",
+    "uploadImage",
+    "insertLink",
     "clearStyle",
     "undo",
     "redo",
@@ -93,7 +109,7 @@ async function customUpload(file: File, insertFn: InsertFnType) {
     <Toolbar
       class="toolbar"
       :editor="editorRef"
-      :defaultConfig="toolbarConfig"
+      :defaultConfig="props.simple ? toolbarConfigSimple : toolbarConfig"
       mode="simple"
     />
     <Editor

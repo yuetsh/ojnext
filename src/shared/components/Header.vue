@@ -73,6 +73,13 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
     },
   },
   {
+    label: "我的消息",
+    key: "message",
+    props: {
+      onClick: () => router.push("/message"),
+    },
+  },
+  {
     label: "我的提交",
     key: "status",
     props: {

@@ -345,3 +345,17 @@ export interface Announcement extends AnnouncementEdit {
   create_time: Date
   last_update_time: Date
 }
+
+export interface Message {
+  sender: User
+  create_time: Date
+  message: string
+  submission: Submission
+}
+
+export interface CreateMessage {
+  sender: string
+  recipient: string
+  submission: string
+  message: string
+}

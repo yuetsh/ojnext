@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getSubmission } from "oj/api"
+import { createMessage, getSubmission } from "oj/api"
 import { Submission } from "utils/types"
 import { JUDGE_STATUS, LANGUAGE_FORMAT_VALUE } from "utils/constants"
 import {
@@ -9,17 +9,34 @@ import {
 } from "utils/functions"
 import copy from "copy-text-to-clipboard"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
+import { useUserStore } from "~/shared/store/user"
+
+const TextEditor = defineAsyncComponent(
+  () => import("~/shared/components/TextEditor.vue"),
+)
 
 const props = defineProps<{
   submissionID: string
+  submission?: Submission
   hideList?: boolean
 }>()
 
+const userStore = useUserStore()
+const systemMessage = useMessage()
 const submission = ref<Submission>()
+const message = ref<string>("")
 const [copied, toggle] = useToggle()
+const [showBox, toggleBox] = useToggle()
 const { start } = useTimeoutFn(() => toggle(false), 1000, { immediate: false })
 
+const canWriteMessage = computed(
+  () =>
+    userStore.isSuperAdmin && userStore.user!.id !== submission.value?.user_id,
+)
+
 async function init() {
+  submission.value = props.submission
+  if (submission.value) return
   const res = await getSubmission(props.submissionID)
   submission.value = res.data
 }
@@ -28,6 +45,18 @@ function handleCopy(v: string) {
   copy(v)
   toggle(true)
   start()
+}
+
+async function sendMessage() {
+  if (!message.value || message.value === "<p><br></p>") return
+  const data = {
+    message: message.value,
+    recipient: submission.value!.user_id,
+    submission: submission.value!.id,
+  }
+  await createMessage(data)
+  systemMessage.success("消息发送成功")
+  message.value = ""
 }
 
 const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
@@ -72,13 +101,22 @@ onMounted(init)
         show-line-numbers
       />
     </n-card>
-    <n-button
-      v-if="!hideList"
-      type="primary"
-      @click="handleCopy(submission!.code)"
-    >
-      {{ copied ? "成功复制" : "复制代码" }}
-    </n-button>
+    <n-flex>
+      <n-button v-if="!hideList" @click="handleCopy(submission!.code)">
+        {{ copied ? "成功复制" : "复制代码" }}
+      </n-button>
+      <n-button v-if="canWriteMessage" @click="toggleBox(!showBox)">
+        {{ showBox ? "关闭" : "打开" }}文本框
+      </n-button>
+      <n-button v-if="canWriteMessage" @click="sendMessage">发送消息</n-button>
+    </n-flex>
+    <TextEditor
+      title=""
+      simple
+      v-if="showBox && canWriteMessage"
+      v-model:value="message"
+      :min-height="200"
+    />
     <n-data-table
       v-if="!hideList && submission.info && submission.info.data"
       :columns="columns"
