@@ -27,6 +27,7 @@
           >
             {{ JUDGE_STATUS[item.submission.result]["name"] }}
           </n-tag>
+          <div>复制代码</div>
           <Copy :value="item.submission.code" />
         </n-flex>
         <n-code
