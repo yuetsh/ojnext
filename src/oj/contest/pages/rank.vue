@@ -7,7 +7,7 @@ import { ContestRank, ProblemFiltered } from "~/utils/types"
 import { secondsToDuration } from "utils/functions"
 import { ContestStatus } from "~/utils/constants"
 import { useContestStore } from "~/oj/store/contest"
-import Medal1 from "~/shared/icons/Medal1.vue"
+import { Icon } from "@iconify/vue"
 
 interface Props {
   contestID: string
@@ -132,22 +132,25 @@ async function addColumns() {
             }
             if (status.is_first_ac) {
               acTime = [
-                h(
-                  NIcon,
-                  { size: 16, style: "transform: translate(-2px, 2px)" },
-                  () => h(Medal1),
-                ),
-                secondsToDuration(status.ac_time),
+                h(Icon, {
+                  icon: "openmoji:1st-place-medal",
+                  height: 24,
+                  width: 24,
+                }),
+                h("span", secondsToDuration(status.ac_time)),
               ]
             }
             if (status.error_number) {
               errorNumber = h(
-                "p",
+                "span",
                 { style: "margin: 0" },
                 `(-${status.error_number})`,
               )
             }
-            return h("div", [acTime, errorNumber])
+            return h("div", { class: "oj-time-with-modal" }, [
+              acTime,
+              errorNumber,
+            ])
           }
         },
         cellProps: (row) => {
@@ -218,5 +221,8 @@ onMounted(() => {
     />
   </n-space>
 </template>
-
-<style scoped></style>
+<style>
+.oj-time-with-modal {
+  display: flex;
+}
+</style>

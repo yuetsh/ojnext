@@ -6,6 +6,7 @@ import { Announcement } from "~/utils/types"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { NTag } from "naive-ui"
 import TitleWithTag from "./components/TitleWithTag.vue"
+import { Icon } from "@iconify/vue"
 
 const total = ref(0)
 const content = ref("")
@@ -25,7 +26,7 @@ const columns: DataTableColumn<Announcement>[] = [
   {
     key: "tag",
     title: "标签",
-    render: (row) => h(NTag, row.tag || "公告"),
+    render: (row) => h(NTag, () => row.tag || "公告"),
   },
   {
     key: "create_time",

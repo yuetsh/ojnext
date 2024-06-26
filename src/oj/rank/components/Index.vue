@@ -1,7 +1,5 @@
 <script lang="ts" setup>
-import Medal1 from "~/shared/icons/Medal1.vue"
-import Medal2 from "~/shared/icons/Medal2.vue"
-import Medal3 from "~/shared/icons/Medal3.vue"
+import { Icon } from "@iconify/vue"
 
 interface Props {
   page: number
@@ -23,9 +21,9 @@ const tooltip = computed(() => {
   <n-tooltip v-else>
     <template #trigger>
       <n-icon :size="20">
-        <Medal1 v-if="index === 1" />
-        <Medal2 v-if="index === 2" />
-        <Medal3 v-if="index === 3" />
+        <Icon v-if="index === 1" icon="openmoji:1st-place-medal"></Icon>
+        <Icon v-if="index === 2" icon="openmoji:2nd-place-medal"></Icon>
+        <Icon v-if="index === 3" icon="openmoji:3rd-place-medal"></Icon>
       </n-icon>
     </template>
     {{ tooltip }}

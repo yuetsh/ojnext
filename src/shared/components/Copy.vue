@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import copy from "copy-text-to-clipboard"
-import Select from "~/shared/icons/Select.vue"
-import Copy from "~/shared/icons/Copy.vue"
+import { Icon } from "@iconify/vue"
 
 defineProps<{ value: string }>()
 const [copied, toggle] = useToggle()
 const { start } = useTimeoutFn(() => toggle(false), 1000, { immediate: false })
+
+const COPY = h(Icon, { icon: "emojione:clipboard" })
+const OK = h(Icon, { icon: "openmoji:check-mark" })
 
 function handleClick(value: string) {
   copy(value)
@@ -17,7 +19,7 @@ function handleClick(value: string) {
   <n-tooltip trigger="hover">
     <template #trigger>
       <n-icon class="icon" @click="handleClick(value)">
-        <component :is="copied ? Select : Copy"></component>
+        <component :is="copied ? OK : COPY"></component>
       </n-icon>
     </template>
     {{ copied ? "已复制" : "复制" }}
@@ -26,6 +28,6 @@ function handleClick(value: string) {
 <style scoped>
 .icon {
   cursor: pointer;
-  transform: translateY(2px);
+  font-size: 20px;
 }
 </style>

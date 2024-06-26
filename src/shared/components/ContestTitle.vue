@@ -1,24 +1,19 @@
 <script setup lang="ts">
 import { Contest } from "utils/types"
 import { ContestType } from "utils/constants"
-import Lock from "~/shared/icons/Lock.vue"
+import { Icon } from "@iconify/vue"
 
 defineProps<{ contest: Contest }>()
 </script>
 <template>
-  <n-space>
-    <span>{{ contest.title }}</span>
-    <n-icon
-      size="large"
-      class="lockIcon"
+  <n-flex>
+    <Icon
       v-if="contest.contest_type === ContestType.private"
-    >
-      <Lock />
-    </n-icon>
-  </n-space>
+      :height="20"
+      :width="20"
+      icon="openmoji:locked"
+    ></Icon>
+    <span>{{ contest.title }}</span>
+  </n-flex>
 </template>
-<style scoped>
-.lockIcon {
-  transform: translateY(2px);
-}
-</style>
+<style scoped></style>

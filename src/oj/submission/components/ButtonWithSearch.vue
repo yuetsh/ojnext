@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import Filter from "~/shared/icons/Filter.vue"
+import { Icon } from "@iconify/vue"
 
 defineEmits(["click", "search"])
 </script>
@@ -8,9 +8,7 @@ defineEmits(["click", "search"])
     <n-button text type="info" @click="$emit('click')"><slot></slot></n-button>
     <n-button text @click="$emit('search')">
       <template #icon>
-        <n-icon color="#ccc">
-          <Filter />
-        </n-icon>
+        <Icon icon="openmoji:filter"></Icon>
       </template>
     </n-button>
   </n-flex>

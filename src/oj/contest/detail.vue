@@ -4,7 +4,7 @@ import { isDesktop } from "~/shared/composables/breakpoints"
 import { useContestStore } from "../store/contest"
 import ContestInfo from "./components/ContestInfo.vue"
 import ContestMenu from "./components/ContestMenu.vue"
-import Lock from "~/shared/icons/Lock.vue"
+import { Icon } from "@iconify/vue"
 
 const props = defineProps<{
   contestID: string
@@ -33,10 +33,13 @@ const passwordFormVisible = computed(
   <n-space vertical size="large" v-if="contestStore.contest">
     <n-space align="center" justify="space-between">
       <n-space align="center">
+        <Icon
+          v-if="contestStore.isPrivate"
+          icon="openmoji:locked"
+          :width="30"
+          :height="30"
+        ></Icon>
         <h2 class="contestTitle">{{ contestStore.contest.title }}</h2>
-        <n-icon size="large" v-if="contestStore.isPrivate" class="lockIcon">
-          <Lock />
-        </n-icon>
         <n-tag
           size="small"
           :type="CONTEST_STATUS[contestStore.contestStatus]['type']"
@@ -78,8 +81,5 @@ const passwordFormVisible = computed(
 .contestTitle {
   font-weight: 500;
   margin: 0;
-}
-.lockIcon {
-  transform: translateY(2px);
 }
 </style>

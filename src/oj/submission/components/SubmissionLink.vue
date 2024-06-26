@@ -5,9 +5,7 @@
     </n-button>
     <n-button text @click="goto">
       <template #icon>
-        <n-icon color="#aaa">
-          <Code />
-        </n-icon>
+        <Icon icon="openmoji:backhand-index-pointing-right"></Icon>
       </template>
     </n-button>
   </n-flex>
@@ -17,7 +15,7 @@
 </template>
 
 <script setup lang="ts">
-import Code from "~/shared/icons/Code.vue"
+import { Icon } from "@iconify/vue"
 import { Submission } from "~/utils/types"
 
 interface Props {

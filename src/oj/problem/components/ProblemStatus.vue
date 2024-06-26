@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { useThemeVars } from "naive-ui"
-import Select from "~/shared/icons/Select.vue"
-import SemiSelect from "~/shared/icons/SemiSelect.vue"
+import { Icon } from "@iconify/vue"
 
 const theme = useThemeVars()
 const props = defineProps<{
@@ -13,17 +12,12 @@ const color = computed(() => {
   if (props.status === "passed") return theme.value.successColor
   if (props.status === "failed") return theme.value.errorColor
 })
-
-const Icon = computed(() => {
-  if (props.status === "passed") return Select
-  if (props.status === "failed") return SemiSelect
-  return {}
-})
 </script>
 
 <template>
   <n-icon v-if="showIcon" :color="color">
-    <component :is="Icon"></component>
+    <Icon icon="ep:select" v-if="status === 'passed'"></Icon>
+    <Icon icon="ep:semi-select" v-if="status === 'failed'"></Icon>
   </n-icon>
 </template>
 
