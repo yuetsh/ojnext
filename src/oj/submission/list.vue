@@ -258,7 +258,7 @@ const columns = computed(() => {
             :options="options"
           />
         </n-form-item>
-        <n-form-item label="只看自己">
+        <n-form-item v-if="userStore.isAuthed" label="只看自己">
           <n-switch v-model:value="query.myself" />
         </n-form-item>
       </n-form>
