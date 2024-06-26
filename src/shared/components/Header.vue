@@ -29,7 +29,7 @@ async function handleLogout() {
 }
 
 function renderIcon(icon: string) {
-  return () => h(Icon, { icon })
+  return () => h(Icon, { icon, width: 24, height: 24 })
 }
 
 const avatars = [
