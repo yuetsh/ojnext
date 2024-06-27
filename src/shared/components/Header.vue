@@ -52,6 +52,7 @@ const avatars = [
   "streamline-emojis:game-dice",
   "streamline-emojis:ewe-1",
   "streamline-emojis:artist-palette",
+  "streamline-emojis:baby-bottle",
 ]
 
 const avatar = ref(avatars[Math.floor(Math.random() * avatars.length)])
@@ -151,9 +152,12 @@ function goHome() {
 <template>
   <n-space justify="space-between" align="center">
     <n-space align="center">
-      <div class="websiteTitle" @click="goHome">
-        {{ configStore.config?.website_name }}
-      </div>
+      <n-flex align="center" class="title" @click="goHome">
+        <Icon icon="streamline-emojis:dog" :width="30" :height="30"></Icon>
+        <div>
+          {{ configStore.config?.website_name }}
+        </div>
+      </n-flex>
       <n-menu
         v-if="isDesktop"
         mode="horizontal"
@@ -190,7 +194,7 @@ function goHome() {
             }}</span>
           </n-button>
         </n-dropdown>
-        <n-space align="center" v-else>
+        <n-flex align="center" v-else>
           <n-button @click="toggleLogin(true)">登录</n-button>
           <n-button
             v-if="configStore.config?.allow_register"
@@ -198,7 +202,7 @@ function goHome() {
           >
             注册
           </n-button>
-        </n-space>
+        </n-flex>
       </div>
       <n-button circle @click="toggleDark()">
         <template #icon>
@@ -211,9 +215,8 @@ function goHome() {
 </template>
 
 <style scoped>
-.websiteTitle {
+.title {
   font-size: 18px;
-  margin-left: 8px;
   cursor: pointer;
 }
 </style>
