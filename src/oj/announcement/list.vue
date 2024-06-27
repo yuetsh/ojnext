@@ -6,7 +6,6 @@ import { Announcement } from "~/utils/types"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { NTag } from "naive-ui"
 import TitleWithTag from "./components/TitleWithTag.vue"
-import { Icon } from "@iconify/vue"
 import { renderTableTitle } from "~/utils/renders"
 
 const total = ref(0)
@@ -22,11 +21,12 @@ const columns: DataTableColumn<Announcement>[] = [
     key: "title",
     title: renderTableTitle("公告标题", "streamline-emojis:fire"),
     render: (row) => h(TitleWithTag, { title: row.title, top: row.top }),
-    minWidth: 300,
+    minWidth: isDesktop ? 300 : 0,
   },
   {
     key: "tag",
     title: renderTableTitle("标签", "fluent-emoji-flat:keycap-hashtag"),
+    width: 100,
     render: (row) => h(NTag, () => row.tag || "公告"),
   },
   {
