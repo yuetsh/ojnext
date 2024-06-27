@@ -5,7 +5,7 @@
     </n-button>
     <n-button text @click="goto">
       <template #icon>
-        <Icon icon="openmoji:backhand-index-pointing-right"></Icon>
+        <Icon icon="streamline-emojis:backhand-index-pointing-right-1"></Icon>
       </template>
     </n-button>
   </n-flex>

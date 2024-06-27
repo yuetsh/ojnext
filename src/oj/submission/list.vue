@@ -17,6 +17,7 @@ import ButtonWithSearch from "./components/ButtonWithSearch.vue"
 import StatisticsPanel from "./components/StatisticsPanel.vue"
 import SubmissionLink from "./components/SubmissionLink.vue"
 import SubmissionDetail from "./detail.vue"
+import { renderTableTitle } from "~/utils/renders"
 
 interface Query {
   username: string
@@ -155,7 +156,7 @@ watch(
 const columns = computed(() => {
   const res: DataTableColumn<Submission>[] = [
     {
-      title: "提交时间",
+      title: renderTableTitle("提交时间", "noto:seven-oclock"),
       key: "create_time",
       width: 200,
       render: (row) =>
@@ -165,7 +166,7 @@ const columns = computed(() => {
         ),
     },
     {
-      title: "提交编号",
+      title: renderTableTitle("提交编号", "fluent-emoji-flat:input-numbers"),
       key: "id",
       minWidth: 160,
       render: (row) =>
@@ -175,13 +176,13 @@ const columns = computed(() => {
         }),
     },
     {
-      title: "状态",
+      title: renderTableTitle("状态", "streamline-emojis:panda-face"),
       key: "status",
       width: 160,
       render: (row) => h(SubmissionResultTag, { result: row.result }),
     },
     {
-      title: "题目",
+      title: renderTableTitle("题目", "streamline-emojis:blossom"),
       key: "problem",
       width: 160,
       render: (row) =>
@@ -195,25 +196,33 @@ const columns = computed(() => {
         ),
     },
     {
-      title: "执行耗时",
+      title: renderTableTitle("执行耗时", "streamline-emojis:snail"),
       key: "time",
       width: 120,
+      align: "center",
       render: (row) => submissionTimeFormat(row.statistic_info.time_cost),
     },
     {
-      title: "占用内存",
+      title: renderTableTitle("占用内存", "streamline-emojis:bell"),
       key: "memory",
       width: 120,
+      align: "center",
       render: (row) => submissionMemoryFormat(row.statistic_info.memory_cost),
     },
     {
-      title: "语言",
+      title: renderTableTitle(
+        "语言",
+        "streamline-emojis:globe-showing-europe-africa",
+      ),
       key: "language",
       width: 120,
       render: (row) => LANGUAGE_SHOW_VALUE[row.language],
     },
     {
-      title: "用户",
+      title: renderTableTitle(
+        "用户",
+        "streamline-emojis:smiling-face-with-sunglasses",
+      ),
       key: "username",
       minWidth: 160,
       render: (row) =>
@@ -229,7 +238,7 @@ const columns = computed(() => {
   ]
   if (!route.params.contestID && userStore.isSuperAdmin) {
     res.push({
-      title: "选项",
+      title: renderTableTitle("选项", "streamline-emojis:wrench"),
       key: "rejudge",
       render: (row) =>
         h(

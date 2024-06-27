@@ -7,6 +7,7 @@ import { isDesktop } from "~/shared/composables/breakpoints"
 import { NTag } from "naive-ui"
 import TitleWithTag from "./components/TitleWithTag.vue"
 import { Icon } from "@iconify/vue"
+import { renderTableTitle } from "~/utils/renders"
 
 const total = ref(0)
 const content = ref("")
@@ -19,30 +20,30 @@ const query = reactive({
 const columns: DataTableColumn<Announcement>[] = [
   {
     key: "title",
-    title: "公告标题",
+    title: renderTableTitle("公告标题", "streamline-emojis:fire"),
     render: (row) => h(TitleWithTag, { title: row.title, top: row.top }),
     minWidth: 300,
   },
   {
     key: "tag",
-    title: "标签",
+    title: renderTableTitle("标签", "fluent-emoji-flat:keycap-hashtag"),
     render: (row) => h(NTag, () => row.tag || "公告"),
   },
   {
     key: "create_time",
-    title: "发布时间",
+    title: renderTableTitle("发布时间", "fluent-emoji-flat:eight-oclock"),
     render: (row) => parseTime(row.create_time),
     width: 180,
   },
   {
     key: "last_update_time",
-    title: "更新时间",
+    title: renderTableTitle("更新时间", "fluent-emoji-flat:eleven-thirty"),
     render: (row) => parseTime(row.last_update_time),
     width: 180,
   },
   {
     key: "username",
-    title: "发布人",
+    title: renderTableTitle("发布人", "streamline-emojis:ghost"),
     render: (row) => row.created_by.username,
     width: 120,
   },

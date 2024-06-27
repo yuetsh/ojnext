@@ -8,6 +8,7 @@ import { isDesktop } from "~/shared/composables/breakpoints"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 import Pagination from "~/shared/components/Pagination.vue"
 import { NButton } from "naive-ui"
+import { renderTableTitle } from "~/utils/renders"
 
 const userStore = useUserStore()
 const route = useRoute()
@@ -15,7 +16,7 @@ const router = useRouter()
 
 const columns: DataTableColumn<Submission>[] = [
   {
-    title: "提交时间",
+    title: renderTableTitle("提交时间", "noto:seven-oclock"),
     key: "create_time",
     width: 200,
     render: (row) =>
@@ -25,7 +26,7 @@ const columns: DataTableColumn<Submission>[] = [
       ),
   },
   {
-    title: "编号",
+    title: renderTableTitle("编号", "fluent-emoji-flat:input-numbers"),
     key: "id",
     minWidth: 160,
     render: (row) => {
@@ -48,13 +49,16 @@ const columns: DataTableColumn<Submission>[] = [
     },
   },
   {
-    title: "状态",
+    title: renderTableTitle("状态", "streamline-emojis:panda-face"),
     key: "status",
     width: 140,
     render: (row) => h(SubmissionResultTag, { result: row.result }),
   },
   {
-    title: "语言",
+    title: renderTableTitle(
+      "语言",
+      "streamline-emojis:globe-showing-europe-africa",
+    ),
     key: "language",
     width: 100,
     render: (row) => LANGUAGE_SHOW_VALUE[row.language],

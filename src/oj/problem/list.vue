@@ -9,6 +9,7 @@ import { getProblemTagList } from "~/shared/api"
 import Pagination from "~/shared/components/Pagination.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { Icon } from "@iconify/vue"
+import { renderTableTitle } from "~/utils/renders"
 
 interface Tag {
   id: number
@@ -150,29 +151,48 @@ onMounted(() => {
 
 const baseColumns: DataTableColumn<ProblemFiltered>[] = [
   {
-    title: "状态",
+    title: renderTableTitle("状态", "streamline-emojis:musical-note"),
     key: "status",
-    width: 60,
+    width: 80,
+    align: "center",
     render: (row) => h(ProblemStatus, { status: row.status }),
   },
-  { title: "编号", key: "_id", width: 100 },
-  { title: "题目", key: "title", minWidth: 200 },
   {
-    title: "难度",
+    title: renderTableTitle("编号", "fluent-emoji-flat:input-numbers"),
+    key: "_id",
+    width: 100,
+  },
+  {
+    title: renderTableTitle("题目", "streamline-emojis:rice-ball"),
+    key: "title",
+    minWidth: 200,
+  },
+  {
+    title: renderTableTitle("难度", "streamline-emojis:mushroom"),
     key: "difficulty",
     width: 100,
     render: (row) =>
       h(NTag, { type: getTagColor(row.difficulty) }, () => row.difficulty),
   },
   {
-    title: "标签",
+    title: renderTableTitle("标签", "fluent-emoji-flat:keycap-hashtag"),
     key: "tags",
     width: 260,
     render: (row) =>
       h(NSpace, () => row.tags.map((t) => h(NTag, { key: t }, () => t))),
   },
-  { title: "提交数", key: "submission", width: 100 },
-  { title: "通过率", key: "rate", width: 100 },
+  {
+    title: renderTableTitle("提交数", "streamline-emojis:clinking-beer-mugs"),
+    key: "submission",
+    align: "center",
+    width: 100,
+  },
+  {
+    title: renderTableTitle("通过率", "streamline-emojis:clapping-hands-1"),
+    key: "rate",
+    width: 100,
+    align: "center",
+  },
 ]
 
 const columns = computed(() =>

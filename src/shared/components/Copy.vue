@@ -7,7 +7,7 @@ const [copied, toggle] = useToggle()
 const { start } = useTimeoutFn(() => toggle(false), 1000, { immediate: false })
 
 const COPY = h(Icon, { icon: "emojione:clipboard" })
-const OK = h(Icon, { icon: "openmoji:check-mark" })
+const OK = h(Icon, { icon: "noto-v1:check-mark" })
 
 function handleClick(value: string) {
   copy(value)

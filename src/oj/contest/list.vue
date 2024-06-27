@@ -8,6 +8,7 @@ import ContestTitle from "~/shared/components/ContestTitle.vue"
 import Pagination from "~/shared/components/Pagination.vue"
 import { useUserStore } from "~/shared/store/user"
 import { toggleLogin } from "~/shared/composables/modal"
+import { renderTableTitle } from "~/utils/renders"
 
 const route = useRoute()
 const router = useRouter()
@@ -30,7 +31,7 @@ const options: SelectOption[] = [
 
 const columns: DataTableColumn<Contest>[] = [
   {
-    title: "状态",
+    title: renderTableTitle("状态", "streamline-emojis:collision"),
     key: "status",
     width: 100,
     render: (row) =>
@@ -41,19 +42,19 @@ const columns: DataTableColumn<Contest>[] = [
       ),
   },
   {
-    title: "比赛",
+    title: renderTableTitle("比赛", "streamline-emojis:bouquet"),
     key: "title",
     minWidth: 360,
     render: (row) => h(ContestTitle, { contest: row }),
   },
   {
-    title: "开始时间",
+    title: renderTableTitle("开始时间", "fluent-emoji-flat:eleven-thirty"),
     key: "start_time",
     width: 180,
     render: (row) => parseTime(row.start_time),
   },
   {
-    title: "比赛时长",
+    title: renderTableTitle("比赛时长", "streamline-emojis:fishing-pole"),
     key: "duration",
     width: 180,
     render: (row) => duration(row.start_time, row.end_time),

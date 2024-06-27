@@ -33,18 +33,25 @@ function renderIcon(icon: string) {
 }
 
 const avatars = [
-  "openmoji:glowing-star",
-  "openmoji:heart-with-ribbon",
-  "openmoji:flag-china",
-  "openmoji:fish-cake-with-swirl",
-  "openmoji:astronaut",
-  "openmoji:alien-monster",
-  "openmoji:zany-face",
-  "openmoji:eyes",
-  "openmoji:desktop-computer",
-  "openmoji:watermelon",
-  "openmoji:cheese-wedge",
-  "openmoji:wrapped-gift",
+  "streamline-emojis:man-with-chinese-cap-1",
+  "streamline-emojis:cat-face",
+  "streamline-emojis:china",
+  "streamline-emojis:chicken",
+  "streamline-emojis:eyes",
+  "streamline-emojis:elephant",
+  "streamline-emojis:hear-no-evil-monkey",
+  "streamline-emojis:panda-face",
+  "streamline-emojis:penguin-1",
+  "streamline-emojis:rooster",
+  "streamline-emojis:star-struck-1",
+  "streamline-emojis:tomato",
+  "streamline-emojis:rocket",
+  "streamline-emojis:sparkles",
+  "streamline-emojis:money-bag",
+  "streamline-emojis:ghost",
+  "streamline-emojis:game-dice",
+  "streamline-emojis:ewe-1",
+  "streamline-emojis:artist-palette",
 ]
 
 const avatar = ref(avatars[Math.floor(Math.random() * avatars.length)])
@@ -62,35 +69,35 @@ const menus = computed<MenuOption[]>(() => [
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "题库" }),
     key: "problem",
-    icon: renderIcon("openmoji:jack-o-lantern"),
+    icon: renderIcon("streamline-emojis:jack-o-lantern"),
   },
   {
     label: () =>
       h(RouterLink, { to: "/submission" }, { default: () => "提交" }),
     key: "submission",
-    icon: renderIcon("openmoji:clown-face"),
+    icon: renderIcon("streamline-emojis:lemon"),
   },
   {
     label: () => h(RouterLink, { to: "/contest" }, { default: () => "比赛" }),
     key: "contest",
-    icon: renderIcon("openmoji:face-with-tears-of-joy"),
+    icon: renderIcon("streamline-emojis:direct-hit"),
   },
   {
     label: () => h(RouterLink, { to: "/rank" }, { default: () => "排名" }),
     key: "rank",
-    icon: renderIcon("openmoji:sports-medal"),
+    icon: renderIcon("streamline-emojis:crown"),
   },
   {
     label: () =>
       h(RouterLink, { to: "/announcement" }, { default: () => "公告" }),
     key: "announcement",
-    icon: renderIcon("openmoji:hamburger"),
+    icon: renderIcon("streamline-emojis:police-car-light"),
   },
   {
     label: () => h(RouterLink, { to: "/admin" }, { default: () => "后台" }),
     show: userStore.isAdminRole,
     key: "admin",
-    icon: renderIcon("openmoji:hacker-cat"),
+    icon: renderIcon("streamline-emojis:unicorn-face"),
   },
 ])
 
@@ -98,6 +105,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的主页",
     key: "home",
+    icon: renderIcon("streamline-emojis:clipboard"),
     props: {
       onClick: () => router.push("/user"),
     },
@@ -105,6 +113,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的消息",
     key: "message",
+    icon: renderIcon("streamline-emojis:herb"),
     props: {
       onClick: () => router.push("/message"),
     },
@@ -112,6 +121,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的提交",
     key: "status",
+    icon: renderIcon("streamline-emojis:bar-chart"),
     props: {
       onClick: () => router.push("/submission?myself=1"),
     },
@@ -119,12 +129,18 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的设置",
     key: "setting",
+    icon: renderIcon("streamline-emojis:game-dice"),
     props: {
       onClick: () => router.push("/setting"),
     },
   },
   { type: "divider" },
-  { label: "退出", key: "logout", props: { onClick: handleLogout } },
+  {
+    label: "退出",
+    key: "logout",
+    icon: renderIcon("streamline-emojis:bathtub"),
+    props: { onClick: handleLogout },
+  },
 ]
 
 function goHome() {
@@ -147,7 +163,10 @@ function goHome() {
     </n-space>
     <n-space align="center">
       <n-dropdown v-if="isMobile" :options="menus">
-        <n-button>菜单</n-button>
+        <n-button>
+          <Icon icon="streamline-emojis:clipboard" :height="24" :width="24"></Icon>
+          <span style="padding-left: 8px">菜单</span>
+        </n-button>
       </n-dropdown>
       <n-button
         v-if="
@@ -161,10 +180,8 @@ function goHome() {
       <div v-if="userStore.isFinished">
         <n-dropdown v-if="userStore.isAuthed" :options="options">
           <n-button @click="getRandomAvatar">
-            <template #icon>
-              <Icon :icon="avatar"></Icon>
-            </template>
-            {{ userStore.user!.username }}
+            <Icon :icon="avatar" :height="24" :width="24"></Icon>
+            <span style="padding-left: 8px">{{ userStore.user!.username }}</span>
           </n-button>
         </n-dropdown>
         <n-space align="center" v-else>

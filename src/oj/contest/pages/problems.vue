@@ -2,6 +2,7 @@
 import { ProblemFiltered } from "utils/types"
 import ProblemStatus from "~/oj/problem/components/ProblemStatus.vue"
 import { useContestStore } from "~/oj/store/contest"
+import { renderTableTitle } from "~/utils/renders"
 
 const props = defineProps<{ contestID: string }>()
 
@@ -9,15 +10,33 @@ const router = useRouter()
 const contestStore = useContestStore()
 const problemsColumns: DataTableColumn<ProblemFiltered>[] = [
   {
-    title: "状态",
+    title: renderTableTitle("状态", "streamline-emojis:musical-note"),
     key: "status",
-    width: 60,
+    width: 100,
     render: (row) => h(ProblemStatus, { status: row.status }),
   },
-  { title: "编号", key: "_id", width: 60 },
-  { title: "题目", key: "title", minWidth: 200 },
-  { title: "总提交数", key: "submission", width: 100 },
-  { title: "通过率", key: "rate", width: 100 },
+  {
+    title: renderTableTitle("编号", "fluent-emoji-flat:input-numbers"),
+    key: "_id",
+    width: 100,
+  },
+  {
+    title: renderTableTitle("题目", "streamline-emojis:rice-ball"),
+    key: "title",
+    minWidth: 200,
+  },
+  {
+    title: renderTableTitle("提交数", "streamline-emojis:clinking-beer-mugs"),
+    key: "submission",
+    align: "center",
+    width: 120,
+  },
+  {
+    title: renderTableTitle("通过率", "streamline-emojis:clapping-hands-1"),
+    key: "rate",
+    align: "center",
+    width: 120,
+  },
 ]
 
 function rowProps(row: ProblemFiltered) {

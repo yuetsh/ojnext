@@ -8,6 +8,7 @@ import { secondsToDuration } from "utils/functions"
 import { ContestStatus } from "~/utils/constants"
 import { useContestStore } from "~/oj/store/contest"
 import { Icon } from "@iconify/vue"
+import { renderTableTitle } from "~/utils/renders"
 
 interface Props {
   contestID: string
@@ -44,15 +45,18 @@ const query = reactive({
 
 const columns = ref<DataTableColumn<ContestRank>[]>([
   {
-    title: "排名",
+    title: renderTableTitle("编号", "fluent-emoji-flat:input-numbers"),
     key: "id",
-    width: 60,
+    width: 80,
     fixed: "left",
     align: "center",
     render: (_, index) => index + (query.page - 1) * query.limit + 1,
   },
   {
-    title: "用户",
+    title: renderTableTitle(
+      "用户",
+      "streamline-emojis:smiling-face-with-sunglasses",
+    ),
     key: "username",
     width: 120,
     fixed: "left",
@@ -69,9 +73,12 @@ const columns = ref<DataTableColumn<ContestRank>[]>([
       ),
   },
   {
-    title: "正确数/总提交",
+    title: renderTableTitle(
+      "正确数/总提交",
+      "streamline-emojis:artist-palette",
+    ),
     key: "submission",
-    width: 120,
+    width: 140,
     align: "center",
     render: (row) => h(AcAndSubmission, { rank: row }),
   },
@@ -133,9 +140,9 @@ async function addColumns() {
             if (status.is_first_ac) {
               acTime = [
                 h(Icon, {
-                  icon: "openmoji:1st-place-medal",
-                  height: 24,
-                  width: 24,
+                  icon: "fluent-emoji:1st-place-medal",
+                  height: 20,
+                  width: 20,
                 }),
                 h("span", secondsToDuration(status.ac_time)),
               ]

@@ -5,6 +5,7 @@ import { problem } from "oj/composables/problem"
 import { Problem, ProblemStatus } from "utils/types"
 import { createTestSubmission } from "utils/judge"
 import { useThemeVars } from "naive-ui"
+import { Icon } from "@iconify/vue"
 
 type Sample = Problem["samples"][number] & {
   id: number
@@ -99,17 +100,37 @@ function type(status: ProblemStatus) {
       <n-tag>{{ problem._id }}</n-tag>
       <h2 class="problemTitle">{{ problem.title }}</h2>
     </n-space>
-    <p class="title" :style="style">描述</p>
+    <p class="title" :style="style">
+      <n-flex align="center">
+        <Icon icon="streamline-emojis:sparkles"></Icon>
+        描述
+      </n-flex>
+    </p>
     <div class="content" v-html="problem.description"></div>
 
-    <p class="title" :style="style">输入</p>
+    <p class="title" :style="style">
+      <n-flex align="center">
+        <Icon icon="streamline-emojis:four-leaf-clover"></Icon>
+        输入
+      </n-flex>
+    </p>
     <div class="content" v-html="problem.input_description"></div>
 
-    <p class="title" :style="style">输出</p>
+    <p class="title" :style="style">
+      <n-flex align="center">
+        <Icon icon="streamline-emojis:herb"></Icon>
+        输出
+      </n-flex>
+    </p>
     <div class="content" v-html="problem.output_description"></div>
 
     <div v-if="problem.hint">
-      <p class="title" :style="style">提示</p>
+      <p class="title" :style="style">
+        <n-flex align="center">
+          <Icon icon="streamline-emojis:seedling"></Icon>
+          提示
+        </n-flex>
+      </p>
       <div class="content" v-html="problem.hint"></div>
     </div>
 

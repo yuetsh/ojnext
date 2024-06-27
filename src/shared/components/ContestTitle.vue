@@ -9,9 +9,9 @@ defineProps<{ contest: Contest }>()
   <n-flex>
     <Icon
       v-if="contest.contest_type === ContestType.private"
-      :height="20"
-      :width="20"
-      icon="openmoji:locked"
+      :height="24"
+      :width="24"
+      icon="streamline-emojis:locked-with-key"
     ></Icon>
     <span>{{ contest.title }}</span>
   </n-flex>

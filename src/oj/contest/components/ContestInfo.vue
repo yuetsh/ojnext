@@ -16,7 +16,7 @@ const contestStore = useContestStore()
     <template #trigger>
       <n-button>
         <template #icon>
-          <Icon icon="openmoji:compass"></Icon>
+          <Icon icon="streamline-emojis:exclamation-mark"></Icon>
         </template>
         比赛信息
       </n-button>

@@ -6,6 +6,7 @@ import { Rank } from "utils/types"
 import { getRank } from "oj/api"
 import { getACRate } from "utils/functions"
 import Index from "./components/Index.vue"
+import { renderTableTitle } from "~/utils/renders"
 
 const router = useRouter()
 const data = ref<Rank[]>([])
@@ -28,15 +29,18 @@ async function listRanks() {
 
 const columns: DataTableColumn<Rank>[] = [
   {
-    title: "排名",
+    title: renderTableTitle("排名", "streamline-emojis:flexed-biceps-1"),
     key: "index",
-    width: 80,
+    width: 100,
     align: "center",
     render: (_, index) =>
       h(Index, { index, page: query.page, limit: query.limit }),
   },
   {
-    title: "用户",
+    title: renderTableTitle(
+      "用户",
+      "streamline-emojis:smiling-face-with-sunglasses",
+    ),
     key: "username",
     width: 200,
     render: (row) =>
@@ -50,13 +54,31 @@ const columns: DataTableColumn<Rank>[] = [
         () => row.user.username,
       ),
   },
-  { title: "个性签名", key: "mood", minWidth: 200 },
-  { title: "已解决", key: "accepted_number", width: 100 },
-  { title: "提交数", key: "submission_number", width: 100 },
   {
-    title: "正确率",
+    title: renderTableTitle(
+      "个性签名",
+      "streamline-emojis:no-one-under-eighteen",
+    ),
+    key: "mood",
+    minWidth: 200,
+  },
+  {
+    title: renderTableTitle("已解决", "streamline-emojis:raised-fist-1"),
+    key: "accepted_number",
+    width: 120,
+    align: "center",
+  },
+  {
+    title: renderTableTitle("提交数", "streamline-emojis:rocket"),
+    key: "submission_number",
+    width: 120,
+    align: "center",
+  },
+  {
+    title: renderTableTitle("正确率", "streamline-emojis:wrapped-gift-1"),
     key: "rate",
-    width: 100,
+    width: 120,
+    align: "center",
     render: (row) => getACRate(row.accepted_number, row.submission_number),
   },
 ]

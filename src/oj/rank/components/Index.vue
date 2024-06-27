@@ -20,10 +20,10 @@ const tooltip = computed(() => {
   <span v-if="index > 3">{{ index }}</span>
   <n-tooltip v-else>
     <template #trigger>
-      <n-icon :size="20">
-        <Icon v-if="index === 1" icon="openmoji:1st-place-medal"></Icon>
-        <Icon v-if="index === 2" icon="openmoji:2nd-place-medal"></Icon>
-        <Icon v-if="index === 3" icon="openmoji:3rd-place-medal"></Icon>
+      <n-icon :size="24">
+        <Icon v-if="index === 1" icon="fluent-emoji:1st-place-medal"></Icon>
+        <Icon v-if="index === 2" icon="fluent-emoji:2nd-place-medal"></Icon>
+        <Icon v-if="index === 3" icon="fluent-emoji:3rd-place-medal"></Icon>
       </n-icon>
     </template>
     {{ tooltip }}
