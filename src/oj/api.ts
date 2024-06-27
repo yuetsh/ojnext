@@ -1,11 +1,11 @@
-import http from "utils/http"
-import { getACRate } from "utils/functions"
 import { DIFFICULTY } from "utils/constants"
+import { getACRate } from "utils/functions"
+import http from "utils/http"
 import {
   Problem,
-  SubmitCodePayload,
   Submission,
   SubmissionListPayload,
+  SubmitCodePayload,
 } from "utils/types"
 
 function filterResult(result: Problem) {

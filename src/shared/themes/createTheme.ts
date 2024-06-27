@@ -1,10 +1,10 @@
-import { EditorView } from "@codemirror/view"
-import { Extension } from "@codemirror/state"
 import {
   HighlightStyle,
   TagStyle,
   syntaxHighlighting,
 } from "@codemirror/language"
+import { Extension } from "@codemirror/state"
+import { EditorView } from "@codemirror/view"
 
 interface Options {
   /**

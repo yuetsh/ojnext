@@ -4,10 +4,10 @@ import { ContestStatus, ContestType } from "~/utils/constants"
 import { duration } from "~/utils/functions"
 import { Contest, Problem } from "~/utils/types"
 import {
+  checkContestPassword,
   getContest,
   getContestAccess,
   getContestProblems,
-  checkContestPassword,
 } from "../api"
 
 export const useContestStore = defineStore("contest", () => {

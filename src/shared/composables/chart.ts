@@ -1,13 +1,13 @@
 import {
-  Chart as ChartJS,
-  Title,
-  Colors,
-  Tooltip,
-  Legend,
-  BarElement,
   ArcElement,
+  BarElement,
   CategoryScale,
+  Chart as ChartJS,
+  Colors,
+  Legend,
   LinearScale,
+  Title,
+  Tooltip,
 } from "chart.js"
 
 const [isLoaded] = useToggle()

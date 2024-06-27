@@ -1,6 +1,6 @@
-import { EditorView } from "@codemirror/view"
-import { Extension } from "@codemirror/state"
 import { HighlightStyle, syntaxHighlighting } from "@codemirror/language"
+import { Extension } from "@codemirror/state"
+import { EditorView } from "@codemirror/view"
 import { tags as t } from "@lezer/highlight"
 
 // Using https://github.com/one-dark/vscode-one-dark-theme/ as reference for the colors

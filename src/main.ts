@@ -1,11 +1,11 @@
-import { createRouter, createWebHistory } from "vue-router"
 import { createPinia } from "pinia"
+import { createRouter, createWebHistory } from "vue-router"
 
-import storage from "utils/storage"
 import { STORAGE_KEY } from "utils/constants"
+import storage from "utils/storage"
 
-import { ojs, admins } from "./routes"
 import App from "./App.vue"
+import { admins, ojs } from "./routes"
 
 import { toggleLogin } from "./shared/composables/modal"
 
