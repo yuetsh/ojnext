@@ -9,7 +9,6 @@ import Pagination from "~/shared/components/Pagination.vue"
 import { useUserStore } from "~/shared/store/user"
 import { toggleLogin } from "~/shared/composables/modal"
 import { renderTableTitle } from "~/utils/renders"
-import { isDesktop } from "~/shared/composables/breakpoints"
 
 const route = useRoute()
 const router = useRouter()
@@ -45,7 +44,7 @@ const columns: DataTableColumn<Contest>[] = [
   {
     title: renderTableTitle("比赛", "streamline-emojis:bouquet"),
     key: "title",
-    minWidth: isDesktop.value ? 360 : 300,
+    minWidth: 360,
     render: (row) => h(ContestTitle, { contest: row }),
   },
   {
