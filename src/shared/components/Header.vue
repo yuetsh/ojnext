@@ -106,7 +106,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的主页",
     key: "home",
-    icon: renderIcon("streamline-emojis:clipboard"),
+    icon: renderIcon("streamline-emojis:newspaper"),
     props: {
       onClick: () => router.push("/user"),
     },
@@ -130,7 +130,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的设置",
     key: "setting",
-    icon: renderIcon("streamline-emojis:game-dice"),
+    icon: renderIcon("streamline-emojis:robot-face-1"),
     props: {
       onClick: () => router.push("/setting"),
     },
@@ -139,7 +139,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "退出",
     key: "logout",
-    icon: renderIcon("streamline-emojis:bathtub"),
+    icon: renderIcon("streamline-emojis:hot-beverage-2"),
     props: { onClick: handleLogout },
   },
 ]
@@ -166,7 +166,7 @@ function goHome() {
       />
     </n-space>
     <n-space align="center">
-      <n-dropdown v-if="isMobile" :options="menus">
+      <n-dropdown v-if="isMobile" :options="menus" size="large">
         <n-button>
           <Icon
             icon="streamline-emojis:clipboard"
@@ -186,12 +186,12 @@ function goHome() {
         {{ screenSwitchLabel }}
       </n-button>
       <div v-if="userStore.isFinished">
-        <n-dropdown v-if="userStore.isAuthed" :options="options">
+        <n-dropdown v-if="userStore.isAuthed" :options="options" size="large">
           <n-button @click="getRandomAvatar">
-            <Icon :icon="avatar" :height="24" :width="24"></Icon>
-            <span style="padding-left: 8px">{{
-              userStore.user!.username
-            }}</span>
+            <Icon :icon="avatar" :height="20" :width="20"></Icon>
+            <span style="padding-left: 8px">
+              {{ userStore.user!.username }}
+            </span>
           </n-button>
         </n-dropdown>
         <n-flex align="center" v-else>
