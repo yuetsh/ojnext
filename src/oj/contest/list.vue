@@ -45,7 +45,7 @@ const columns: DataTableColumn<Contest>[] = [
   {
     title: renderTableTitle("比赛", "streamline-emojis:bouquet"),
     key: "title",
-    minWidth: isDesktop ? 360 : 0,
+    minWidth: isDesktop.value ? 360 : 0,
     render: (row) => h(ContestTitle, { contest: row }),
   },
   {

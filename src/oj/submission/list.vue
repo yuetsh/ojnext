@@ -162,7 +162,7 @@ const columns = computed(() => {
       render: (row) =>
         parseTime(
           row.create_time,
-          isDesktop ? "YYYY-MM-DD HH:mm:ss" : "M-D hh:mm",
+          isDesktop.value ? "YYYY-MM-DD HH:mm:ss" : "M-D hh:mm",
         ),
     },
     {

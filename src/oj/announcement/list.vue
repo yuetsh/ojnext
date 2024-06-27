@@ -21,7 +21,7 @@ const columns: DataTableColumn<Announcement>[] = [
     key: "title",
     title: renderTableTitle("公告标题", "streamline-emojis:fire"),
     render: (row) => h(TitleWithTag, { title: row.title, top: row.top }),
-    minWidth: isDesktop ? 300 : 0,
+    minWidth: isDesktop.value ? 300 : 0,
   },
   {
     key: "tag",
