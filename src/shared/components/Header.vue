@@ -164,7 +164,11 @@ function goHome() {
     <n-space align="center">
       <n-dropdown v-if="isMobile" :options="menus">
         <n-button>
-          <Icon icon="streamline-emojis:clipboard" :height="24" :width="24"></Icon>
+          <Icon
+            icon="streamline-emojis:clipboard"
+            :height="24"
+            :width="24"
+          ></Icon>
           <span style="padding-left: 8px">菜单</span>
         </n-button>
       </n-dropdown>
@@ -181,7 +185,9 @@ function goHome() {
         <n-dropdown v-if="userStore.isAuthed" :options="options">
           <n-button @click="getRandomAvatar">
             <Icon :icon="avatar" :height="24" :width="24"></Icon>
-            <span style="padding-left: 8px">{{ userStore.user!.username }}</span>
+            <span style="padding-left: 8px">{{
+              userStore.user!.username
+            }}</span>
           </n-button>
         </n-dropdown>
         <n-space align="center" v-else>
