@@ -6,7 +6,6 @@ import { problem } from "oj/composables/problem"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
 import Submit from "./Submit.vue"
-import TestCat from "./TestCat2.vue"
 import storage from "~/utils/storage"
 import { STORAGE_KEY } from "utils/constants"
 import { LANGUAGE } from "~/utils/types"
@@ -80,6 +79,11 @@ function changeLanguage(v: LANGUAGE) {
   storage.set(STORAGE_KEY.LANGUAGE, v)
   emit("changeLanguage", v)
 }
+
+function gotoTestCat() {
+  const url = "https://code.xuyue.cc"
+  window.open(url, "_blank")
+}
 </script>
 
 <template>
@@ -92,11 +96,7 @@ function changeLanguage(v: LANGUAGE) {
       :options="options"
     />
     <Submit />
-    <TestCat
-      v-if="isDesktop"
-      :lang="code.language"
-      :input="problem?.samples[0].input"
-    />
+    <n-button v-if="isDesktop" @click="gotoTestCat">自测猫</n-button>
     <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
     <n-dropdown :options="menu" @select="select">
       <n-button :size="isDesktop ? 'medium' : 'small'">操作</n-button>
