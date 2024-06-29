@@ -159,11 +159,7 @@ const columns = computed(() => {
       title: renderTableTitle("提交时间", "noto:seven-oclock"),
       key: "create_time",
       width: 200,
-      render: (row) =>
-        parseTime(
-          row.create_time,
-          isDesktop.value ? "YYYY-MM-DD HH:mm:ss" : "M-D hh:mm",
-        ),
+      render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
     },
     {
       title: renderTableTitle("提交编号", "fluent-emoji-flat:input-numbers"),
