@@ -5,13 +5,16 @@ import { isDesktop } from "~/shared/composables/breakpoints"
 import { JUDGE_STATUS, SubmissionStatus } from "utils/constants"
 import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
 import { Submission, SubmitCodePayload } from "utils/types"
-import { getSubmission, submitCode } from "oj/api"
+import { getComment, getSubmission, submitCode } from "oj/api"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 import { useUserStore } from "~/shared/store/user"
 // @ts-ignore
 import confetti from "canvas-confetti"
 import { Icon } from "@iconify/vue"
 
+const ProblemComment = defineAsyncComponent(
+  () => import("./ProblemComment.vue"),
+)
 const userStore = useUserStore()
 const route = useRoute()
 
@@ -20,11 +23,22 @@ const contestID = <string>route.params.contestID ?? ""
 const submissionId = ref("")
 const submission = ref<Submission>()
 const [submitted] = useToggle()
+const [commentPanel] = useToggle()
 
 const { start: submitPending, isPending } = useTimeout(5000, {
   controls: true,
   immediate: false,
 })
+
+const { start: showCommentPanel } = useTimeoutFn(
+  async () => {
+    const res = await getComment(problem.value!.id)
+    if (res.data) return
+    commentPanel.value = true
+  },
+  2000,
+  { immediate: false },
+)
 
 const { start: fetchSubmission } = useTimeoutFn(
   async () => {
@@ -187,6 +201,9 @@ watch(
   () => submission?.value?.result,
   (result) => {
     if (result === SubmissionStatus.accepted) {
+      // 刷新题目状态
+      problem.value!.my_status = 0
+      // 放烟花
       confetti({
         particleCount: 300,
         startVelocity: 30,
@@ -194,6 +211,8 @@ watch(
         spread: 350,
         origin: { x: 0.5, y: 0.4 },
       })
+      // 题目在第一次完成之后，弹出点评框
+      showCommentPanel()
     }
   },
 )
@@ -244,6 +263,14 @@ watch(
       />
     </n-space>
   </n-popover>
+  <n-modal
+    preset="card"
+    :mask-closable="false"
+    :style="{ maxWidth: isDesktop && '50vw', maxHeight: '80vh' }"
+    v-model:show="commentPanel"
+  >
+    <ProblemComment :showStatistics="false" />
+  </n-modal>
 </template>
 <style scoped>
 .msg {
