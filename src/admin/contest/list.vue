@@ -30,6 +30,11 @@ const columns: DataTableColumn<Contest>[] = [
     render: (row) => h(ContestTitle, { contest: row }),
   },
   {
+    title: "标签",
+    key: "tag",
+    width: 80,
+  },
+  {
     title: "类型",
     key: "contest_type",
     width: 80,

@@ -39,6 +39,7 @@ async function init() {
   announcement.title = res.data.title
   announcement.content = res.data.content
   announcement.visible = res.data.visible
+  announcement.tag = res.data.tag
   announcement.top = res.data.top
 }
 

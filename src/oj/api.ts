@@ -120,6 +120,7 @@ export function getContestList(query: {
   limit: number
   keyword: string
   status: string
+  tag: string
 }) {
   return http.get("contests", { params: query })
 }

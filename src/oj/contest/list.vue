@@ -18,6 +18,7 @@ const query = reactive({
   limit: parseInt(<string>route.query.limit) || 10,
   keyword: <string>route.query.keyword ?? "",
   status: <string>route.query.status ?? "",
+  tag: <string>route.query.tag ?? "",
 })
 const data = ref<Contest[]>([])
 const total = ref(0)
@@ -27,6 +28,13 @@ const options: SelectOption[] = [
   { label: "未开始", value: "1" },
   { label: "进行中", value: "0" },
   { label: "已结束", value: "-1" },
+]
+
+const tags: SelectOption[] = [
+  { label: "全部", value: "" },
+  { label: "练习", value: "练习" },
+  { label: "期中", value: "期中" },
+  { label: "期末", value: "期末" },
 ]
 
 const columns: DataTableColumn<Contest>[] = [
@@ -46,6 +54,12 @@ const columns: DataTableColumn<Contest>[] = [
     key: "title",
     minWidth: 360,
     render: (row) => h(ContestTitle, { contest: row }),
+  },
+  {
+    title: renderTableTitle("标签", "fluent-emoji-flat:keycap-hashtag"),
+    key: "tag",
+    width: 100,
+    render: (row) => h(NTag, () => row.tag),
   },
   {
     title: renderTableTitle("开始时间", "fluent-emoji-flat:eleven-thirty"),
@@ -68,6 +82,7 @@ async function listContests() {
     limit: query.limit,
     keyword: query.keyword,
     status: query.status,
+    tag: query.tag,
   })
   data.value = res.data.results
   total.value = res.data.total
@@ -87,12 +102,13 @@ function search(value: string) {
 function clear() {
   query.keyword = ""
   query.status = ""
+  query.tag = ""
 }
 
 onMounted(listContests)
 watch(() => query.page, routerPush)
 watch(
-  () => [query.limit, query.status],
+  () => [query.limit, query.status, query.tag],
   () => {
     query.page = 1
     routerPush()
@@ -136,6 +152,9 @@ function rowProps(row: Contest) {
             :options="options"
             v-model:value="query.status"
           />
+        </n-form-item>
+        <n-form-item label="标签">
+          <n-select class="select" :options="tags" v-model:value="query.tag" />
         </n-form-item>
         <n-form-item>
           <n-input

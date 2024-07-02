@@ -279,6 +279,7 @@ export interface Contest extends BlankContest {
 export interface BlankContest {
   title: string
   description: string
+  tag: string
   start_time: string
   end_time: string
   rule_type: "ACM" | "OI"

@@ -23,15 +23,11 @@ async function handleDelete() {
   emit("deleted")
 }
 
-function goDetail() {}
 </script>
 <template>
   <n-space>
     <n-button size="small" type="success" secondary @click="goEdit">
       编辑
-    </n-button>
-    <n-button size="small" type="info" secondary @click="goDetail">
-      查看
     </n-button>
     <n-popconfirm @positive-click="handleDelete">
       <template #trigger>

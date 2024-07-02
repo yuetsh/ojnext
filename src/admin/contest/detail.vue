@@ -20,10 +20,17 @@ const [ready, toggleReady] = useToggle()
 const startTime = ref(after10mins)
 const endTime = ref(after70mins)
 
+const tags: SelectOption[] = [
+  { label: "练习", value: "练习" },
+  { label: "期中", value: "期中" },
+  { label: "期末", value: "期末" },
+]
+
 const contest = reactive<BlankContest & { id: number }>({
   id: 0,
   title: "",
   description: "",
+  tag: "练习",
   start_time: formatISO(after10mins),
   end_time: formatISO(after70mins),
   rule_type: "ACM",
@@ -48,6 +55,7 @@ async function getContestDetail() {
   contest.id = data.id
   contest.title = data.title
   contest.description = data.description
+  contest.tag = data.tag
   contest.start_time = data.start_time
   contest.end_time = data.end_time
   contest.rule_type = "ACM"
@@ -92,6 +100,13 @@ onMounted(getContestDetail)
   <n-form inline>
     <n-form-item label="标题">
       <n-input class="contestTitle" v-model:value="contest.title" />
+    </n-form-item>
+    <n-form-item label="标签">
+      <n-select
+        style="width: 100px"
+        :options="tags"
+        v-model:value="contest.tag"
+      />
     </n-form-item>
     <n-form-item label="开始">
       <n-date-picker v-model:value="startTime" type="datetime" />
