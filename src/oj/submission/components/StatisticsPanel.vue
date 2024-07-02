@@ -68,7 +68,6 @@
     <n-data-table
       v-if="list.length"
       striped
-      size="small"
       :columns="columns"
       :data="list"
     />

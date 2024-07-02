@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { getProblemList, getProblem, editProblem } from "../api"
+import {
+  getProblemList,
+  getProblem,
+  editProblem,
+  toggleProblemVisible,
+} from "../api"
 import Pagination from "~/shared/components/Pagination.vue"
 import { NSwitch } from "naive-ui"
 import { AdminProblemFiltered } from "~/utils/types"
@@ -61,7 +66,7 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   {
     title: "选项",
     key: "actions",
-    width: 250,
+    width: 260,
     render: (row) =>
       h(Actions, {
         problemID: row.id,
@@ -83,10 +88,8 @@ async function listProblems() {
   problems.value = res.results
 }
 
-// 这里比较傻逼，因为我传进来的时候 filter 了而且只有 edit problem 一个接口，所以只能先 get 再 edit
 async function toggleVisible(problemID: number) {
-  const res = await getProblem(problemID)
-  await editProblem({ ...res.data, visible: !res.data.visible })
+  await toggleProblemVisible(problemID)
   problems.value = problems.value.map((it) => {
     if (it.id === problemID) {
       it.visible = !it.visible
@@ -108,7 +111,11 @@ async function selectProblems() {
 }
 
 onMounted(listProblems)
-watch(query, listProblems, { deep: true })
+watch(() => [query.limit, query.page], listProblems)
+watchDebounced(() => query.keyword, listProblems, {
+  debounce: 500,
+  maxWait: 1000,
+})
 </script>
 
 <template>
@@ -128,7 +135,7 @@ watch(query, listProblems, { deep: true })
       <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
     </n-space>
   </n-space>
-  <n-data-table striped size="small" :columns="columns" :data="problems" />
+  <n-data-table striped :columns="columns" :data="problems" />
   <Pagination
     :total="total"
     v-model:limit="query.limit"

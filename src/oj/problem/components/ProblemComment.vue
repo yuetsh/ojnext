@@ -20,7 +20,8 @@
             v-if="hasCommented"
             icon="noto:star"
             :width="24"
-            v-for="i in description_rating"
+            v-for="(_, i) in description_rating"
+            :key="i"
           />
           <n-rate v-else size="large" v-model:value="description_rating" />
         </n-form-item>
@@ -36,7 +37,8 @@
             v-if="hasCommented"
             icon="noto:star"
             :width="24"
-            v-for="i in difficulty_rating"
+            v-for="(_, i) in difficulty_rating"
+            :key="i"
           />
           <n-rate v-else size="large" v-model:value="difficulty_rating" />
         </n-form-item>
@@ -50,7 +52,8 @@
             v-if="hasCommented"
             icon="noto:star"
             :width="24"
-            v-for="i in difficulty_rating"
+            v-for="(_, i) in difficulty_rating"
+            :key="i"
           />
           <n-rate v-else size="large" v-model:value="comprehensive_rating" />
         </n-form-item>

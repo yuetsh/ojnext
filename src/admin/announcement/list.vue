@@ -81,7 +81,7 @@ watch(query, listAnnouncements, { deep: true })
 
 <template>
   <h2 class="title">网站公告</h2>
-  <n-data-table striped size="small" :columns="columns" :data="announcements" />
+  <n-data-table striped :columns="columns" :data="announcements" />
   <Pagination
     :total="total"
     v-model:limit="query.limit"

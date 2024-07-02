@@ -176,7 +176,6 @@ watch(query, listUsers, { deep: true })
   <n-data-table
     :data="users"
     :columns="columns"
-    size="small"
     striped
     :row-key="rowKey"
     @update:checked-row-keys="chooseUsers"

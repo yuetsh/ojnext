@@ -78,7 +78,8 @@ async function listContests() {
   total.value = res.data.total
 }
 onMounted(listContests)
-watch(query, listContests, { deep: true })
+watch(() => [query.page, query.limit], listContests)
+watchDebounced(() => query.keyword, listContests, { debounce: 500, maxWait: 1000 })
 </script>
 
 <template>
@@ -86,7 +87,7 @@ watch(query, listContests, { deep: true })
     <h2 class="title">比赛列表</h2>
     <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
   </n-space>
-  <n-data-table :columns="columns" :data="contests" size="small" />
+  <n-data-table :columns="columns" :data="contests" />
   <Pagination
     :total="total"
     v-model:limit="query.limit"

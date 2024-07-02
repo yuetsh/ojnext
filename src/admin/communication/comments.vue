@@ -1,0 +1,89 @@
+<template>
+  <n-space justify="space-between" class="titleWrapper">
+    <h2 class="title">评论列表</h2>
+    <n-input
+      v-model:value="query.problem"
+      clearable
+      placeholder="输入题目序号"
+    />
+  </n-space>
+  <n-data-table striped :columns="columns" :data="comments" />
+  <Pagination
+    :total="total"
+    v-model:limit="query.limit"
+    v-model:page="query.page"
+  />
+</template>
+<script lang="ts" setup>
+import { NButton } from "naive-ui"
+import { getCommentList } from "../api"
+import Pagination from "~/shared/components/Pagination.vue"
+import { Comment } from "~/utils/types"
+import { parseTime } from "~/utils/functions"
+import CommentActions from "./components/CommentActions.vue"
+
+const comments = ref<Comment[]>([])
+const total = ref(0)
+const query = reactive({
+  limit: 10,
+  page: 1,
+  problem: "",
+})
+
+const columns: DataTableColumn<Comment>[] = [
+  {
+    title: "题目",
+    key: "problem",
+    width: 100,
+    render: (row) =>
+      h(NButton, { text: true, type: "info" }, () => row.problem),
+  },
+  {
+    title: "提交",
+    key: "submission",
+    width: 200,
+    render: (row) =>
+      h(NButton, { text: true, type: "info" }, () =>
+        row.submission.slice(0, 12),
+      ),
+  },
+  { title: "描述评分", key: "description_rating", width: 100 },
+  { title: "难度评分", key: "difficulty_rating", width: 100 },
+  { title: "综合评分", key: "comprehensive_rating", width: 100 },
+  {
+    title: "时间",
+    key: "create_time",
+    render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
+    width: 200,
+  },
+  { title: "内容", key: "content", maxWidth: 300, ellipsis: true },
+  {
+    title: "选项",
+    key: "action",
+    width: 100,
+    render: (row) => h(CommentActions, { commentID: row.id, onDeleted: listComments }),
+  },
+]
+
+async function listComments() {
+  const offset = (query.page - 1) * query.limit
+  const res = await getCommentList(offset, query.limit, query.problem)
+  comments.value = res.data.results
+  total.value = res.data.total
+}
+
+onMounted(listComments)
+watchDebounced(() => [query.problem], listComments, {
+  debounce: 500,
+  maxWait: 1000,
+})
+</script>
+<style scoped>
+.titleWrapper {
+  margin-bottom: 16px;
+}
+
+.title {
+  margin: 0;
+}
+</style>

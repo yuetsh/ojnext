@@ -182,5 +182,15 @@ export const admins: RouteRecordRaw = {
       component: () => import("admin/announcement/detail.vue"),
       props: true,
     },
+    {
+      path: "comment/list",
+      name: "admin comment list",
+      component: () => import("admin/communication/comments.vue"),
+    },
+    {
+      path: "message/list",
+      name: "admin message list",
+      component: () => import("admin/communication/messages.vue"),
+    },
   ],
 }

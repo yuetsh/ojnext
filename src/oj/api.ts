@@ -197,7 +197,6 @@ export function createComment(data: {
   difficulty_rating: number
   comprehensive_rating: number
   content: string
-  submission_id?: string
 }) {
   return http.post("comment", data)
 }

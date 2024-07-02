@@ -59,6 +59,10 @@ export function editProblem(problem: AdminProblem | BlankProblem) {
   return http.put("admin/problem", problem)
 }
 
+export function toggleProblemVisible(problemID: number) {
+  return http.put("admin/problem/visible", { id: problemID })
+}
+
 export function editContestProblem(problem: AdminProblem | BlankProblem) {
   return http.put("admin/contest/problem", problem)
 }
@@ -198,4 +202,14 @@ export function editAnnouncement(announcement: AnnouncementEdit) {
 
 export function createAnnouncement(announcement: AnnouncementEdit) {
   return http.post("admin/announcement", announcement)
+}
+
+export function getCommentList(offset = 0, limit = 10, problem: string) {
+  return http.get("admin/comment", {
+    params: { offset, limit, problem },
+  })
+}
+
+export function deleteComment(id: number) {
+  return http.delete("admin/comment", { params: { id } })
 }

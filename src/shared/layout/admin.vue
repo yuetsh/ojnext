@@ -35,6 +35,25 @@ const options: MenuOption[] = [
       ),
     key: "admin problem create",
   },
+  {label: "交流", key: "communication", disabled: true},
+  {
+    label: () =>
+      h(
+        RouterLink,
+        { to: "/admin/comment/list" },
+        { default: () => "评论列表" },
+      ),
+    key: "admin comment list",
+  },
+  {
+    label: () =>
+      h(
+        RouterLink,
+        { to: "/admin/message/list" },
+        { default: () => "消息列表" },
+      ),
+    key: "admin message list",
+  },
   { label: "用户", key: "user", disabled: true },
   {
     label: () =>

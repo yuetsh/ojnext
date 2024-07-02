@@ -214,7 +214,6 @@ onMounted(() => {
     <n-data-table
       :single-line="false"
       striped
-      size="small"
       :columns="serverColumns"
       :data="servers"
     />
@@ -230,7 +229,6 @@ onMounted(() => {
     </template>
     <n-data-table
       striped
-      size="small"
       class="table"
       :columns="testcaseColumns"
       :data="testcases"

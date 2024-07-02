@@ -74,7 +74,7 @@ watch(query, getList, { deep: true })
       v-model:value="query.keyword"
       placeholder="搜索标题或编号"
     />
-    <n-data-table size="small" :columns="columns" :data="problems" />
+    <n-data-table striped :columns="columns" :data="problems" />
     <Pagination
       :total="total"
       v-model:limit="query.limit"

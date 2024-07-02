@@ -212,7 +212,9 @@ watch(
         origin: { x: 0.5, y: 0.4 },
       })
       // 题目在第一次完成之后，弹出点评框
-      showCommentPanel()
+      if (!contestID) {
+        showCommentPanel()
+      }
     }
   },
 )
