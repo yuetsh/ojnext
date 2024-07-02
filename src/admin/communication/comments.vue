@@ -1,6 +1,6 @@
 <template>
   <n-space justify="space-between" class="titleWrapper">
-    <h2 class="title">评论列表</h2>
+    <h2 class="title">评论列表（只列出有内容的）</h2>
     <n-input
       v-model:value="query.problem"
       clearable
@@ -36,20 +36,35 @@ const columns: DataTableColumn<Comment>[] = [
     key: "problem",
     width: 100,
     render: (row) =>
-      h(NButton, { text: true, type: "info" }, () => row.problem),
+      h(
+        NButton,
+        {
+          text: true,
+          type: "info",
+          onClick: () => window.open("/problem/" + row.problem, "_blank"),
+        },
+        () => row.problem,
+      ),
   },
   {
     title: "提交",
     key: "submission",
     width: 200,
     render: (row) =>
-      h(NButton, { text: true, type: "info" }, () =>
-        row.submission.slice(0, 12),
+      h(
+        NButton,
+        {
+          text: true,
+          type: "info",
+          onClick: () => window.open("/submission/" + row.submission, "_blank"),
+        },
+        () => row.submission.slice(0, 12),
       ),
   },
   { title: "描述评分", key: "description_rating", width: 100 },
   { title: "难度评分", key: "difficulty_rating", width: 100 },
   { title: "综合评分", key: "comprehensive_rating", width: 100 },
+  { title: "用户", key: "user.username", width: 150 },
   {
     title: "时间",
     key: "create_time",
@@ -61,7 +76,8 @@ const columns: DataTableColumn<Comment>[] = [
     title: "选项",
     key: "action",
     width: 100,
-    render: (row) => h(CommentActions, { commentID: row.id, onDeleted: listComments }),
+    render: (row) =>
+      h(CommentActions, { commentID: row.id, onDeleted: listComments }),
   },
 ]
 

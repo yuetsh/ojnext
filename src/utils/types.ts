@@ -370,4 +370,5 @@ export interface Comment {
   difficulty_rating: 1 | 2 | 3 | 4 | 5
   comprehensive_rating: 1 | 2 | 3 | 4 | 5
   create_time: Date
+  user: SampleUser
 }
