@@ -108,7 +108,9 @@ onMounted(init)
       <n-button v-if="canWriteMessage" @click="toggleBox(!showBox)">
         {{ showBox ? "关闭" : "打开" }}文本框
       </n-button>
-      <n-button v-if="canWriteMessage" @click="sendMessage">发送消息</n-button>
+      <n-button v-if="canWriteMessage && showBox" @click="sendMessage">
+        发送消息
+      </n-button>
     </n-flex>
     <TextEditor
       title=""
