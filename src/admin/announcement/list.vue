@@ -16,8 +16,13 @@ const announcements = ref<Announcement[]>([])
 const columns: DataTableColumn<Announcement>[] = [
   { title: "ID", key: "id", width: 60 },
   { title: "标题", key: "title", minWidth: 300 },
-  { title: "标签", key: "tag" },
-  { title: "置顶", key: "top", render: (row) => (row.top ? "置顶" : "") },
+  { title: "标签", key: "tag", width: 80 },
+  {
+    title: "置顶",
+    key: "top",
+    render: (row) => (row.top ? "置顶" : ""),
+    width: 80,
+  },
   {
     title: "创建时间",
     key: "create_time",
@@ -50,7 +55,7 @@ const columns: DataTableColumn<Announcement>[] = [
   {
     title: "选项",
     key: "actions",
-    width: 200,
+    width: 140,
     render: (row) =>
       h(Actions, { announcementID: row.id, onDeleted: listAnnouncements }),
   },

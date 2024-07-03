@@ -44,6 +44,7 @@ const serverColumns: DataTableColumn<Server>[] = [
   {
     title: "状态",
     key: "status",
+    width: 80,
     render: (row) =>
       h(
         NTag,
@@ -54,6 +55,7 @@ const serverColumns: DataTableColumn<Server>[] = [
   {
     title: "选项",
     key: "options",
+    width: 80,
     render: (row) =>
       h(
         NButton,
@@ -66,16 +68,16 @@ const serverColumns: DataTableColumn<Server>[] = [
         () => "删除",
       ),
   },
-  { title: "主机", key: "hostname", width: 130 },
+  { title: "主机", key: "hostname", width: 140 },
   {
     title: "内存占用",
     key: "memory_usage",
     render: (row) => row.memory_usage + "%",
-    width: 80,
+    width: 100,
   },
   { title: "IP", key: "ip", width: 140 },
-  { title: "判题机版本", key: "judger_version" },
-  { title: "服务器 URL", key: "service_url" },
+  { title: "判题机版本", key: "judger_version", width: 100 },
+  { title: "服务器 URL", key: "service_url", width: 200 },
   {
     title: "上一次心跳",
     key: "last_heartbeat",
