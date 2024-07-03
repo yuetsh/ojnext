@@ -26,6 +26,6 @@ const props = defineProps<Props>()
 defineEmits(["showCode"])
 
 function goto() {
-  router.push("/submission/" + props.submission.id)
+  window.open("/submission/" + props.submission.id, "_blank")
 }
 </script>

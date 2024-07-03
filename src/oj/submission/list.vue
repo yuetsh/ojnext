@@ -109,14 +109,15 @@ async function rejudge(submissionID: string) {
 
 function problemClicked(row: Submission) {
   if (route.name === "contest submissions") {
-    router.push({
+    const path = router.resolve({
       name: "contest problem",
       params: {
         problemID: row.problem,
       },
     })
+    window.open(path.href, "_blank")
   } else {
-    router.push("/problem/" + row.problem)
+    window.open("/problem/" + row.problem, "_blank")
   }
 }
 
@@ -225,7 +226,7 @@ const columns = computed(() => {
         h(
           ButtonWithSearch,
           {
-            onClick: () => router.push("/user?name=" + row.username),
+            onClick: () => window.open("/user?name=" + row.username, "_blank"),
             onSearch: () => (query.username = row.username),
           },
           () => row.username,
