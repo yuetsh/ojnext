@@ -1,0 +1,28 @@
+name: DeployTest
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm install
+      - run: CI=false NODE_ENV=development npm run build
+
+      - uses: easingthemes/ssh-deploy@main
+        with:
+          SSH_PRIVATE_KEY: ${{ secrets.KEY }}
+          REMOTE_HOST: ${{ secrets.HOST }}
+          ARGS: "-avzr --delete"
+          SOURCE: dist/
+          REMOTE_USER: root
+          TARGET: /root/ojtest/data/clientnext
