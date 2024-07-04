@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import copy from "copy-text-to-clipboard"
+import copyText from "copy-text-to-clipboard"
 import { LANGUAGE_SHOW_VALUE, SOURCES } from "utils/constants"
-import { code } from "oj/composables/code"
+import { code, input, output } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
@@ -9,14 +9,28 @@ import Submit from "./Submit.vue"
 import storage from "~/utils/storage"
 import { STORAGE_KEY } from "utils/constants"
 import { LANGUAGE } from "~/utils/types"
+import { createTestSubmission } from "~/utils/judge"
+
+interface Props {
+  storageKey: string
+  withTest?: boolean
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  withTest: false,
+})
 
 const message = useMessage()
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 
-const props = defineProps<{ storageKey: string }>()
 const emit = defineEmits(["changeLanguage"])
+
+function copy() {
+  copyText(code.value)
+  message.success("代码复制成功")
+}
 
 function reset() {
   code.value = problem.value!.template[code.language] || SOURCES[code.language]
@@ -32,6 +46,11 @@ function goSubmissions() {
 function goEdit() {
   const data = router.resolve("/admin/problem/edit/" + problem.value!.id)
   window.open(data.href, "_blank")
+}
+
+async function test() {
+  const res = await createTestSubmission(code, input.value)
+  output.value = res.output
 }
 
 const menu = computed<DropdownOption[]>(() => [
@@ -66,8 +85,7 @@ async function select(key: string) {
       reset()
       break
     case "copy":
-      copy(code.value)
-      message.success("代码复制成功")
+      copy()
       break
     case "test":
       window.open("https://code.xuyue.cc", "_blank")
@@ -95,19 +113,23 @@ function gotoTestCat() {
       :size="isDesktop ? 'medium' : 'small'"
       :options="options"
     />
-    <Submit />
-    <n-button v-if="isDesktop" @click="gotoTestCat">自测猫</n-button>
-    <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
-    <n-dropdown :options="menu" @select="select">
-      <n-button :size="isDesktop ? 'medium' : 'small'">操作</n-button>
-    </n-dropdown>
-    <n-button
-      v-if="isDesktop && userStore.isSuperAdmin"
-      type="warning"
-      @click="goEdit"
-    >
-      编辑
-    </n-button>
+    <n-button v-if="withTest" @click="reset">重置代码</n-button>
+    <n-button v-if="withTest" type="primary" secondary @click="test">运行代码</n-button>
+    <n-flex align="center" v-if="!withTest">
+      <Submit />
+      <n-button v-if="isDesktop" @click="gotoTestCat">自测猫</n-button>
+      <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
+      <n-dropdown :options="menu" @select="select">
+        <n-button :size="isDesktop ? 'medium' : 'small'">操作</n-button>
+      </n-dropdown>
+      <n-button
+        v-if="isDesktop && userStore.isSuperAdmin"
+        type="warning"
+        @click="goEdit"
+      >
+        编辑
+      </n-button>
+    </n-flex>
   </n-flex>
 </template>
 

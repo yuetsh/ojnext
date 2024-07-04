@@ -6,6 +6,7 @@ import { problem } from "../composables/problem"
 import { ScreenMode } from "utils/constants"
 
 const Editor = defineAsyncComponent(() => import("./components/Editor.vue"))
+const EditorWithTest = defineAsyncComponent(() => import("./components/EditorWithTest.vue"))
 const ProblemContent = defineAsyncComponent(
   () => import("./components/ProblemContent.vue"),
 )
@@ -30,16 +31,10 @@ const props = withDefaults(defineProps<Props>(), {
 
 const errMsg = ref("无数据")
 
-const onlyDetail = computed(
+const bothAndProblem = computed(
   () =>
     screenMode.value === ScreenMode.both ||
     screenMode.value === ScreenMode.problem,
-)
-
-const onlyCode = computed(
-  () =>
-    screenMode.value === ScreenMode.both ||
-    screenMode.value === ScreenMode.code,
 )
 
 async function init() {
@@ -66,7 +61,7 @@ onBeforeUnmount(() => {
     x-gap="16"
     :cols="screenMode === ScreenMode.both ? 2 : 1"
   >
-    <n-gi :span="isDesktop ? 1 : 2" v-show="onlyDetail">
+    <n-gi :span="isDesktop ? 1 : 2" v-if="bothAndProblem">
       <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
         <n-tabs default-value="content" type="segment">
           <n-tab-pane name="content" tab="题目描述">
@@ -101,8 +96,11 @@ onBeforeUnmount(() => {
         </n-tab-pane>
       </n-tabs>
     </n-gi>
-    <n-gi v-if="isDesktop" v-show="onlyCode">
-      <Editor />
+    <n-gi v-if="isDesktop && screenMode === ScreenMode.both">
+      <Editor/>
+    </n-gi>
+    <n-gi v-if="isDesktop && screenMode === ScreenMode.code">
+      <EditorWithTest />
     </n-gi>
   </n-grid>
   <n-empty v-else :description="errMsg"></n-empty>
