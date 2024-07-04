@@ -208,3 +208,7 @@ export function getComment(problemID: number) {
 export function getCommentStatistics(problemID: number) {
   return http.get("comment/statistics", { params: { problem_id: problemID } })
 }
+
+export function refreshUserProblemDisplayIds() {
+  return http.get("profile/fresh_display_id")
+}

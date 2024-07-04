@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getProfile } from "~/shared/api"
 import { Profile } from "~/utils/types"
+import { refreshUserProblemDisplayIds } from "../api"
 
 const route = useRoute()
 const router = useRouter()
@@ -17,9 +18,9 @@ async function init() {
     const oi = res.data.oi_problems_status.problems || {}
     const ac: string[] = []
     for (let problems of [acm, oi]) {
-      Object.keys(problems).forEach((problemID) => {
-        if (problems[problemID]["status"] === 0) {
-          ac.push(problems[problemID]["_id"])
+      Object.keys(problems).forEach((id) => {
+        if (problems[id]["status"] === 0) {
+          ac.push(problems[id]["_id"])
         }
       })
     }
@@ -28,6 +29,11 @@ async function init() {
   } finally {
     toggle(false)
   }
+}
+
+async function refresh() {
+  await refreshUserProblemDisplayIds()
+  init()
 }
 
 onMounted(init)
@@ -57,7 +63,13 @@ onMounted(init)
     <n-descriptions-item label="总提交数">
       {{ profile.submission_number }}
     </n-descriptions-item>
-    <n-descriptions-item v-if="problems.length" label="已解决的题目" :span="2">
+    <n-descriptions-item v-if="problems.length" :span="2">
+      <template #label>
+        <n-flex align="center">
+          已解决的题目
+          <n-button size="small" @click="refresh">强制刷新</n-button>
+        </n-flex>
+      </template>
       <n-space>
         <n-button
           v-for="id in problems"
@@ -77,7 +89,7 @@ onMounted(init)
 </template>
 <style scoped>
 .wrapper {
-  max-width: 600px;
+  max-width: 610px;
   margin: 16px auto 0;
 }
 
