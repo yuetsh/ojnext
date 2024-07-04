@@ -3,7 +3,7 @@ import { DataTableRowKey, SelectOption } from "naive-ui"
 import Pagination from "~/shared/components/Pagination.vue"
 import { parseTime } from "~/utils/functions"
 import { User } from "~/utils/types"
-import { getUserList, deleteUsers, editUser, importUsers } from "../api"
+import { deleteUsers, editUser, getUserList, importUsers } from "../api"
 import Actions from "./components/Actions.vue"
 import Name from "./components/Name.vue"
 
@@ -25,7 +25,7 @@ const rowKey = (row: User) => row.id
 
 const columns: DataTableColumn<User>[] = [
   { type: "selection" },
-  { title: "ID", key: "id", width: 60 },
+  { title: "ID", key: "id", width: 100 },
   {
     title: "用户名",
     key: "username",

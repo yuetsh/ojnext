@@ -22,7 +22,6 @@ async function handleDelete() {
   message.success("删除成功")
   emit("deleted")
 }
-
 </script>
 <template>
   <n-flex>

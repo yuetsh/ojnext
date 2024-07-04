@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import Copy from "~/shared/components/Copy.vue"
+import { Icon } from "@iconify/vue"
+import { useThemeVars } from "naive-ui"
 import { code } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
-import { Problem, ProblemStatus } from "utils/types"
 import { createTestSubmission } from "utils/judge"
-import { useThemeVars } from "naive-ui"
-import { Icon } from "@iconify/vue"
+import { Problem, ProblemStatus } from "utils/types"
+import Copy from "~/shared/components/Copy.vue"
 
 type Sample = Problem["samples"][number] & {
   id: number

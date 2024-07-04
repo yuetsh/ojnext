@@ -35,7 +35,7 @@ const options: MenuOption[] = [
       ),
     key: "admin problem create",
   },
-  {label: "交流", key: "communication", disabled: true},
+  { label: "交流", key: "communication", disabled: true },
   {
     label: () =>
       h(

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { useUserStore } from "~/shared/store/user"
-import { getRank } from "oj/api"
-import { getBaseInfo } from "../api"
-import Pagination from "~/shared/components/Pagination.vue"
-import { Rank } from "~/utils/types"
 import { NButton } from "naive-ui"
+import { getRank } from "oj/api"
+import Pagination from "~/shared/components/Pagination.vue"
+import { useUserStore } from "~/shared/store/user"
 import { getACRate } from "~/utils/functions"
+import { Rank } from "~/utils/types"
+import { getBaseInfo } from "../api"
 
 const userCount = ref(0)
 const submissionCount = ref(0)
@@ -104,10 +104,10 @@ watch(
     <n-button @click="router.push('/admin/contest/create')">新比赛</n-button>
     <div>
       <n-input
-      clearable
-      @change="listRanks"
-      v-model:value="query.username"
-      placeholder="班级前缀"
+        clearable
+        @change="listRanks"
+        v-model:value="query.username"
+        placeholder="班级前缀"
       />
     </div>
     <n-button @click="listRanks">用户排名</n-button>

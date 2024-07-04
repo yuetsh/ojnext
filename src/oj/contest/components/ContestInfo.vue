@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { parseTime } from "utils/functions"
-import { useContestStore } from "oj/store/contest"
-import ContestType from "~/shared/components/ContestType.vue"
 import { Icon } from "@iconify/vue"
+import { useContestStore } from "oj/store/contest"
+import { parseTime } from "utils/functions"
+import ContestType from "~/shared/components/ContestType.vue"
 
 const contestStore = useContestStore()
 </script>

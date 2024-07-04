@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import { getProblem } from "oj/api"
+import { ScreenMode } from "utils/constants"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { screenMode } from "~/shared/composables/switchScreen"
 import { problem } from "../composables/problem"
-import { ScreenMode } from "utils/constants"
 
 const Editor = defineAsyncComponent(() => import("./components/Editor.vue"))
-const EditorWithTest = defineAsyncComponent(() => import("./components/EditorWithTest.vue"))
+const EditorWithTest = defineAsyncComponent(
+  () => import("./components/EditorWithTest.vue"),
+)
 const ProblemContent = defineAsyncComponent(
   () => import("./components/ProblemContent.vue"),
 )
@@ -105,7 +107,7 @@ watch(isMobile, (value) => {
       </n-tabs>
     </n-gi>
     <n-gi v-if="isDesktop && screenMode === ScreenMode.both">
-      <Editor/>
+      <Editor />
     </n-gi>
     <n-gi v-if="isDesktop && screenMode === ScreenMode.code">
       <EditorWithTest />

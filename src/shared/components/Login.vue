@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { login } from "../api"
-import { useConfigStore } from "../store/config"
 import { loginModal, toggleLogin, toggleSignup } from "../composables/modal"
+import { useConfigStore } from "../store/config"
 import { useUserStore } from "../store/user"
 
 const userStore = useUserStore()

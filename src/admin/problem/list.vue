@@ -1,14 +1,9 @@
 <script setup lang="ts">
-import {
-  getProblemList,
-  getProblem,
-  editProblem,
-  toggleProblemVisible,
-} from "../api"
-import Pagination from "~/shared/components/Pagination.vue"
 import { NSwitch } from "naive-ui"
-import { AdminProblemFiltered } from "~/utils/types"
+import Pagination from "~/shared/components/Pagination.vue"
 import { parseTime } from "~/utils/functions"
+import { AdminProblemFiltered } from "~/utils/types"
+import { getProblemList, toggleProblemVisible } from "../api"
 import Actions from "./components/Actions.vue"
 import Modal from "./components/Modal.vue"
 

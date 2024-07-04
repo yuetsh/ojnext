@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { NSwitch, NTag } from "naive-ui"
-import Pagination from "~/shared/components/Pagination.vue"
-import { Contest } from "~/utils/types"
-import { getContestList, editContest } from "../api"
-import ContestType from "~/shared/components/ContestType.vue"
 import ContestTitle from "~/shared/components/ContestTitle.vue"
+import ContestType from "~/shared/components/ContestType.vue"
+import Pagination from "~/shared/components/Pagination.vue"
 import { CONTEST_STATUS } from "~/utils/constants"
+import { Contest } from "~/utils/types"
+import { editContest, getContestList } from "../api"
 import Actions from "./components/Actions.vue"
 
 const contests = ref<Contest[]>([])
@@ -79,7 +79,10 @@ async function listContests() {
 }
 onMounted(listContests)
 watch(() => [query.page, query.limit], listContests)
-watchDebounced(() => query.keyword, listContests, { debounce: 500, maxWait: 1000 })
+watchDebounced(() => query.keyword, listContests, {
+  debounce: 500,
+  maxWait: 1000,
+})
 </script>
 
 <template>

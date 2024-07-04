@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { useThemeVars } from "naive-ui"
 import { Icon } from "@iconify/vue"
+import { useThemeVars } from "naive-ui"
 
 const theme = useThemeVars()
 const props = defineProps<{

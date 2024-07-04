@@ -1,16 +1,15 @@
 <script setup lang="ts">
+import { Icon } from "@iconify/vue"
+import confetti from "canvas-confetti"
+import { getComment, getSubmission, submitCode } from "oj/api"
 import { code } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
-import { isDesktop } from "~/shared/composables/breakpoints"
 import { JUDGE_STATUS, SubmissionStatus } from "utils/constants"
 import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
 import { Submission, SubmitCodePayload } from "utils/types"
-import { getComment, getSubmission, submitCode } from "oj/api"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
+import { isDesktop } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
-// @ts-ignore
-import confetti from "canvas-confetti"
-import { Icon } from "@iconify/vue"
 
 const ProblemComment = defineAsyncComponent(
   () => import("./ProblemComment.vue"),

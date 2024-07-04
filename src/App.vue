@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import "normalize.css"
-import { zhCN, dateZhCN, darkTheme } from "naive-ui"
 import hljs from "highlight.js/lib/core"
 import c from "highlight.js/lib/languages/c"
 import python from "highlight.js/lib/languages/python"
+import { darkTheme, dateZhCN, zhCN } from "naive-ui"
+import "normalize.css"
 import "./index.css"
 
 hljs.registerLanguage("c", c)

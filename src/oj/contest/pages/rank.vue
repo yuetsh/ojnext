@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { NButton, NIcon, useThemeVars } from "naive-ui"
-import Pagination from "~/shared/components/Pagination.vue"
-import AcAndSubmission from "../components/AcAndSubmission.vue"
-import { getContestProblems, getContestRank } from "oj/api"
-import { ContestRank, ProblemFiltered } from "~/utils/types"
-import { secondsToDuration } from "utils/functions"
-import { ContestStatus } from "~/utils/constants"
-import { useContestStore } from "~/oj/store/contest"
 import { Icon } from "@iconify/vue"
+import { NButton, useThemeVars } from "naive-ui"
+import { getContestProblems, getContestRank } from "oj/api"
+import { secondsToDuration } from "utils/functions"
+import { useContestStore } from "~/oj/store/contest"
+import Pagination from "~/shared/components/Pagination.vue"
+import { ContestStatus } from "~/utils/constants"
 import { renderTableTitle } from "~/utils/renders"
+import { ContestRank, ProblemFiltered } from "~/utils/types"
+import AcAndSubmission from "../components/AcAndSubmission.vue"
 
 interface Props {
   contestID: string

@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Pie } from "vue-chartjs"
+import { problem } from "oj/composables/problem"
 import { DIFFICULTY, JUDGE_STATUS } from "utils/constants"
 import { getACRate, getTagColor, parseTime } from "utils/functions"
-import { problem } from "oj/composables/problem"
+import { Pie } from "vue-chartjs"
 import { isDesktop } from "~/shared/composables/breakpoints"
 
 const data = computed(() => {
@@ -16,7 +16,9 @@ const data = computed(() => {
   }
   return {
     labels,
-    datasets: [{ data: Object.values(status), hoverOffset: 5, borderRadius: 10 }],
+    datasets: [
+      { data: Object.values(status), hoverOffset: 5, borderRadius: 10 },
+    ],
   }
 })
 

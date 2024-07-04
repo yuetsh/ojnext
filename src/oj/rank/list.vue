@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { NButton } from "naive-ui"
-import Chart from "./components/Chart.vue"
-import Pagination from "~/shared/components/Pagination.vue"
-import { Rank } from "utils/types"
 import { getRank } from "oj/api"
 import { getACRate } from "utils/functions"
-import Index from "./components/Index.vue"
+import { Rank } from "utils/types"
+import Pagination from "~/shared/components/Pagination.vue"
 import { renderTableTitle } from "~/utils/renders"
+import Chart from "./components/Chart.vue"
+import Index from "./components/Index.vue"
 
 const router = useRouter()
 const data = ref<Rank[]>([])

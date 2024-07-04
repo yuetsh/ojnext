@@ -1,23 +1,23 @@
 <script setup lang="ts">
 import { NButton } from "naive-ui"
-import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
-import Pagination from "~/shared/components/Pagination.vue"
+import { adminRejudge, getSubmissions } from "oj/api"
 import {
+  filterEmptyValue,
+  parseTime,
   submissionMemoryFormat,
   submissionTimeFormat,
-  parseTime,
-  filterEmptyValue,
 } from "utils/functions"
 import { Submission } from "utils/types"
-import { adminRejudge, getSubmissions } from "oj/api"
+import Pagination from "~/shared/components/Pagination.vue"
+import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
 import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
+import { renderTableTitle } from "~/utils/renders"
 import ButtonWithSearch from "./components/ButtonWithSearch.vue"
 import StatisticsPanel from "./components/StatisticsPanel.vue"
 import SubmissionLink from "./components/SubmissionLink.vue"
 import SubmissionDetail from "./detail.vue"
-import { renderTableTitle } from "~/utils/renders"
 
 interface Query {
   username: string

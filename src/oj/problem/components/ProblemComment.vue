@@ -112,11 +112,11 @@
   </div>
 </template>
 <script lang="ts" setup>
-import { problem } from "oj/composables/problem"
-import { createComment, getComment, getCommentStatistics } from "~/oj/api"
-import { DIFFICULTY } from "utils/constants"
-import { useUserStore } from "~/shared/store/user"
 import { Icon } from "@iconify/vue"
+import { problem } from "oj/composables/problem"
+import { DIFFICULTY } from "utils/constants"
+import { createComment, getComment, getCommentStatistics } from "~/oj/api"
+import { useUserStore } from "~/shared/store/user"
 
 interface Props {
   showStatistics?: boolean

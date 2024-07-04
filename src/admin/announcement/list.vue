@@ -1,10 +1,10 @@
 <script setup lang="ts">
+import { NSwitch } from "naive-ui"
 import Pagination from "~/shared/components/Pagination.vue"
-import Actions from "./components/Actions.vue"
+import { parseTime } from "~/utils/functions"
 import { Announcement } from "~/utils/types"
 import { editAnnouncement, getAnnouncementList } from "../api"
-import { parseTime } from "~/utils/functions"
-import { NSwitch } from "naive-ui"
+import Actions from "./components/Actions.vue"
 
 const total = ref(0)
 const query = reactive({

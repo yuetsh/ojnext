@@ -48,11 +48,11 @@
 </template>
 <script lang="ts" setup>
 import { getMessageList } from "oj/api"
-import { Message } from "~/utils/types"
-import { parseTime } from "~/utils/functions"
-import { LANGUAGE_FORMAT_VALUE, JUDGE_STATUS } from "utils/constants"
-import Pagination from "~/shared/components/Pagination.vue"
+import { JUDGE_STATUS, LANGUAGE_FORMAT_VALUE } from "utils/constants"
 import Copy from "~/shared/components/Copy.vue"
+import Pagination from "~/shared/components/Pagination.vue"
+import { parseTime } from "~/utils/functions"
+import { Message } from "~/utils/types"
 
 const router = useRouter()
 const messages = ref<Message[]>([])

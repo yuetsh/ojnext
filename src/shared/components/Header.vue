@@ -1,15 +1,15 @@
 <script setup lang="ts">
-import { logout } from "../api"
-import { useUserStore } from "../store/user"
-import { useConfigStore } from "../store/config"
-import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
+import { Icon } from "@iconify/vue"
 import { RouterLink } from "vue-router"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
+import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
 import {
   screenSwitchLabel,
   switchScreenMode,
 } from "~/shared/composables/switchScreen"
-import { Icon } from "@iconify/vue"
+import { logout } from "../api"
+import { useConfigStore } from "../store/config"
+import { useUserStore } from "../store/user"
 
 const isDark = useDark()
 const toggleDark = useToggle(isDark)

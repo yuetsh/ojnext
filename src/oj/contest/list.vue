@@ -1,13 +1,13 @@
 <script setup lang="ts">
 import { NTag } from "naive-ui"
 import { getContestList } from "oj/api"
-import { filterEmptyValue, parseTime, duration } from "utils/functions"
+import { duration, filterEmptyValue, parseTime } from "utils/functions"
 import { Contest } from "utils/types"
-import { ContestType, CONTEST_STATUS } from "~/utils/constants"
 import ContestTitle from "~/shared/components/ContestTitle.vue"
 import Pagination from "~/shared/components/Pagination.vue"
-import { useUserStore } from "~/shared/store/user"
 import { toggleLogin } from "~/shared/composables/modal"
+import { useUserStore } from "~/shared/store/user"
+import { CONTEST_STATUS, ContestType } from "~/utils/constants"
 import { renderTableTitle } from "~/utils/renders"
 
 const route = useRoute()

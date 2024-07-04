@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { User } from "~/utils/types"
 import { getUserRole } from "~/utils/functions"
+import { User } from "~/utils/types"
 
 interface Props {
   user: User

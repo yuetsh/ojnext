@@ -1,12 +1,12 @@
 <script lang="ts" setup>
-import { getAnnouncementList, getAnnouncement } from "~/oj/api"
-import Pagination from "~/shared/components/Pagination.vue"
-import { parseTime } from "~/utils/functions"
-import { Announcement } from "~/utils/types"
-import { isDesktop } from "~/shared/composables/breakpoints"
 import { NTag } from "naive-ui"
-import TitleWithTag from "./components/TitleWithTag.vue"
+import { getAnnouncement, getAnnouncementList } from "~/oj/api"
+import Pagination from "~/shared/components/Pagination.vue"
+import { isDesktop } from "~/shared/composables/breakpoints"
+import { parseTime } from "~/utils/functions"
 import { renderTableTitle } from "~/utils/renders"
+import { Announcement } from "~/utils/types"
+import TitleWithTag from "./components/TitleWithTag.vue"
 
 const total = ref(0)
 const content = ref("")

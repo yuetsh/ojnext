@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import copyText from "copy-text-to-clipboard"
-import { LANGUAGE_SHOW_VALUE, SOURCES } from "utils/constants"
 import { code, input, output } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
+import { LANGUAGE_SHOW_VALUE, SOURCES, STORAGE_KEY } from "utils/constants"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
-import Submit from "./Submit.vue"
-import storage from "~/utils/storage"
-import { STORAGE_KEY } from "utils/constants"
-import { LANGUAGE } from "~/utils/types"
 import { createTestSubmission } from "~/utils/judge"
+import storage from "~/utils/storage"
+import { LANGUAGE } from "~/utils/types"
+import Submit from "./Submit.vue"
 
 interface Props {
   storageKey: string
@@ -114,7 +113,9 @@ function gotoTestCat() {
       :options="options"
     />
     <n-button v-if="withTest" @click="reset">重置代码</n-button>
-    <n-button v-if="withTest" type="primary" secondary @click="test">运行代码</n-button>
+    <n-button v-if="withTest" type="primary" secondary @click="test"
+      >运行代码</n-button
+    >
     <n-flex align="center" v-if="!withTest">
       <Submit />
       <n-button v-if="isDesktop" @click="gotoTestCat">自测猫</n-button>

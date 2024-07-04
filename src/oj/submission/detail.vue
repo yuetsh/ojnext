@@ -1,13 +1,13 @@
 <script setup lang="ts">
+import copy from "copy-text-to-clipboard"
 import { createMessage, getSubmission } from "oj/api"
-import { Submission } from "utils/types"
 import { JUDGE_STATUS, LANGUAGE_FORMAT_VALUE } from "utils/constants"
 import {
   parseTime,
   submissionMemoryFormat,
   submissionTimeFormat,
 } from "utils/functions"
-import copy from "copy-text-to-clipboard"
+import { Submission } from "utils/types"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 import { useUserStore } from "~/shared/store/user"
 

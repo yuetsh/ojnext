@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { Codemirror } from "vue-codemirror"
 import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
 import { EditorView } from "@codemirror/view"
+import { Codemirror } from "vue-codemirror"
+import { LANGUAGE } from "~/utils/types"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
-import { LANGUAGE } from "~/utils/types"
 
 const styleTheme = EditorView.baseTheme({
   "& .cm-scroller": {

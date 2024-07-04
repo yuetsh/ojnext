@@ -1,15 +1,15 @@
 <script setup lang="ts">
+import { Icon } from "@iconify/vue"
 import { NSpace, NTag } from "naive-ui"
+import { getProblemList, getRandomProblemID } from "oj/api"
 import { filterEmptyValue, getTagColor } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
-import { getProblemList, getRandomProblemID } from "oj/api"
-import ProblemStatus from "./components/ProblemStatus.vue"
-import { useUserStore } from "~/shared/store/user"
 import { getProblemTagList } from "~/shared/api"
 import Pagination from "~/shared/components/Pagination.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
-import { Icon } from "@iconify/vue"
+import { useUserStore } from "~/shared/store/user"
 import { renderTableTitle } from "~/utils/renders"
+import ProblemStatus from "./components/ProblemStatus.vue"
 
 interface Tag {
   id: number

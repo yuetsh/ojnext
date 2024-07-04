@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import TextEditor from "~/shared/components/TextEditor.vue"
-import { unique } from "~/utils/functions"
-import { BlankProblem, LANGUAGE, Tag } from "~/utils/types"
 import { getProblemTagList } from "~/shared/api"
+import TextEditor from "~/shared/components/TextEditor.vue"
 import {
-  LANGUAGE_SHOW_VALUE,
   CODE_TEMPLATES,
+  LANGUAGE_SHOW_VALUE,
   STORAGE_KEY,
 } from "~/utils/constants"
 import download from "~/utils/download"
+import { unique } from "~/utils/functions"
+import { BlankProblem, LANGUAGE, Tag } from "~/utils/types"
 import {
   createContestProblem,
   createProblem,

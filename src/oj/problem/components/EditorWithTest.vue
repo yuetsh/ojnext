@@ -1,11 +1,11 @@
 <script lang="ts" setup>
-import { SOURCES } from "utils/constants"
 import { code, input, output } from "oj/composables/code"
-import { isDesktop } from "~/shared/composables/breakpoints"
 import { problem } from "oj/composables/problem"
+import { SOURCES } from "utils/constants"
+import CodeEditor from "~/shared/components/CodeEditor.vue"
+import { isDesktop } from "~/shared/composables/breakpoints"
 import storage from "~/utils/storage"
 import Form from "./Form.vue"
-import CodeEditor from "~/shared/components/CodeEditor.vue"
 
 const route = useRoute()
 const contestID = !!route.params.contestID ? route.params.contestID : null

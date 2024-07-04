@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import TextEditor from "~/shared/components/TextEditor.vue"
-import { createAnnouncement, editAnnouncement, getAnnouncement } from "../api"
 import { AnnouncementEdit } from "~/utils/types"
+import { createAnnouncement, editAnnouncement, getAnnouncement } from "../api"
 
 interface Props {
   announcementID?: string

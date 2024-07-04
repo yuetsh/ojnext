@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import { getProblemList } from "~/admin/api"
-import { AdminProblemFiltered } from "~/utils/types"
 import Pagination from "~/shared/components/Pagination.vue"
+import { AdminProblemFiltered } from "~/utils/types"
 import AddButton from "./AddButton.vue"
 
 interface Props {

@@ -1,13 +1,13 @@
 <script lang="ts" setup>
-import { useUserStore } from "~/shared/store/user"
-import { Submission } from "~/utils/types"
-import { parseTime } from "~/utils/functions"
-import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
-import { getSubmissions } from "~/oj/api"
-import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
-import Pagination from "~/shared/components/Pagination.vue"
 import { NButton } from "naive-ui"
+import { getSubmissions } from "~/oj/api"
+import Pagination from "~/shared/components/Pagination.vue"
+import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
+import { useUserStore } from "~/shared/store/user"
+import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
+import { parseTime } from "~/utils/functions"
 import { renderTableTitle } from "~/utils/renders"
+import { Submission } from "~/utils/types"
 
 const userStore = useUserStore()
 const route = useRoute()

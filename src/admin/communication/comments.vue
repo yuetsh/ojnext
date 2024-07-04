@@ -3,9 +3,9 @@
     <h2 class="title">评论列表（只列出有内容的）</h2>
     <div>
       <n-input
-      v-model:value="query.problem"
-      clearable
-      placeholder="输入题目序号"
+        v-model:value="query.problem"
+        clearable
+        placeholder="输入题目序号"
       />
     </div>
   </n-flex>
@@ -18,10 +18,10 @@
 </template>
 <script lang="ts" setup>
 import { NButton } from "naive-ui"
-import { getCommentList } from "../api"
 import Pagination from "~/shared/components/Pagination.vue"
-import { Comment } from "~/utils/types"
 import { parseTime } from "~/utils/functions"
+import { Comment } from "~/utils/types"
+import { getCommentList } from "../api"
 import CommentActions from "./components/CommentActions.vue"
 
 const comments = ref<Comment[]>([])
