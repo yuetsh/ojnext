@@ -55,7 +55,7 @@ function goCheck() {
 }
 </script>
 <template>
-  <n-space align="center">
+  <n-flex>
     <n-button size="small" secondary type="primary" @click="goEdit">
       编辑
     </n-button>
@@ -74,5 +74,5 @@ function goCheck() {
       </template>
       下载测试用例
     </n-tooltip>
-  </n-space>
+  </n-flex>
 </template>

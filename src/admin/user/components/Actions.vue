@@ -19,7 +19,7 @@ async function banUser() {
 }
 </script>
 <template>
-  <n-space align="center">
+  <n-flex>
     <n-button
       size="small"
       type="primary"
@@ -42,5 +42,5 @@ async function banUser() {
       </template>
       确定删除这个用户吗？删除后无法恢复！
     </n-popconfirm>
-  </n-space>
+  </n-flex>
 </template>

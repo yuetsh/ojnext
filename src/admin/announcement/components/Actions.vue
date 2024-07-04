@@ -25,7 +25,7 @@ async function handleDelete() {
 
 </script>
 <template>
-  <n-space>
+  <n-flex>
     <n-button size="small" type="success" secondary @click="goEdit">
       编辑
     </n-button>
@@ -35,6 +35,6 @@ async function handleDelete() {
       </template>
       确定删除这条公告吗？
     </n-popconfirm>
-  </n-space>
+  </n-flex>
 </template>
 <style scoped></style>

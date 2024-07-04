@@ -82,16 +82,16 @@ onMounted(init)
 </script>
 
 <template>
-  <n-space vertical v-if="submission" :size="24">
+  <n-flex vertical v-if="submission" :size="24">
     <n-alert
       :type="JUDGE_STATUS[submission.result]['type']"
       :title="JUDGE_STATUS[submission.result]['name']"
     >
-      <n-space>
+      <n-flex>
         <span>提交时间：{{ parseTime(submission.create_time) }}</span>
         <span>编程语言：{{ submission.language }}</span>
         <span>用户：{{ submission.username }}</span>
-      </n-space>
+      </n-flex>
     </n-alert>
     <n-card embedded>
       <n-code
@@ -124,7 +124,7 @@ onMounted(init)
       :columns="columns"
       :data="submission.info.data"
     />
-  </n-space>
+  </n-flex>
 </template>
 
 <style scoped>

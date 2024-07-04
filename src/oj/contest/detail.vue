@@ -30,9 +30,12 @@ const passwordFormVisible = computed(
 </script>
 
 <template>
-  <n-space vertical size="large" v-if="contestStore.contest">
-    <n-space align="center" justify="space-between">
-      <n-space align="center">
+  <n-flex vertical size="large" v-if="contestStore.contest">
+    <n-flex align="center" justify="space-between">
+      <n-flex align="center">
+        <n-tag :type="CONTEST_STATUS[contestStore.contestStatus]['type']">
+          {{ contestStore.countdown }}
+        </n-tag>
         <Icon
           v-if="contestStore.isPrivate"
           icon="streamline-emojis:locked-with-key"
@@ -40,18 +43,12 @@ const passwordFormVisible = computed(
           :height="30"
         ></Icon>
         <h2 class="contestTitle">{{ contestStore.contest.title }}</h2>
-        <n-tag
-          size="small"
-          :type="CONTEST_STATUS[contestStore.contestStatus]['type']"
-        >
-          {{ contestStore.countdown }}
-        </n-tag>
-      </n-space>
-      <n-space align="center">
+      </n-flex>
+      <n-flex align="center">
         <ContestInfo />
         <ContestMenu />
-      </n-space>
-    </n-space>
+      </n-flex>
+    </n-flex>
     <n-form
       :inline="isDesktop"
       label-placement="left"
@@ -74,7 +71,7 @@ const passwordFormVisible = computed(
       </n-form-item>
     </n-form>
     <router-view></router-view>
-  </n-space>
+  </n-flex>
 </template>
 
 <style scoped>

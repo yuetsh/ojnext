@@ -64,11 +64,11 @@ const options = {
       {{ getACRate(problem.accepted_number, problem.submission_number) }}
     </n-descriptions-item>
     <n-descriptions-item :span="3" label="标签">
-      <n-space>
+      <n-flex>
         <n-tag size="small" type="info" v-for="tag in problem.tags" :key="tag">
           {{ tag }}
         </n-tag>
-      </n-space>
+      </n-flex>
     </n-descriptions-item>
   </n-descriptions>
   <div class="pie" v-if="problem && problem.submission_number > 0">

@@ -40,7 +40,7 @@ async function saveProfile() {
 }
 </script>
 <template>
-  <n-space class="container" vertical v-if="userStore.profile">
+  <n-flex class="container" vertical v-if="userStore.profile">
     <h3>个人信息设置</h3>
     <n-form>
       <n-avatar round :size="120" :src="userStore.profile.avatar" alt="头像" />
@@ -67,7 +67,7 @@ async function saveProfile() {
         更改信息
       </n-button>
     </n-form>
-  </n-space>
+  </n-flex>
 </template>
 <style scoped>
 .container {

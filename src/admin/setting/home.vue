@@ -79,11 +79,11 @@ watch(
 </script>
 
 <template>
-  <n-space align="center">
+  <n-flex align="center">
     <n-avatar round :size="60" :src="userStore.profile?.avatar" />
     <h1 class="name">亲爱的管理员：{{ userStore.user?.username }}</h1>
-  </n-space>
-  <n-space>
+  </n-flex>
+  <n-flex>
     <h2>
       <n-gradient-text type="info"> 总用户数：{{ userCount }} </n-gradient-text>
     </h2>
@@ -97,17 +97,19 @@ watch(
         近期比赛：{{ contestCount }}
       </n-gradient-text>
     </h2>
-  </n-space>
-  <n-space align="center" class="actions">
+  </n-flex>
+  <n-flex align="center" class="actions">
     <span>我猜你要：</span>
     <n-button @click="router.push('/admin/problem/create')">新题目</n-button>
     <n-button @click="router.push('/admin/contest/create')">新比赛</n-button>
-    <n-input
+    <div>
+      <n-input
       clearable
       @change="listRanks"
       v-model:value="query.username"
       placeholder="班级前缀"
-    />
+      />
+    </div>
     <n-button @click="listRanks">用户排名</n-button>
     <Pagination
       class="pagination"
@@ -115,7 +117,7 @@ watch(
       v-model:page="query.page"
       v-model:limit="query.limit"
     />
-  </n-space>
+  </n-flex>
   <n-data-table v-if="data.length" striped :data="data" :columns="columns" />
 </template>
 

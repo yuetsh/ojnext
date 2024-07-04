@@ -1,5 +1,5 @@
 <template>
-  <n-space size="large" vertical>
+  <n-flex size="large" vertical>
     <n-form :show-feedback="false" inline label-placement="left">
       <n-form-item>
         <n-input
@@ -60,18 +60,11 @@
         </n-gradient-text>
       </n-h1>
     </n-space>
-    <n-space v-if="count.total === 0">
-      <n-h1>
-        <n-gradient-text type="primary">暂无数据统计</n-gradient-text>
-      </n-h1>
-    </n-space>
-    <n-data-table
-      v-if="list.length"
-      striped
-      :columns="columns"
-      :data="list"
-    />
-  </n-space>
+    <n-h1 v-if="count.total === 0">
+      <n-gradient-text type="primary">暂无数据统计</n-gradient-text>
+    </n-h1>
+    <n-data-table v-if="list.length" striped :columns="columns" :data="list" />
+  </n-flex>
 </template>
 <script setup lang="ts">
 import { formatISO, sub, type Duration } from "date-fns"
@@ -85,6 +78,7 @@ interface Props {
 const props = defineProps<Props>()
 
 const options: SelectOption[] = [
+  { label: "30分钟内", value: "minutes:30" },
   { label: "本节课内", value: "hours:1" },
   { label: "两小时内", value: "hours:2" },
   { label: "一天内", value: "days:1" },

@@ -87,7 +87,7 @@ function gotoTestCat() {
 </script>
 
 <template>
-  <n-space align="center">
+  <n-flex align="center">
     <n-select
       class="language"
       v-model:value="code.language"
@@ -108,7 +108,7 @@ function gotoTestCat() {
     >
       编辑
     </n-button>
-  </n-space>
+  </n-flex>
 </template>
 
 <style scoped>

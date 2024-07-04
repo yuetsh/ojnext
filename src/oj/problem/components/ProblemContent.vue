@@ -96,10 +96,10 @@ function type(status: ProblemStatus) {
       title="🎉 本 题 已 经 被 你 解 决 啦"
     />
 
-    <n-space align="center">
+    <n-flex align="center">
       <n-tag>{{ problem._id }}</n-tag>
       <h2 class="problemTitle">{{ problem.title }}</h2>
-    </n-space>
+    </n-flex>
     <p class="title" :style="style">
       <n-flex align="center">
         <Icon icon="streamline-emojis:sparkles"></Icon>
@@ -135,7 +135,7 @@ function type(status: ProblemStatus) {
     </div>
 
     <div v-for="(sample, index) of samples" :key="index">
-      <n-space align="center">
+      <n-flex align="center">
         <p class="title" :style="style">例子 {{ index + 1 }}</p>
         <n-button
           size="small"
@@ -144,7 +144,7 @@ function type(status: ProblemStatus) {
         >
           {{ label(sample.status, sample.loading) }}
         </n-button>
-      </n-space>
+      </n-flex>
       <n-descriptions
         bordered
         :column="2"
@@ -152,19 +152,19 @@ function type(status: ProblemStatus) {
       >
         <n-descriptions-item>
           <template #label>
-            <n-space>
+            <n-flex>
               <span>输入</span>
               <Copy :value="sample.input" />
-            </n-space>
+            </n-flex>
           </template>
           <div class="testcase">{{ sample.input }}</div>
         </n-descriptions-item>
         <n-descriptions-item>
           <template #label>
-            <n-space>
+            <n-flex>
               <span>输出</span>
               <Copy :value="sample.output" />
-            </n-space>
+            </n-flex>
           </template>
           <div class="testcase">{{ sample.output }}</div>
         </n-descriptions-item>

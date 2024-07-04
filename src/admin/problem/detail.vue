@@ -424,7 +424,7 @@ watch(
     title="输出的描述"
   />
   <div class="box" v-for="(sample, index) in problem.samples" :key="index">
-    <n-space justify="space-between" align="center">
+    <n-flex justify="space-between" align="center">
       <strong>测试样例 {{ index + 1 }}</strong>
       <n-button
         tertiary
@@ -434,19 +434,19 @@ watch(
       >
         删除 {{ index + 1 }}
       </n-button>
-    </n-space>
+    </n-flex>
     <n-grid x-gap="20" cols="2">
       <n-gi span="1">
-        <n-space vertical>
+        <n-flex vertical>
           <span>输入样例</span>
           <n-input type="textarea" v-model:value="sample.input" />
-        </n-space>
+        </n-flex>
       </n-gi>
       <n-gi span="1">
-        <n-space vertical>
+        <n-flex vertical>
           <span>输出样例</span>
           <n-input type="textarea" v-model:value="sample.output" />
-        </n-space>
+        </n-flex>
       </n-gi>
     </n-grid>
   </div>
@@ -493,7 +493,7 @@ watch(
     type="info"
   >
     <template #header>
-      <n-space align="center">
+      <n-flex align="center">
         <div>
           测试组编号 {{ problem.test_case_id.slice(0, 12) }} 共有
           {{ problem.test_case_score.length }}
@@ -508,21 +508,21 @@ watch(
         >
           下载
         </n-button>
-      </n-space>
+      </n-flex>
     </template>
   </n-alert>
   <n-space justify="space-between">
     <n-form inline label-placement="left" :show-feedback="false">
       <n-form-item label="语言">
         <n-checkbox-group v-model:value="problem.languages">
-          <n-space align="center">
+          <n-flex align="center">
             <n-checkbox
               v-for="(language, index) in languageOptions"
               :key="index"
               :value="language.value"
               :label="language.label"
             />
-          </n-space>
+          </n-flex>
         </n-checkbox-group>
       </n-form-item>
       <n-form-item>
@@ -543,22 +543,24 @@ watch(
         </n-button>
       </n-form-item>
     </n-form>
-    <n-space align="center">
+    <n-flex align="center">
       <n-tooltip placement="left">
         <template #trigger>
           <n-button text>温馨提醒</n-button>
         </template>
         【测试用例】最好要有10个，要考虑边界情况，不要跟【测试样例】一模一样
       </n-tooltip>
-      <n-upload
-        :show-file-list="false"
-        accept=".zip"
-        :custom-request="handleUploadTestcases"
-      >
-        <n-button type="info">上传测试用例</n-button>
-      </n-upload>
+      <div>
+        <n-upload
+          :show-file-list="false"
+          accept=".zip"
+          :custom-request="handleUploadTestcases"
+        >
+          <n-button type="info">上传测试用例</n-button>
+        </n-upload>
+      </div>
       <n-button type="primary" @click="submit">提交</n-button>
-    </n-space>
+    </n-flex>
   </n-space>
 </template>
 

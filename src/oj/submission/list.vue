@@ -254,7 +254,7 @@ const columns = computed(() => {
 })
 </script>
 <template>
-  <n-space vertical size="large">
+  <n-flex vertical size="large">
     <n-space>
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item label="提交状态">
@@ -295,7 +295,7 @@ const columns = computed(() => {
       </n-form>
     </n-space>
     <n-data-table striped :columns="columns" :data="submissions" />
-  </n-space>
+  </n-flex>
   <Pagination
     :total="total"
     v-model:limit="query.limit"

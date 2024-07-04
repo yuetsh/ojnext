@@ -119,9 +119,9 @@ watchDebounced(() => query.keyword, listProblems, {
 </script>
 
 <template>
-  <n-space class="titleWrapper" justify="space-between">
+  <n-flex class="titleWrapper" justify="space-between">
     <h2 class="title">{{ title }}</h2>
-    <n-space>
+    <n-flex>
       <n-button v-if="isContestProblemList" @click="createContestProblem">
         新建比赛题目
       </n-button>
@@ -132,9 +132,11 @@ watchDebounced(() => query.keyword, listProblems, {
       >
         从题库中选择
       </n-button>
-      <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
-    </n-space>
-  </n-space>
+      <div>
+        <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
+      </div>
+    </n-flex>
+  </n-flex>
   <n-data-table striped :columns="columns" :data="problems" />
   <Pagination
     :total="total"

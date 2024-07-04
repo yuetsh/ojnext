@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { getProfile } from "~/shared/api"
 import { Profile } from "~/utils/types"
-import { refreshUserProblemDisplayIds } from "../api"
 
 const route = useRoute()
 const router = useRouter()
@@ -31,15 +30,10 @@ async function init() {
   }
 }
 
-async function refresh() {
-  await refreshUserProblemDisplayIds()
-  init()
-}
-
 onMounted(init)
 </script>
 <template>
-  <n-space
+  <n-flex
     class="wrapper"
     vertical
     justify="center"
@@ -49,7 +43,7 @@ onMounted(init)
     <n-avatar round :size="140" :src="profile.avatar" />
     <h2>{{ profile.user.username }}</h2>
     <p class="desc">{{ profile.mood }}</p>
-  </n-space>
+  </n-flex>
   <n-descriptions
     v-if="!loading && profile"
     class="wrapper"
@@ -63,14 +57,8 @@ onMounted(init)
     <n-descriptions-item label="总提交数">
       {{ profile.submission_number }}
     </n-descriptions-item>
-    <n-descriptions-item v-if="problems.length" :span="2">
-      <template #label>
-        <n-flex align="center">
-          已解决的题目
-          <n-button size="small" @click="refresh">强制刷新</n-button>
-        </n-flex>
-      </template>
-      <n-space>
+    <n-descriptions-item v-if="problems.length" label="已解决的题目" :span="2">
+      <n-flex>
         <n-button
           v-for="id in problems"
           key="id"
@@ -78,7 +66,7 @@ onMounted(init)
         >
           {{ id }}
         </n-button>
-      </n-space>
+      </n-flex>
     </n-descriptions-item>
   </n-descriptions>
   <n-empty v-if="!loading && !profile" description="该用户不存在">

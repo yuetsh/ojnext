@@ -46,7 +46,7 @@ function changeLanguage(v: string) {
 </script>
 
 <template>
-  <n-space vertical>
+  <n-flex vertical>
     <Form :storage-key="storageKey" @change-language="changeLanguage" />
     <CodeEditor
       v-model:value="code.value"
@@ -54,7 +54,7 @@ function changeLanguage(v: string) {
       :language="code.language"
       :height="editorHeight"
     />
-  </n-space>
+  </n-flex>
 </template>
 
 <style scoped></style>

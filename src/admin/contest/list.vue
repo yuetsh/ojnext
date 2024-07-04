@@ -83,10 +83,12 @@ watchDebounced(() => query.keyword, listContests, { debounce: 500, maxWait: 1000
 </script>
 
 <template>
-  <n-space justify="space-between" class="titleWrapper">
+  <n-flex justify="space-between" class="titleWrapper">
     <h2 class="title">比赛列表</h2>
-    <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
-  </n-space>
+    <div>
+      <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
+    </div>
+  </n-flex>
   <n-data-table :columns="columns" :data="contests" />
   <Pagination
     :total="total"

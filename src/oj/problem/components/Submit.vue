@@ -255,7 +255,7 @@ watch(
         :title="JUDGE_STATUS[submission.result]['name']"
       />
     </template>
-    <n-space vertical v-if="msg || infoTable.length">
+    <n-flex vertical v-if="msg || infoTable.length">
       <n-card v-if="msg" embedded class="msg">{{ msg }}</n-card>
       <n-data-table
         v-if="infoTable.length"
@@ -263,7 +263,7 @@ watch(
         :data="infoTable"
         :columns="columns"
       />
-    </n-space>
+    </n-flex>
   </n-popover>
   <n-modal
     preset="card"

@@ -143,7 +143,7 @@ function rowProps(row: Contest) {
 }
 </script>
 <template>
-  <n-space vertical size="large">
+  <n-flex vertical size="large">
     <n-space>
       <n-form :show-feedback="false" label-placement="left" inline>
         <n-form-item label="比赛状态">
@@ -166,10 +166,10 @@ function rowProps(row: Contest) {
       </n-form>
       <n-form :show-feedback="false" label-placement="left" inline>
         <n-form-item>
-          <n-space>
+          <n-flex>
             <n-button @click="search(query.keyword)">搜索</n-button>
             <n-button @click="clear" quaternary>重置</n-button>
-          </n-space>
+          </n-flex>
         </n-form-item>
       </n-form>
     </n-space>
@@ -179,7 +179,7 @@ function rowProps(row: Contest) {
       :data="data"
       :row-props="rowProps"
     />
-  </n-space>
+  </n-flex>
   <Pagination
     v-model:limit="query.limit"
     v-model:page="query.page"

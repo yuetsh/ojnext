@@ -212,7 +212,7 @@ function rowProps(row: ProblemFiltered) {
 </script>
 
 <template>
-  <n-space vertical size="large">
+  <n-flex vertical size="large">
     <n-space>
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item label="题目难度">
@@ -232,11 +232,11 @@ function rowProps(row: ProblemFiltered) {
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item>
-          <n-space align="center">
+          <n-flex align="center">
             <n-button @click="search(query.keyword)">搜索</n-button>
             <n-button @click="clear" quaternary>重置</n-button>
             <n-button @click="getRandom" quaternary>试试手气</n-button>
-          </n-space>
+          </n-flex>
         </n-form-item>
       </n-form>
       <n-button @click="toggleShowTag()" quaternary icon-placement="right">
@@ -248,7 +248,7 @@ function rowProps(row: ProblemFiltered) {
       </n-button>
     </n-space>
     <n-collapse-transition :show="showTag">
-      <n-space>
+      <n-flex>
         <n-tag
           v-for="tag in tags"
           :closable="tag.checked"
@@ -259,7 +259,7 @@ function rowProps(row: ProblemFiltered) {
         >
           {{ tag.name }}
         </n-tag>
-      </n-space>
+      </n-flex>
     </n-collapse-transition>
     <n-data-table
       striped
@@ -267,7 +267,7 @@ function rowProps(row: ProblemFiltered) {
       :columns="columns"
       :row-props="rowProps"
     />
-  </n-space>
+  </n-flex>
   <Pagination
     :total="total"
     v-model:limit="query.limit"

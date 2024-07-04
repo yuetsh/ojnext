@@ -76,11 +76,11 @@ function handleAll() {
 
 <template>
   <n-space>
-    <n-space vertical>
-      <n-space align="center">
+    <n-flex vertical>
+      <n-flex align="center">
         <n-switch v-model:value="needKs" />
         <span>前面带上 ks</span>
-      </n-space>
+      </n-flex>
       <n-input v-model:value="prefix" placeholder="班级号" />
       <n-input
         type="textarea"
@@ -88,7 +88,7 @@ function handleAll() {
         placeholder="每行一个用户名"
         v-model:value="rawInput"
       />
-    </n-space>
+    </n-flex>
     <n-scrollbar style="max-height: calc(100vh - 34px)">
       <n-data-table
         v-if="usersToTable.length"
@@ -96,13 +96,13 @@ function handleAll() {
         :data="usersToTable"
       />
     </n-scrollbar>
-    <n-space vertical>
+    <n-flex vertical>
       <n-button @click="generateUsers">让我康康</n-button>
       <n-button type="warning" :disabled="!users.length" @click="uploadUsers">
         上传用户
       </n-button>
       <n-button type="info" @click="handleAll">一键三连</n-button>
-    </n-space>
+    </n-flex>
   </n-space>
 </template>
 

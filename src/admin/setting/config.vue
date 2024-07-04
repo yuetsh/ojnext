@@ -162,12 +162,12 @@ onMounted(() => {
 <template>
   <n-card class="box">
     <template #header>
-      <n-space align="center">
+      <n-flex align="center">
         网站设置
         <n-button type="primary" size="small" @click="saveWebsiteConfig">
           保存
         </n-button>
-      </n-space>
+      </n-flex>
     </template>
     <n-form inline label-placement="left">
       <n-form-item label="网站 URL">
@@ -185,20 +185,20 @@ onMounted(() => {
         <n-input v-model:value="websiteConfig.website_footer" />
       </n-form-item>
     </n-form>
-    <n-space align="center">
-      <n-space align="center">
+    <n-flex align="center">
+      <n-flex align="center">
         <span>是否允许注册</span>
         <n-switch v-model:value="websiteConfig.allow_register" />
-      </n-space>
-      <n-space align="center">
+      </n-flex>
+      <n-flex align="center">
         <span>显示全部题目的提交</span>
         <n-switch v-model:value="websiteConfig.submission_list_show_all" />
-      </n-space>
-    </n-space>
+      </n-flex>
+    </n-flex>
   </n-card>
   <n-card class="box">
     <template #header>
-      <n-space align="center">
+      <n-flex align="center">
         判题服务器
         <n-button
           v-if="abnormalServers.length"
@@ -208,7 +208,7 @@ onMounted(() => {
         >
           删除无效服务器
         </n-button>
-      </n-space>
+      </n-flex>
     </template>
     <div class="box">
       接口凭证 <n-tag size="small">{{ token }}</n-tag>
@@ -222,12 +222,12 @@ onMounted(() => {
   </n-card>
   <n-card class="box" v-if="testcases.length">
     <template #header>
-      <n-space align="center">
+      <n-flex align="center">
         无效的测试用例
         <n-button size="small" type="warning" @click="() => deleteTestcase()">
           全部删除
         </n-button>
-      </n-space>
+      </n-flex>
     </template>
     <n-data-table
       striped

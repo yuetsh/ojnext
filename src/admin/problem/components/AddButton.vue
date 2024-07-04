@@ -37,10 +37,10 @@ async function addProblem() {
     <template #trigger>
       <n-button secondary size="small" type="primary">+</n-button>
     </template>
-    <n-space vertical>
+    <n-flex vertical>
       <span>请输入在这场比赛中的显示编号</span>
       <n-input autofocus v-model:value="displayID" />
-    </n-space>
+    </n-flex>
   </n-popconfirm>
 </template>
 <style scoped></style>

@@ -209,6 +209,7 @@ export function getCommentStatistics(problemID: number) {
   return http.get("comment/statistics", { params: { problem_id: problemID } })
 }
 
+// TODO: 这个API有问题
 export function refreshUserProblemDisplayIds() {
   return http.get("profile/fresh_display_id")
 }

@@ -9,7 +9,7 @@ const props = defineProps<Props>()
 const isAdmin = computed(() => props.user.admin_type !== "Regular User")
 </script>
 <template>
-  <n-space align="center">
+  <n-flex align="center">
     <n-tag v-if="props.user.is_disabled" type="error" size="small">
       封号中
     </n-tag>
@@ -21,5 +21,5 @@ const isAdmin = computed(() => props.user.admin_type !== "Regular User")
       {{ getUserRole(props.user.admin_type).tagString }}
     </n-tag>
     {{ props.user.username }}
-  </n-space>
+  </n-flex>
 </template>

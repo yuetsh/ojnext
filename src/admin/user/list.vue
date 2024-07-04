@@ -29,7 +29,7 @@ const columns: DataTableColumn<User>[] = [
   {
     title: "用户名",
     key: "username",
-    width: 180,
+    width: 200,
     render: (row) => h(Name, { user: row }),
   },
   {
@@ -155,12 +155,12 @@ watch(query, listUsers, { deep: true })
 </script>
 
 <template>
-  <n-space class="titleWrapper" justify="space-between">
-    <n-space>
+  <n-flex class="titleWrapper" justify="space-between">
+    <n-flex>
       <h2 class="title">用户列表</h2>
       <n-button type="primary" @click="createNewUser">新建用户</n-button>
-    </n-space>
-    <n-space>
+    </n-flex>
+    <n-flex>
       <n-popconfirm
         v-if="userIDs.length"
         @positive-click="onDeleteUsers(userIDs)"
@@ -170,9 +170,11 @@ watch(query, listUsers, { deep: true })
         </template>
         确定删除选中的用户吗？删除后无法恢复！
       </n-popconfirm>
-      <n-input placeholder="请输入关键字搜索" v-model:value="query.keyword" />
-    </n-space>
-  </n-space>
+      <div>
+        <n-input placeholder="请输入关键字搜索" v-model:value="query.keyword" />
+      </div>
+    </n-flex>
+  </n-flex>
   <n-data-table
     :data="users"
     :columns="columns"
@@ -214,10 +216,10 @@ watch(query, listUsers, { deep: true })
           <n-switch v-model:value="userEditing.is_disabled">封号</n-switch>
         </n-form-item-gi>
       </n-grid>
-      <n-space justify="end">
+      <n-flex justify="end">
         <n-button @click="onCloseEditModal">取消</n-button>
         <n-button type="primary" @click="handleEditUser">保存</n-button>
-      </n-space>
+      </n-flex>
     </n-form>
   </n-modal>
 </template>

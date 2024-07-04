@@ -1,12 +1,14 @@
 <template>
-  <n-space justify="space-between" class="titleWrapper">
+  <n-flex justify="space-between" class="titleWrapper">
     <h2 class="title">评论列表（只列出有内容的）</h2>
-    <n-input
+    <div>
+      <n-input
       v-model:value="query.problem"
       clearable
       placeholder="输入题目序号"
-    />
-  </n-space>
+      />
+    </div>
+  </n-flex>
   <n-data-table striped :columns="columns" :data="comments" />
   <Pagination
     :total="total"
