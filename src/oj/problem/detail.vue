@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { getProblem } from "oj/api"
-import { isDesktop } from "~/shared/composables/breakpoints"
+import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { screenMode } from "~/shared/composables/switchScreen"
 import { problem } from "../composables/problem"
 import { ScreenMode } from "utils/constants"
@@ -38,6 +38,7 @@ const bothAndProblem = computed(
 )
 
 async function init() {
+  screenMode.value = ScreenMode.both
   try {
     const res = await getProblem(props.problemID, props.contestID)
     problem.value = res.data
@@ -52,6 +53,13 @@ onMounted(init)
 onBeforeUnmount(() => {
   problem.value = null
   errMsg.value = "无数据"
+  screenMode.value = ScreenMode.both
+})
+
+watch(isMobile, (value) => {
+  if (value) {
+    screenMode.value = ScreenMode.both
+  }
 })
 </script>
 
