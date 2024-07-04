@@ -16,7 +16,7 @@ const data = computed(() => {
   }
   return {
     labels,
-    datasets: [{ data: Object.values(status), hoverOffset: 4 }],
+    datasets: [{ data: Object.values(status), hoverOffset: 5, borderRadius: 10 }],
   }
 })
 
