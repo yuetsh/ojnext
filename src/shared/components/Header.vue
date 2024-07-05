@@ -122,7 +122,7 @@ function goHome() {
   <n-flex justify="space-between" align="center">
     <n-flex align="center">
       <n-flex align="center" class="title" @click="goHome">
-        <Icon icon="streamline-emojis:dog" :width="30" :height="30"></Icon>
+        <Icon icon="streamline-emojis:dog" :height="30"></Icon>
         <div v-if="isDesktop">{{ configStore.config?.website_name }}</div>
       </n-flex>
       <div>
@@ -136,7 +136,12 @@ function goHome() {
     </n-flex>
     <n-flex align="center">
       <n-dropdown v-if="isMobile" :options="menus" size="large">
-        <n-button>菜单</n-button>
+        <n-button>
+          <Icon icon="twemoji:artist-palette" height="20"></Icon>
+          <span style="padding-left: 8px">
+            菜单
+          </span>
+        </n-button>
       </n-dropdown>
       <n-button
         v-if="
@@ -150,7 +155,7 @@ function goHome() {
       <div v-if="userStore.isFinished">
         <n-dropdown v-if="userStore.isAuthed" :options="options" size="large">
           <n-button @click="getRandomAvatar">
-            <Icon :icon="avatar" :height="20" :width="20"></Icon>
+            <Icon :icon="avatar" height="20"></Icon>
             <span style="padding-left: 8px">
               {{ userStore.user!.username }}
             </span>

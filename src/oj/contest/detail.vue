@@ -39,7 +39,6 @@ const passwordFormVisible = computed(
         <Icon
           v-if="contestStore.isPrivate"
           icon="streamline-emojis:locked-with-key"
-          :width="30"
           :height="30"
         ></Icon>
         <h2 class="contestTitle">{{ contestStore.contest.title }}</h2>
