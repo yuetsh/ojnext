@@ -2,7 +2,11 @@
 import { getProblem } from "oj/api"
 import { ScreenMode } from "utils/constants"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
-import { screenMode } from "~/shared/composables/switchScreen"
+import {
+  bothAndProblem,
+  resetScreenMode,
+  screenMode,
+} from "~/shared/composables/switchScreen"
 import { problem } from "../composables/problem"
 
 const Editor = defineAsyncComponent(() => import("./components/Editor.vue"))
@@ -33,14 +37,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const errMsg = ref("无数据")
 
-const bothAndProblem = computed(
-  () =>
-    screenMode.value === ScreenMode.both ||
-    screenMode.value === ScreenMode.problem,
-)
-
 async function init() {
-  screenMode.value = ScreenMode.both
+  resetScreenMode()
   try {
     const res = await getProblem(props.problemID, props.contestID)
     problem.value = res.data
@@ -55,13 +53,11 @@ onMounted(init)
 onBeforeUnmount(() => {
   problem.value = null
   errMsg.value = "无数据"
-  screenMode.value = ScreenMode.both
+  resetScreenMode()
 })
 
 watch(isMobile, (value) => {
-  if (value) {
-    screenMode.value = ScreenMode.both
-  }
+  if (value) resetScreenMode()
 })
 </script>
 

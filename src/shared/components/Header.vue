@@ -3,10 +3,8 @@ import { Icon } from "@iconify/vue"
 import { RouterLink } from "vue-router"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
-import {
-  screenSwitchLabel,
-  switchScreenMode,
-} from "~/shared/composables/switchScreen"
+import { screenMode, switchScreenMode } from "~/shared/composables/switchScreen"
+import { avatar, getRandomAvatar } from "~/utils/constants"
 import { logout } from "../api"
 import { useConfigStore } from "../store/config"
 import { useUserStore } from "../store/user"
@@ -30,35 +28,6 @@ async function handleLogout() {
 
 function renderIcon(icon: string) {
   return () => h(Icon, { icon, width: 24, height: 24 })
-}
-
-const avatars = [
-  "streamline-emojis:man-with-chinese-cap-1",
-  "streamline-emojis:cat-face",
-  "streamline-emojis:china",
-  "streamline-emojis:chicken",
-  "streamline-emojis:eyes",
-  "streamline-emojis:elephant",
-  "streamline-emojis:hear-no-evil-monkey",
-  "streamline-emojis:panda-face",
-  "streamline-emojis:penguin-1",
-  "streamline-emojis:rooster",
-  "streamline-emojis:star-struck-1",
-  "streamline-emojis:tomato",
-  "streamline-emojis:rocket",
-  "streamline-emojis:sparkles",
-  "streamline-emojis:money-bag",
-  "streamline-emojis:ghost",
-  "streamline-emojis:game-dice",
-  "streamline-emojis:ewe-1",
-  "streamline-emojis:artist-palette",
-  "streamline-emojis:baby-bottle",
-]
-
-const avatar = ref(avatars[Math.floor(Math.random() * avatars.length)])
-
-function getRandomAvatar() {
-  avatar.value = avatars[Math.floor(Math.random() * avatars.length)]
 }
 
 onMounted(() => {
@@ -102,7 +71,7 @@ const menus = computed<MenuOption[]>(() => [
   },
 ])
 
-const options: Array<DropdownOption | DropdownDividerOption> = [
+const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
   {
     label: "我的主页",
     key: "home",
@@ -135,6 +104,18 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
       onClick: () => router.push("/setting"),
     },
   },
+  {
+    label: isDark.value ? "浅色主题" : "深色主题",
+    key: "theme",
+    icon: renderIcon(
+      isDark.value
+        ? "twemoji:sun-behind-small-cloud"
+        : "twemoji:cloud-with-lightning-and-rain",
+    ),
+    props: {
+      onClick: () => toggleDark(),
+    },
+  },
   { type: "divider" },
   {
     label: "退出",
@@ -142,7 +123,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
     icon: renderIcon("streamline-emojis:hot-beverage-2"),
     props: { onClick: handleLogout },
   },
-]
+])
 
 function goHome() {
   router.push("/")
@@ -150,20 +131,22 @@ function goHome() {
 </script>
 
 <template>
-  <n-space justify="space-between" align="center">
-    <n-space align="center">
+  <n-flex justify="space-between" align="center">
+    <n-flex align="center">
       <n-flex align="center" class="title" @click="goHome">
         <Icon icon="streamline-emojis:dog" :width="30" :height="30"></Icon>
         <div v-if="isDesktop">{{ configStore.config?.website_name }}</div>
       </n-flex>
-      <n-menu
-        v-if="isDesktop"
-        mode="horizontal"
-        :options="menus"
-        :value="active"
-      />
-    </n-space>
-    <n-space align="center">
+      <div>
+        <n-menu
+          v-if="isDesktop"
+          mode="horizontal"
+          :options="menus"
+          :value="active"
+        />
+      </div>
+    </n-flex>
+    <n-flex align="center">
       <n-dropdown v-if="isMobile" :options="menus" size="large">
         <n-button>菜单</n-button>
       </n-dropdown>
@@ -172,9 +155,9 @@ function goHome() {
           isDesktop &&
           (route.name === 'problem' || route.name === 'contest problem')
         "
-        @click="switchScreenMode"
+        @click="() => switchScreenMode()"
       >
-        {{ screenSwitchLabel }}
+        {{ screenMode }}
       </n-button>
       <div v-if="userStore.isFinished">
         <n-dropdown v-if="userStore.isAuthed" :options="options" size="large">
@@ -186,8 +169,11 @@ function goHome() {
           </n-button>
         </n-dropdown>
         <n-flex align="center" v-else>
-          <n-button @click="toggleLogin(true)">登录</n-button>
+          <n-button secondary type="primary" @click="toggleLogin(true)">
+            登录
+          </n-button>
           <n-button
+            tertiary
             v-if="configStore.config?.allow_register"
             @click="toggleSignup(true)"
           >
@@ -195,14 +181,8 @@ function goHome() {
           </n-button>
         </n-flex>
       </div>
-      <n-button circle @click="toggleDark()">
-        <template #icon>
-          <Icon v-if="isDark" icon="ph:sun"></Icon>
-          <Icon v-else icon="ph:moon"></Icon>
-        </template>
-      </n-button>
-    </n-space>
-  </n-space>
+    </n-flex>
+  </n-flex>
 </template>
 
 <style scoped>

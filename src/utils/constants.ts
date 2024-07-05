@@ -271,7 +271,36 @@ export const CODE_TEMPLATES = {
 }
 
 export enum ScreenMode {
-  problem,
-  code,
-  both,
+  both = "题目 | 自测",
+  code = "仅自测",
+  problem = "仅题目",
+}
+
+const AVATARS = [
+  "streamline-emojis:man-with-chinese-cap-1",
+  "streamline-emojis:cat-face",
+  "streamline-emojis:china",
+  "streamline-emojis:chicken",
+  "streamline-emojis:eyes",
+  "streamline-emojis:elephant",
+  "streamline-emojis:hear-no-evil-monkey",
+  "streamline-emojis:panda-face",
+  "streamline-emojis:penguin-1",
+  "streamline-emojis:rooster",
+  "streamline-emojis:star-struck-1",
+  "streamline-emojis:tomato",
+  "streamline-emojis:rocket",
+  "streamline-emojis:sparkles",
+  "streamline-emojis:money-bag",
+  "streamline-emojis:ghost",
+  "streamline-emojis:game-dice",
+  "streamline-emojis:ewe-1",
+  "streamline-emojis:artist-palette",
+  "streamline-emojis:baby-bottle",
+]
+
+export const avatar = ref(AVATARS[Math.floor(Math.random() * AVATARS.length)])
+
+export function getRandomAvatar() {
+  avatar.value = AVATARS[Math.floor(Math.random() * AVATARS.length)]
 }
