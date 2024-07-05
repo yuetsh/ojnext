@@ -11,7 +11,6 @@ export function resetScreenMode() {
   screenMode.value = ScreenMode.both
 }
 
-
 export const bothAndProblem = computed(
   () =>
     screenMode.value === ScreenMode.both ||

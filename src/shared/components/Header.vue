@@ -71,7 +71,7 @@ const menus = computed<MenuOption[]>(() => [
   },
 ])
 
-const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
+const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的主页",
     key: "home",
@@ -104,18 +104,6 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
       onClick: () => router.push("/setting"),
     },
   },
-  {
-    label: isDark.value ? "浅色主题" : "深色主题",
-    key: "theme",
-    icon: renderIcon(
-      isDark.value
-        ? "twemoji:sun-behind-small-cloud"
-        : "twemoji:cloud-with-lightning-and-rain",
-    ),
-    props: {
-      onClick: () => toggleDark(),
-    },
-  },
   { type: "divider" },
   {
     label: "退出",
@@ -123,7 +111,7 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
     icon: renderIcon("streamline-emojis:hot-beverage-2"),
     props: { onClick: handleLogout },
   },
-])
+]
 
 function goHome() {
   router.push("/")
@@ -181,6 +169,12 @@ function goHome() {
           </n-button>
         </n-flex>
       </div>
+      <n-button :bordered="false" circle @click="toggleDark()">
+        <template #icon>
+          <Icon v-if="isDark" icon="twemoji:sun-behind-small-cloud"></Icon>
+          <Icon v-else icon="twemoji:cloud-with-lightning-and-rain"></Icon>
+        </template>
+      </n-button>
     </n-flex>
   </n-flex>
 </template>
