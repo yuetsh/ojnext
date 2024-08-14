@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { Bar } from "vue-chartjs"
+import { ChartType } from "~/utils/constants"
 import { Rank } from "~/utils/types"
 
-const props = defineProps<{ rankData: Rank[] }>()
+const props = defineProps<{ rankData: Rank[]; type: ChartType }>()
 
-const data = computed(() => ({
-  labels: props.rankData.map((rank) => rank.user.username),
-  datasets: [
+const data = computed(() => {
+  const labels = props.rankData.map((rank) => rank.user.username)
+  const datasets: any[] = [
     {
-      label: "已解决",
+      label: props.type === ChartType.Rank ? "已解决" : "提交数",
       data: props.rankData.map((rank) => rank.accepted_number),
       backgroundColor: [
         "rgba(255, 99, 132, 0.2)",
@@ -60,23 +61,23 @@ const data = computed(() => ({
       ],
       borderWidth: 2,
     },
-    {
+  ]
+
+  if (props.type === ChartType.Rank) {
+    datasets.push({
       label: "总提交数",
       data: props.rankData.map((rank) => rank.submission_number),
       hidden: true,
-    },
-  ],
-}))
+    })
+  }
+  return {
+    labels,
+    datasets,
+  }
+})
 
 const options = {
   maintainAspectRatio: false,
-  plugins: {
-    title: {
-      text: "国服前十",
-      display: true,
-      font: { size: 24 },
-    },
-  },
 }
 </script>
 <template>
@@ -87,6 +88,6 @@ const options = {
 <style scoped>
 .chart {
   height: 500px;
-  margin-bottom: 20px;
+  margin: 20px 0;
 }
 </style>

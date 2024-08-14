@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { formatISO, sub } from "date-fns"
 import { NButton } from "naive-ui"
-import { getRank } from "oj/api"
+import { getActivityRank, getRank } from "oj/api"
 import { getACRate } from "utils/functions"
 import { Rank } from "utils/types"
 import Pagination from "~/shared/components/Pagination.vue"
+import { ChartType } from "~/utils/constants"
 import { renderTableTitle } from "~/utils/renders"
 import Chart from "./components/Chart.vue"
 import Index from "./components/Index.vue"
@@ -16,15 +18,15 @@ const query = reactive({
   page: 1,
 })
 const chart = ref<Rank[]>([])
+const chartType = ref(ChartType.Rank)
+const duration = ref("weeks:1")
 
-async function listRanks() {
+async function init() {
   const offset = (query.page - 1) * query.limit
   const res = await getRank(offset, query.limit, 100)
   data.value = res.data.results
   total.value = res.data.total
-  if (query.page === 1) {
-    chart.value = data.value
-  }
+  return res.data.results
 }
 
 const columns: DataTableColumn<Rank>[] = [
@@ -83,20 +85,87 @@ const columns: DataTableColumn<Rank>[] = [
   },
 ]
 
-watch(() => query.page, listRanks)
+watch(() => query.page, init)
 watch(
   () => query.limit,
   () => {
     query.page = 1
-    listRanks()
+    init()
   },
 )
+watch(duration, listActivity)
 
-onMounted(listRanks)
+async function listActivity() {
+  chartType.value = ChartType.Activity
+  const current = Date.now()
+  const start = formatISO(sub(current, subOptions.value))
+  const res = await getActivityRank(start)
+  chart.value = res.data.map((d: { username: string; count: number }) => ({
+    user: {
+      username: d.username,
+    },
+    accepted_number: d.count,
+    submission_number: 0,
+  }))
+}
+
+async function listRank() {
+  chartType.value = ChartType.Rank
+  const res = await getRank(0, 10, 10)
+  data.value = res.data.results
+  chart.value = data.value
+}
+
+const options: SelectOption[] = [
+  { label: "一周内", value: "weeks:1" },
+  { label: "一个月内", value: "months:1" },
+  { label: "两个月内", value: "months:2" },
+  { label: "本学期", value: "months:6" },
+  { label: "一年内", value: "years:1" },
+]
+
+const subOptions = computed<Duration>(() => {
+  let dur = options.find((it) => it.value === duration.value) ?? options[0]
+  const x = dur.value!.toString().split(":")
+  const unit = x[0]
+  const n = x[1]
+  return { [unit]: parseInt(n) }
+})
+
+onMounted(async () => {
+  chart.value = await init()
+})
 </script>
 
 <template>
-  <Chart v-if="!!chart.length" :rankData="chart" />
+  <n-flex justify="center">
+    <n-button-group>
+      <n-button
+        @click="listRank"
+        :type="chartType === ChartType.Rank ? 'primary' : 'default'"
+      >
+        天梯排名
+      </n-button>
+      <n-button
+        @click="listActivity"
+        :type="chartType === ChartType.Activity ? 'primary' : 'default'"
+      >
+        活跃度排名
+      </n-button>
+    </n-button-group>
+    <div v-if="chartType === ChartType.Activity">
+      <n-select
+        style="width: 120px"
+        :options="options"
+        v-model:value="duration"
+      />
+    </div>
+  </n-flex>
+  <Chart v-if="!!chart.length" :type="chartType" :rank-data="chart" />
+  <n-empty v-else style="padding: 20px 0"></n-empty>
+  <n-flex justify="center">
+    <n-h2>全校前100名</n-h2>
+  </n-flex>
   <n-data-table striped :data="data" :columns="columns" />
   <Pagination
     :total="total"
@@ -104,5 +173,3 @@ onMounted(listRanks)
     v-model:limit="query.limit"
   />
 </template>
-
-<style scoped></style>

@@ -304,3 +304,8 @@ export const avatar = ref(AVATARS[Math.floor(Math.random() * AVATARS.length)])
 export function getRandomAvatar() {
   avatar.value = AVATARS[Math.floor(Math.random() * AVATARS.length)]
 }
+
+export enum ChartType {
+  Rank,
+  Activity,
+}

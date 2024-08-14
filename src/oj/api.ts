@@ -115,6 +115,12 @@ export function getRank(
   })
 }
 
+export function getActivityRank(start: string) {
+  return http.get("user_activity_rank", {
+    params: { start },
+  })
+}
+
 export function getContestList(query: {
   offset: number
   limit: number
