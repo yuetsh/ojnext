@@ -16,11 +16,10 @@ const form = reactive({
 })
 const classList: SelectOption[] = [
   { label: "不用填", value: "" },
-  { label: "23计算机1班", value: "ks231" },
-  { label: "23计算机2班", value: "ks232" },
-  { label: "23计算机4班", value: "ks234" },
-  { label: "23计算机5班", value: "ks235" },
-  { label: "23计算机6班", value: "ks236" },
+  { label: "24计算机1班", value: "ks241" },
+  { label: "24计算机2班", value: "ks242" },
+  { label: "24计算机3班", value: "ks243" },
+  { label: "24计算机4班", value: "ks244" },
 ]
 const rules: FormRules = {
   username: [{ required: true, message: "用户名必填", trigger: "blur" }],

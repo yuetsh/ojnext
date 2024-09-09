@@ -73,7 +73,13 @@ const columns: DataTableColumn<Comment>[] = [
     render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
     width: 200,
   },
-  { title: "内容", key: "content", maxWidth: 300, ellipsis: true },
+  {
+    title: "内容",
+    key: "content",
+    minWidth: 200,
+    maxWidth: 300,
+    ellipsis: true,
+  },
   {
     title: "选项",
     key: "action",
