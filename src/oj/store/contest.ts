@@ -12,7 +12,6 @@ import {
 
 export const useContestStore = defineStore("contest", () => {
   const userStore = useUserStore()
-  // const message = useMessage()
   const [access, toggleAccess] = useToggle(false)
   const contest = ref<Contest | null>(null)
   const problems = ref<Problem[]>([])
@@ -89,7 +88,6 @@ export const useContestStore = defineStore("contest", () => {
       }
     } catch (err) {
       toggleAccess(false)
-      // message.error("密码错误")
     }
   }
 

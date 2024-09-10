@@ -10,8 +10,16 @@ const props = defineProps<{
   contestID: string
 }>()
 const contestStore = useContestStore()
+const message = useMessage()
 
 const password = ref("")
+
+async function check() {
+  await contestStore.checkPassword(props.contestID, password.value)
+  if (!contestStore.access) {
+    message.error("密码错误")
+  }
+}
 
 onMounted(() => {
   contestStore.init(props.contestID)
@@ -61,12 +69,7 @@ const passwordFormVisible = computed(
         />
       </n-form-item>
       <n-form-item>
-        <n-button
-          @click="contestStore.checkPassword(contestID, password)"
-          :disabled="!password"
-        >
-          确认
-        </n-button>
+        <n-button @click="check" :disabled="!password">确认</n-button>
       </n-form-item>
     </n-form>
     <router-view></router-view>
