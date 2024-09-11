@@ -120,7 +120,7 @@ const options: SelectOption[] = [
   { label: "一周内", value: "weeks:1" },
   { label: "一个月内", value: "months:1" },
   { label: "两个月内", value: "months:2" },
-  { label: "本学期", value: "months:6" },
+  { label: "半年内", value: "months:6" },
   { label: "一年内", value: "years:1" },
 ]
 
