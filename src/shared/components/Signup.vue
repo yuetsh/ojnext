@@ -73,8 +73,6 @@ function submit() {
       }
       if (!msg.value) {
         toggleSignup(false)
-        await login({ username: form.username, password: form.password })
-        userStore.getMyProfile()
       }
     }
   })
