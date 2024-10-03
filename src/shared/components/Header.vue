@@ -154,7 +154,7 @@ function goHome() {
       </n-button>
       <div v-if="userStore.isFinished">
         <n-dropdown v-if="userStore.isAuthed" :options="options" size="large">
-          <n-button @click="getRandomAvatar">
+          <n-button>
             <Icon :icon="avatar" height="20"></Icon>
             <span style="padding-left: 8px">
               {{ userStore.user!.username }}

@@ -511,7 +511,7 @@ watch(
       </n-flex>
     </template>
   </n-alert>
-  <n-space justify="space-between">
+  <n-space style="margin-bottom: 100px;" justify="space-between">
     <n-form inline label-placement="left" :show-feedback="false">
       <n-form-item label="语言">
         <n-checkbox-group v-model:value="problem.languages">

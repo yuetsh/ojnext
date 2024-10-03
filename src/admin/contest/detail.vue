@@ -127,7 +127,7 @@ onMounted(getContestDetail)
     v-model:value="contest.description"
     :min-height="200"
   />
-  <n-flex justify="end">
+  <n-flex style="margin-bottom: 100px;" justify="end">
     <n-button type="primary" @click="submit">保存</n-button>
   </n-flex>
 </template>

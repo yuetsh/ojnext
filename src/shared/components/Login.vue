@@ -80,8 +80,9 @@ function goSignup() {
     <n-form ref="loginRef" :model="form" :rules="rules" show-require-mark>
       <n-alert :show-icon="false" class="tip">
         关于【选择班级】的提醒：<br />
-        如果是自己的号就选【不用填】 <br />
-        如果是上课统一生成的账号，但选项中没有你的班级，也选择【不用填】，但是用户名要写：ks班级+姓名，比如23计算机1班张三，就写ks231张三
+        1. 如果是上课统一生成的账号，选择【相应班级】，用户名直接写自己的名字 <br />
+        2. 同样是上课用的号，但是没有你的班级。选择【不用填】，用户名要写：ks班级+姓名，比如23计算机1班张三，就写ks231张三 <br />
+        3. 如果是自己注册的号，选择【不用填】 <br />
       </n-alert>
       <n-form-item label="选择班级" path="class" :show-require-mark="false">
         <n-select
