@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { formatISO, sub } from "date-fns"
+import { formatISO, sub, type Duration } from "date-fns"
 import { NButton } from "naive-ui"
 import { getActivityRank, getRank } from "oj/api"
 import { getACRate } from "utils/functions"
