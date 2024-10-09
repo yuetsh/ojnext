@@ -71,7 +71,7 @@ export function secondsToDuration(seconds: number): string {
     start: 0,
     end: seconds * 1000,
   })
-  return [duration.hours, duration.minutes, duration.seconds].join(":")
+  return [duration.hours??0, duration.minutes??0, duration.seconds].join(":")
 }
 
 export function submissionMemoryFormat(memory: number | string | undefined) {
