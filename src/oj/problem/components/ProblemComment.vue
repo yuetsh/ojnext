@@ -73,9 +73,9 @@
         >
           查看统计
         </n-button>
-        <n-button v-if="!hasCommented" type="primary" @click="submit"
-          >提交</n-button
-        >
+        <n-button v-if="!hasCommented" type="primary" @click="submit">
+          提交
+        </n-button>
       </n-form>
       <div v-if="props.showStatistics">
         <n-descriptions
