@@ -1,9 +1,11 @@
 import legacy from "@vitejs/plugin-legacy"
 import Vue from "@vitejs/plugin-vue"
+import Shiki from "@shikijs/markdown-it"
 import path from "path"
 import AutoImport from "unplugin-auto-import/vite"
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
 import Components from "unplugin-vue-components/vite"
+import Markdown from "unplugin-vue-markdown/vite"
 import { defineConfig } from "vite"
 
 const dev = process.env.NODE_ENV === "development"
@@ -37,10 +39,11 @@ export default defineConfig({
       utils: path.resolve(__dirname, "./src/utils"),
       oj: path.resolve(__dirname, "./src/oj"),
       admin: path.resolve(__dirname, "./src/admin"),
+      learn: path.resolve(__dirname, "./src/learn"),
     },
   },
   plugins: [
-    Vue(),
+    Vue({include: [/\.vue$/, /\.md$/]}),,
     legacy({ targets: ["chrome 66", "not IE 11"] }),
     AutoImport({
       imports: [
@@ -77,6 +80,16 @@ export default defineConfig({
     Components({
       resolvers: [NaiveUiResolver()],
       dts: "./src/components.d.ts",
+    }),
+    Markdown({
+      async markdownItSetup(md) {
+        md.use(await Shiki({
+          themes: {
+            light: 'vitesse-light',
+            dark: 'vitesse-dark',
+          }
+        }))
+      },
     }),
   ],
   server: {

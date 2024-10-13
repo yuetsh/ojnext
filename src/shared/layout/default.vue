@@ -10,7 +10,7 @@ import Signup from "../components/Signup.vue"
     <n-layout-header bordered class="header">
       <Header />
     </n-layout-header>
-    <n-layout-content content-style="padding: 16px; overflow-x: initial">
+    <n-layout-content content-style="padding: 16px; overflow-x: initial; max-width: 2000px; margin: 0 auto;">
       <router-view></router-view>
     </n-layout-content>
     <Login />

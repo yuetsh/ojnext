@@ -89,6 +89,11 @@ export const ojs: RouteRecordRaw = {
       component: () => import("oj/user/message.vue"),
       meta: { requiresAuth: true },
     },
+    {
+      path: "learn/:step+",
+      component: () => import("learn/index.vue"),
+      name: "learn",
+    },
   ],
 }
 

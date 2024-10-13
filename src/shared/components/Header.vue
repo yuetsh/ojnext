@@ -4,7 +4,7 @@ import { RouterLink } from "vue-router"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { toggleLogin, toggleSignup } from "~/shared/composables/modal"
 import { screenMode, switchScreenMode } from "~/shared/composables/switchScreen"
-import { avatar, getRandomAvatar } from "~/utils/constants"
+import { avatar } from "~/utils/constants"
 import { logout } from "../api"
 import { useConfigStore } from "../store/config"
 import { useUserStore } from "../store/user"
@@ -36,6 +36,12 @@ onMounted(() => {
 })
 
 const menus = computed<MenuOption[]>(() => [
+  {
+    label: () => h(RouterLink, { to: "/learn/01" }, { default: () => "自学" }),
+    key: "learn",
+    icon: renderIcon("devicon:python"),
+    show: isDesktop.value,
+  },
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "题库" }),
     key: "problem",
@@ -138,9 +144,7 @@ function goHome() {
       <n-dropdown v-if="isMobile" :options="menus" size="large">
         <n-button>
           <Icon icon="twemoji:artist-palette" height="20"></Icon>
-          <span style="padding-left: 8px">
-            菜单
-          </span>
+          <span style="padding-left: 8px"> 菜单 </span>
         </n-button>
       </n-dropdown>
       <n-button
