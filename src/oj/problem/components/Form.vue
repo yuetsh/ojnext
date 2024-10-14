@@ -113,14 +113,14 @@ function gotoTestCat() {
       :options="options"
     />
     <n-button v-if="withTest" @click="reset">重置代码</n-button>
-    <n-button v-if="withTest" type="primary" secondary @click="test"
-      >运行代码</n-button
-    >
+    <n-button v-if="withTest" type="primary" secondary @click="test">
+      运行代码
+    </n-button>
     <n-flex align="center" v-if="!withTest">
       <Submit />
       <n-button v-if="isDesktop" @click="gotoTestCat">自测猫</n-button>
       <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
-      <n-dropdown :options="menu" @select="select">
+      <n-dropdown size="large" :options="menu" @select="select">
         <n-button :size="isDesktop ? 'medium' : 'small'">操作</n-button>
       </n-dropdown>
       <n-button
