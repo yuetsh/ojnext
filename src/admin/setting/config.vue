@@ -19,8 +19,7 @@ interface Testcase {
 const message = useMessage()
 
 const testcaseColumns: DataTableColumn<Testcase>[] = [
-  { title: "上次修改时间", key: "create_time" },
-  { title: "ID", key: "id" },
+  { title: "测试用例 ID", key: "id" },
   {
     title: "选项",
     key: "delete",
@@ -121,11 +120,13 @@ async function getWebsiteConfig() {
 async function saveWebsiteConfig() {
   await editWebsite(websiteConfig)
   message.success("网站配置保存成功")
+  getWebsiteConfig()
 }
 
 async function deleteTestcase(id?: string) {
   await pruneInvalidTestcases(id)
   message.success("删除成功")
+  getTestcases()
 }
 
 async function getTestcases() {
@@ -150,6 +151,7 @@ async function deleteAbnormalServers() {
   )
   await Promise.all(dels)
   message.success("删除成功")
+  getJudgeServerData()
 }
 
 onMounted(() => {
