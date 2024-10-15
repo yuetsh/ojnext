@@ -1,4 +1,3 @@
-import legacy from "@vitejs/plugin-legacy"
 import Vue from "@vitejs/plugin-vue"
 import Shiki from "@shikijs/markdown-it"
 import path from "path"
@@ -23,7 +22,7 @@ export default defineConfig({
         manualChunks: {
           chart: ["vue-chartjs", "chart.js"],
           editor: ["@wangeditor/editor"],
-          codemirror: [
+          cm: [
             "vue-codemirror",
             "codemirror",
             "@codemirror/lang-cpp",
@@ -43,8 +42,7 @@ export default defineConfig({
     },
   },
   plugins: [
-    Vue({include: [/\.vue$/, /\.md$/]}),,
-    legacy({ targets: ["chrome 66", "not IE 11"] }),
+    Vue({include: [/\.vue$/, /\.md$/]}),
     AutoImport({
       imports: [
         "vue",
