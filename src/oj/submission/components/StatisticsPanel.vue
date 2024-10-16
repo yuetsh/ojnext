@@ -150,6 +150,8 @@ async function handleStatistics() {
   listUnaccepted.value = res.data.data_unaccepted
   person.count = res.data.person_count
   person.rate = res.data.person_rate
+
+  toggleUnaccepted(false)
 }
 
 function removeClassname(name: string) {
