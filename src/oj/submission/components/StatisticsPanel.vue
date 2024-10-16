@@ -59,10 +59,24 @@
           班级完成度：{{ person.rate }}
         </n-gradient-text>
       </n-h1>
+      <n-button
+        type="warning"
+        style="margin-top: 8px"
+        v-if="listUnaccepted.length > 0"
+        @click="toggleUnaccepted(!unaccepted)"
+      >
+        {{ unaccepted ? "隐藏没有完成的" : "显示没有完成的" }}
+      </n-button>
     </n-space>
     <n-h1 v-if="count.total === 0">
       <n-gradient-text type="primary">暂无数据统计</n-gradient-text>
     </n-h1>
+    <n-space v-if="unaccepted" size="large">
+      <n-h1>这 {{ listUnaccepted.length }} 位没有完成：</n-h1>
+      <n-h1 v-for="item in listUnaccepted" :key="item">
+        {{ removeClassname(item) }}
+      </n-h1>
+    </n-space>
     <n-data-table v-if="list.length" striped :columns="columns" :data="list" />
   </n-flex>
 </template>
@@ -109,6 +123,8 @@ const person = reactive({
   rate: 0,
 })
 const list = ref([])
+const listUnaccepted = ref([])
+const [unaccepted, toggleUnaccepted] = useToggle()
 
 const subOptions = computed<Duration>(() => {
   let dur = options.find((it) => it.value === query.duration) ?? options[0]
@@ -131,7 +147,15 @@ async function handleStatistics() {
   count.accepted = res.data.accepted_count
   count.rate = res.data.correct_rate
   list.value = res.data.data
+  listUnaccepted.value = res.data.data_unaccepted
   person.count = res.data.person_count
   person.rate = res.data.person_rate
+}
+
+function removeClassname(name: string) {
+  if (name.startsWith("ks")) {
+    return name.slice(5)
+  }
+  return name
 }
 </script>
