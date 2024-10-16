@@ -59,20 +59,18 @@
           班级完成度：{{ person.rate }}
         </n-gradient-text>
       </n-h1>
-      <n-button
-        type="warning"
-        style="margin-top: 8px"
-        v-if="listUnaccepted.length > 0"
-        @click="toggleUnaccepted(!unaccepted)"
-      >
-        {{ unaccepted ? "隐藏没有完成的" : "显示没有完成的" }}
-      </n-button>
+      <n-flex v-if="listUnaccepted.length > 0" style="margin-top: 8px">
+        <n-button type="warning" @click="toggleUnaccepted(!unaccepted)">
+          {{ unaccepted ? "隐藏没有完成的" : "显示没有完成的" }}
+        </n-button>
+        <n-button @click="copyUnaccepted">复制名单</n-button>
+      </n-flex>
     </n-space>
     <n-h1 v-if="count.total === 0">
       <n-gradient-text type="primary">暂无数据统计</n-gradient-text>
     </n-h1>
     <n-space v-if="unaccepted" size="large">
-      <n-h1>这 {{ listUnaccepted.length }} 位没有完成：</n-h1>
+      <n-h1>这{{ listUnaccepted.length }}位没有完成：</n-h1>
       <n-h1 v-for="item in listUnaccepted" :key="item">
         {{ removeClassname(item) }}
       </n-h1>
@@ -91,6 +89,7 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const message = useMessage()
 const options: SelectOption[] = [
   { label: "30分钟内", value: "minutes:30" },
   { label: "本节课内", value: "hours:1" },
@@ -159,5 +158,15 @@ function removeClassname(name: string) {
     return name.slice(5)
   }
   return name
+}
+
+function copyUnaccepted() {
+  const grade = query.username.slice(2, 4)
+  const classname = query.username.slice(4, 5)
+  const prefix = `${grade}计算机${classname}班${query.problem}这道题有${listUnaccepted.value.length}人没有完成，分别是：`
+  const names = listUnaccepted.value.map(removeClassname).join("、")
+  const suffix = "。请以上同学尽快完成！"
+  console.log(prefix+names+suffix)
+  message.success("到 DevTool 中手动复制")
 }
 </script>
