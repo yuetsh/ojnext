@@ -2,7 +2,12 @@ import { getTime, intervalToDuration, parseISO } from "date-fns"
 import { User } from "./types"
 
 export function getACRate(acCount: number, totalCount: number) {
-  let rate = totalCount === 0 ? 0.0 : ((acCount / totalCount) * 100).toFixed(2)
+  let rate = ""
+  if (totalCount === 0) rate = "0.00"
+  else {
+    if (acCount >= totalCount) rate = "100.00"
+    else rate = ((acCount / totalCount) * 100).toFixed(2)
+  }
   return `${rate}%`
 }
 
@@ -71,7 +76,9 @@ export function secondsToDuration(seconds: number): string {
     start: 0,
     end: seconds * 1000,
   })
-  return [duration.hours??0, duration.minutes??0, duration.seconds].join(":")
+  return [duration.hours ?? 0, duration.minutes ?? 0, duration.seconds].join(
+    ":",
+  )
 }
 
 export function submissionMemoryFormat(memory: number | string | undefined) {
