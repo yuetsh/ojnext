@@ -118,4 +118,16 @@ html.dark .shiki span {
   font-size: 20px;
   font-family: "Monaco";
 }
+
+.markdown-body h2 {
+  font-size: 24px;
+}
+
+.markdown-body h3 {
+  font-size: 22px;
+}
+
+.markdown-body p {
+  font-size: 18px;
+}
 </style>
