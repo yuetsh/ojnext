@@ -7,7 +7,7 @@
 你需要这样写：
 
 ```py
-a, b = input().split()
+a,b=input().split()
 ```
 
 ## 输入两个整数，用空格隔开。比如：10 20
@@ -15,10 +15,10 @@ a, b = input().split()
 写法如下：
 
 ```py
-n = input().split()
+n=input().split()
 
-a = int(n[0])
-b = int(n[1])
+a=int(n[0])
+b=int(n[1])
 ```
 
 
@@ -27,8 +27,8 @@ b = int(n[1])
 写法如下：
 
 ```py
-n = input().split()
+n=input().split()
 
-a = float(n[0])
-b = float(n[1])
+a=float(n[0])
+b=float(n[1])
 ```
