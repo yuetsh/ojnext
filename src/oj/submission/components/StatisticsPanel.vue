@@ -63,7 +63,7 @@
         <n-button type="warning" @click="toggleUnaccepted(!unaccepted)">
           {{ unaccepted ? "隐藏没有完成的" : "显示没有完成的" }}
         </n-button>
-        <n-button @click="copyUnaccepted">复制名单</n-button>
+        <n-button @click="copyUnaccepted">手动复制到微信群</n-button>
       </n-flex>
     </n-space>
     <n-h1 v-if="count.total === 0">
@@ -74,6 +74,7 @@
       <n-h1 v-for="item in listUnaccepted" :key="item">
         {{ removeClassname(item) }}
       </n-h1>
+      <n-text v-if="message">{{ message }}</n-text>
     </n-space>
     <n-data-table v-if="list.length" striped :columns="columns" :data="list" />
   </n-flex>
@@ -89,7 +90,6 @@ interface Props {
 
 const props = defineProps<Props>()
 
-const message = useMessage()
 const options: SelectOption[] = [
   { label: "30分钟内", value: "minutes:30" },
   { label: "本节课内", value: "hours:1" },
@@ -97,6 +97,7 @@ const options: SelectOption[] = [
   { label: "一天内", value: "days:1" },
   { label: "一周内", value: "weeks:1" },
   { label: "一个月内", value: "months:1" },
+  { label: "一个月内", value: "years:1" },
 ]
 
 const columns: DataTableColumn[] = [
@@ -124,6 +125,7 @@ const person = reactive({
 const list = ref([])
 const listUnaccepted = ref([])
 const [unaccepted, toggleUnaccepted] = useToggle()
+const message = ref("")
 
 const subOptions = computed<Duration>(() => {
   let dur = options.find((it) => it.value === query.duration) ?? options[0]
@@ -151,6 +153,7 @@ async function handleStatistics() {
   person.rate = res.data.person_rate
 
   toggleUnaccepted(false)
+  message.value = ""
 }
 
 function removeClassname(name: string) {
@@ -166,7 +169,6 @@ function copyUnaccepted() {
   const prefix = `${grade}计算机${classname}班${query.problem}这道题有${listUnaccepted.value.length}人没有完成，分别是：`
   const names = listUnaccepted.value.map(removeClassname).join("、")
   const suffix = "。请以上同学尽快完成！"
-  console.log(prefix+names+suffix)
-  message.success("到 DevTool 中手动复制")
+  message.value = prefix+names+suffix
 }
 </script>
