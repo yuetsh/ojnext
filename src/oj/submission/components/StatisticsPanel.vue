@@ -97,7 +97,6 @@ const options: SelectOption[] = [
   { label: "一天内", value: "days:1" },
   { label: "一周内", value: "weeks:1" },
   { label: "一个月内", value: "months:1" },
-  { label: "一个月内", value: "years:1" },
 ]
 
 const columns: DataTableColumn[] = [
