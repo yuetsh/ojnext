@@ -9,7 +9,7 @@ const data = computed(() => {
   const labels = props.rankData.map((rank) => rank.user.username)
   const datasets: any[] = [
     {
-      label: props.type === ChartType.Rank ? "已解决" : "提交数",
+      label: props.type === ChartType.Rank ? "已解决" : "做题数",
       data: props.rankData.map((rank) => rank.accepted_number),
       backgroundColor: [
         "rgba(255, 99, 132, 0.2)",
