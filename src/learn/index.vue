@@ -130,4 +130,8 @@ html.dark .shiki span {
 .markdown-body p {
   font-size: 18px;
 }
+
+.markdown-body img {
+  max-width: 100%;
+}
 </style>
