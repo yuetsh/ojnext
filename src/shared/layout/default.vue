@@ -22,5 +22,8 @@ import Signup from "../components/Signup.vue"
 <style scoped>
 .header {
   padding: 8px;
+  max-width: 2000px;
+  margin-left: auto;
+  margin-right: auto;
 }
 </style>
