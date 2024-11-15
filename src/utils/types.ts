@@ -314,6 +314,7 @@ export interface WebsiteConfig {
   website_footer: string
   allow_register: boolean
   submission_list_show_all: boolean
+  class_list: string[] & never[]
 }
 
 export interface Server {

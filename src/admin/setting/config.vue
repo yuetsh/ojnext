@@ -105,6 +105,7 @@ const websiteConfig = reactive({
   website_footer: "所有权归属于徐越，感谢青岛大学开源 OJ 系统，感谢开源社区",
   allow_register: true,
   submission_list_show_all: true,
+  class_list: [],
 })
 
 async function getWebsiteConfig() {
@@ -115,6 +116,7 @@ async function getWebsiteConfig() {
   websiteConfig.website_footer = res.data.website_footer
   websiteConfig.allow_register = res.data.allow_register
   websiteConfig.submission_list_show_all = res.data.submission_list_show_all
+  websiteConfig.class_list = res.data.class_list
 }
 
 async function saveWebsiteConfig() {
@@ -185,6 +187,9 @@ onMounted(() => {
     <n-form label-placement="left">
       <n-form-item label="页脚">
         <n-input v-model:value="websiteConfig.website_footer" />
+      </n-form-item>
+      <n-form-item label="班级列表">
+        <n-dynamic-tags v-model:value="websiteConfig.class_list" />
       </n-form-item>
     </n-form>
     <n-flex align="center">

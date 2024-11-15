@@ -14,13 +14,15 @@ const form = reactive({
   username: "",
   password: "",
 })
-const classList: SelectOption[] = [
-  { label: "不用填", value: "" },
-  { label: "24计算机1班", value: "ks241" },
-  { label: "24计算机2班", value: "ks242" },
-  { label: "24计算机3班", value: "ks243" },
-  { label: "24计算机4班", value: "ks244" },
-]
+const classList = computed<SelectOption[]>(() => {
+  const defaults = [{ label: "不用填", value: "" }]
+  const configs =
+    configStore.config?.class_list.map((item) => ({
+      label: `${item.slice(0, 2)}计算机${item.slice(2)}班`,
+      value: `ks${item}`,
+    })) ?? []
+  return [...defaults, ...configs]
+})
 const rules: FormRules = {
   username: [{ required: true, message: "用户名必填", trigger: "blur" }],
   password: [
@@ -80,8 +82,11 @@ function goSignup() {
     <n-form ref="loginRef" :model="form" :rules="rules" show-require-mark>
       <n-alert :show-icon="false" class="tip">
         关于【选择班级】的提醒：<br />
-        1. 如果是上课统一生成的账号，选择【相应班级】，用户名直接写自己的名字 <br />
-        2. 同样是上课用的号，但是没有你的班级。选择【不用填】，用户名要写：ks班级+姓名，比如23计算机1班张三，就写ks231张三 <br />
+        1. 如果是上课统一生成的账号，选择【相应班级】，用户名直接写自己的名字
+        <br />
+        2.
+        同样是上课用的号，但是没有你的班级。选择【不用填】，用户名要写：ks班级+姓名，比如23计算机1班张三，就写ks231张三
+        <br />
         3. 如果是自己注册的号，选择【不用填】 <br />
       </n-alert>
       <n-form-item label="选择班级" path="class" :show-require-mark="false">
