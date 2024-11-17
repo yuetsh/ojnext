@@ -1,5 +1,5 @@
-import Vue from "@vitejs/plugin-vue"
 import Shiki from "@shikijs/markdown-it"
+import Vue from "@vitejs/plugin-vue"
 import path from "path"
 import AutoImport from "unplugin-auto-import/vite"
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
@@ -21,7 +21,10 @@ export default defineConfig({
       output: {
         manualChunks: {
           chart: ["vue-chartjs", "chart.js"],
-          editor: ["@wangeditor/editor"],
+          editor: [
+            "@wangeditor-next/editor",
+            "@wangeditor-next/editor-for-vue",
+          ],
           cm: [
             "vue-codemirror",
             "codemirror",
@@ -42,7 +45,7 @@ export default defineConfig({
     },
   },
   plugins: [
-    Vue({include: [/\.vue$/, /\.md$/]}),
+    Vue({ include: [/\.vue$/, /\.md$/] }),
     AutoImport({
       imports: [
         "vue",
@@ -81,12 +84,14 @@ export default defineConfig({
     }),
     Markdown({
       async markdownItSetup(md) {
-        md.use(await Shiki({
-          themes: {
-            light: 'vitesse-light',
-            dark: 'vitesse-dark',
-          }
-        }))
+        md.use(
+          await Shiki({
+            themes: {
+              light: "vitesse-light",
+              dark: "vitesse-dark",
+            },
+          }),
+        )
       },
     }),
   ],

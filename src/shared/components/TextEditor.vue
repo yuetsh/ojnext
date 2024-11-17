@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor/editor"
-import { Editor, Toolbar } from "@wangeditor/editor-for-vue"
-import "@wangeditor/editor/dist/css/style.css"
+import { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor-next/editor"
+import { Editor, Toolbar } from "@wangeditor-next/editor-for-vue"
+import "@wangeditor-next/editor/dist/css/style.css"
 import { uploadImage } from "../../admin/api"
 
 interface Props {
@@ -71,6 +71,7 @@ const toolbarConfigSimple: Partial<IToolbarConfig> = {
 const editorConfig: Partial<IEditorConfig> = {
   scroll: false,
   MENU_CONF: {
+    // @ts-ignore
     uploadImage: { customUpload },
   },
 }
