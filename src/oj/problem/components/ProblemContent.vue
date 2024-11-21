@@ -232,7 +232,7 @@ function type(status: ProblemStatus) {
   font-family: "Monaco";
 }
 
-.__layout-dark .problemContent .content > pre {
+.dark .problemContent .content > pre {
   background-color: rgb(24, 24, 28);
   border-color: rgba(255, 255, 255, 0.09);
 }
@@ -253,7 +253,7 @@ function type(status: ProblemStatus) {
     border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.__layout-dark .problemContent .content > table th {
+.dark .problemContent .content > table th {
   background-color: rgba(38, 38, 42, 1);
 }
 
