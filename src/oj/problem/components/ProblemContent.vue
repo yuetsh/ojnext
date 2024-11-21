@@ -206,18 +206,18 @@ function type(status: ProblemStatus) {
   margin-bottom: 8px;
 }
 
-.problemContent > .content > p {
+.problemContent .content > p {
   margin: 0;
 }
 
-.problemContent > .content > blockquote {
+.problemContent .content > blockquote {
   border-left: 3px solid #bbbec4;
   padding-left: 10px;
   margin: 10px 0;
   color: #7b7b7b;
 }
 
-.problemContent > .content > pre {
+.problemContent .content > pre {
   width: 100%;
   background-color: rgb(250, 250, 252);
   border: 1px solid rgb(239, 239, 245);
@@ -228,16 +228,16 @@ function type(status: ProblemStatus) {
     border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.problemContent > .content > pre > code {
+.problemContent .content > pre > code {
   font-family: "Monaco";
 }
 
-.__layout-dark .problemContent > .content > pre {
+.__layout-dark .problemContent .content > pre {
   background-color: rgb(24, 24, 28);
   border-color: rgba(255, 255, 255, 0.09);
 }
 
-.problemContent > .content > table {
+.problemContent .content > table {
   width: 100%;
   border-spacing: 0;
   border: 1px solid rgba(239, 239, 245, 1);
@@ -246,37 +246,37 @@ function type(status: ProblemStatus) {
     border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.problemContent > .content > table th {
+.problemContent .content > table th {
   background-color: rgba(250, 250, 252, 1);
   transition:
     background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
     border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-.__layout-dark .problemContent > .content > table th {
+.__layout-dark .problemContent .content > table th {
   background-color: rgba(38, 38, 42, 1);
 }
 
-.problemContent > .content > table td {
+.problemContent .content > table td {
   padding: 8px;
 }
 
-.problemContent > .content > table td,
-.problemContent > .content > table th {
+.problemContent .content > table td,
+.problemContent .content > table th {
   border-right: 1px solid rgba(239, 239, 245, 1);
   border-bottom: 1px solid rgba(239, 239, 245, 1);
 }
 
-.problemContent > .content > table th:last-child,
-.problemContent > .content > table td:last-child {
+.problemContent .content > table th:last-child,
+.problemContent .content > table td:last-child {
   border-right: 0px solid rgba(239, 239, 245, 1);
 }
 
-.problemContent > .content > table tr:last-child td {
+.problemContent .content > table tr:last-child td {
   border-bottom: 0px solid rgba(239, 239, 245, 1);
 }
 
-.problemContent > .content > p > code {
+.problemContent .content > p > code {
   font-size: 90%;
   padding: 2px 5px;
   margin: 0px 4px;
@@ -285,12 +285,12 @@ function type(status: ProblemStatus) {
   line-height: 1.5;
 }
 
-.problemContent > .content img {
+.problemContent .content img {
   max-width: 100% !important;
   height: 100% !important;
 }
 
-.problemContent > .content a {
+.problemContent .content a {
   color: #18a058;
 }
 </style>
