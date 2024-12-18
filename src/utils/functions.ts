@@ -66,7 +66,7 @@ export function duration(
     result += duration.minutes + "分钟"
   }
   if (showSeconds) {
-    result += duration.seconds + "秒"
+    result += (duration.seconds ?? 0) + "秒"
   }
   return result
 }
