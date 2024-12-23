@@ -18,6 +18,7 @@ function filterResult(result: Problem) {
     submission: result.submission_number,
     rate: getACRate(result.accepted_number, result.submission_number),
     status: "",
+    author: result.created_by.username,
   }
   if (result.my_status === null || result.my_status === undefined) {
     newResult.status = "not_test"

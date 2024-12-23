@@ -159,6 +159,7 @@ export interface ProblemFiltered {
   submission: number
   rate: string
   status: "not_test" | "passed" | "failed"
+  author: string
 }
 
 export interface AdminProblemFiltered {

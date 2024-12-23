@@ -182,6 +182,14 @@ const baseColumns: DataTableColumn<ProblemFiltered>[] = [
       h(NSpace, () => row.tags.map((t) => h(NTag, { key: t }, () => t))),
   },
   {
+    title: renderTableTitle(
+      "出题者",
+      "streamline-emojis:smiling-face-with-sunglasses",
+    ),
+    key: "author",
+    width: 130,
+  },
+  {
     title: renderTableTitle("提交数", "streamline-emojis:clinking-beer-mugs"),
     key: "submission",
     align: "center",
