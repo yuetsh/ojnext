@@ -45,29 +45,29 @@ const menus = computed<MenuOption[]>(() => [
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "题库" }),
     key: "problem",
-    icon: renderIcon("streamline-emojis:jack-o-lantern"),
+    icon: renderIcon("streamline-emojis:santa-claus-2"),
   },
   {
     label: () =>
       h(RouterLink, { to: "/submission" }, { default: () => "提交" }),
     key: "submission",
-    icon: renderIcon("streamline-emojis:lemon"),
+    icon: renderIcon("streamline-emojis:christmas-tree"),
   },
   {
     label: () => h(RouterLink, { to: "/contest" }, { default: () => "比赛" }),
     key: "contest",
-    icon: renderIcon("streamline-emojis:direct-hit"),
+    icon: renderIcon("streamline-emojis:wrapped-gift-1"),
   },
   {
     label: () => h(RouterLink, { to: "/rank" }, { default: () => "排名" }),
     key: "rank",
-    icon: renderIcon("streamline-emojis:crown"),
+    icon: renderIcon("streamline-emojis:snowman"),
   },
   {
     label: () =>
       h(RouterLink, { to: "/announcement" }, { default: () => "公告" }),
     key: "announcement",
-    icon: renderIcon("streamline-emojis:police-car-light"),
+    icon: renderIcon("streamline-emojis:snowflake"),
   },
   {
     label: () => h(RouterLink, { to: "/admin" }, { default: () => "后台" }),
