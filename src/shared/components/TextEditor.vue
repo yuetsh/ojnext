@@ -1,5 +1,9 @@
 <script setup lang="ts">
-import { IDomEditor, IEditorConfig, IToolbarConfig } from "@wangeditor-next/editor"
+import {
+  IDomEditor,
+  IEditorConfig,
+  IToolbarConfig,
+} from "@wangeditor-next/editor"
 import { Editor, Toolbar } from "@wangeditor-next/editor-for-vue"
 import "@wangeditor-next/editor/dist/css/style.css"
 import { uploadImage } from "../../admin/api"

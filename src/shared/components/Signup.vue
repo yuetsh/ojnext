@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getCaptcha, login, signup } from "../api"
+import { getCaptcha, signup } from "../api"
 import { signupModal, toggleLogin, toggleSignup } from "../composables/modal"
 import { useUserStore } from "../store/user"
 

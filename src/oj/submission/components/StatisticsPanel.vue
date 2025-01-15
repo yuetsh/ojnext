@@ -171,6 +171,6 @@ function copyUnaccepted() {
   const prefix = `${grade}计算机${classname}班${query.problem}这道题有${listUnaccepted.value.length}人没有完成，分别是：`
   const names = listUnaccepted.value.map(removeClassname).join("、")
   const suffix = "。请以上同学尽快完成！"
-  message.value = prefix+names+suffix
+  message.value = prefix + names + suffix
 }
 </script>

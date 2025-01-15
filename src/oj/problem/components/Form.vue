@@ -43,7 +43,12 @@ function goSubmissions() {
 }
 
 function goEdit() {
-  const data = router.resolve("/admin/problem/edit/" + problem.value!.id)
+  let data = router.resolve("/admin/problem/edit/" + problem.value!.id)
+  if (problem.value!.contest) {
+    data = router.resolve(
+      `/admin/contest/${problem.value!.contest}/problem/edit/${problem.value!.id}`,
+    )
+  }
   window.open(data.href, "_blank")
 }
 

@@ -15,16 +15,17 @@ print（"China"）
 print（“China”）
 ```
 
-
 ## 第三：下面的写法是等价的
 
 ### 第一种：
+
 ```py
 a="China"
 print(a)
 ```
 
 ### 第二种：
+
 ```py
 print("China")
 ```

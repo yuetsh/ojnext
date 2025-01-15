@@ -98,7 +98,7 @@ onMounted(init)
     v-model:value="announcement.content"
     :min-height="200"
   />
-  <n-flex style="margin-bottom: 100px;" justify="end">
+  <n-flex style="margin-bottom: 100px" justify="end">
     <n-button type="primary" @click="submit">保存</n-button>
   </n-flex>
 </template>

@@ -133,9 +133,9 @@ export const DIFFICULTY = {
 }
 
 const cSource =
-  '#include<stdio.h>\r\n\r\nint main()\r\n{\r\n    \r\n    return 0;\r\n}'
+  "#include<stdio.h>\r\n\r\nint main()\r\n{\r\n    \r\n    return 0;\r\n}"
 const cppSource =
-  '#include<iostream>\r\n\r\nusing namespace std;\r\n\r\nint main()\r\n{\r\n    \r\n    return 0;\r\n}'
+  "#include<iostream>\r\n\r\nusing namespace std;\r\n\r\nint main()\r\n{\r\n    \r\n    return 0;\r\n}"
 const pythonSource = ""
 const javaSource =
   'public class Main {\r\n    public static void main(String[] args) {\r\n        System.out.println("黄岩一职");\r\n    }\r\n}'
