@@ -21,13 +21,9 @@
           >
             {{ item.submission.problem }}
           </n-button>
-          <n-tag
-            :bordered="false"
-            :type="JUDGE_STATUS[item.submission.result]['type']"
-          >
+          <n-text :type="JUDGE_STATUS[item.submission.result]['type']">
             {{ JUDGE_STATUS[item.submission.result]["name"] }}
-          </n-tag>
-          <div>复制代码</div>
+          </n-text>
           <Copy :value="item.submission.code" />
         </n-flex>
         <n-code

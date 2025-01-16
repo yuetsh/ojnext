@@ -54,16 +54,13 @@ async function saveProfile() {
           <n-button>上传头像</n-button>
         </n-upload>
       </n-form-item>
-      <n-form-item label="真名">
+      <!-- <n-form-item label="真名">
         <n-input v-model:value="userStore.profile.real_name" />
-      </n-form-item>
+      </n-form-item> -->
       <n-form-item label="个性签名">
         <n-input v-model:value="userStore.profile.mood" />
       </n-form-item>
-      <n-button
-        @click="saveProfile"
-        :disabled="!userStore.profile.mood && !userStore.profile.real_name"
-      >
+      <n-button @click="saveProfile">
         更改信息
       </n-button>
     </n-form>
