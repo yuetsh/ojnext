@@ -1,8 +1,8 @@
 import axios from "axios"
-import { decode, encode, protocol } from "./functions"
+import { decode, encode } from "./functions"
 import { Code } from "./types"
 
-const http = axios.create({ baseURL: `${protocol}://judge0api.xuyue.cc` })
+const http = axios.create({ baseURL: `https://judge0api.xuyue.cc` })
 
 export async function createTestSubmission(code: Code, input: string) {
   const encodedCode = encode(code.value)
