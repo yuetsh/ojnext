@@ -104,6 +104,7 @@ watch(
     <n-button @click="router.push('/admin/contest/create')">新比赛</n-button>
     <div>
       <n-input
+        style="width: 200px"
         clearable
         @change="listRanks"
         v-model:value="query.username"

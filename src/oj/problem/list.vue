@@ -225,7 +225,7 @@ function rowProps(row: ProblemFiltered) {
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item label="题目难度">
           <n-select
-            class="select"
+            style="width: 120px;"
             v-model:value="query.difficulty"
             :options="difficultyOptions"
           />
@@ -233,6 +233,7 @@ function rowProps(row: ProblemFiltered) {
         <n-form-item>
           <n-input
             clearable
+            class="input"
             v-model:value="query.keyword"
             placeholder="题号或者标题"
           />
@@ -290,5 +291,9 @@ function rowProps(row: ProblemFiltered) {
 
 .select {
   width: 120px;
+}
+
+.input {
+  width: 200px;
 }
 </style>

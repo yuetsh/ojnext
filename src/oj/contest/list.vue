@@ -158,6 +158,7 @@ function rowProps(row: Contest) {
         </n-form-item>
         <n-form-item>
           <n-input
+            class="input"
             clearable
             v-model:value="query.keyword"
             placeholder="比赛标题"
@@ -190,5 +191,9 @@ function rowProps(row: Contest) {
 <style scoped>
 .select {
   width: 120px;
+}
+
+.input {
+  width: 200px;
 }
 </style>

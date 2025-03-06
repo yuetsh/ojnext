@@ -81,7 +81,7 @@ function handleAll() {
         <n-switch v-model:value="needKs" />
         <span>前面带上 ks</span>
       </n-flex>
-      <n-input v-model:value="prefix" placeholder="班级号" />
+      <n-input style="width: 200px;" v-model:value="prefix" placeholder="班级号" />
       <n-input
         type="textarea"
         class="inputArea"

@@ -271,13 +271,14 @@ const columns = computed(() => {
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item>
           <n-input
+            class="input"
             clearable
             v-model:value="query.username"
             placeholder="用户"
           />
         </n-form-item>
         <n-form-item>
-          <n-input clearable v-model:value="query.problem" placeholder="题号" />
+          <n-input class="input" clearable v-model:value="query.problem" placeholder="题号" />
         </n-form-item>
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
@@ -324,6 +325,10 @@ const columns = computed(() => {
 <style scoped>
 .select {
   width: 120px;
+}
+
+.input {
+  width: 200px;
 }
 
 .code {
