@@ -134,4 +134,9 @@ html.dark .shiki span {
 .markdown-body img {
   max-width: 100%;
 }
+
+.markdown-body a {
+  color: #4493f8;
+  text-decoration: none;
+}
 </style>
