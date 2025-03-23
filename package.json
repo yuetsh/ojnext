@@ -14,7 +14,7 @@
     "@vueuse/core": "^13.0.0",
     "@wangeditor-next/editor": "^5.6.34",
     "@wangeditor-next/editor-for-vue": "^5.1.14",
-    "axios": "^1.8.2",
+    "axios": "^1.8.4",
     "canvas-confetti": "^1.9.3",
     "chart.js": "^4.4.8",
     "codemirror": "^6.0.1",
@@ -31,17 +31,17 @@
   },
   "devDependencies": {
     "@iconify/vue": "^4.3.0",
-    "@shikijs/markdown-it": "^3.1.0",
+    "@shikijs/markdown-it": "^3.2.1",
     "@types/canvas-confetti": "^1.9.0",
-    "@types/node": "^22.13.10",
-    "@vitejs/plugin-vue": "^5.2.1",
+    "@types/node": "^22.13.11",
+    "@vitejs/plugin-vue": "^5.2.3",
     "prettier": "^3.5.3",
     "prettier-plugin-organize-imports": "^4.1.0",
     "typescript": "^5.8.2",
     "unplugin-auto-import": "^19.1.1",
     "unplugin-vue-components": "^28.4.1",
     "unplugin-vue-markdown": "^28.3.1",
-    "vite": "^6.2.1",
+    "vite": "^6.2.2",
     "vue-tsc": "^2.2.8"
   }
 }
