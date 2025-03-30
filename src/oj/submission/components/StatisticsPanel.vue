@@ -5,6 +5,7 @@
         <n-input
           placeholder="用户（可选）"
           v-model:value="query.username"
+          style="width: 200px;"
           clearable
         />
       </n-form-item>
@@ -12,6 +13,7 @@
         <n-input
           placeholder="题号（可选）"
           v-model:value="query.problem"
+          style="width: 200px;"
           clearable
         />
       </n-form-item>
