@@ -287,7 +287,7 @@ const columns = computed(() => {
             搜索
           </n-button>
         </n-form-item>
-        <n-form-item v-if="userStore.isSuperAdmin">
+        <n-form-item v-if="userStore.isSuperAdmin && route.name === 'submissions'">
           <n-button @click="toggleStatisticPanel(true)">数据统计</n-button>
         </n-form-item>
         <n-form-item>
