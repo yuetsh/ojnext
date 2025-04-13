@@ -198,7 +198,7 @@ onMounted(() => {
         <n-switch v-model:value="websiteConfig.allow_register" />
       </n-flex>
       <n-flex align="center">
-        <span>显示全部题目的提交</span>
+        <span>显示所有提交</span>
         <n-switch v-model:value="websiteConfig.submission_list_show_all" />
       </n-flex>
     </n-flex>

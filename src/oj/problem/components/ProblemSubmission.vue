@@ -3,12 +3,14 @@ import { NButton } from "naive-ui"
 import { getSubmissions } from "~/oj/api"
 import Pagination from "~/shared/components/Pagination.vue"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
+import { useConfigStore } from "~/shared/store/config"
 import { useUserStore } from "~/shared/store/user"
 import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
 import { parseTime } from "~/utils/functions"
 import { renderTableTitle } from "~/utils/renders"
 import { Submission } from "~/utils/types"
 
+const configStore = useConfigStore()
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
@@ -67,6 +69,18 @@ const query = reactive({
   page: 1,
 })
 
+const showList = computed(() => {
+  if (!userStore.isAuthed) return false
+  else if (userStore.isSuperAdmin) return true
+  else return configStore.config.submission_list_show_all
+})
+
+const errorMsg = computed(() => {
+  if (!userStore.isAuthed) return "请先登录"
+  else if (!configStore.config.submission_list_show_all) return "不让看了"
+  else return ""
+})
+
 async function listSubmissions() {
   const offset = query.limit * (query.page - 1)
   const res = await getSubmissions({
@@ -83,17 +97,13 @@ onMounted(listSubmissions)
 watch(query, listSubmissions)
 </script>
 <template>
-  <n-data-table
-    v-if="userStore.isAuthed"
-    striped
-    :columns="columns"
-    :data="submissions"
-  />
-  <Pagination
-    v-if="userStore.isAuthed"
-    :total="total"
-    v-model:limit="query.limit"
-    v-model:page="query.page"
-  />
-  <n-alert type="error" v-if="!userStore.isAuthed" title="请先登录" />
+  <n-alert type="error" v-if="!showList" :title="errorMsg" />
+  <template v-else>
+    <n-data-table striped :columns="columns" :data="submissions" />
+    <Pagination
+      :total="total"
+      v-model:limit="query.limit"
+      v-model:page="query.page"
+    />
+  </template>
 </template>
