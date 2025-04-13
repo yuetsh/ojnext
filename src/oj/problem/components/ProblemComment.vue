@@ -85,16 +85,16 @@
           bordered
           label-placement="left"
         >
-          <n-descriptions-item label="评论总数">
+          <n-descriptions-item label="评论">
             {{ count }}
           </n-descriptions-item>
-          <n-descriptions-item label="描述评分">
+          <n-descriptions-item label="描述">
             {{ rating.description }}
           </n-descriptions-item>
-          <n-descriptions-item label="难度评分">
+          <n-descriptions-item label="难度">
             {{ rating.difficulty }}
           </n-descriptions-item>
-          <n-descriptions-item label="综合评分">
+          <n-descriptions-item label="综合">
             {{ rating.comprehensive }}
           </n-descriptions-item>
         </n-descriptions>
