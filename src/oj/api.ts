@@ -70,6 +70,10 @@ export function getProblem(problemID: string, contestID: string) {
   })
 }
 
+export function getProblemBeatRate(problemID: number) {
+  return http.get("problem/beat_count", { params: { problem_id: problemID } })
+}
+
 export function getSubmission(id: string) {
   return http.get<Submission>("submission", {
     params: { id },
@@ -219,4 +223,8 @@ export function getCommentStatistics(problemID: number) {
 // TODO: 这个API有问题
 export function refreshUserProblemDisplayIds() {
   return http.get("profile/fresh_display_id")
+}
+
+export function getMetrics(userid: number) {
+  return http.get("metrics", { params: { userid } })
 }

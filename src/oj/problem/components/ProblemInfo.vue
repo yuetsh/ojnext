@@ -1,9 +1,13 @@
 <script setup lang="ts">
+import { Icon } from "@iconify/vue"
 import { problem } from "oj/composables/problem"
 import { DIFFICULTY, JUDGE_STATUS } from "utils/constants"
 import { getACRate, getTagColor, parseTime } from "utils/functions"
 import { Pie } from "vue-chartjs"
+import { getProblemBeatRate } from "~/oj/api"
 import { isDesktop } from "~/shared/composables/breakpoints"
+
+const beatRate = ref("0%")
 
 const data = computed(() => {
   const status = problem.value!.statistic_info
@@ -22,11 +26,46 @@ const data = computed(() => {
   }
 })
 
+const numbers = computed(() => {
+  return [
+    {
+      icon: "streamline-emojis:scroll",
+      title: problem.value?.submission_number ?? 0,
+      content: "总提交",
+    },
+    {
+      icon: "streamline-emojis:woman-raising-hand-2",
+      title: problem.value?.accepted_number ?? 0,
+      content: "通过数",
+    },
+    {
+      icon: "emojione:chart-increasing",
+      title: getACRate(
+        problem.value?.accepted_number ?? 0,
+        problem.value?.submission_number ?? 0,
+      ),
+      content: "通过率",
+    },
+    {
+      icon: "streamline-emojis:sparkles",
+      title: beatRate.value,
+      content: "击败用户",
+    },
+  ]
+})
+
 const options = {
   plugins: {
     title: { text: "提交结果的比例", display: true, font: { size: 20 } },
   },
 }
+
+async function getBeatRate() {
+  const res = await getProblemBeatRate(problem.value!.id)
+  beatRate.value = res.data
+}
+
+onMounted(getBeatRate)
 </script>
 
 <template>
@@ -50,34 +89,45 @@ const options = {
         {{ DIFFICULTY[problem.difficulty] }}
       </n-tag>
     </n-descriptions-item>
-    <n-descriptions-item label="时间限制">
-      {{ problem.time_limit }}毫秒
-    </n-descriptions-item>
-    <n-descriptions-item label="内存限制">
-      {{ problem.memory_limit }}MB
-    </n-descriptions-item>
-    <n-descriptions-item label="提交正确">
-      {{ problem.accepted_number }}次
-    </n-descriptions-item>
-    <n-descriptions-item label="提交错误">
-      {{ problem.submission_number - problem.accepted_number }}次
-    </n-descriptions-item>
-    <n-descriptions-item label="正确率">
-      {{ getACRate(problem.accepted_number, problem.submission_number) }}
-    </n-descriptions-item>
-    <n-descriptions-item :span="3" label="标签">
+    <n-descriptions-item :span="2" label="标签">
       <n-flex>
-        <n-tag size="small" type="info" v-for="tag in problem.tags" :key="tag">
+        <n-tag type="info" v-for="tag in problem.tags" :key="tag">
           {{ tag }}
         </n-tag>
       </n-flex>
     </n-descriptions-item>
   </n-descriptions>
+  <n-grid :cols="isDesktop ? 4 : 2" :x-gap="10" :y-gap="10" class="cards">
+    <n-gi v-for="item in numbers" :key="item.title">
+      <n-card hoverable>
+        <n-flex align="center">
+          <Icon :icon="item.icon" width="40" />
+          <div>
+            <n-h2 class="number">{{ item.title }}</n-h2>
+            <n-h4 class="number-label">{{ item.content }}</n-h4>
+          </div>
+        </n-flex>
+      </n-card>
+    </n-gi>
+  </n-grid>
   <div class="pie" v-if="problem && problem.submission_number > 0">
     <Pie :data="data" :options="options" />
   </div>
 </template>
 <style scoped>
+.cards {
+  margin-top: 24px;
+}
+
+.number {
+  margin-bottom: 0;
+  font-weight: bold;
+}
+
+.number-label {
+  margin: 0;
+}
+
 .pie {
   width: 100%;
   max-width: 500px;

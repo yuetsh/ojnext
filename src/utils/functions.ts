@@ -71,6 +71,27 @@ export function duration(
   return result
 }
 
+export function durationToDays(
+  start: Date | string,
+  end: Date | string,
+): string {
+  const duration = intervalToDuration({
+    start: getTime(parseISO(start.toString())),
+    end: getTime(parseISO(end.toString())),
+  })
+  let result = ""
+  if (duration.years) {
+    result += duration.years + "年"
+  }
+  if (duration.months) {
+    result += duration.months + "月"
+  }
+  if (duration.days) {
+    result += duration.days + "天"
+  }
+  return result
+}
+
 export function secondsToDuration(seconds: number): string {
   const duration = intervalToDuration({
     start: 0,

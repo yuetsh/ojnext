@@ -1,11 +1,20 @@
 <script setup lang="ts">
+import { Icon } from "@iconify/vue"
+import { NH2, NH3 } from "naive-ui"
 import { getProfile } from "~/shared/api"
+import { isDesktop } from "~/shared/composables/breakpoints"
+import { durationToDays, parseTime } from "~/utils/functions"
 import { Profile } from "~/utils/types"
+import { getMetrics } from "../api"
 
 const route = useRoute()
 const router = useRouter()
 const profile = ref<Profile | null>(null)
 const problems = ref<string[]>([])
+const firstSubmissionAt = ref("")
+const latestSubmissionAt = ref("")
+const toLatestAt = ref("")
+const learnDuration = ref("")
 const [loading, toggle] = useToggle()
 
 async function init() {
@@ -25,10 +34,59 @@ async function init() {
     }
     ac.sort()
     problems.value = ac
+    if (profile.value.submission_number > 0) {
+      const metricsRes = await getMetrics(profile.value.user.id)
+      firstSubmissionAt.value = parseTime(metricsRes.data.first)
+      latestSubmissionAt.value = parseTime(metricsRes.data.latest)
+      toLatestAt.value = durationToDays(
+        metricsRes.data.latest,
+        metricsRes.data.now,
+      )
+      learnDuration.value = durationToDays(
+        metricsRes.data.first,
+        metricsRes.data.latest,
+      )
+    }
   } finally {
     toggle(false)
   }
 }
+
+const metrics = computed(() => {
+  if (loading.value) return []
+  return [
+    {
+      icon: "fluent-emoji:face-with-peeking-eye",
+      title: learnDuration.value ?? "1天",
+      content: "总共学习天数",
+    },
+    {
+      icon: "fluent-emoji:cheese-wedge",
+      title: toLatestAt.value,
+      content: "距离上次提交",
+    },
+    {
+      icon: "fluent-emoji:dog-face",
+      title: latestSubmissionAt.value,
+      content: "最新一次提交时间",
+    },
+    {
+      icon: "fluent-emoji:cat-with-wry-smile",
+      title: firstSubmissionAt.value,
+      content: "第一次提交时间",
+    },
+    {
+      icon: "fluent-emoji:candy",
+      title: profile.value?.accepted_number ?? 0,
+      content: "已解决的题目数量",
+    },
+    {
+      icon: "fluent-emoji:thinking-face",
+      title: profile.value?.submission_number ?? 0,
+      content: "总提交数量",
+    },
+  ]
+})
 
 onMounted(init)
 </script>
@@ -44,20 +102,31 @@ onMounted(init)
     <h2>{{ profile.user.username }}</h2>
     <p class="desc">{{ profile.mood }}</p>
   </n-flex>
-  <n-descriptions
-    v-if="!loading && profile"
+
+  <n-grid
+    v-if="profile && profile.submission_number > 0"
     class="wrapper"
-    bordered
-    :column="2"
-    label-style="width: 50%"
+    :cols="2"
+    :x-gap="10"
+    :y-gap="10"
   >
-    <n-descriptions-item label="已解决的题目数量">
-      {{ profile.accepted_number }}
-    </n-descriptions-item>
-    <n-descriptions-item label="总提交数">
-      {{ profile.submission_number }}
-    </n-descriptions-item>
-    <n-descriptions-item v-if="problems.length" label="已解决的题目" :span="2">
+    <n-gi v-for="item in metrics" :key="item.title">
+      <n-card hoverable>
+        <n-flex align="center">
+          <Icon v-if="isDesktop" :icon="item.icon" width="50" />
+          <div>
+            <Component :is="isDesktop ? NH2 : NH3" class="number">
+              {{ item.title }}
+            </Component>
+            <n-h4 class="number-label">{{ item.content }}</n-h4>
+          </div>
+        </n-flex>
+      </n-card>
+    </n-gi>
+  </n-grid>
+
+  <n-descriptions v-if="!loading && profile" class="wrapper" bordered>
+    <n-descriptions-item v-if="problems.length" label="已解决的题目">
       <n-flex>
         <n-button
           v-for="id in problems"
@@ -79,6 +148,15 @@ onMounted(init)
 .wrapper {
   max-width: 610px;
   margin: 16px auto 0;
+}
+
+.number {
+  margin-bottom: 0;
+  font-weight: bold;
+}
+
+.number-label {
+  margin: 0;
 }
 
 h2 {
