@@ -57,7 +57,7 @@ const metrics = computed(() => {
   return [
     {
       icon: "fluent-emoji:face-with-peeking-eye",
-      title: learnDuration.value ?? "1天",
+      title: learnDuration.value,
       content: "总共学习天数",
     },
     {

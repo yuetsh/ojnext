@@ -89,7 +89,7 @@ export function durationToDays(
   if (duration.days) {
     result += duration.days + "天"
   }
-  return result
+  return !!result ? result :"一天以内" 
 }
 
 export function secondsToDuration(seconds: number): string {
