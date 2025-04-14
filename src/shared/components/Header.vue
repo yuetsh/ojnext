@@ -129,7 +129,7 @@ function goHome() {
     <n-flex align="center">
       <n-flex align="center" class="title" @click="goHome">
         <Icon icon="streamline-emojis:dog" :height="30"></Icon>
-        <div v-if="isDesktop">{{ configStore.config?.website_name }}</div>
+        <div>{{ configStore.config?.website_name }}</div>
       </n-flex>
       <div>
         <n-menu
@@ -144,7 +144,7 @@ function goHome() {
       <n-dropdown v-if="isMobile" :options="menus" size="large">
         <n-button>
           <Icon icon="twemoji:artist-palette" height="20"></Icon>
-          <span style="padding-left: 8px"> 菜单 </span>
+          <span style="padding-left: 8px">菜单</span>
         </n-button>
       </n-dropdown>
       <n-button
