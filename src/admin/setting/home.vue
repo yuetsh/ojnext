@@ -90,15 +90,15 @@ watch(
     listRanks()
   },
 )
-watchDebounced(
+
+watch(
   () => query.classroom,
-  () => {
+  (v) => {
     query.page = 1
-    listRanks()
-  },
-  {
-    debounce: 500,
-    maxWait: 1000,
+    if (!v) {
+      data.value = []
+      total.value = 0
+    }
   },
 )
 
@@ -135,7 +135,6 @@ watch(showModal, (v) => {
       <n-input
         style="width: 200px"
         clearable
-        @change="listRanks"
         v-model:value="query.classroom"
         placeholder="班级前缀"
       />
