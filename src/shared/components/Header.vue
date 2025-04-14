@@ -39,41 +39,41 @@ const menus = computed<MenuOption[]>(() => [
   {
     label: () => h(RouterLink, { to: "/learn/01" }, { default: () => "自学" }),
     key: "learn",
-    icon: renderIcon("devicon:python"),
+    icon: renderIcon("streamline-emojis:snake"),
     show: isDesktop.value,
   },
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "题库" }),
     key: "problem",
-    icon: renderIcon("streamline-emojis:santa-claus-2"),
+    icon: renderIcon("streamline-emojis:blossom"),
   },
   {
     label: () =>
       h(RouterLink, { to: "/submission" }, { default: () => "提交" }),
     key: "submission",
-    icon: renderIcon("streamline-emojis:christmas-tree"),
+    icon: renderIcon("streamline-emojis:bouquet"),
   },
   {
     label: () => h(RouterLink, { to: "/contest" }, { default: () => "比赛" }),
     key: "contest",
-    icon: renderIcon("streamline-emojis:wrapped-gift-1"),
+    icon: renderIcon("streamline-emojis:cherries"),
   },
   {
     label: () => h(RouterLink, { to: "/rank" }, { default: () => "排名" }),
     key: "rank",
-    icon: renderIcon("streamline-emojis:snowman"),
+    icon: renderIcon("streamline-emojis:hibiscus"),
   },
   {
     label: () =>
       h(RouterLink, { to: "/announcement" }, { default: () => "公告" }),
     key: "announcement",
-    icon: renderIcon("streamline-emojis:snowflake"),
+    icon: renderIcon("streamline-emojis:palm-tree"),
   },
   {
     label: () => h(RouterLink, { to: "/admin" }, { default: () => "后台" }),
     show: userStore.isAdminRole,
     key: "admin",
-    icon: renderIcon("streamline-emojis:unicorn-face"),
+    icon: renderIcon("streamline-emojis:ghost"),
   },
 ])
 

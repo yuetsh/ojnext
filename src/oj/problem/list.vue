@@ -151,52 +151,49 @@ onMounted(() => {
 
 const baseColumns: DataTableColumn<ProblemFiltered>[] = [
   {
-    title: renderTableTitle("状态", "streamline-emojis:musical-note"),
+    title: renderTableTitle("状态", "streamline-emojis:high-voltage"),
     key: "status",
     width: 80,
     align: "center",
     render: (row) => h(ProblemStatus, { status: row.status }),
   },
   {
-    title: renderTableTitle("编号", "fluent-emoji-flat:input-numbers"),
+    title: renderTableTitle("编号", "streamline-emojis:game-dice"),
     key: "_id",
     width: 100,
   },
   {
-    title: renderTableTitle("题目", "streamline-emojis:rice-ball"),
+    title: renderTableTitle("题目", "streamline-emojis:watermelon-2"),
     key: "title",
     minWidth: 200,
   },
   {
-    title: renderTableTitle("难度", "streamline-emojis:mushroom"),
+    title: renderTableTitle("难度", "streamline-emojis:lady-beetle"),
     key: "difficulty",
     width: 100,
     render: (row) =>
       h(NTag, { type: getTagColor(row.difficulty) }, () => row.difficulty),
   },
   {
-    title: renderTableTitle("标签", "fluent-emoji-flat:keycap-hashtag"),
+    title: renderTableTitle("标签", "streamline-emojis:paperclip"),
     key: "tags",
     width: 260,
     render: (row) =>
       h(NSpace, () => row.tags.map((t) => h(NTag, { key: t }, () => t))),
   },
   {
-    title: renderTableTitle(
-      "出题者",
-      "streamline-emojis:smiling-face-with-sunglasses",
-    ),
+    title: renderTableTitle("出题者", "streamline-emojis:man-raising-hand-2"),
     key: "author",
     width: 130,
   },
   {
-    title: renderTableTitle("提交数", "streamline-emojis:clinking-beer-mugs"),
+    title: renderTableTitle("提交数", "streamline-emojis:writing-hand-2"),
     key: "submission",
     align: "center",
     width: 100,
   },
   {
-    title: renderTableTitle("通过率", "streamline-emojis:clapping-hands-1"),
+    title: renderTableTitle("通过率", "streamline-emojis:victory-hand-2"),
     key: "rate",
     width: 100,
     align: "center",
@@ -225,7 +222,7 @@ function rowProps(row: ProblemFiltered) {
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item label="题目难度">
           <n-select
-            style="width: 120px;"
+            style="width: 120px"
             v-model:value="query.difficulty"
             :options="difficultyOptions"
           />
