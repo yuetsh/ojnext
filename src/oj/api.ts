@@ -89,6 +89,10 @@ export function getSubmissions(params: SubmissionListPayload) {
   return http.get(endpoint, { params })
 }
 
+export function getTodaySubmissionCount() {
+  return http.get("submissions/today_count")
+}
+
 export function adminRejudge(id: string) {
   return http.get("admin/submission/rejudge", {
     params: { id },

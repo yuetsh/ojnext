@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { NButton } from "naive-ui"
-import { adminRejudge, getSubmissions } from "oj/api"
+import { NButton, NH2, NText } from "naive-ui"
+import { adminRejudge, getSubmissions, getTodaySubmissionCount } from "oj/api"
 import {
   filterEmptyValue,
   parseTime,
@@ -35,6 +35,7 @@ const message = useMessage()
 
 const submissions = ref([])
 const total = ref(0)
+const todayCount = ref(0)
 const query = reactive<Query>({
   result: <string>route.query.result ?? "",
   page: parseInt(<string>route.query.page) || 1,
@@ -76,7 +77,17 @@ async function listSubmissions() {
   total.value = res.data.total
 }
 
-onMounted(listSubmissions)
+async function getTodayCount() {
+  const res = await getTodaySubmissionCount()
+  todayCount.value = res.data
+}
+
+onMounted(() => {
+  listSubmissions()
+  if (route.name === "submissions") {
+    getTodayCount()
+  }
+})
 
 function routerPush() {
   const newQuery = {
@@ -278,7 +289,12 @@ const columns = computed(() => {
           />
         </n-form-item>
         <n-form-item>
-          <n-input class="input" clearable v-model:value="query.problem" placeholder="题号" />
+          <n-input
+            class="input"
+            clearable
+            v-model:value="query.problem"
+            placeholder="题号"
+          />
         </n-form-item>
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
@@ -287,11 +303,18 @@ const columns = computed(() => {
             搜索
           </n-button>
         </n-form-item>
-        <n-form-item v-if="userStore.isSuperAdmin && route.name === 'submissions'">
+        <n-form-item
+          v-if="userStore.isSuperAdmin && route.name === 'submissions'"
+        >
           <n-button @click="toggleStatisticPanel(true)">数据统计</n-button>
         </n-form-item>
         <n-form-item>
           <n-button @click="clear" quaternary>重置</n-button>
+        </n-form-item>
+        <n-form-item v-if="todayCount>0">
+          <component :is="isDesktop ? NH2 : NText" class="todayCount">
+            <n-gradient-text>今日提交数：{{ todayCount }}</n-gradient-text>
+          </component>
         </n-form-item>
       </n-form>
     </n-space>
@@ -334,5 +357,9 @@ const columns = computed(() => {
 .code {
   font-size: 20px;
   overflow: auto;
+}
+
+.todayCount {
+  margin: 0;
 }
 </style>
