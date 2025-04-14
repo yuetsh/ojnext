@@ -12,6 +12,7 @@ const submissionCount = ref(0)
 const contestCount = ref(0)
 const userStore = useUserStore()
 const router = useRouter()
+const message = useMessage()
 
 const showModal = ref(false)
 const luckyGuy = ref("")
@@ -73,13 +74,16 @@ async function listRanks() {
 
 async function getRandom() {
   const res = await randomUser10(query.classroom)
+  if (!res.data.length) return false
   const name = res.data[res.data.length - 1]
   luckyGuy.value = name.split(query.classroom)[1]
+  return true
 }
 
 async function getRandomModal() {
-  showModal.value = true
-  getRandom()
+  const ok = await getRandom()
+  if (ok) showModal.value = true
+  else message.error("没有学生")
 }
 
 watch(() => query.page, listRanks)
