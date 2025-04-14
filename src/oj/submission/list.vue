@@ -311,7 +311,7 @@ const columns = computed(() => {
         <n-form-item>
           <n-button @click="clear" quaternary>重置</n-button>
         </n-form-item>
-        <n-form-item v-if="todayCount>0">
+        <n-form-item v-if="todayCount > 0">
           <component :is="isDesktop ? NH2 : NText" class="todayCount">
             <n-gradient-text>今日提交数：{{ todayCount }}</n-gradient-text>
           </component>

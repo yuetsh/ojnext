@@ -16,6 +16,10 @@ export function getBaseInfo() {
   return http.get("admin/dashboard_info")
 }
 
+export function randomUser10(classroom: string) {
+  return http.get("admin/random_user", { params: { classroom } })
+}
+
 export async function getProblemList(
   offset = 0,
   limit = 10,

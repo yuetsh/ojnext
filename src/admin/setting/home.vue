@@ -5,7 +5,7 @@ import Pagination from "~/shared/components/Pagination.vue"
 import { useUserStore } from "~/shared/store/user"
 import { getACRate } from "~/utils/functions"
 import { Rank } from "~/utils/types"
-import { getBaseInfo } from "../api"
+import { getBaseInfo, randomUser10 } from "../api"
 
 const userCount = ref(0)
 const submissionCount = ref(0)
@@ -13,12 +13,14 @@ const contestCount = ref(0)
 const userStore = useUserStore()
 const router = useRouter()
 
+const showModal = ref(false)
+const luckyGuy = ref("")
 const data = ref<Rank[]>([])
 const total = ref(0)
 const query = reactive({
   limit: 10,
   page: 1,
-  username: "",
+  classroom: "",
 })
 
 const columns: DataTableColumn<Rank>[] = [
@@ -44,6 +46,7 @@ const columns: DataTableColumn<Rank>[] = [
         () => row.user.username,
       ),
   },
+  { title: "个性签名", key: "mood" },
   { title: "已解决", key: "accepted_number", width: 100 },
   { title: "提交数", key: "submission_number", width: 100 },
   {
@@ -63,9 +66,20 @@ onMounted(async () => {
 
 async function listRanks() {
   const offset = (query.page - 1) * query.limit
-  const res = await getRank(offset, query.limit, 0, query.username)
+  const res = await getRank(offset, query.limit, 0, query.classroom)
   data.value = res.data.results
   total.value = res.data.total
+}
+
+async function getRandom() {
+  const res = await randomUser10(query.classroom)
+  const name = res.data[res.data.length - 1]
+  luckyGuy.value = name.split(query.classroom)[1]
+}
+
+async function getRandomModal() {
+  showModal.value = true
+  getRandom()
 }
 
 watch(() => query.page, listRanks)
@@ -76,6 +90,21 @@ watch(
     listRanks()
   },
 )
+watchDebounced(
+  () => query.classroom,
+  () => {
+    query.page = 1
+    listRanks()
+  },
+  {
+    debounce: 500,
+    maxWait: 1000,
+  },
+)
+
+watch(showModal, (v) => {
+  if (!v) luckyGuy.value = ""
+})
 </script>
 
 <template>
@@ -107,11 +136,12 @@ watch(
         style="width: 200px"
         clearable
         @change="listRanks"
-        v-model:value="query.username"
+        v-model:value="query.classroom"
         placeholder="班级前缀"
       />
     </div>
     <n-button @click="listRanks">用户排名</n-button>
+    <n-button @click="getRandomModal" v-if="query.classroom">随机抽签</n-button>
     <Pagination
       class="pagination"
       :total="total"
@@ -120,6 +150,17 @@ watch(
     />
   </n-flex>
   <n-data-table v-if="data.length" striped :data="data" :columns="columns" />
+  <n-modal
+    preset="card"
+    title="猜猜看幸运儿是谁？"
+    v-model:show="showModal"
+    style="width: 400px"
+  >
+    <n-flex vertical justify="center" align="center">
+      <n-h1 class="lucky">{{ luckyGuy }}</n-h1>
+      <n-button block @click="getRandom">再来一次</n-button>
+    </n-flex>
+  </n-modal>
 </template>
 
 <style scoped>
@@ -134,5 +175,9 @@ watch(
 
 .pagination {
   margin: 0;
+}
+
+.lucky {
+  height: 48px;
 }
 </style>
