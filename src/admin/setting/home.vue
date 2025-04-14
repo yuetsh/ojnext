@@ -74,16 +74,17 @@ async function listRanks() {
 
 async function getRandom() {
   const res = await randomUser10(query.classroom)
-  if (!res.data.length) return false
   const name = res.data[res.data.length - 1]
   luckyGuy.value = name.split(query.classroom)[1]
-  return true
 }
 
 async function getRandomModal() {
-  const ok = await getRandom()
-  if (ok) showModal.value = true
-  else message.error("没有学生")
+  try {
+    await getRandom()
+    showModal.value = true
+  } catch (error) {
+    message.error("没有学生")
+  }
 }
 
 watch(() => query.page, listRanks)
