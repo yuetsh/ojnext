@@ -16,6 +16,7 @@ const query = reactive({
   limit: 10,
   page: 1,
   keyword: "",
+  admin: false,
 })
 const [create, toggleCreate] = useToggle(false)
 const password = ref("")
@@ -71,7 +72,7 @@ const options: SelectOption[] = [
 
 async function listUsers() {
   const offset = (query.page - 1) * query.limit
-  const res = await getUserList(offset, query.limit, query.keyword)
+  const res = await getUserList(offset, query.limit, query.admin, query.keyword)
   total.value = res.data.total
   users.value = res.data.results
 }
@@ -170,9 +171,13 @@ watch(query, listUsers, { deep: true })
         </template>
         确定删除选中的用户吗？删除后无法恢复！
       </n-popconfirm>
-      <div>
-        <n-input placeholder="请输入关键字搜索" v-model:value="query.keyword" />
-      </div>
+      <n-flex align="center">
+        <span>超管出列</span>
+        <n-switch v-model:value="query.admin" />
+        <div>
+          <n-input style="width: 200px" v-model:value="query.keyword" />
+        </div>
+      </n-flex>
     </n-flex>
   </n-flex>
   <n-data-table

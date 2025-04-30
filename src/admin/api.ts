@@ -80,9 +80,14 @@ export function getContestProblem(id: number) {
 }
 
 // 用户列表
-export function getUserList(offset = 0, limit = 10, keyword: string) {
+export function getUserList(
+  offset = 0,
+  limit = 10,
+  admin = false,
+  keyword: string,
+) {
   return http.get("admin/user", {
-    params: { paging: true, offset, limit, keyword },
+    params: { paging: true, offset, limit, keyword, admin },
   })
 }
 
