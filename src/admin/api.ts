@@ -83,7 +83,7 @@ export function getContestProblem(id: number) {
 export function getUserList(
   offset = 0,
   limit = 10,
-  admin = false,
+  admin = "0",
   keyword: string,
 ) {
   return http.get("admin/user", {

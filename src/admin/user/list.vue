@@ -72,7 +72,8 @@ const options: SelectOption[] = [
 
 async function listUsers() {
   const offset = (query.page - 1) * query.limit
-  const res = await getUserList(offset, query.limit, query.admin, query.keyword)
+  const isAdmin = query.admin ? "1" : "0"
+  const res = await getUserList(offset, query.limit, isAdmin, query.keyword)
   total.value = res.data.total
   users.value = res.data.results
 }
