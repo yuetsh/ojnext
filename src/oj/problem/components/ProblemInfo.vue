@@ -32,12 +32,14 @@ const numbers = computed(() => {
       icon: "streamline-emojis:scroll",
       title: problem.value?.submission_number ?? 0,
       content: "总提交",
+      int: true,
       suffix: "",
     },
     {
       icon: "streamline-emojis:woman-raising-hand-2",
       title: problem.value?.accepted_number ?? 0,
       content: "通过数",
+      int: true,
       suffix: "",
     },
     {
@@ -47,12 +49,14 @@ const numbers = computed(() => {
         problem.value?.submission_number ?? 0,
       ),
       content: "通过率",
+      int: false,
       suffix: "%",
     },
     {
       icon: "streamline-emojis:sparkles",
-      title: Number(beatRate.value),
+      title: parseFloat(beatRate.value),
       content: "你击败的用户",
+      int: false,
       suffix: "%",
     },
   ]
@@ -108,7 +112,10 @@ onMounted(getBeatRate)
           <Icon :icon="item.icon" width="40" />
           <div>
             <n-h2 class="number">
-              <n-number-animation :to="item.title" />
+              <n-number-animation
+                :to="item.title"
+                :precision="item.int ? 0 : 2"
+              />
               <span v-if="item.suffix">{{ item.suffix }}</span>
             </n-h2>
             <n-h4 class="number-label">{{ item.content }}</n-h4>

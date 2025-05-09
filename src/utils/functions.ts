@@ -18,7 +18,7 @@ export function getACRateNumber(acCount: number, totalCount: number) {
     if (acCount >= totalCount) rate = "100.00"
     else rate = ((acCount / totalCount) * 100).toFixed(2)
   }
-  return Number(rate)
+  return parseFloat(rate)
 }
 
 export function filterEmptyValue(object: any) {
