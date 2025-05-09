@@ -37,10 +37,10 @@ const query = reactive({
 })
 
 const columns: DataTableColumn<AdminProblemFiltered>[] = [
-  { title: "ID", key: "id", width: 80 },
+  { title: "ID", key: "id", width: 100 },
   { title: "显示编号", key: "_id", width: 100 },
   { title: "标题", key: "title", minWidth: 300 },
-  { title: "出题人", key: "username", width: 120 },
+  { title: "出题人", key: "username", width: 160 },
   {
     title: "创建时间",
     key: "create_time",
