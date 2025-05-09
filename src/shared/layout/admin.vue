@@ -9,109 +9,46 @@ const router = useRouter()
 const userStore = useUserStore()
 const options: MenuOption[] = [
   {
-    label: () => h(RouterLink, { to: "/" }, { default: () => "返回 OJ" }),
+    label: () => h(RouterLink, { to: "/" }, { default: () => "前台" }),
     key: "return to OJ",
   },
   {
-    label: () => h(RouterLink, { to: "/admin" }, { default: () => "首页" }),
+    label: () => h(RouterLink, { to: "/admin" }, { default: () => "管理" }),
     key: "admin home",
   },
-  { label: "题目", key: "problem", disabled: true },
   {
     label: () =>
-      h(
-        RouterLink,
-        { to: "/admin/problem/list" },
-        { default: () => "题目列表" },
-      ),
+      h(RouterLink, { to: "/admin/config" }, { default: () => "设置" }),
+    key: "admin config",
+  },
+  {
+    label: () =>
+      h(RouterLink, { to: "/admin/problem/list" }, { default: () => "题目" }),
     key: "admin problem list",
   },
   {
     label: () =>
-      h(
-        RouterLink,
-        { to: "/admin/problem/create" },
-        { default: () => "新建题目" },
-      ),
-    key: "admin problem create",
-  },
-  { label: "交流", key: "communication", disabled: true },
-  {
-    label: () =>
-      h(
-        RouterLink,
-        { to: "/admin/comment/list" },
-        { default: () => "评论列表" },
-      ),
+      h(RouterLink, { to: "/admin/comment/list" }, { default: () => "评论" }),
     key: "admin comment list",
   },
   {
     label: () =>
-      h(
-        RouterLink,
-        { to: "/admin/message/list" },
-        { default: () => "消息列表" },
-      ),
-    key: "admin message list",
-  },
-  { label: "用户", key: "user", disabled: true },
-  {
-    label: () =>
-      h(RouterLink, { to: "/admin/user/list" }, { default: () => "用户列表" }),
+      h(RouterLink, { to: "/admin/user/list" }, { default: () => "用户" }),
     key: "admin user list",
   },
   {
     label: () =>
-      h(
-        RouterLink,
-        { to: "/admin/user/generate" },
-        { default: () => "批量生成" },
-      ),
-    key: "admin user generate",
-  },
-  { label: "比赛", key: "contest", disabled: true },
-  {
-    label: () =>
-      h(
-        RouterLink,
-        { to: "/admin/contest/list" },
-        { default: () => "比赛列表" },
-      ),
+      h(RouterLink, { to: "/admin/contest/list" }, { default: () => "比赛" }),
     key: "admin contest list",
   },
   {
     label: () =>
       h(
         RouterLink,
-        { to: "/admin/contest/create" },
-        { default: () => "新建比赛" },
-      ),
-    key: "admin contest create",
-  },
-  { label: "公告", key: "announcement", disabled: true },
-  {
-    label: () =>
-      h(
-        RouterLink,
         { to: "/admin/announcement/list" },
-        { default: () => "公告列表" },
+        { default: () => "公告" },
       ),
     key: "admin announcement list",
-  },
-  {
-    label: () =>
-      h(
-        RouterLink,
-        { to: "/admin/announcement/create" },
-        { default: () => "新建公告" },
-      ),
-    key: "admin announcement create",
-  },
-  { label: "其他", key: "other", disabled: true },
-  {
-    label: () =>
-      h(RouterLink, { to: "/admin/config" }, { default: () => "系统配置" }),
-    key: "admin config",
   },
 ]
 
@@ -131,7 +68,7 @@ onMounted(async () => {
 
 <template>
   <n-layout has-sider position="absolute">
-    <n-layout-sider width="140" bordered :native-scrollbar="false">
+    <n-layout-sider width="100" bordered :native-scrollbar="false">
       <n-menu :options="options" :value="active" />
     </n-layout-sider>
     <n-layout-content content-style="padding: 16px; min-width: 600px">

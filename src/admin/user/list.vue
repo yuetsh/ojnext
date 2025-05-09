@@ -160,7 +160,10 @@ watch(query, listUsers, { deep: true })
   <n-flex class="titleWrapper" justify="space-between">
     <n-flex>
       <h2 class="title">用户列表</h2>
-      <n-button type="primary" @click="createNewUser">新建用户</n-button>
+      <n-button type="primary" @click="createNewUser">新建</n-button>
+      <n-button @click="$router.push({ name: 'admin user generate' })">
+        导入
+      </n-button>
     </n-flex>
     <n-flex>
       <n-popconfirm

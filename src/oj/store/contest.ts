@@ -20,8 +20,9 @@ export const useContestStore = defineStore("contest", () => {
   let timer = 0
 
   const contestStatus = computed<ContestStatus>(() => {
-    const start = getTime(parseISO(contest.value!.start_time.toString()))
-    const end = getTime(parseISO(contest.value!.end_time.toString()))
+    if (!contest.value) return ContestStatus.initial
+    const start = getTime(parseISO(contest.value.start_time.toString()))
+    const end = getTime(parseISO(contest.value.end_time.toString()))
     if (start > now.value) {
       return ContestStatus.not_started
     } else if (end < now.value) {

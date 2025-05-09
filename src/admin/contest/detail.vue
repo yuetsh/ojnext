@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { formatISO } from "date-fns"
 import TextEditor from "~/shared/components/TextEditor.vue"
+import { parseTime } from "~/utils/functions"
 import { BlankContest } from "~/utils/types"
 import { createContest, editContest, getContest } from "../api"
 
@@ -8,8 +9,32 @@ interface Props {
   contestID?: string
 }
 
-const after10mins = Date.now() + 1000 * 600
-const after70mins = after10mins + 1000 * 3600
+function getTimes() {
+  const timestamp = Date.now()
+  const rounded = timestamp - (timestamp % 60000) // 确保秒数为0
+  const t1 = rounded + waitMins.value * 60000
+  const t2 = t1 + durationMins.value * 60000
+  return [t1, t2]
+}
+
+// 创建的时候
+const waitMins = ref(5) // 顺延5分钟
+const durationMins = ref(10) // 比赛默认时长10分钟
+
+watch([waitMins, durationMins], () => {
+  const times = getTimes()
+  contest.start_time = formatISO(times[0])
+  contest.end_time = formatISO(times[1])
+})
+
+// 编辑的时候
+const startTime = ref(0)
+const endTime = ref(0)
+
+watch([startTime, endTime], (values) => {
+  contest.start_time = formatISO(values[0])
+  contest.end_time = formatISO(values[1])
+})
 
 const route = useRoute()
 const router = useRouter()
@@ -17,8 +42,6 @@ const message = useMessage()
 const props = defineProps<Props>()
 
 const [ready, toggleReady] = useToggle()
-const startTime = ref(after10mins)
-const endTime = ref(after70mins)
 
 const tags: SelectOption[] = [
   { label: "练习", value: "练习" },
@@ -31,8 +54,8 @@ const contest = reactive<BlankContest & { id: number }>({
   title: "",
   description: "",
   tag: "练习",
-  start_time: formatISO(after10mins),
-  end_time: formatISO(after70mins),
+  start_time: "",
+  end_time: "",
   rule_type: "ACM",
   password: "",
   real_time_rank: true,
@@ -40,13 +63,11 @@ const contest = reactive<BlankContest & { id: number }>({
   allowed_ip_ranges: [],
 })
 
-watch([startTime, endTime], (values) => {
-  contest.start_time = formatISO(values[0])
-  contest.end_time = formatISO(values[1])
-})
-
 async function getContestDetail() {
   if (!props.contestID) {
+    const times = getTimes()
+    contest.start_time = formatISO(times[0])
+    contest.end_time = formatISO(times[1])
     toggleReady(true)
     return
   }
@@ -71,7 +92,7 @@ async function getContestDetail() {
 
 async function submit() {
   if (contest.description === "<p><br></p>") {
-    contest.description = ""
+    contest.description = contest.title
   }
   const api = {
     "admin contest create": createContest,
@@ -94,12 +115,26 @@ onMounted(getContestDetail)
 </script>
 
 <template>
-  <h2 class="title">
-    {{ route.name === "admin contest create" ? "新建比赛" : "编辑比赛" }}
-  </h2>
+  <n-flex class="titleWrapper" align="center">
+    <h2 class="title">
+      {{ route.name === "admin contest create" ? "新建比赛" : "编辑比赛" }}
+    </h2>
+    <template v-if="!props.contestID">
+      <n-alert type="success">
+        <template #header>
+          开始时间 {{ parseTime(contest.start_time, "YYYY年M月D日 HH:mm:ss") }}
+        </template>
+      </n-alert>
+      <n-alert type="warning">
+        <template #header>
+          结束时间 {{ parseTime(contest.end_time, "YYYY年M月D日 HH:mm:ss") }}
+        </template>
+      </n-alert>
+    </template>
+  </n-flex>
   <n-form inline>
     <n-form-item label="标题">
-      <n-input class="contestTitle" v-model:value="contest.title" />
+      <n-input style="width: 300px" v-model:value="contest.title" />
     </n-form-item>
     <n-form-item label="标签">
       <n-select
@@ -108,14 +143,36 @@ onMounted(getContestDetail)
         v-model:value="contest.tag"
       />
     </n-form-item>
-    <n-form-item label="开始">
-      <n-date-picker v-model:value="startTime" type="datetime" />
-    </n-form-item>
-    <n-form-item label="结束">
-      <n-date-picker v-model:value="endTime" type="datetime" />
-    </n-form-item>
+    <template v-if="props.contestID">
+      <n-form-item label="开始">
+        <n-date-picker
+          style="width: 200px"
+          v-model:value="startTime"
+          type="datetime"
+        />
+      </n-form-item>
+      <n-form-item label="结束">
+        <n-date-picker
+          style="width: 200px"
+          v-model:value="endTime"
+          type="datetime"
+        />
+      </n-form-item>
+    </template>
+    <template v-else>
+      <n-form-item label="几分钟后开始">
+        <n-input-number style="width: 120px" v-model:value="waitMins" />
+      </n-form-item>
+      <n-form-item label="比赛时长">
+        <n-input-number
+          style="width: 120px"
+          step="5"
+          v-model:value="durationMins"
+        />
+      </n-form-item>
+    </template>
     <n-form-item label="密码">
-      <n-input v-model:value="contest.password" />
+      <n-input style="width: 160px" v-model:value="contest.password" />
     </n-form-item>
     <n-form-item label="可见">
       <n-switch v-model:value="contest.visible" />
@@ -133,11 +190,11 @@ onMounted(getContestDetail)
 </template>
 
 <style scoped>
-.title {
-  margin-top: 0;
+.titleWrapper {
+  margin-bottom: 16px;
 }
 
-.contestTitle {
-  width: 400px;
+.title {
+  margin: 0;
 }
 </style>

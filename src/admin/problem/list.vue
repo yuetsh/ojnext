@@ -115,7 +115,16 @@ watchDebounced(() => query.keyword, listProblems, {
 
 <template>
   <n-flex class="titleWrapper" justify="space-between">
-    <h2 class="title">{{ title }}</h2>
+    <n-flex align="center">
+      <h2 class="title">{{ title }}</h2>
+      <n-button
+        v-if="!isContestProblemList"
+        type="primary"
+        @click="$router.push({ name: 'admin problem create' })"
+      >
+        新建
+      </n-button>
+    </n-flex>
     <n-flex>
       <n-button v-if="isContestProblemList" @click="createContestProblem">
         新建比赛题目

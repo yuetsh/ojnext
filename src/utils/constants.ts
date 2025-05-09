@@ -15,6 +15,7 @@ export enum SubmissionStatus {
 }
 
 export enum ContestStatus {
+  initial = "2", // 这里不需要传入到后端，只是为了一开始加载数据的时候，做一个初始位
   not_started = "1",
   underway = "0",
   finished = "-1",
@@ -87,6 +88,11 @@ export const CONTEST_STATUS: {
     type: "error" | "success" | "warning"
   }
 } = {
+  // 这里不需要传入到后端，只是为了一开始加载数据的时候，做一个初始位
+  "2": {
+    name: "未开始",
+    type: "warning",
+  },
   "1": {
     name: "未开始",
     type: "warning",

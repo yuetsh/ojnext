@@ -2,12 +2,12 @@
 import { Icon } from "@iconify/vue"
 import { problem } from "oj/composables/problem"
 import { DIFFICULTY, JUDGE_STATUS } from "utils/constants"
-import { getACRate, getTagColor, parseTime } from "utils/functions"
+import { getACRateNumber, getTagColor, parseTime } from "utils/functions"
 import { Pie } from "vue-chartjs"
 import { getProblemBeatRate } from "~/oj/api"
 import { isDesktop } from "~/shared/composables/breakpoints"
 
-const beatRate = ref("0%")
+const beatRate = ref("0")
 
 const data = computed(() => {
   const status = problem.value!.statistic_info
@@ -32,24 +32,28 @@ const numbers = computed(() => {
       icon: "streamline-emojis:scroll",
       title: problem.value?.submission_number ?? 0,
       content: "总提交",
+      suffix: "",
     },
     {
       icon: "streamline-emojis:woman-raising-hand-2",
       title: problem.value?.accepted_number ?? 0,
       content: "通过数",
+      suffix: "",
     },
     {
       icon: "emojione:chart-increasing",
-      title: getACRate(
+      title: getACRateNumber(
         problem.value?.accepted_number ?? 0,
         problem.value?.submission_number ?? 0,
       ),
       content: "通过率",
+      suffix: "%",
     },
     {
       icon: "streamline-emojis:sparkles",
-      title: beatRate.value,
+      title: Number(beatRate.value),
       content: "你击败的用户",
+      suffix: "%",
     },
   ]
 })
@@ -98,12 +102,15 @@ onMounted(getBeatRate)
     </n-descriptions-item>
   </n-descriptions>
   <n-grid :cols="isDesktop ? 4 : 2" :x-gap="10" :y-gap="10" class="cards">
-    <n-gi v-for="item in numbers" :key="item.title">
+    <n-gi v-for="item in numbers" :key="item.content">
       <n-card hoverable>
         <n-flex align="center">
           <Icon :icon="item.icon" width="40" />
           <div>
-            <n-h2 class="number">{{ item.title }}</n-h2>
+            <n-h2 class="number">
+              <n-number-animation :to="item.title" />
+              <span v-if="item.suffix">{{ item.suffix }}</span>
+            </n-h2>
             <n-h4 class="number-label">{{ item.content }}</n-h4>
           </div>
         </n-flex>

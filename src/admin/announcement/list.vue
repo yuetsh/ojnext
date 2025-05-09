@@ -85,7 +85,15 @@ watch(query, listAnnouncements, { deep: true })
 </script>
 
 <template>
-  <h2 class="title">网站公告</h2>
+  <n-flex align="center" class="titleWrapper">
+    <h2 class="title">网站公告</h2>
+    <n-button
+      type="primary"
+      @click="$router.push({ name: 'admin announcement create' })"
+    >
+      新建
+    </n-button>
+  </n-flex>
   <n-data-table striped :columns="columns" :data="announcements" />
   <Pagination
     :total="total"
@@ -95,7 +103,11 @@ watch(query, listAnnouncements, { deep: true })
 </template>
 
 <style scoped>
+.titleWrapper {
+  margin-bottom: 16px;
+}
+
 .title {
-  margin: 0 0 16px;
+  margin: 0;
 }
 </style>

@@ -79,11 +79,13 @@ const metrics = computed(() => {
       icon: "fluent-emoji:candy",
       title: profile.value?.accepted_number ?? 0,
       content: "已解决的题目数量",
+      animate: true,
     },
     {
       icon: "fluent-emoji:thinking-face",
       title: profile.value?.submission_number ?? 0,
       content: "总提交数量",
+      animate: true,
     },
   ]
 })
@@ -110,13 +112,16 @@ onMounted(init)
     :x-gap="10"
     :y-gap="10"
   >
-    <n-gi v-for="item in metrics" :key="item.title">
+    <n-gi v-for="item in metrics" :key="item.content">
       <n-card hoverable>
         <n-flex align="center">
           <Icon v-if="isDesktop" :icon="item.icon" width="50" />
           <div>
             <Component :is="isDesktop ? NH2 : NH3" class="number">
-              {{ item.title }}
+              <n-number-animation v-if="item.animate" :to="item.title" />
+              <template v-else>
+                {{ item.title }}
+              </template>
             </Component>
             <n-h4 class="number-label">{{ item.content }}</n-h4>
           </div>

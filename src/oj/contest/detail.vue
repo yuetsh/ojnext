@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
-import { CONTEST_STATUS } from "utils/constants"
+import { CONTEST_STATUS, ContestStatus } from "utils/constants"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { useContestStore } from "../store/contest"
 import ContestInfo from "./components/ContestInfo.vue"
@@ -21,13 +21,20 @@ async function check() {
   }
 }
 
+watch(
+  () => contestStore.contestStatus,
+  (nv, ov) => {
+    if (nv === ContestStatus.underway && ov == ContestStatus.not_started) {
+      contestStore.init(props.contestID)
+    }
+  },
+)
+
 onMounted(() => {
   contestStore.init(props.contestID)
 })
 
-onBeforeUnmount(() => {
-  contestStore.clear()
-})
+onBeforeUnmount(contestStore.clear)
 
 const passwordFormVisible = computed(
   () =>

@@ -87,7 +87,15 @@ watchDebounced(() => query.keyword, listContests, {
 
 <template>
   <n-flex justify="space-between" class="titleWrapper">
-    <h2 class="title">比赛列表</h2>
+    <n-flex align="center">
+      <h2 class="title">比赛列表</h2>
+      <n-button
+        type="primary"
+        @click="$router.push({ name: 'admin contest create' })"
+      >
+        新建
+      </n-button>
+    </n-flex>
     <div>
       <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
     </div>

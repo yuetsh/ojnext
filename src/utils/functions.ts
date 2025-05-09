@@ -11,6 +11,16 @@ export function getACRate(acCount: number, totalCount: number) {
   return `${rate}%`
 }
 
+export function getACRateNumber(acCount: number, totalCount: number) {
+  let rate = ""
+  if (totalCount === 0) rate = "0.00"
+  else {
+    if (acCount >= totalCount) rate = "100.00"
+    else rate = ((acCount / totalCount) * 100).toFixed(2)
+  }
+  return Number(rate)
+}
+
 export function filterEmptyValue(object: any) {
   let query: any = {}
   Object.keys(object).forEach((key) => {
@@ -89,7 +99,7 @@ export function durationToDays(
   if (duration.days) {
     result += duration.days + "天"
   }
-  return !!result ? result :"一天以内" 
+  return !!result ? result : "一天以内"
 }
 
 export function secondsToDuration(seconds: number): string {
