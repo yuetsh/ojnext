@@ -99,9 +99,9 @@ const abnormalServers = computed(() =>
 )
 
 const websiteConfig = reactive({
-  website_base_url: "https://oj.xuyue.cc",
-  website_name: "徐越的判题狗",
-  website_name_shortcut: "徐越的判题狗",
+  website_base_url: import.meta.env.VITE_OJ_URL,
+  website_name: "判题狗",
+  website_name_shortcut: "判题狗",
   website_footer: "所有权归属于徐越，感谢青岛大学开源 OJ 系统，感谢开源社区",
   allow_register: true,
   submission_list_show_all: true,
@@ -185,9 +185,6 @@ onMounted(() => {
       </n-form-item>
     </n-form>
     <n-form label-placement="left">
-      <n-form-item label="页脚">
-        <n-input v-model:value="websiteConfig.website_footer" />
-      </n-form-item>
       <n-form-item label="班级列表">
         <n-dynamic-tags v-model:value="websiteConfig.class_list" />
       </n-form-item>

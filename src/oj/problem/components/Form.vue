@@ -103,7 +103,7 @@ function changeLanguage(v: LANGUAGE) {
 }
 
 function gotoTestCat() {
-  const url = "https://code.xuyue.cc"
+  const url = import.meta.env.VITE_CODE_URL
   window.open(url, "_blank")
 }
 </script>
