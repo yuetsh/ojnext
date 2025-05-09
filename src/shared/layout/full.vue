@@ -8,10 +8,10 @@ import Signup from "../components/Signup.vue"
 <template>
   <n-layout position="absolute">
     <n-layout-header bordered style="padding: 8px;">
-      <Header class="header" />
+      <Header />
     </n-layout-header>
     <n-layout-content
-      content-style="padding: 16px; overflow-x: initial; max-width: 1600px; margin: 0 auto;"
+      content-style="padding: 16px; overflow-x: initial;"
     >
       <router-view></router-view>
     </n-layout-content>
@@ -20,11 +20,3 @@ import Signup from "../components/Signup.vue"
     <Beian />
   </n-layout>
 </template>
-
-<style scoped>
-.header { 
-  max-width: 1600px;
-  margin-left: auto;
-  margin-right: auto;
-}
-</style>

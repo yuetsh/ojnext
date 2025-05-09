@@ -268,7 +268,7 @@ function rowProps(row: ProblemFiltered) {
       </n-flex>
     </n-collapse-transition>
     <n-data-table
-      striped
+      :bordered="false"
       :data="problems"
       :columns="columns"
       :row-props="rowProps"

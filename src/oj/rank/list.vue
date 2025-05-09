@@ -166,7 +166,7 @@ onMounted(async () => {
   <n-flex justify="center">
     <n-h2>全校前100名</n-h2>
   </n-flex>
-  <n-data-table striped :data="data" :columns="columns" />
+  <n-data-table :data="data" :columns="columns" />
   <Pagination
     :total="total"
     v-model:page="query.page"

@@ -1,18 +1,40 @@
 import { RouteRecordRaw } from "vue-router"
 import { loadChart } from "./shared/composables/chart"
 
-export const ojs: RouteRecordRaw = {
-  path: "/",
-  component: () => import("~/shared/layout/default.vue"),
+export const problem: RouteRecordRaw = {
+  path: "/problem/:problemID",
+  component: () => import("~/shared/layout/full.vue"),
   children: [
-    { path: "", component: () => import("oj/problem/list.vue") },
     {
-      path: "problem/:problemID",
+      path: "",
       component: () => import("oj/problem/detail.vue"),
       props: true,
       name: "problem",
       beforeEnter: loadChart,
     },
+  ],
+}
+
+export const contestProblem: RouteRecordRaw = {
+  path: "/contest/:contestID/problem/:problemID",
+  component: () => import("~/shared/layout/full.vue"),
+  children: [
+    {
+      path: "",
+      component: () => import("oj/problem/detail.vue"),
+      props: true,
+      name: "contest problem",
+      meta: { requiresAuth: true },
+      beforeEnter: loadChart,
+    },
+  ],
+}
+
+export const ojs: RouteRecordRaw = {
+  path: "/",
+  component: () => import("~/shared/layout/default.vue"),
+  children: [
+    { path: "", component: () => import("oj/problem/list.vue") },
     {
       path: "submission",
       component: () => import("oj/submission/list.vue"),
@@ -58,14 +80,6 @@ export const ojs: RouteRecordRaw = {
       ],
     },
     {
-      path: "contest/:contestID/problem/:problemID",
-      component: () => import("oj/problem/detail.vue"),
-      props: true,
-      name: "contest problem",
-      meta: { requiresAuth: true },
-      beforeEnter: loadChart,
-    },
-    {
       path: "rank",
       component: () => import("oj/rank/list.vue"),
       beforeEnter: loadChart,
@@ -89,8 +103,15 @@ export const ojs: RouteRecordRaw = {
       component: () => import("oj/user/message.vue"),
       meta: { requiresAuth: true },
     },
+  ],
+}
+
+export const learns: RouteRecordRaw = {
+  path: "/learn/:step+",
+  component: () => import("~/shared/layout/full.vue"),
+  children: [
     {
-      path: "learn/:step+",
+      path: "",
       component: () => import("learn/index.vue"),
       name: "learn",
     },

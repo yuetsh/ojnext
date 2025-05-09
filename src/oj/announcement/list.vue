@@ -69,7 +69,7 @@ watch(query, listAnnouncements, { deep: true })
 </script>
 <template>
   <n-data-table
-    striped
+    :bordered="false"
     :data="announcements"
     :columns="columns"
     :row-props="rowProps"

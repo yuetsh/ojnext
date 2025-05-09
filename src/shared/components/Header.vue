@@ -89,6 +89,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的消息",
     key: "message",
+    show: false,
     icon: renderIcon("streamline-emojis:herb"),
     props: {
       onClick: () => router.push("/message"),

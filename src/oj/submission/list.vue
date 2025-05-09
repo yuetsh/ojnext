@@ -1,12 +1,7 @@
 <script setup lang="ts">
 import { NButton, NH2, NText } from "naive-ui"
 import { adminRejudge, getSubmissions, getTodaySubmissionCount } from "oj/api"
-import {
-  filterEmptyValue,
-  parseTime,
-  submissionMemoryFormat,
-  submissionTimeFormat,
-} from "utils/functions"
+import { filterEmptyValue, parseTime } from "utils/functions"
 import { Submission } from "utils/types"
 import Pagination from "~/shared/components/Pagination.vue"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
@@ -204,20 +199,6 @@ const columns = computed(() => {
         ),
     },
     {
-      title: renderTableTitle("执行耗时", "streamline-emojis:snail"),
-      key: "time",
-      width: 120,
-      align: "center",
-      render: (row) => submissionTimeFormat(row.statistic_info.time_cost),
-    },
-    {
-      title: renderTableTitle("占用内存", "streamline-emojis:bell"),
-      key: "memory",
-      width: 120,
-      align: "center",
-      render: (row) => submissionMemoryFormat(row.statistic_info.memory_cost),
-    },
-    {
       title: renderTableTitle(
         "语言",
         "streamline-emojis:globe-showing-europe-africa",
@@ -318,7 +299,7 @@ const columns = computed(() => {
         </n-form-item>
       </n-form>
     </n-space>
-    <n-data-table striped :columns="columns" :data="submissions" />
+    <n-data-table :bordered="false" :columns="columns" :data="submissions" />
   </n-flex>
   <Pagination
     :total="total"

@@ -175,7 +175,7 @@ function rowProps(row: Contest) {
       </n-form>
     </n-space>
     <n-data-table
-      striped
+      :bordered="false"
       :columns="columns"
       :data="data"
       :row-props="rowProps"
