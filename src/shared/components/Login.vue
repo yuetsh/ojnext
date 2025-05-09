@@ -15,7 +15,7 @@ const form = reactive({
   password: "",
 })
 const classList = computed<SelectOption[]>(() => {
-  const defaults = [{ label: "不用填", value: "" }]
+  const defaults = [{ label: "没有我所在的班级", value: "" }]
   const configs =
     configStore.config?.class_list.map((item) => ({
       label: `${item.slice(0, 2)}计算机${item.slice(2)}班`,
@@ -85,9 +85,9 @@ function goSignup() {
         1. 如果是上课统一生成的账号，选择【相应班级】，用户名直接写自己的名字
         <br />
         2.
-        同样是上课用的号，但是没有你的班级。选择【不用填】，用户名要写：ks班级+姓名，比如23计算机1班张三，就写ks231张三
+        同样是上课用的号，但是没有你的班级。选择【没有我所在的班级】，用户名要写：ks班级+姓名，比如23计算机1班张三，就写ks231张三
         <br />
-        3. 如果是自己注册的号，选择【不用填】 <br />
+        3. 如果是自己注册的号，选择【没有我所在的班级】 <br />
       </n-alert>
       <n-form-item label="选择班级" path="class" :show-require-mark="false">
         <n-select
@@ -111,7 +111,6 @@ function goSignup() {
           clearable
           type="password"
           name="login password"
-          @change="submit"
         />
       </n-form-item>
       <n-alert v-if="msg" type="error" :show-icon="false"> {{ msg }}</n-alert>

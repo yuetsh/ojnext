@@ -5,29 +5,13 @@ const message = useMessage()
 const prefix = ref("")
 const rawInput = ref("")
 const [needKs] = useToggle(true)
+const [loading, toggleLoading] = useToggle()
 const users = shallowRef<string[][]>([])
-
-const columns: DataTableColumn[] = [
-  { title: "用户名", key: "username" },
-  { title: "密码", key: "password" },
-  { title: "邮箱", key: "email" },
-  { title: "真名", key: "realName" },
-]
-
-const usersToTable = computed(() => {
-  return users.value.map((u) => {
-    const username = u[0]
-    const password = u[1]
-    const email = u[2]
-    const realName = u[3]
-    return { username, password, realName, email }
-  })
-})
 
 function generateUsers() {
   if (!rawInput.value || !rawInput.value.trim()) {
     message.info("请填写相关内容")
-    return
+    return false
   }
   // 自动加上 ks 的开头
   let myClass = ""
@@ -50,10 +34,12 @@ function generateUsers() {
     const email = `${myClass}.${i + 1}@example.com`
     return [username, password, email, realName]
   })
+  return true
 }
 
 async function uploadUsers() {
   try {
+    toggleLoading(true)
     await importUsers(users.value)
     message.success("用户已上传成功")
     const csv = users.value.map((u) => u.join(",")).join("\n")
@@ -65,12 +51,16 @@ async function uploadUsers() {
     hiddenElement.remove()
   } catch (err: any) {
     message.error("上传失败：" + err.data)
+  } finally {
+    toggleLoading(false)
   }
 }
 
-function handleAll() {
-  generateUsers()
-  uploadUsers()
+async function submit() {
+  const ok = generateUsers()
+  if (ok) {
+    uploadUsers()
+  }
 }
 </script>
 
@@ -81,27 +71,20 @@ function handleAll() {
         <n-switch v-model:value="needKs" />
         <span>前面带上 ks</span>
       </n-flex>
-      <n-input style="width: 200px;" v-model:value="prefix" placeholder="班级号" />
+      <n-input
+        style="width: 200px"
+        v-model:value="prefix"
+        placeholder="班级号"
+      />
       <n-input
         type="textarea"
         class="inputArea"
         placeholder="每行一个用户名"
         v-model:value="rawInput"
       />
-    </n-flex>
-    <n-scrollbar style="max-height: calc(100vh - 34px)">
-      <n-data-table
-        v-if="usersToTable.length"
-        :columns="columns"
-        :data="usersToTable"
-      />
-    </n-scrollbar>
-    <n-flex vertical>
-      <n-button @click="generateUsers">让我康康</n-button>
-      <n-button type="warning" :disabled="!users.length" @click="uploadUsers">
-        上传用户
+      <n-button type="warning" :loading="loading" @click="submit">
+        确定导入
       </n-button>
-      <n-button type="info" @click="handleAll">一键三连</n-button>
     </n-flex>
   </n-space>
 </template>

@@ -34,6 +34,11 @@ const columns: DataTableColumn<User>[] = [
     render: (row) => h(Name, { user: row }),
   },
   {
+    title: "密码",
+    key: "raw_password",
+    width: 100,
+  },
+  {
     title: "创建时间",
     key: "create_time",
     width: 200,
