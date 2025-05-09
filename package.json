@@ -5,6 +5,7 @@
   "scripts": {
     "start": "vite",
     "build": "vue-tsc && vite build",
+    "build:staging": "vue-tsc && vite build --mode=staging",
     "preview": "vite preview",
     "fmt": "prettier --write src *.ts"
   },

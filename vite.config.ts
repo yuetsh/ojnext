@@ -7,8 +7,8 @@ import Components from "unplugin-vue-components/vite"
 import Markdown from "unplugin-vue-markdown/vite"
 import { defineConfig } from "vite"
 
-const dev = process.env.NODE_ENV === "development"
-const url = dev ? "https://ojtest.xuyue.cc" : "https://oj.xuyue.cc"
+const url = process.env.VITE_OJ_URL
+
 const proxyConfig = {
   target: url,
   changeOrigin: true,

@@ -92,7 +92,7 @@ async function select(key: string) {
       copy()
       break
     case "test":
-      window.open("https://code.xuyue.cc", "_blank")
+      window.open(import.meta.env.VITE_CODE_URL, "_blank")
       break
   }
 }

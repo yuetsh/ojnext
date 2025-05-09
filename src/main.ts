@@ -1,3 +1,4 @@
+import { addAPIProvider } from "@iconify/vue"
 import { createPinia } from "pinia"
 import { createRouter, createWebHistory } from "vue-router"
 
@@ -32,3 +33,9 @@ const app = createApp(App)
 app.use(router)
 app.use(pinia)
 app.mount("#app")
+
+if (!!import.meta.env.VITE_ICONIFY_URL) {
+  addAPIProvider("", {
+    resources: [import.meta.env.VITE_ICONIFY_URL],
+  })
+}
