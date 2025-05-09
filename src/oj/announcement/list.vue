@@ -36,12 +36,6 @@ const columns: DataTableColumn<Announcement>[] = [
     width: 180,
   },
   {
-    key: "last_update_time",
-    title: renderTableTitle("更新时间", "fluent-emoji-flat:eleven-thirty"),
-    render: (row) => parseTime(row.last_update_time),
-    width: 180,
-  },
-  {
     key: "username",
     title: renderTableTitle("发布人", "streamline-emojis:ghost"),
     render: (row) => row.created_by.username,

@@ -49,7 +49,7 @@ const numbers = computed(() => {
     {
       icon: "streamline-emojis:sparkles",
       title: beatRate.value,
-      content: "击败用户",
+      content: "你击败的用户",
     },
   ]
 })
