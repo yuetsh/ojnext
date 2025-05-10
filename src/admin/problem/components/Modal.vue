@@ -58,7 +58,8 @@ watch(
     if (value) getList()
   },
 )
-watch(query, getList, { deep: true })
+watch(() => [query.limit, query.page], getList)
+watchDebounced(() => query.keyword, getList, { debounce: 500, maxWait: 1000 })
 </script>
 <template>
   <n-modal
@@ -72,6 +73,7 @@ watch(query, getList, { deep: true })
     <n-input
       class="search"
       v-model:value="query.keyword"
+      clearable
       placeholder="搜索标题或编号"
     />
     <n-data-table striped :columns="columns" :data="problems" />

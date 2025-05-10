@@ -118,7 +118,7 @@ watch(
   },
 )
 watchDebounced(
-  () => [query.keyword],
+  () => query.keyword,
   () => {
     query.page = 1
     routerPush()

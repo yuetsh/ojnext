@@ -35,7 +35,7 @@ async function addProblem() {
 <template>
   <n-popconfirm :show-icon="false" @positive-click="addProblem">
     <template #trigger>
-      <n-button secondary size="small" type="primary">+</n-button>
+      <n-button secondary size="small" type="primary">添加</n-button>
     </template>
     <n-flex vertical>
       <span>请输入在这场比赛中的显示编号</span>

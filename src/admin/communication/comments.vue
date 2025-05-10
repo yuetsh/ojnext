@@ -98,7 +98,7 @@ async function listComments() {
 
 onMounted(listComments)
 watch(() => [query.page, query.limit], listComments)
-watchDebounced(() => [query.problem], listComments, {
+watchDebounced(() => query.problem, listComments, {
   debounce: 500,
   maxWait: 1000,
 })
