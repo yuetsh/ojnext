@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
 import { NSpace, NTag } from "naive-ui"
-import { getProblemList, getRandomProblemID } from "oj/api"
+import { getProblemList } from "oj/api"
 import { filterEmptyValue, getTagColor } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
 import { getProblemTagList } from "~/shared/api"
+import Hitokoto from "~/shared/components/Hitokoto.vue"
 import Pagination from "~/shared/components/Pagination.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
@@ -104,10 +105,10 @@ function clear() {
   query.difficulty = ""
 }
 
-async function getRandom() {
-  const res = await getRandomProblemID()
-  router.push("/problem/" + res.data)
-}
+// async function getRandom() {
+//   const res = await getRandomProblemID()
+//   router.push("/problem/" + res.data)
+// }
 
 watch(() => query.page, routerPush)
 watch(
@@ -218,41 +219,48 @@ function rowProps(row: ProblemFiltered) {
 
 <template>
   <n-flex vertical size="large">
-    <n-space>
-      <n-form :show-feedback="false" inline label-placement="left">
-        <n-form-item label="题目难度">
-          <n-select
-            style="width: 120px"
-            v-model:value="query.difficulty"
-            :options="difficultyOptions"
-          />
-        </n-form-item>
-        <n-form-item>
-          <n-input
-            clearable
-            class="input"
-            v-model:value="query.keyword"
-            placeholder="题号或者标题"
-          />
-        </n-form-item>
-      </n-form>
-      <n-form :show-feedback="false" inline label-placement="left">
-        <n-form-item>
-          <n-flex align="center">
-            <n-button @click="search(query.keyword)">搜索</n-button>
-            <n-button @click="clear" quaternary>重置</n-button>
-            <n-button @click="getRandom" quaternary>试试手气</n-button>
-          </n-flex>
-        </n-form-item>
-      </n-form>
-      <n-button @click="toggleShowTag()" quaternary icon-placement="right">
-        <template #icon>
-          <Icon v-if="showTag" icon="ph:caret-down"></Icon>
-          <Icon v-else icon="ph:caret-up"></Icon>
-        </template>
-        标签
-      </n-button>
-    </n-space>
+    <n-flex justify="space-between">
+      <n-flex>
+        <div>
+          <n-form :show-feedback="false" inline label-placement="left">
+            <n-form-item label="题目难度">
+              <n-select
+                style="width: 120px"
+                v-model:value="query.difficulty"
+                :options="difficultyOptions"
+              />
+            </n-form-item>
+            <n-form-item>
+              <n-input
+                clearable
+                style="width: 200px"
+                v-model:value="query.keyword"
+                placeholder="题号或者标题"
+              />
+            </n-form-item>
+          </n-form>
+        </div>
+        <div>
+          <n-form :show-feedback="false" inline label-placement="left">
+            <n-form-item>
+              <n-flex align="center">
+                <n-button @click="search(query.keyword)">搜索</n-button>
+                <n-button @click="clear" quaternary>重置</n-button>
+                <!-- <n-button @click="getRandom" quaternary>试试手气</n-button> -->
+              </n-flex>
+            </n-form-item>
+          </n-form>
+        </div>
+        <n-button @click="toggleShowTag()" quaternary icon-placement="right">
+          <template #icon>
+            <Icon v-if="showTag" icon="ph:caret-down"></Icon>
+            <Icon v-else icon="ph:caret-up"></Icon>
+          </template>
+          标签
+        </n-button>
+      </n-flex>
+      <Hitokoto v-if="isDesktop" />
+    </n-flex>
     <n-collapse-transition :show="showTag">
       <n-flex>
         <n-tag
@@ -281,16 +289,4 @@ function rowProps(row: ProblemFiltered) {
   />
 </template>
 
-<style scoped>
-.tagTitle {
-  line-height: 28px;
-}
-
-.select {
-  width: 120px;
-}
-
-.input {
-  width: 200px;
-}
-</style>
+<style scoped></style>

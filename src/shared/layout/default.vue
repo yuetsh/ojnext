@@ -7,7 +7,7 @@ import Signup from "../components/Signup.vue"
 
 <template>
   <n-layout position="absolute">
-    <n-layout-header bordered style="padding: 8px;">
+    <n-layout-header bordered style="padding: 8px">
       <Header class="header" />
     </n-layout-header>
     <n-layout-content
@@ -22,7 +22,7 @@ import Signup from "../components/Signup.vue"
 </template>
 
 <style scoped>
-.header { 
+.header {
   max-width: 2000px;
   margin-left: auto;
   margin-right: auto;

@@ -60,9 +60,7 @@ async function saveProfile() {
       <n-form-item label="个性签名">
         <n-input v-model:value="userStore.profile.mood" />
       </n-form-item>
-      <n-button @click="saveProfile">
-        更改信息
-      </n-button>
+      <n-button @click="saveProfile">更改信息</n-button>
     </n-form>
   </n-flex>
 </template>

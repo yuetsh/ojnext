@@ -29,3 +29,7 @@ export function getProblemTagList() {
 export function getCaptcha() {
   return http.get("captcha")
 }
+
+export function getHitokoto() {
+  return http.get("hitokoto")
+}
