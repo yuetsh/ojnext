@@ -43,14 +43,6 @@ export const ojs: RouteRecordRaw = {
           name: "contest problems",
         },
         {
-          path: "problem/:problemID",
-          component: () => import("oj/problem/detail.vue"),
-          props: true,
-          name: "contest problem",
-          meta: { requiresAuth: true },
-          beforeEnter: loadChart,
-        },
-        {
           path: "submission",
           component: () => import("oj/submission/list.vue"),
           meta: { requiresAuth: true },
@@ -64,6 +56,14 @@ export const ojs: RouteRecordRaw = {
           name: "contest rank",
         },
       ],
+    },
+    {
+      path: "contest/:contestID/problem/:problemID",
+      component: () => import("oj/problem/detail.vue"),
+      props: true,
+      name: "contest problem",
+      meta: { requiresAuth: true },
+      beforeEnter: loadChart,
     },
     {
       path: "rank",
