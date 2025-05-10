@@ -6,13 +6,13 @@ import { STORAGE_KEY } from "utils/constants"
 import storage from "utils/storage"
 
 import App from "./App.vue"
-import { admins, contestProblem, learns, ojs, problem } from "./routes"
+import { admins, learns, ojs } from "./routes"
 
 import { toggleLogin } from "./shared/composables/modal"
 
 const router = createRouter({
   history: createWebHistory(),
-  routes: [ojs, admins, problem, contestProblem, learns],
+  routes: [ojs, admins, learns],
 })
 
 router.beforeEach((to, from, next) => {

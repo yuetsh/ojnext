@@ -11,7 +11,7 @@ import Signup from "../components/Signup.vue"
       <Header class="header" />
     </n-layout-header>
     <n-layout-content
-      content-style="padding: 16px; overflow-x: initial; max-width: 1600px; margin: 0 auto;"
+      content-style="padding: 16px; overflow-x: initial; max-width: 2000px; margin: 0 auto;"
     >
       <router-view></router-view>
     </n-layout-content>
@@ -23,7 +23,7 @@ import Signup from "../components/Signup.vue"
 
 <style scoped>
 .header { 
-  max-width: 1600px;
+  max-width: 2000px;
   margin-left: auto;
   margin-right: auto;
 }

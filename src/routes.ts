@@ -1,40 +1,18 @@
 import { RouteRecordRaw } from "vue-router"
 import { loadChart } from "./shared/composables/chart"
 
-export const problem: RouteRecordRaw = {
-  path: "/problem/:problemID",
-  component: () => import("~/shared/layout/full.vue"),
-  children: [
-    {
-      path: "",
-      component: () => import("oj/problem/detail.vue"),
-      props: true,
-      name: "problem",
-      beforeEnter: loadChart,
-    },
-  ],
-}
-
-export const contestProblem: RouteRecordRaw = {
-  path: "/contest/:contestID/problem/:problemID",
-  component: () => import("~/shared/layout/full.vue"),
-  children: [
-    {
-      path: "",
-      component: () => import("oj/problem/detail.vue"),
-      props: true,
-      name: "contest problem",
-      meta: { requiresAuth: true },
-      beforeEnter: loadChart,
-    },
-  ],
-}
-
 export const ojs: RouteRecordRaw = {
   path: "/",
   component: () => import("~/shared/layout/default.vue"),
   children: [
     { path: "", component: () => import("oj/problem/list.vue") },
+    {
+      path: "problem/:problemID",
+      component: () => import("oj/problem/detail.vue"),
+      props: true,
+      name: "problem",
+      beforeEnter: loadChart,
+    },
     {
       path: "submission",
       component: () => import("oj/submission/list.vue"),
@@ -63,6 +41,14 @@ export const ojs: RouteRecordRaw = {
           props: true,
           meta: { requiresAuth: true },
           name: "contest problems",
+        },
+        {
+          path: "problem/:problemID",
+          component: () => import("oj/problem/detail.vue"),
+          props: true,
+          name: "contest problem",
+          meta: { requiresAuth: true },
+          beforeEnter: loadChart,
         },
         {
           path: "submission",
@@ -108,7 +94,7 @@ export const ojs: RouteRecordRaw = {
 
 export const learns: RouteRecordRaw = {
   path: "/learn/:step+",
-  component: () => import("~/shared/layout/full.vue"),
+  component: () => import("~/shared/layout/default.vue"),
   children: [
     {
       path: "",
