@@ -16,6 +16,7 @@ const latestSubmissionAt = ref("")
 const toLatestAt = ref("")
 const learnDuration = ref("")
 const [loading, toggle] = useToggle()
+const [show, toggleShow] = useToggle(false)
 
 async function init() {
   toggle(true)
@@ -131,15 +132,41 @@ onMounted(init)
   </n-grid>
 
   <n-descriptions v-if="!loading && profile" class="wrapper" bordered>
-    <n-descriptions-item v-if="problems.length" label="已解决的题目">
-      <n-flex>
-        <n-button
-          v-for="id in problems"
-          key="id"
-          @click="router.push('/problem/' + id)"
-        >
-          {{ id }}
-        </n-button>
+    <n-descriptions-item v-if="!!problems.length">
+      <template #label>
+        <n-flex justify="space-between" align="center">
+          <span>已解决的题目</span>
+          <n-button
+            text
+            type="primary"
+            v-if="problems.length > 21"
+            @click="toggleShow(!show)"
+          >
+            {{ show ? "隐藏全部" : "显示全部" }}
+          </n-button>
+        </n-flex>
+      </template>
+      <n-flex vertical>
+        <n-flex>
+          <n-button
+            v-for="id in problems.slice(0, 21)"
+            key="id"
+            @click="router.push('/problem/' + id)"
+          >
+            {{ id }}
+          </n-button>
+        </n-flex>
+        <n-collapse-transition :show="show" v-if="problems.length > 21">
+          <n-flex>
+            <n-button
+              v-for="id in problems.slice(21)"
+              key="id"
+              @click="router.push('/problem/' + id)"
+            >
+              {{ id }}
+            </n-button>
+          </n-flex>
+        </n-collapse-transition>
       </n-flex>
     </n-descriptions-item>
   </n-descriptions>
