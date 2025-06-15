@@ -98,12 +98,6 @@
             {{ rating.comprehensive }}
           </n-descriptions-item>
         </n-descriptions>
-        <n-list class="list" v-if="count && contentList.length">
-          <div>以下是一些评论留言：</div>
-          <n-list-item v-for="(item, i) in contentList" :key="i">
-            {{ item }}
-          </n-list-item>
-        </n-list>
         <n-empty class="list" v-if="show && count === 0">
           暂无记录，快去评论吧
         </n-empty>
@@ -137,7 +131,6 @@ const comprehensive_rating = ref(0)
 
 const [show, toggleShow] = useToggle()
 const [hasCommented, toggleHasCommented] = useToggle()
-const contentList = ref([])
 const count = ref(0)
 const rating = reactive({
   description: 0,
@@ -179,7 +172,6 @@ async function getComments() {
   rating.description = res.data.rating.description
   rating.difficulty = res.data.rating.difficulty
   rating.comprehensive = res.data.rating.comprehensive
-  contentList.value = res.data.contents
 }
 
 async function getMyComment() {
