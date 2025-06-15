@@ -22,6 +22,12 @@ const columns: DataTableColumn<Tutorial>[] = [
     render: (row) => parseTime(row.created_at!, "YYYY-MM-DD HH:mm:ss"),
   },
   {
+    title: "更新时间",
+    key: "updated_at",
+    width: 180,
+    render: (row) => parseTime(row.updated_at!, "YYYY-MM-DD HH:mm:ss"),
+  },
+  {
     title: "顺序",
     key: "order",
   },
