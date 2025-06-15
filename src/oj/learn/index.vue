@@ -22,6 +22,7 @@
         </n-flex>
         <n-flex vertical size="large">
           <MdPreview
+            preview-theme="vuepress"
             :theme="isDark ? 'dark' : 'light'"
             :model-value="tutorial.content"
           />
