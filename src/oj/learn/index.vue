@@ -114,6 +114,7 @@ const menu = computed<DropdownOption[]>(() => {
 async function init() {
   const res1 = await getTutorials()
   titles.value = res1.data
+  if (titles.value.length === 0) return
   const id = titles.value[step.value - 1].id
   const res2 = await getTutorial(id)
   tutorial.value = res2.data
