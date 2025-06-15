@@ -142,4 +142,8 @@ watch(
 )
 </script>
 
-<style></style>
+<style>
+.md-editor-preview .md-editor-code .md-editor-code-head {
+  z-index: 100;
+}
+</style>
