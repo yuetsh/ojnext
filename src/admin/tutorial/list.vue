@@ -16,6 +16,7 @@ const columns: DataTableColumn<Tutorial>[] = [
   {
     title: "顺序",
     key: "order",
+    width: 80,
   },
   { title: "标题", key: "title", minWidth: 200 },
   {
@@ -39,6 +40,7 @@ const columns: DataTableColumn<Tutorial>[] = [
   {
     title: "可见",
     key: "is_public",
+    width: 100,
     render: (row) =>
       h(NSwitch, {
         value: row.is_public,
