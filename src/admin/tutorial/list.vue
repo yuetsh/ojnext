@@ -7,14 +7,23 @@ import Actions from "./components/Actions.vue"
 
 const tutorials = ref<{ [key: string]: Tutorial[] }>({
   python: [],
-  c: []
+  c: [],
 })
 const message = useMessage()
-const activeTab = ref('python')
+const activeTab = ref("python")
 
 const columns: DataTableColumn<Tutorial>[] = [
-  { title: "ID", key: "id", width: 60 },
-  { title: "标题", key: "title", minWidth: 300 },
+  {
+    title: "顺序",
+    key: "order",
+  },
+  { title: "标题", key: "title", minWidth: 200 },
+  {
+    title: "作者",
+    key: "created_by",
+    render: (row) => row.created_by?.username,
+    width: 80,
+  },
   {
     title: "创建时间",
     key: "created_at",
@@ -26,16 +35,6 @@ const columns: DataTableColumn<Tutorial>[] = [
     key: "updated_at",
     width: 180,
     render: (row) => parseTime(row.updated_at!, "YYYY-MM-DD HH:mm:ss"),
-  },
-  {
-    title: "顺序",
-    key: "order",
-  },
-  {
-    title: "作者",
-    key: "created_by",
-    render: (row) => row.created_by?.username,
-    width: 80,
   },
   {
     title: "可见",
