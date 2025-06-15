@@ -30,7 +30,7 @@
             <div style="flex: 1">
               <n-button
                 block
-                style="height: 60px"
+                style="height: 40px"
                 v-if="step !== 1"
                 @click="prev"
               >
@@ -40,7 +40,7 @@
             <div style="flex: 1">
               <n-button
                 block
-                style="height: 60px"
+                style="height: 40px"
                 v-if="step !== titles.length"
                 @click="next"
               >
