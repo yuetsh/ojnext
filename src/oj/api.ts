@@ -232,3 +232,11 @@ export function refreshUserProblemDisplayIds() {
 export function getMetrics(userid: number) {
   return http.get("metrics", { params: { userid } })
 }
+
+export function getTutorial(id: number) {
+  return http.get("tutorial", { params: { id } })
+}
+
+export function getTutorials() {
+  return http.get("tutorials")
+}

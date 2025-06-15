@@ -374,3 +374,16 @@ export interface Comment {
   create_time: Date
   user: SampleUser
 }
+
+export interface Tutorial {
+  id: number
+  title: string
+  content: string
+  code: string
+  is_public: boolean
+  order: number
+  type: "python" | "c"
+  created_by?: User 
+  updated_at?: Date
+  created_at?: Date
+}

@@ -89,17 +89,11 @@ export const ojs: RouteRecordRaw = {
       component: () => import("oj/user/message.vue"),
       meta: { requiresAuth: true },
     },
-  ],
-}
-
-export const learns: RouteRecordRaw = {
-  path: "/learn/:step+",
-  component: () => import("~/shared/layout/default.vue"),
-  children: [
     {
-      path: "",
-      component: () => import("learn/index.vue"),
+      path: "learn/:step+",
       name: "learn",
+      component: () => import("oj/learn/index.vue"),
+      props: true,
     },
   ],
 }
@@ -203,6 +197,22 @@ export const admins: RouteRecordRaw = {
       path: "message/list",
       name: "admin message list",
       component: () => import("admin/communication/messages.vue"),
+    },
+    {
+      path: "tutorial/list",
+      name: "admin tutorial list",
+      component: () => import("admin/tutorial/list.vue"),
+    },
+    {
+      path: "tutorial/create",
+      name: "admin tutorial create",
+      component: () => import("admin/tutorial/detail.vue"),
+    },
+    {
+      path: "tutorial/edit/:tutorialID",
+      name: "admin tutorial edit",
+      component: () => import("admin/tutorial/detail.vue"),
+      props: true,
     },
   ],
 }

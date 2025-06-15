@@ -8,6 +8,7 @@ import {
   Contest,
   Server,
   TestcaseUploadedReturns,
+  Tutorial,
   User,
   WebsiteConfig,
 } from "~/utils/types"
@@ -221,4 +222,32 @@ export function getCommentList(offset = 0, limit = 10, problem: string) {
 
 export function deleteComment(id: number) {
   return http.delete("admin/comment", { params: { id } })
+}
+
+export async function getTutorialList() {
+  const res = await http.get("admin/tutorial")
+  return res.data
+}
+
+export async function getTutorial(id: number) {
+  const res = await http.get("admin/tutorial", { params: { id } })
+  return res.data
+}
+
+export async function createTutorial(data: Partial<Tutorial>) {
+  const res = await http.post("admin/tutorial", data)
+  return res.data
+}
+
+export async function updateTutorial(data: Partial<Tutorial>) {
+  const res = await http.put("admin/tutorial", data)
+  return res.data
+}
+
+export function deleteTutorial(id: number) {
+  return http.delete("admin/tutorial", { params: { id } })
+}
+
+export function setTutorialVisibility(id: number, is_public: boolean) {
+  return http.put("admin/tutorial/visibility", { id, is_public })
 }

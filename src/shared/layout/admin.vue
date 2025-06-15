@@ -50,6 +50,11 @@ const options: MenuOption[] = [
       ),
     key: "admin announcement list",
   },
+  {
+    label: () =>
+      h(RouterLink, { to: "/admin/tutorial/list" }, { default: () => "教程" }),
+    key: "admin tutorial list",
+  },
 ]
 
 const active = computed(() => (route.name as string) || "home")

@@ -1,10 +1,8 @@
-import Shiki from "@shikijs/markdown-it"
 import Vue from "@vitejs/plugin-vue"
 import path from "path"
 import AutoImport from "unplugin-auto-import/vite"
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
 import Components from "unplugin-vue-components/vite"
-import Markdown from "unplugin-vue-markdown/vite"
 import { defineConfig, loadEnv } from "vite"
 
 export default defineConfig(({ mode }) => {
@@ -32,6 +30,11 @@ export default defineConfig(({ mode }) => {
               "@codemirror/lang-cpp",
               "@codemirror/lang-python",
             ],
+            md: [
+              "md-editor-v3",
+              "md-editor-v3/lib/style.css",
+              "md-editor-v3/lib/preview.css",
+            ],
           },
         },
       },
@@ -42,11 +45,10 @@ export default defineConfig(({ mode }) => {
         utils: path.resolve(__dirname, "./src/utils"),
         oj: path.resolve(__dirname, "./src/oj"),
         admin: path.resolve(__dirname, "./src/admin"),
-        learn: path.resolve(__dirname, "./src/learn"),
       },
     },
     plugins: [
-      Vue({ include: [/\.vue$/, /\.md$/] }),
+      Vue(),
       AutoImport({
         imports: [
           "vue",
@@ -82,18 +84,6 @@ export default defineConfig(({ mode }) => {
       Components({
         resolvers: [NaiveUiResolver()],
         dts: "./src/components.d.ts",
-      }),
-      Markdown({
-        async markdownItSetup(md) {
-          md.use(
-            await Shiki({
-              themes: {
-                light: "vitesse-light",
-                dark: "vitesse-dark",
-              },
-            }),
-          )
-        },
       }),
     ],
     server: {
