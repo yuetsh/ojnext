@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NSwitch } from "naive-ui"
 import Pagination from "~/shared/components/Pagination.vue"
-import { parseTime } from "~/utils/functions"
+import { parseTime, filterEmptyValue } from "~/utils/functions"
 import { AdminProblemFiltered } from "~/utils/types"
 import { getProblemList, toggleProblemVisible } from "../api"
 import Actions from "./components/Actions.vue"
@@ -31,9 +31,9 @@ const { count, inc } = useCounter(0)
 const total = ref(0)
 const problems = ref<AdminProblemFiltered[]>([])
 const query = reactive({
-  limit: 10,
-  page: 1,
-  keyword: "",
+  limit: parseInt(<string>route.query.limit) || 10,
+  page: parseInt(<string>route.query.page) || 1,
+  keyword: <string>route.query.keyword ?? "",
 })
 
 const columns: DataTableColumn<AdminProblemFiltered>[] = [
@@ -71,7 +71,19 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   },
 ]
 
+function routerPush() {
+  router.push({
+    path: route.path,
+    query: filterEmptyValue(query),
+  })
+}
+
 async function listProblems() {
+  query.keyword = <string>route.query.keyword ?? ""
+  query.page = parseInt(<string>route.query.page) || 1
+  query.limit = parseInt(<string>route.query.limit) || 10
+
+  if (query.page < 1) query.page = 1
   const offset = (query.page - 1) * query.limit
   const res = await getProblemList(
     offset,
@@ -106,11 +118,22 @@ async function selectProblems() {
 }
 
 onMounted(listProblems)
-watch(() => [query.limit, query.page], listProblems)
-watchDebounced(() => query.keyword, listProblems, {
-  debounce: 500,
-  maxWait: 1000,
-})
+watch(() => query.page, routerPush)
+watch(
+  () => [query.limit, query.keyword],
+  () => {
+    query.page = 1
+    routerPush()
+  },
+)
+watchDebounced(
+  () => query.keyword,
+  () => {
+    query.page = 1
+    routerPush()
+  },
+  { debounce: 500, maxWait: 1000 },
+)
 </script>
 
 <template>
