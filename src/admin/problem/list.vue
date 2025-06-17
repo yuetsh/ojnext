@@ -134,6 +134,12 @@ watchDebounced(
   },
   { debounce: 500, maxWait: 1000 },
 )
+watch(
+  () => route.name === "admin problem list" && route.query,
+  (newVal) => {
+    if (newVal) listProblems()
+  },
+)
 </script>
 
 <template>
