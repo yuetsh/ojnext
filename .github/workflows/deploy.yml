@@ -6,7 +6,7 @@ on:
       - main
 
 jobs:
-  deploy-for-prod:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,23 +27,23 @@ jobs:
           REMOTE_USER: root
           TARGET: /root/OJDeploy/data/clientnext
 
-  deploy-for-test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
+  # deploy-for-test:
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm install
-      - run: CI=false NODE_ENV=development npm run build
+  #     - uses: actions/setup-node@v4
+  #       with:
+  #         node-version: 22
+  #         cache: npm
+  #     - run: npm install
+  #     - run: CI=false NODE_ENV=development npm run build
 
-      - uses: easingthemes/ssh-deploy@main
-        with:
-          SSH_PRIVATE_KEY: ${{ secrets.KEY }}
-          REMOTE_HOST: ${{ secrets.HOST }}
-          ARGS: "-avzr --delete"
-          SOURCE: dist/
-          REMOTE_USER: root
-          TARGET: /root/ojtest/data/clientnext
+  #     - uses: easingthemes/ssh-deploy@main
+  #       with:
+  #         SSH_PRIVATE_KEY: ${{ secrets.KEY }}
+  #         REMOTE_HOST: ${{ secrets.HOST }}
+  #         ARGS: "-avzr --delete"
+  #         SOURCE: dist/
+  #         REMOTE_USER: root
+  #         TARGET: /root/ojtest/data/clientnext
