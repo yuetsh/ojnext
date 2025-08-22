@@ -30,11 +30,11 @@ export default defineConfig(({ mode }) => {
               "@codemirror/lang-cpp",
               "@codemirror/lang-python",
             ],
-            // md: [
-            //   "md-editor-v3",
-            //   "md-editor-v3/lib/style.css",
-            //   "md-editor-v3/lib/preview.css",
-            // ],
+            md: [
+              "md-editor-v3",
+              "md-editor-v3/lib/style.css",
+              "md-editor-v3/lib/preview.css",
+            ],
           },
         },
       },
