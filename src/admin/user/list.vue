@@ -104,7 +104,7 @@ async function onResetPassword(user: User) {
   const res = await resetPassword(user.id)
   users.value = users.value.map((it) => {
     if (it.id === user.id && user.admin_type === USER_TYPE.REGULAR_USER) {
-      it.raw_password = res.data.new_password
+      it.raw_password = res.data
     }
     return it
   })
