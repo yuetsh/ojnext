@@ -97,6 +97,11 @@ export function editUser(user: User) {
   return http.put("admin/user", user)
 }
 
+// 重置用户密码
+export function resetPassword(userID: number) {
+  return http.post("admin/reset_password", { id: userID })
+}
+
 // 导入用户
 export function importUsers(users: string[][]) {
   return http.post("admin/user", { users })

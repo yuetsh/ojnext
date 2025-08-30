@@ -3,7 +3,13 @@ import { DataTableRowKey, SelectOption } from "naive-ui"
 import Pagination from "~/shared/components/Pagination.vue"
 import { parseTime } from "~/utils/functions"
 import { User } from "~/utils/types"
-import { deleteUsers, editUser, getUserList, importUsers } from "../api"
+import {
+  deleteUsers,
+  editUser,
+  getUserList,
+  importUsers,
+  resetPassword,
+} from "../api"
 import Actions from "./components/Actions.vue"
 import Name from "./components/Name.vue"
 
@@ -58,13 +64,14 @@ const columns: DataTableColumn<User>[] = [
   {
     key: "actions",
     title: "选项",
-    width: 200,
+    width: 260,
     render: (row) =>
       h(Actions, {
         user: row,
         onDeleteUser: onDeleteUsers,
         onUserBanned,
         onOpenEditModal,
+        onResetPassword,
       }),
   },
 ]
@@ -90,6 +97,16 @@ function chooseUsers(rowKeys: DataTableRowKey[]) {
 async function onDeleteUsers(userIDs: DataTableRowKey[] | Ref<number[]>) {
   await deleteUsers(toRaw(userIDs) as number[])
   listUsers()
+}
+
+async function onResetPassword(user: User) {
+  const res = await resetPassword(user.id)
+  users.value = users.value.map((it) => {
+    if (it.id === user.id) {
+      it.password = res.data.new_password
+    }
+    return it
+  })
 }
 
 async function onUserBanned(user: User) {

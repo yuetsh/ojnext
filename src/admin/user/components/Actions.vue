@@ -10,6 +10,7 @@ const emit = defineEmits<{
   (e: "deleteUser", value: number[]): void
   (e: "userBanned", value: User): void
   (e: "openEditModal", value: User): void
+  (e: "resetPassword", value: User): void
 }>()
 
 async function banUser() {
@@ -20,6 +21,14 @@ async function banUser() {
 </script>
 <template>
   <n-flex>
+    <n-button
+      size="small"
+      type="error"
+      secondary
+      @click="$emit('resetPassword', props.user)"
+    >
+      重置密码
+    </n-button>
     <n-button
       size="small"
       type="primary"
