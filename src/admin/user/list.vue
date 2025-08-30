@@ -12,6 +12,7 @@ import {
 } from "../api"
 import Actions from "./components/Actions.vue"
 import Name from "./components/Name.vue"
+import { USER_TYPE } from "~/utils/constants"
 
 const message = useMessage()
 
@@ -102,8 +103,8 @@ async function onDeleteUsers(userIDs: DataTableRowKey[] | Ref<number[]>) {
 async function onResetPassword(user: User) {
   const res = await resetPassword(user.id)
   users.value = users.value.map((it) => {
-    if (it.id === user.id) {
-      it.password = res.data.new_password
+    if (it.id === user.id && user.admin_type === USER_TYPE.REGULAR_USER) {
+      it.raw_password = res.data.new_password
     }
     return it
   })

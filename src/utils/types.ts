@@ -46,6 +46,7 @@ export interface User {
   open_api: boolean
   is_disabled: boolean
   password?: string
+  raw_password?: string
 }
 
 export type LANGUAGE =
