@@ -11,8 +11,8 @@
   "dependencies": {
     "@codemirror/lang-cpp": "^6.0.3",
     "@codemirror/lang-python": "^6.2.1",
-    "@vueuse/core": "^13.7.0",
-    "@wangeditor-next/editor": "^5.6.43",
+    "@vueuse/core": "^13.9.0",
+    "@wangeditor-next/editor": "^5.6.45",
     "@wangeditor-next/editor-for-vue": "^5.1.14",
     "axios": "^1.11.0",
     "canvas-confetti": "^1.9.3",
@@ -25,7 +25,7 @@
     "naive-ui": "^2.42.0",
     "normalize.css": "^8.0.1",
     "pinia": "^3.0.3",
-    "vue": "^3.5.19",
+    "vue": "^3.5.21",
     "vue-chartjs": "^5.3.2",
     "vue-codemirror": "^6.1.1",
     "vue-router": "^4.5.1"
@@ -35,10 +35,10 @@
     "@rsbuild/core": "^1.5.3",
     "@rsbuild/plugin-vue": "^1.1.2",
     "@types/canvas-confetti": "^1.9.0",
-    "@types/node": "^24.3.0",
+    "@types/node": "^24.3.1",
     "prettier": "^3.6.2",
     "typescript": "^5.9.2",
-    "unplugin-auto-import": "^20.0.0",
+    "unplugin-auto-import": "^20.1.0",
     "unplugin-vue-components": "^29.0.0"
   }
 }
