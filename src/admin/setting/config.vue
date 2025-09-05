@@ -99,7 +99,7 @@ const abnormalServers = computed(() =>
 )
 
 const websiteConfig = reactive({
-  website_base_url: import.meta.env.VITE_OJ_URL,
+  website_base_url: import.meta.env.PUBLIC_OJ_URL,
   website_name: "判题狗",
   website_name_shortcut: "判题狗",
   website_footer: "所有权归属于徐越，感谢青岛大学开源 OJ 系统，感谢开源社区",

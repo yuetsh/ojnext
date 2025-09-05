@@ -92,7 +92,7 @@ async function select(key: string) {
       copy()
       break
     case "test":
-      window.open(import.meta.env.VITE_CODE_URL, "_blank")
+      window.open(import.meta.env.PUBLIC_CODE_URL, "_blank")
       break
   }
 }
@@ -103,7 +103,7 @@ function changeLanguage(v: LANGUAGE) {
 }
 
 function gotoTestCat() {
-  const url = import.meta.env.VITE_CODE_URL
+  const url = import.meta.env.PUBLIC_CODE_URL
   window.open(url, "_blank")
 }
 </script>

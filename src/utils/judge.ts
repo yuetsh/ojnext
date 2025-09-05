@@ -2,7 +2,7 @@ import axios from "axios"
 import { decode, encode } from "./functions"
 import { Code } from "./types"
 
-const http = axios.create({ baseURL: import.meta.env.VITE_JUDGE0_URL })
+const http = axios.create({ baseURL: import.meta.env.PUBLIC_JUDGE0_URL })
 
 export async function createTestSubmission(code: Code, input: string) {
   const encodedCode = encode(code.value)

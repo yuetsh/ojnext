@@ -384,7 +384,7 @@ export interface Tutorial {
   is_public: boolean
   order: number
   type: "python" | "c"
-  created_by?: User 
+  created_by?: User
   updated_at?: Date
   created_at?: Date
 }

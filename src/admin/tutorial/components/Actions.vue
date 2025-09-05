@@ -40,4 +40,4 @@ async function handleDelete() {
     </n-popconfirm>
   </n-flex>
 </template>
-<style scoped></style> 
+<style scoped></style>

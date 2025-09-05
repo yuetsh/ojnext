@@ -87,7 +87,11 @@ onMounted(init)
       />
     </n-form-item>
     <n-form-item label="顺序">
-      <n-input-number style="width: 100px" v-model:value="tutorial.order" :min="0" />
+      <n-input-number
+        style="width: 100px"
+        v-model:value="tutorial.order"
+        :min="0"
+      />
     </n-form-item>
     <n-form-item label="可见">
       <n-switch v-model:value="tutorial.is_public" />

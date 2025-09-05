@@ -34,8 +34,8 @@ app.use(router)
 app.use(pinia)
 app.mount("#app")
 
-if (!!import.meta.env.VITE_ICONIFY_URL) {
+if (!!import.meta.env.PUBLIC_ICONIFY_URL) {
   addAPIProvider("", {
-    resources: [import.meta.env.VITE_ICONIFY_URL],
+    resources: [import.meta.env.PUBLIC_ICONIFY_URL],
   })
 }
