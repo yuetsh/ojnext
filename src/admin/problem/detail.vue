@@ -107,6 +107,7 @@ const difficultyOptions: SelectOption[] = [
 const languageOptions = [
   { label: LANGUAGE_SHOW_VALUE["C"], value: "C" },
   { label: LANGUAGE_SHOW_VALUE["Python3"], value: "Python3" },
+  { label: LANGUAGE_SHOW_VALUE["C++"], value: "C++" },
 ]
 
 const tagOptions = computed(() =>
