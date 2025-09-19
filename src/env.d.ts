@@ -1,6 +1,7 @@
 /// <reference types="@rsbuild/core/types" />
 
 interface ImportMetaEnv {
+  readonly PUBLIC_ENV: string
   readonly PUBLIC_MAXKB_URL: string
   readonly PUBLIC_OJ_URL: string
   readonly PUBLIC_CODE_URL: string

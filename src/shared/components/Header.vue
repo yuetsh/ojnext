@@ -15,6 +15,23 @@ const userStore = useUserStore()
 const configStore = useConfigStore()
 const route = useRoute()
 const router = useRouter()
+
+const envVersion = computed(() => {
+  if (import.meta.env.PUBLIC_ENV === "test") {
+    return "测试版"
+  } else if (import.meta.env.PUBLIC_ENV === "dev") {
+    return "开发版"
+  }
+  return ""
+})
+
+const showEnvVersion = computed(() => {
+  return (
+    import.meta.env.PUBLIC_ENV === "test" ||
+    import.meta.env.PUBLIC_ENV === "dev"
+  )
+})
+
 const active = computed(() => {
   const path = route.path.split("/")[1] || "problem"
   return !["user", "setting"].includes(path) ? path : ""
@@ -131,6 +148,7 @@ function goHome() {
       <n-flex align="center" class="title" @click="goHome">
         <Icon icon="streamline-emojis:dog" :height="30"></Icon>
         <div>{{ configStore.config?.website_name }}</div>
+        <div v-if="showEnvVersion">({{ envVersion }})</div>
       </n-flex>
       <div>
         <n-menu
