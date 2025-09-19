@@ -6,6 +6,7 @@
     "start": "rsbuild dev",
     "build": "rsbuild build",
     "build:staging": "rsbuild build --env-mode=staging",
+    "build:test": "rsbuild build --env-mode=test",
     "fmt": "prettier --write src *.ts"
   },
   "dependencies": {
