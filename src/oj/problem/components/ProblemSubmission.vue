@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { NButton } from "naive-ui"
-import { getSubmissions } from "~/oj/api"
+import { getSubmissions, getRankOfProblem } from "~/oj/api"
 import Pagination from "~/shared/components/Pagination.vue"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 import { useConfigStore } from "~/shared/store/config"
@@ -62,6 +62,11 @@ const columns: DataTableColumn<Submission>[] = [
   },
 ]
 
+const class_name = ref("")
+const rank = ref(-1)
+const class_ac_count = ref(0)
+const all_ac_count = ref(0)
+
 const submissions = ref<Submission[]>([])
 const total = ref(0)
 const query = reactive({
@@ -93,12 +98,134 @@ async function listSubmissions() {
   submissions.value = res.data.results
   total.value = res.data.total
 }
-onMounted(listSubmissions)
+
+async function getRankOfThisProblem() {
+  const res = await getRankOfProblem(<string>route.params.problemID ?? "")
+  class_name.value = res.data.class_name
+  rank.value = res.data.rank
+  class_ac_count.value = res.data.class_ac_count
+  all_ac_count.value = res.data.all_ac_count
+}
+
+onMounted(() => {
+  listSubmissions()
+  getRankOfThisProblem()
+})
 watch(query, listSubmissions)
 </script>
 <template>
   <n-alert type="error" v-if="!showList" :title="errorMsg" />
-  <template v-else>
+  <template v-if="route.name === 'problem'">
+    <template v-if="class_name">
+      <n-alert class="tip" type="success" :show-icon="false" v-if="rank !== -1">
+        <template #header>
+          <n-flex align="center">
+            <div>
+              本道题你在班上排名第 <b>{{ rank }}</b
+              >，你们班共有 <b>{{ class_ac_count }}</b> 人答案正确
+            </div>
+            <n-button
+              @click="
+                router.push({
+                  name: 'submissions',
+                  query: {
+                    problem: route.params.problemID,
+                    result: '0',
+                    page: 1,
+                    limit: 10,
+                    username: 'ks' + class_name,
+                  },
+                })
+              "
+            >
+              查看
+            </n-button>
+          </n-flex>
+        </template>
+      </n-alert>
+      <n-alert class="tip" type="error" :show-icon="false" v-else>
+        <template #header>
+          <n-flex>
+            <div>
+              本道题你还没有解决，
+              <div v-if="class_name">你们班</div>
+              共有 <b>{{ class_ac_count }}</b> 人答案正确
+            </div>
+            <n-button
+              @click="
+                router.push({
+                  name: 'submissions',
+                  query: {
+                    problem: route.params.problemID,
+                    result: '0',
+                    page: 1,
+                    limit: 10,
+                    username: 'ks' + class_name,
+                  },
+                })
+              "
+            >
+              查看
+            </n-button>
+          </n-flex>
+        </template>
+      </n-alert>
+    </template>
+    <template v-else>
+      <n-alert class="tip" type="success" :show-icon="false" v-if="rank !== -1">
+        <template #header>
+          <n-flex align="center">
+            <div>
+              本道题你在全服排名第 <b>{{ rank }}</b
+              >，全服共有 <b>{{ all_ac_count }}</b> 人答案正确
+            </div>
+            <div></div>
+            <n-button
+              secondary
+              @click="
+                router.push({
+                  name: 'submissions',
+                  query: {
+                    problem: route.params.problemID,
+                    result: '0',
+                    page: 1,
+                    limit: 10,
+                  },
+                })
+              "
+            >
+              查看
+            </n-button>
+          </n-flex>
+        </template>
+      </n-alert>
+      <n-alert class="tip" type="error" :show-icon="false" v-else>
+        <template #header>
+          <n-flex align="center">
+            <div>
+              本道题你还没有解决，全服共有 <b>{{ all_ac_count }}</b> 人答案正确
+            </div>
+            <n-button
+              @click="
+                router.push({
+                  name: 'submissions',
+                  query: {
+                    problem: route.params.problemID,
+                    result: '0',
+                    page: 1,
+                    limit: 10,
+                  },
+                })
+              "
+            >
+              查看
+            </n-button>
+          </n-flex>
+        </template>
+      </n-alert>
+    </template>
+  </template>
+  <template v-if="showList">
     <n-data-table striped :columns="columns" :data="submissions" />
     <Pagination
       :total="total"
@@ -107,3 +234,9 @@ watch(query, listSubmissions)
     />
   </template>
 </template>
+
+<style scoped>
+.tip {
+  margin-bottom: 16px;
+}
+</style>

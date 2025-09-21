@@ -89,6 +89,10 @@ export function getSubmissions(params: SubmissionListPayload) {
   return http.get(endpoint, { params })
 }
 
+export function getRankOfProblem(problem_id: string) {
+  return http.get("user_problem_rank", { params: {problem_id: problem_id} })
+}
+
 export function getTodaySubmissionCount() {
   return http.get("submissions/today_count")
 }
