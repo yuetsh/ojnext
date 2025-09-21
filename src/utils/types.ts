@@ -229,6 +229,7 @@ export interface SubmissionListPayload {
   username?: string
   contest_id?: string
   problem_id?: string
+  language?: LANGUAGE
   page: number
   limit: number
   offset: number

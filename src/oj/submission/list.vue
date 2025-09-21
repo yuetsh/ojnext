@@ -2,7 +2,7 @@
 import { NButton, NH2, NText } from "naive-ui"
 import { adminRejudge, getSubmissions, getTodaySubmissionCount } from "oj/api"
 import { filterEmptyValue, parseTime } from "utils/functions"
-import { Submission } from "utils/types"
+import { LANGUAGE, Submission } from "utils/types"
 import Pagination from "~/shared/components/Pagination.vue"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
@@ -21,6 +21,7 @@ interface Query {
   page: number
   myself: boolean
   problem: string
+  language: LANGUAGE | ""
 }
 
 const route = useRoute()
@@ -38,12 +39,13 @@ const query = reactive<Query>({
   username: <string>route.query.username ?? "",
   myself: route.query.myself === "1",
   problem: <string>route.query.problem ?? "",
+  language: <LANGUAGE | "">route.query.language ?? "",
 })
 const submissionID = ref("")
 const [statisticPanel, toggleStatisticPanel] = useToggle(false)
 const [codePanel, toggleCodePanel] = useToggle(false)
 
-const options: SelectOption[] = [
+const resultOptions: SelectOption[] = [
   { label: "全部", value: "" },
   { label: "答案正确", value: "0" },
   { label: "答案错误", value: "-1" },
@@ -51,6 +53,12 @@ const options: SelectOption[] = [
   { label: "运行时错误", value: "4" },
 ]
 
+const languageOptions: SelectOption[] = [
+  { label: "全部", value: "" },
+  { label: "Python", value: "Python3" },
+  { label: "C语言", value: "C" },
+  { label: "C++", value: "C++" },
+]
 async function listSubmissions() {
   query.result = <string>route.query.result ?? ""
   query.page = parseInt(<string>route.query.page) || 1
@@ -58,6 +66,7 @@ async function listSubmissions() {
   query.username = <string>route.query.username ?? ""
   query.myself = route.query.myself === "1"
   query.problem = <string>route.query.problem ?? ""
+  query.language = <LANGUAGE>route.query.language ?? ""
 
   if (query.page < 1) query.page = 1
   const offset = query.limit * (query.page - 1)
@@ -67,6 +76,7 @@ async function listSubmissions() {
     offset,
     problem_id: <string>route.query.problem ?? "",
     contest_id: <string>route.params.contestID ?? "",
+    language: query.language,
   })
   submissions.value = res.data.results
   total.value = res.data.total
@@ -105,6 +115,7 @@ function clear() {
   query.myself = false
   query.result = ""
   query.problem = ""
+  query.language = ""
 }
 
 async function rejudge(submissionID: string) {
@@ -135,7 +146,7 @@ function showCodePanel(id: string) {
 watch(() => query.page, routerPush)
 
 watch(
-  () => [query.limit, query.myself, query.result],
+  () => [query.limit, query.myself, query.result, query.language],
   () => {
     query.page = 1
     routerPush()
@@ -253,7 +264,14 @@ const columns = computed(() => {
           <n-select
             class="select"
             v-model:value="query.result"
-            :options="options"
+            :options="resultOptions"
+          />
+        </n-form-item>
+        <n-form-item label="编程语言">
+          <n-select
+            class="select"
+            v-model:value="query.language"
+            :options="languageOptions"
           />
         </n-form-item>
         <n-form-item v-if="userStore.isAuthed" label="只看自己">
