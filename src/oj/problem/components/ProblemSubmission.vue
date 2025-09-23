@@ -66,6 +66,7 @@ const class_name = ref("")
 const rank = ref(-1)
 const class_ac_count = ref(0)
 const all_ac_count = ref(0)
+const loading = ref(false)
 
 const submissions = ref<Submission[]>([])
 const total = ref(0)
@@ -82,7 +83,8 @@ const showList = computed(() => {
 
 const errorMsg = computed(() => {
   if (!userStore.isAuthed) return "请先登录"
-  else if (!configStore.config.submission_list_show_all) return "不让看了"
+  else if (!configStore.config.submission_list_show_all)
+    return "提交列表已被管理员关闭"
   else return ""
 })
 
@@ -100,7 +102,10 @@ async function listSubmissions() {
 }
 
 async function getRankOfThisProblem() {
+  loading.value = true
   const res = await getRankOfProblem(<string>route.params.problemID ?? "")
+  loading.value = false
+
   class_name.value = res.data.class_name
   rank.value = res.data.rank
   class_ac_count.value = res.data.class_ac_count
@@ -114,8 +119,9 @@ onMounted(() => {
 watch(query, listSubmissions)
 </script>
 <template>
-  <n-alert type="error" v-if="!showList" :title="errorMsg" />
-  <template v-if="route.name === 'problem'">
+  <n-alert class="tip" type="error" v-if="!showList" :title="errorMsg" />
+
+  <template v-if="!loading && route.name === 'problem' && userStore.isAuthed">
     <template v-if="class_name">
       <n-alert class="tip" type="success" :show-icon="false" v-if="rank !== -1">
         <template #header>
@@ -125,6 +131,7 @@ watch(query, listSubmissions)
               >，你们班共有 <b>{{ class_ac_count }}</b> 人答案正确
             </div>
             <n-button
+              v-if="showList"
               @click="
                 router.push({
                   name: 'submissions',
@@ -152,6 +159,8 @@ watch(query, listSubmissions)
               共有 <b>{{ class_ac_count }}</b> 人答案正确
             </div>
             <n-button
+              v-if="showList"
+              secondary
               @click="
                 router.push({
                   name: 'submissions',
@@ -182,6 +191,7 @@ watch(query, listSubmissions)
             <div></div>
             <n-button
               secondary
+              v-if="showList"
               @click="
                 router.push({
                   name: 'submissions',
@@ -203,9 +213,12 @@ watch(query, listSubmissions)
         <template #header>
           <n-flex align="center">
             <div>
-              本道题你还没有解决，全服共有 <b>{{ all_ac_count }}</b> 人答案正确
+              本道题你还没有解决，全服共有
+              <b>{{ all_ac_count }}</b> 人答案正确
             </div>
             <n-button
+              v-if="showList"
+              secondary
               @click="
                 router.push({
                   name: 'submissions',
@@ -225,6 +238,7 @@ watch(query, listSubmissions)
       </n-alert>
     </template>
   </template>
+
   <template v-if="showList">
     <n-data-table striped :columns="columns" :data="submissions" />
     <Pagination

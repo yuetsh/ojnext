@@ -388,3 +388,13 @@ export interface Tutorial {
   updated_at?: Date
   created_at?: Date
 }
+
+export interface WeeklyData {
+  unit: string
+  index: number
+  start: string
+  end: string
+  grade: "S" | "A" | "B" | "C"
+  problem_count: number
+  submission_count: number
+}

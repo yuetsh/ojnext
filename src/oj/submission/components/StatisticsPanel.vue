@@ -65,7 +65,6 @@
         <n-button type="warning" @click="toggleUnaccepted(!unaccepted)">
           {{ unaccepted ? "隐藏没有完成的" : "显示没有完成的" }}
         </n-button>
-        <n-button @click="copyUnaccepted">手动复制到微信群</n-button>
       </n-flex>
     </n-space>
     <n-h1 v-if="count.total === 0">
@@ -73,8 +72,8 @@
     </n-h1>
     <n-space v-if="unaccepted" size="large">
       <n-h1>这{{ listUnaccepted.length }}位没有完成：</n-h1>
-      <n-h1 v-for="item in listUnaccepted" :key="item">
-        {{ removeClassname(item) }}
+      <n-h1 v-for="name in listUnaccepted" :key="name">
+        {{ name }}
       </n-h1>
       <n-text v-if="message">{{ message }}</n-text>
     </n-space>
@@ -158,21 +157,5 @@ async function handleStatistics() {
 
   toggleUnaccepted(false)
   message.value = ""
-}
-
-function removeClassname(name: string) {
-  if (name.startsWith("ks")) {
-    return name.slice(5)
-  }
-  return name
-}
-
-function copyUnaccepted() {
-  const grade = query.username.slice(2, 4)
-  const classname = query.username.slice(4, 5)
-  const prefix = `${grade}计算机${classname}班${query.problem}这道题有${listUnaccepted.value.length}人没有完成，分别是：`
-  const names = listUnaccepted.value.map(removeClassname).join("、")
-  const suffix = "。请以上同学尽快完成！"
-  message.value = prefix + names + suffix
 }
 </script>

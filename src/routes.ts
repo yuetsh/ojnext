@@ -95,6 +95,12 @@ export const ojs: RouteRecordRaw = {
       component: () => import("oj/learn/index.vue"),
       props: true,
     },
+    {
+      path: "ai-analysis",
+      component: () => import("oj/ai/analysis.vue"),
+      meta: { requiresAuth: true },
+      beforeEnter: loadChart,
+    },
   ],
 }
 

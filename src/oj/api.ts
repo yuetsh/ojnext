@@ -90,7 +90,7 @@ export function getSubmissions(params: SubmissionListPayload) {
 }
 
 export function getRankOfProblem(problem_id: string) {
-  return http.get("user_problem_rank", { params: {problem_id: problem_id} })
+  return http.get("user_problem_rank", { params: { problem_id: problem_id } })
 }
 
 export function getTodaySubmissionCount() {
@@ -243,4 +243,20 @@ export function getTutorial(id: number) {
 
 export function getTutorials() {
   return http.get("tutorials")
+}
+
+export function getAIDetailData(start: string, end: string, username?: string) {
+  return http.get("ai/detail", { params: { start, end, username } })
+}
+
+export function getAIWeeklyData(
+  end: string,
+  duration: string,
+  username?: string,
+) {
+  return http.get("ai/weekly", { params: { end, duration, username } })
+}
+
+export function getAIAnalysis() {
+  return http.get("ai/analysis")
 }

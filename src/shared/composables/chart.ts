@@ -8,6 +8,8 @@ import {
   LinearScale,
   Title,
   Tooltip,
+  LineElement,
+  PointElement,
 } from "chart.js"
 
 const [isLoaded] = useToggle()
@@ -19,6 +21,8 @@ export function loadChart() {
     LinearScale,
     BarElement,
     ArcElement,
+    LineElement,
+    PointElement,
     Colors,
     Title,
     Tooltip,

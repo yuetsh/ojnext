@@ -2,9 +2,8 @@
 import { importUsers } from "../api"
 
 const message = useMessage()
-const prefix = ref("")
+const prefix = ref(0)
 const rawInput = ref("")
-const [needKs] = useToggle(true)
 const [loading, toggleLoading] = useToggle()
 const users = shallowRef<string[][]>([])
 
@@ -13,25 +12,17 @@ function generateUsers() {
     message.info("请填写相关内容")
     return false
   }
-  // 自动加上 ks 的开头
-  let myClass = ""
-  if (prefix.value) {
-    if (needKs.value && !prefix.value.startsWith("ks")) {
-      myClass = "ks" + prefix.value
-    } else {
-      myClass = prefix.value
-    }
-  }
+  let className = !!prefix.value ? `ks${prefix.value}` : ""
   rawInput.value = rawInput.value.trim()
   const inputs = rawInput.value.split("\n")
   users.value = inputs.map((u, i) => {
-    const username = myClass + u
+    const username = className + u
     let password = ""
     for (let j = 0; j < 6; j++) {
       password += "123456789".charAt(Math.floor(Math.random() * 9))
     }
     const realName = u
-    const email = `${myClass}.${i + 1}@example.com`
+    const email = `${className}.${i + 1}@example.com`
     return [username, password, email, realName]
   })
   return true
@@ -68,14 +59,16 @@ async function submit() {
   <n-space>
     <n-flex vertical>
       <n-flex align="center">
-        <n-switch v-model:value="needKs" />
-        <span>前面带上 ks</span>
+        <div style="width: 18px; font-size: 1.2rem">ks</div>
+        <n-input-number
+          style="width: 170px"
+          v-model:value="prefix"
+          clearable
+          :max="9999"
+          :min="0"
+          placeholder="班级号"
+        />
       </n-flex>
-      <n-input
-        style="width: 200px"
-        v-model:value="prefix"
-        placeholder="班级号"
-      />
       <n-input
         type="textarea"
         class="inputArea"

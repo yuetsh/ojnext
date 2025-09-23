@@ -123,9 +123,17 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的设置",
     key: "setting",
-    icon: renderIcon("streamline-emojis:robot-face-1"),
+    icon: renderIcon("streamline-emojis:ferris-wheel"),
     props: {
       onClick: () => router.push("/setting"),
+    },
+  },
+  {
+    label: "智能分析",
+    key: "ai-analysis",
+    icon: renderIcon("streamline-emojis:floppy-disk"),
+    props: {
+      onClick: () => router.push("/ai-analysis"),
     },
   },
   { type: "divider" },
