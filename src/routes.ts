@@ -1,5 +1,4 @@
 import { RouteRecordRaw } from "vue-router"
-import { loadChart } from "./shared/composables/chart"
 
 export const ojs: RouteRecordRaw = {
   path: "/",
@@ -11,7 +10,6 @@ export const ojs: RouteRecordRaw = {
       component: () => import("oj/problem/detail.vue"),
       props: true,
       name: "problem",
-      beforeEnter: loadChart,
     },
     {
       path: "submission",
@@ -63,12 +61,10 @@ export const ojs: RouteRecordRaw = {
       props: true,
       name: "contest problem",
       meta: { requiresAuth: true },
-      beforeEnter: loadChart,
     },
     {
       path: "rank",
       component: () => import("oj/rank/list.vue"),
-      beforeEnter: loadChart,
     },
     {
       path: "announcement",
@@ -99,7 +95,6 @@ export const ojs: RouteRecordRaw = {
       path: "ai-analysis",
       component: () => import("oj/ai/analysis.vue"),
       meta: { requiresAuth: true },
-      beforeEnter: loadChart,
     },
   ],
 }
