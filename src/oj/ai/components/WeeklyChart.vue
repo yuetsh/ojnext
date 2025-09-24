@@ -1,18 +1,24 @@
 <template>
-  <div class="chart">
-    <Chart type="bar" :data="data" :options="options" />
-  </div>
+  <n-spin :show="weeklyLoading">
+    <div class="chart">
+      <Chart type="bar" :data="data" :options="options" />
+    </div>
+  </n-spin>
 </template>
 <script setup lang="ts">
 import type { ChartData, ChartOptions, TooltipItem } from "chart.js"
 import { Chart } from "vue-chartjs"
 import { parseTime } from "~/utils/functions"
 import { WeeklyData } from "~/utils/types"
+import { getAIWeeklyData } from "~/oj/api"
 
 const props = defineProps<{
-  weeklyData: WeeklyData[]
   duration: string
+  end: string
+  username: string
 }>()
+
+const weeklyLoading = ref(false)
 
 const gradeOrder = ["C", "B", "A", "S"] as const
 
@@ -30,7 +36,7 @@ const title = computed(() => {
 
 const data = computed<ChartData<"bar" | "line">>(() => {
   return {
-    labels: props.weeklyData.map((weekly) => {
+    labels: weeklyData.value.map((weekly) => {
       let prefix = "周"
       if (weekly.unit === "months") {
         prefix = "月"
@@ -45,19 +51,19 @@ const data = computed<ChartData<"bar" | "line">>(() => {
       {
         type: "bar",
         label: "完成题目数量",
-        data: props.weeklyData.map((weekly) => weekly.problem_count),
+        data: weeklyData.value.map((weekly) => weekly.problem_count),
         yAxisID: "y",
       },
       {
         type: "bar",
         label: "总提交次数",
-        data: props.weeklyData.map((weekly) => weekly.submission_count),
+        data: weeklyData.value.map((weekly) => weekly.submission_count),
         yAxisID: "y",
       },
       {
         type: "line",
         label: "等级",
-        data: props.weeklyData.map((weekly) =>
+        data: weeklyData.value.map((weekly) =>
           gradeOrder.indexOf(weekly.grade || "C"),
         ),
         tension: 0.4,
@@ -116,6 +122,19 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
       },
     },
   }
+})
+
+const weeklyData = ref<WeeklyData[]>([])
+
+async function getWeeklyData() {
+  weeklyLoading.value = true
+  const res = await getAIWeeklyData(props.end, props.duration, props.username)
+  weeklyData.value = res.data
+  weeklyLoading.value = false
+}
+
+watch(() => [props.duration, props.username], getWeeklyData, {
+  immediate: true,
 })
 </script>
 <style scoped>
