@@ -18,6 +18,7 @@ watch(
       aiStore.fetchAIAnalysis()
     }
   },
+  { immediate: true },
 )
 </script>
 <style scoped>
