@@ -2,21 +2,13 @@
   <n-grid :cols="isDesktop ? 5: 1" :x-gap="20">
     <n-gi :span="2">
       <n-flex vertical size="large">
-        <n-flex align="center">
+        <n-flex align="center" justify="space-between">
+          <n-h3 style="margin: 0;">请选择时间范围，智能分析学习情况</n-h3>
           <n-select
             style="width: 140px"
             :options="options"
             v-model:value="aiStore.duration"
           />
-          <n-flex>
-            <n-input
-              clearable
-              style="width: 140px"
-              v-if="userStore.isSuperAdmin"
-              v-model:value="username"
-            />
-            <n-button @click="search">查询</n-button>
-          </n-flex>
         </n-flex>
         <Details :start="start" :end="end" />
       </n-flex>
@@ -35,15 +27,12 @@ import { formatISO, sub, type Duration } from "date-fns"
 import WeeklyChart from "./components/WeeklyChart.vue"
 import Details from "./components/Details.vue"
 import AI from "./components/AI.vue"
-import { useUserStore } from "~/shared/store/user"
 import { useAIStore } from "../store/ai"
 
-const userStore = useUserStore()
 const aiStore = useAIStore()
 
 const start = ref("")
 const end = ref("")
-const username = ref("")
 
 const options: SelectOption[] = [
   { label: "一节课内", value: "hours:1" },
@@ -68,10 +57,6 @@ function updateRange() {
   const current = new Date()
   end.value = formatISO(current)
   start.value = formatISO(sub(current, subOptions.value))
-}
-
-function search() {
-  aiStore.username = username.value
 }
 
 watch(() => aiStore.duration, updateRange, { immediate: true })

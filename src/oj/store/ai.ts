@@ -5,7 +5,6 @@ import { getCSRFToken } from "~/utils/functions"
 
 export const useAIStore = defineStore("ai", () => {
   const duration = ref("months:6")
-  const username = ref("")
   const weeklyData = ref<WeeklyData[]>([])
   const detailsData = reactive<DetailsData>({
     start: "",
@@ -26,17 +25,14 @@ export const useAIStore = defineStore("ai", () => {
 
   const mdContent = ref("")
 
-  const theFirstPerson = computed(() => {
-    return !!username.value ? username.value : "你"
-  })
+  const theFirstPerson = "你"
 
   async function fetchDetailsData(
     start: string,
     end: string,
-    username?: string,
   ) {
     loading.details = true
-    const res = await getAIDetailData(start, end, username)
+    const res = await getAIDetailData(start, end)
     detailsData.start = res.data.start
     detailsData.end = res.data.end
     detailsData.solved = res.data.solved
@@ -51,10 +47,9 @@ export const useAIStore = defineStore("ai", () => {
   async function fetchWeeklyData(
     end: string,
     duration: string,
-    username?: string,
   ) {
     loading.weekly = true
-    const res = await getAIWeeklyData(end, duration, username)
+    const res = await getAIWeeklyData(end, duration)
     weeklyData.value = res.data
     loading.weekly = false
   }
@@ -145,7 +140,6 @@ export const useAIStore = defineStore("ai", () => {
     weeklyData,
     detailsData,
     duration,
-    username,
     theFirstPerson,
     loading,
     mdContent,

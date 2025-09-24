@@ -245,14 +245,13 @@ export function getTutorials() {
   return http.get("tutorials")
 }
 
-export function getAIDetailData(start: string, end: string, username?: string) {
-  return http.get("ai/detail", { params: { start, end, username } })
+export function getAIDetailData(start: string, end: string) {
+  return http.get("ai/detail", { params: { start, end } })
 }
 
 export function getAIWeeklyData(
   end: string,
   duration: string,
-  username?: string,
 ) {
-  return http.get("ai/weekly", { params: { end, duration, username } })
+  return http.get("ai/weekly", { params: { end, duration } })
 }

@@ -121,9 +121,9 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
 })
 
 watch(
-  () => [aiStore.duration, aiStore.username],
+  () => aiStore.duration,
   () => {
-    aiStore.fetchWeeklyData(props.end, aiStore.duration, aiStore.username)
+    aiStore.fetchWeeklyData(props.end, aiStore.duration)
   },
   { immediate: true },
 )

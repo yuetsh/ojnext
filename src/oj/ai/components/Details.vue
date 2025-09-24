@@ -129,9 +129,9 @@ const greeting = computed(() => {
 })
 
 watch(
-  () => [aiStore.duration, aiStore.username],
+  () => aiStore.duration,
   () => {
-    aiStore.fetchDetailsData(props.start, props.end, aiStore.username)
+    aiStore.fetchDetailsData(props.start, props.end)
   },
   { immediate: true },
 )
