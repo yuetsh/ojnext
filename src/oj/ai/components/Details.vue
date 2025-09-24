@@ -33,7 +33,6 @@
       <n-data-table
         v-if="aiStore.detailsData.solved.length"
         striped
-        :max-height="400"
         :data="aiStore.detailsData.solved"
         :columns="columns"
       />

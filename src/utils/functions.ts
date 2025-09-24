@@ -183,6 +183,14 @@ export function decode(bytes?: string) {
   )
 }
 
+export function getCSRFToken() {
+  if (typeof document === "undefined") {
+    return ""
+  }
+  const match = document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/)
+  return match ? decodeURIComponent(match[1]) : ""
+}
+
 // function getChromeVersion() {
 //   var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)
 //   return raw ? parseInt(raw[2], 10) : 0
