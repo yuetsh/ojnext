@@ -1,5 +1,5 @@
 <template>
-  <n-grid :cols="5" :x-gap="20">
+  <n-grid :cols="isDesktop ? 5: 1" :x-gap="20">
     <n-gi :span="2">
       <n-flex vertical size="large">
         <n-flex align="center">
@@ -30,9 +30,8 @@
   </n-grid>
 </template>
 <script setup lang="ts">
-import { ref, computed, watch } from "vue"
+import { isDesktop } from "~/shared/composables/breakpoints"
 import { formatISO, sub, type Duration } from "date-fns"
-import { NButton } from "naive-ui"
 import WeeklyChart from "./components/WeeklyChart.vue"
 import Details from "./components/Details.vue"
 import AI from "./components/AI.vue"
