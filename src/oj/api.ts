@@ -2,10 +2,12 @@ import { DIFFICULTY } from "utils/constants"
 import { getACRate } from "utils/functions"
 import http from "utils/http"
 import {
+  DetailsData,
   Problem,
   Submission,
   SubmissionListPayload,
   SubmitCodePayload,
+  WeeklyData,
 } from "utils/types"
 
 function filterResult(result: Problem) {
@@ -257,6 +259,12 @@ export function getAIWeeklyData(
   return http.get("ai/weekly", { params: { end, duration, username } })
 }
 
-export function getAIAnalysis() {
-  return http.get("ai/analysis")
+export function getAIAnalysis(
+  detailsData: DetailsData,
+  weeklyData: WeeklyData[],
+) {
+  return http.post("ai/analysis", {
+    details: detailsData,
+    weekly: weeklyData,
+  })
 }

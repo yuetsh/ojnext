@@ -6,7 +6,7 @@
           <n-select
             style="width: 140px"
             :options="options"
-            v-model:value="query.duration"
+            v-model:value="aiStore.duration"
           />
           <n-flex>
             <n-input
@@ -18,20 +18,14 @@
             <n-button @click="search">查询</n-button>
           </n-flex>
         </n-flex>
-        <Details
-          :start="start"
-          :end="end"
-          :duration="query.duration"
-          :username="query.username"
-        />
+        <Details :start="start" :end="end" />
       </n-flex>
     </n-gi>
     <n-gi :span="3">
-      <WeeklyChart
-        :end="end"
-        :username="query.username"
-        :duration="query.duration"
-      />
+      <n-flex vertical size="large">
+        <WeeklyChart :end="end" />
+        <AI v-if="aiStore.detailsData.solved.length" />
+      </n-flex>
     </n-gi>
   </n-grid>
 </template>
@@ -41,17 +35,16 @@ import { formatISO, sub, type Duration } from "date-fns"
 import { NButton } from "naive-ui"
 import WeeklyChart from "./components/WeeklyChart.vue"
 import Details from "./components/Details.vue"
+import AI from "./components/AI.vue"
 import { useUserStore } from "~/shared/store/user"
+import { useAIStore } from "../store/ai"
 
 const userStore = useUserStore()
+const aiStore = useAIStore()
 
 const start = ref("")
 const end = ref("")
 const username = ref("")
-const query = reactive({
-  username: "",
-  duration: "months:6",
-})
 
 const options: SelectOption[] = [
   { label: "一节课内", value: "hours:1" },
@@ -65,7 +58,7 @@ const options: SelectOption[] = [
 ]
 
 const subOptions = computed<Duration>(() => {
-  let dur = options.find((it) => it.value === query.duration) ?? options[0]
+  let dur = options.find((it) => it.value === aiStore.duration) ?? options[0]
   const x = dur.value!.toString().split(":")
   const unit = x[0]
   const n = x[1]
@@ -79,8 +72,8 @@ function updateRange() {
 }
 
 function search() {
-  query.username = username.value
+  aiStore.username = username.value
 }
 
-watch(() => query.duration, updateRange, { immediate: true })
+watch(() => aiStore.duration, updateRange, { immediate: true })
 </script>

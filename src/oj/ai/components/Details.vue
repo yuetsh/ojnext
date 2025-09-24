@@ -1,33 +1,40 @@
 <template>
-  <n-spin :show="detailLoading">
+  <n-spin :show="aiStore.loading.details">
     <n-flex vertical size="large">
-      <n-alert :show-icon="false" type="success" v-if="solvedProblems.length">
+      <n-alert
+        :show-icon="false"
+        type="success"
+        v-if="aiStore.detailsData.solved.length"
+      >
         <span>{{ durationLabel }}，</span>
-        <span>{{ !!username ? username : "你" }}一共解决 </span>
-        <b class="charming"> {{ solvedProblems.length }} </b>
+        <span>{{ aiStore.theFirstPerson }}一共解决 </span>
+        <b class="charming"> {{ aiStore.detailsData.solved.length }} </b>
         <span> 道题，</span>
-        <span v-if="contest_count > 0">
+        <span v-if="aiStore.detailsData.contest_count > 0">
           并且参加
-          <b class="charming"> {{ contest_count }} </b> 次比赛，
+          <b class="charming"> {{ aiStore.detailsData.contest_count }} </b>
+          次比赛，
         </span>
         <span>综合评价给到</span>
-        <Grade :grade="grade" />
+        <Grade :grade="aiStore.detailsData.grade" />
         <span>{{ greeting }}</span>
       </n-alert>
-      <n-alert
-        type="error"
-        v-else
-        :title="(!!username ? username : '你') + '还没有完成任何题目'"
-      ></n-alert>
+      <n-flex vertical size="large" v-else>
+        <n-alert
+          type="error"
+          :title="aiStore.theFirstPerson + '还没有完成任何题目'"
+        ></n-alert>
+        <AI />
+      </n-flex>
       <n-flex>
-        <TagsChart :tags="tags" />
-        <DifficultyChart :difficulty="difficulty" />
+        <TagsChart :tags="aiStore.detailsData.tags" />
+        <DifficultyChart :difficulty="aiStore.detailsData.difficulty" />
       </n-flex>
       <n-data-table
-        v-if="solvedProblems.length"
+        v-if="aiStore.detailsData.solved.length"
         striped
         :max-height="400"
-        :data="solvedProblems"
+        :data="aiStore.detailsData.solved"
         :columns="columns"
       />
     </n-flex>
@@ -39,43 +46,18 @@ import Grade from "./Grade.vue"
 import TagsChart from "./TagsChart.vue"
 import DifficultyChart from "./DifficultyChart.vue"
 import TagTitle from "./TagTitle.vue"
+import AI from "./AI.vue"
 import { parseTime } from "~/utils/functions"
-import { getAIDetailData } from "~/oj/api"
+import { SolvedProblem } from "~/utils/types"
+import { useAIStore } from "~/oj/store/ai"
 
 const props = defineProps<{
   start: string
   end: string
-  duration: string
-  username: string
 }>()
 
 const router = useRouter()
-
-interface SolvedProblem {
-  problem: {
-    title: string
-    display_id: string
-    contest_title: string
-    contest_id: number
-  }
-  ac_time: string
-  rank: number
-  ac_count: number
-  grade: "S" | "A" | "B" | "C"
-}
-
-const detailLoading = ref(false)
-
-const startLabel = ref("")
-const endLabel = ref("")
-
-const grade = ref<"S" | "A" | "B" | "C">("B")
-const class_name = ref("")
-const tags = ref<{ [key: string]: number }>({})
-const difficulty = ref<{ [key: string]: number }>({})
-const contest_count = ref(0)
-
-const solvedProblems = ref<SolvedProblem[]>([])
+const aiStore = useAIStore()
 
 const columns: DataTableColumn<SolvedProblem>[] = [
   {
@@ -109,7 +91,7 @@ const columns: DataTableColumn<SolvedProblem>[] = [
       ),
   },
   {
-    title: () => (class_name ? "班级排名" : "全服排名"),
+    title: () => (aiStore.detailsData.class_name ? "班级排名" : "全服排名"),
     key: "rank",
     width: 100,
     align: "center",
@@ -124,17 +106,17 @@ const columns: DataTableColumn<SolvedProblem>[] = [
 ]
 
 const durationLabel = computed(() => {
-  if (props.duration.includes("hours")) {
-    return `在 ${parseTime(startLabel.value, "HH:mm")} - ${parseTime(endLabel.value, "HH:mm")} 期间`
-  } else if (props.duration.includes("days")) {
-    return `在 ${parseTime(endLabel.value, "MM月DD日")}`
+  if (aiStore.duration.includes("hours")) {
+    return `在 ${parseTime(aiStore.detailsData.start, "HH:mm")} - ${parseTime(aiStore.detailsData.end, "HH:mm")} 期间`
+  } else if (aiStore.duration.includes("days")) {
+    return `在 ${parseTime(aiStore.detailsData.end, "MM月DD日")}`
   } else if (
-    props.duration.includes("weeks") ||
-    props.duration.includes("months")
+    aiStore.duration.includes("weeks") ||
+    aiStore.duration.includes("months")
   ) {
-    return `在 ${parseTime(startLabel.value, "MM月DD日")} - ${parseTime(endLabel.value, "MM月DD日")} 期间`
+    return `在 ${parseTime(aiStore.detailsData.start, "MM月DD日")} - ${parseTime(aiStore.detailsData.end, "MM月DD日")} 期间`
   } else {
-    return `在 ${parseTime(startLabel.value, "YYYY年MM月DD日")} - ${parseTime(endLabel.value, "YYYY年MM月DD日")} 期间`
+    return `在 ${parseTime(aiStore.detailsData.start, "YYYY年MM月DD日")} - ${parseTime(aiStore.detailsData.end, "YYYY年MM月DD日")} 期间`
   }
 })
 
@@ -144,25 +126,16 @@ const greeting = computed(() => {
     A: "你很棒，继续保持！",
     B: "请再接再厉！",
     C: "你还需要努力！",
-  }[grade.value]
+  }[aiStore.detailsData.grade]
 })
 
-async function getDetail() {
-  detailLoading.value = true
-  const res = await getAIDetailData(props.start, props.end, props.username)
-  detailLoading.value = false
-
-  startLabel.value = res.data.start
-  endLabel.value = res.data.end
-  solvedProblems.value = res.data.solved
-  grade.value = res.data.grade
-  class_name.value = res.data.class_name
-  tags.value = res.data.tags
-  difficulty.value = res.data.difficulty
-  contest_count.value = res.data.contest_count
-}
-
-watch(() => [props.duration, props.username], getDetail, { immediate: true })
+watch(
+  () => [aiStore.duration, aiStore.username],
+  () => {
+    aiStore.fetchDetailsData(props.start, props.end, aiStore.username)
+  },
+  { immediate: true },
+)
 </script>
 <style scoped>
 .charming {

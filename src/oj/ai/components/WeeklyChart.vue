@@ -1,5 +1,5 @@
 <template>
-  <n-spin :show="weeklyLoading">
+  <n-spin :show="aiStore.loading.weekly">
     <div class="chart">
       <Chart type="bar" :data="data" :options="options" />
     </div>
@@ -8,26 +8,23 @@
 <script setup lang="ts">
 import type { ChartData, ChartOptions, TooltipItem } from "chart.js"
 import { Chart } from "vue-chartjs"
+import { useAIStore } from "~/oj/store/ai"
 import { parseTime } from "~/utils/functions"
-import { WeeklyData } from "~/utils/types"
-import { getAIWeeklyData } from "~/oj/api"
 
 const props = defineProps<{
-  duration: string
   end: string
-  username: string
 }>()
 
-const weeklyLoading = ref(false)
+const aiStore = useAIStore()
 
 const gradeOrder = ["C", "B", "A", "S"] as const
 
 const title = computed(() => {
-  if (props.duration === "months:2") {
+  if (aiStore.duration === "months:2") {
     return "过去两个月的每周综合情况一览图"
-  } else if (props.duration === "months:6") {
+  } else if (aiStore.duration === "months:6") {
     return "过去半年的每月综合情况一览图"
-  } else if (props.duration === "years:1") {
+  } else if (aiStore.duration === "years:1") {
     return "过去一年的每月综合情况一览图"
   } else {
     return "过去四周的综合情况一览图"
@@ -36,12 +33,11 @@ const title = computed(() => {
 
 const data = computed<ChartData<"bar" | "line">>(() => {
   return {
-    labels: weeklyData.value.map((weekly) => {
+    labels: aiStore.weeklyData.map((weekly) => {
       let prefix = "周"
       if (weekly.unit === "months") {
         prefix = "月"
       }
-
       return [
         parseTime(weekly.start, "M月D日"),
         parseTime(weekly.end, "M月D日"),
@@ -51,19 +47,19 @@ const data = computed<ChartData<"bar" | "line">>(() => {
       {
         type: "bar",
         label: "完成题目数量",
-        data: weeklyData.value.map((weekly) => weekly.problem_count),
+        data: aiStore.weeklyData.map((weekly) => weekly.problem_count),
         yAxisID: "y",
       },
       {
         type: "bar",
         label: "总提交次数",
-        data: weeklyData.value.map((weekly) => weekly.submission_count),
+        data: aiStore.weeklyData.map((weekly) => weekly.submission_count),
         yAxisID: "y",
       },
       {
         type: "line",
         label: "等级",
-        data: weeklyData.value.map((weekly) =>
+        data: aiStore.weeklyData.map((weekly) =>
           gradeOrder.indexOf(weekly.grade || "C"),
         ),
         tension: 0.4,
@@ -124,18 +120,13 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
   }
 })
 
-const weeklyData = ref<WeeklyData[]>([])
-
-async function getWeeklyData() {
-  weeklyLoading.value = true
-  const res = await getAIWeeklyData(props.end, props.duration, props.username)
-  weeklyData.value = res.data
-  weeklyLoading.value = false
-}
-
-watch(() => [props.duration, props.username], getWeeklyData, {
-  immediate: true,
-})
+watch(
+  () => [aiStore.duration, aiStore.username],
+  () => {
+    aiStore.fetchWeeklyData(props.end, aiStore.duration, aiStore.username)
+  },
+  { immediate: true },
+)
 </script>
 <style scoped>
 .chart {

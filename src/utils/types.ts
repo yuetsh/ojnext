@@ -394,7 +394,33 @@ export interface WeeklyData {
   index: number
   start: string
   end: string
-  grade: "S" | "A" | "B" | "C"
+  grade: Grade
   problem_count: number
   submission_count: number
 }
+
+export interface SolvedProblem {
+  problem: {
+    title: string
+    display_id: string
+    contest_title: string
+    contest_id: number
+  }
+  ac_time: string
+  rank: number
+  ac_count: number
+  grade: Grade
+}
+
+export interface DetailsData {
+  start: string
+  end: string
+  grade: Grade
+  class_name: string
+  tags: { [key: string]: number }
+  difficulty: { [key: string]: number }
+  contest_count: number
+  solved: SolvedProblem[]
+}
+
+export type Grade = "S" | "A" | "B" | "C"
