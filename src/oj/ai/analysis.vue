@@ -15,6 +15,7 @@
     </n-gi>
     <n-gi :span="3">
       <n-flex vertical size="large">
+        <Heatmap />
         <WeeklyChart :end="end" />
         <AI v-if="aiStore.detailsData.solved.length" />
       </n-flex>
@@ -26,9 +27,9 @@ import { isDesktop } from "~/shared/composables/breakpoints"
 import { formatISO, sub, type Duration } from "date-fns"
 import WeeklyChart from "./components/WeeklyChart.vue"
 import Details from "./components/Details.vue"
+import Heatmap from "./components/Heatmap.vue"
 import AI from "./components/AI.vue"
 import { useAIStore } from "../store/ai"
-
 const aiStore = useAIStore()
 
 const start = ref("")

@@ -255,3 +255,7 @@ export function getAIWeeklyData(
 ) {
   return http.get("ai/weekly", { params: { end, duration } })
 }
+
+export function getAIHeatmapData() {
+  return http.get("ai/heatmap")
+}

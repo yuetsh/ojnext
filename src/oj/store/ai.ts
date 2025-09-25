@@ -25,8 +25,6 @@ export const useAIStore = defineStore("ai", () => {
 
   const mdContent = ref("")
 
-  const theFirstPerson = "你"
-
   async function fetchDetailsData(
     start: string,
     end: string,
@@ -140,7 +138,6 @@ export const useAIStore = defineStore("ai", () => {
     weeklyData,
     detailsData,
     duration,
-    theFirstPerson,
     loading,
     mdContent,
   }

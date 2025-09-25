@@ -52,7 +52,7 @@ const options = {
 </script>
 <style scoped>
 .chart {
-  height: 300px;
-  width: 300px;
+  height: 100%;
+  width: 100%;
 }
 </style>

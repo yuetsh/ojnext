@@ -7,7 +7,7 @@
         v-if="aiStore.detailsData.solved.length"
       >
         <span>{{ durationLabel }}，</span>
-        <span>{{ aiStore.theFirstPerson }}一共解决 </span>
+        <span>你一共解决 </span>
         <b class="charming"> {{ aiStore.detailsData.solved.length }} </b>
         <span> 道题，</span>
         <span v-if="aiStore.detailsData.contest_count > 0">
@@ -20,16 +20,17 @@
         <span>{{ greeting }}</span>
       </n-alert>
       <n-flex vertical size="large" v-else>
-        <n-alert
-          type="error"
-          :title="aiStore.theFirstPerson + '还没有完成任何题目'"
-        ></n-alert>
+        <n-alert type="error" title="你还没有完成任何题目"></n-alert>
         <AI />
       </n-flex>
-      <n-flex>
-        <TagsChart :tags="aiStore.detailsData.tags" />
-        <DifficultyChart :difficulty="aiStore.detailsData.difficulty" />
-      </n-flex>
+      <n-grid :cols="isDesktop ? 2 : 1" :x-gap="10" :y-gap="10">
+        <n-gi>
+          <TagsChart :tags="aiStore.detailsData.tags" />
+        </n-gi>
+        <n-gi>
+          <DifficultyChart :difficulty="aiStore.detailsData.difficulty" />
+        </n-gi>
+      </n-grid>
       <n-data-table
         v-if="aiStore.detailsData.solved.length"
         striped
@@ -49,6 +50,7 @@ import AI from "./AI.vue"
 import { parseTime } from "~/utils/functions"
 import { SolvedProblem } from "~/utils/types"
 import { useAIStore } from "~/oj/store/ai"
+import { isDesktop } from "~/shared/composables/breakpoints"
 
 const props = defineProps<{
   start: string
