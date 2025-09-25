@@ -91,7 +91,7 @@ const menus = computed<MenuOption[]>(() => [
       h(
         RouterLink,
         { to: userStore.isTheAdmin ? "/admin/problem/list" : "/admin" },
-        { default: () => (userStore.isTheAdmin ? "我出的题" : "后台") },
+        { default: () => "后台" },
       ),
     show: userStore.isAdminRole,
     key: "admin",
