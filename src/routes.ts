@@ -107,9 +107,8 @@ export const admins: RouteRecordRaw = {
       path: "",
       name: "admin home",
       component: () => import("~/admin/setting/home.vue"),
-      meta: { requiresAdmin: true },
+      meta: { requiresSuperAdmin: true },
     },
-    // 只有super_admin可以访问的路由
     {
       path: "config",
       name: "admin config",
@@ -148,46 +147,45 @@ export const admins: RouteRecordRaw = {
       props: true,
       meta: { requiresProblemPermission: true },
     },
-    // admin和super_admin都可以访问的路由
     {
       path: "contest/list",
       name: "admin contest list",
       component: () => import("admin/contest/list.vue"),
-      meta: { requiresAdmin: true },
+      meta: { requiresSuperAdmin: true },
     },
     {
       path: "contest/create",
       name: "admin contest create",
       component: () => import("admin/contest/detail.vue"),
-      meta: { requiresAdmin: true },
+      meta: { requiresSuperAdmin: true },
     },
     {
       path: "contest/edit/:contestID",
       name: "admin contest edit",
       component: () => import("admin/contest/detail.vue"),
       props: true,
-      meta: { requiresAdmin: true },
+      meta: { requiresSuperAdmin: true },
     },
     {
       path: "contest/:contestID/problem/list",
       name: "admin contest problem list",
       component: () => import("admin/problem/list.vue"),
       props: true,
-      meta: { requiresAdmin: true },
+      meta: { requiresSuperAdmin: true },
     },
     {
       path: "contest/:contestID/problem/create",
       name: "admin contest problem create",
       component: () => import("admin/problem/detail.vue"),
       props: true,
-      meta: { requiresAdmin: true },
+      meta: { requiresSuperAdmin: true },
     },
     {
       path: "contest/:contestID/problem/edit/:problemID",
       name: "admin contest problem edit",
       component: () => import("admin/problem/detail.vue"),
       props: true,
-      meta: { requiresAdmin: true },
+      meta: { requiresSuperAdmin: true },
     },
     // 只有super_admin可以访问的路由
     {

@@ -3,7 +3,6 @@ import { DataTableRowKey, SelectOption } from "naive-ui"
 import Pagination from "~/shared/components/Pagination.vue"
 import { parseTime, filterEmptyValue } from "~/utils/functions"
 import { User } from "~/utils/types"
-import { usePermissions } from "~/utils/permissions"
 import {
   deleteUsers,
   editUser,
@@ -18,13 +17,6 @@ import { USER_TYPE } from "~/utils/constants"
 const message = useMessage()
 const router = useRouter()
 const route = useRoute()
-const { canManageUsers } = usePermissions()
-
-// 权限检查：只有super_admin可以管理用户
-if (!canManageUsers.value) {
-  message.error("您没有权限访问此页面")
-  router.push("/admin")
-}
 
 const total = ref(0)
 const users = ref<User[]>([])

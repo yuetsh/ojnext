@@ -119,49 +119,54 @@ async function getProblemDetail() {
     toggleReady(true)
     return
   }
-  const { data } = await getProblem(props.problemID)
-  toggleReady(true)
-  problem.value.id = data.id
-  problem.value._id = data._id
-  problem.value.title = data.title
-  problem.value.description = data.description
-  problem.value.input_description = data.input_description
-  problem.value.output_description = data.output_description
-  problem.value.time_limit = data.time_limit
-  problem.value.memory_limit = data.memory_limit
-  problem.value.memory_limit = data.memory_limit
-  problem.value.difficulty = data.difficulty
-  problem.value.visible = data.visible
-  problem.value.share_submission = data.share_submission
-  problem.value.tags = data.tags
-  problem.value.languages = data.languages
-  problem.value.template = data.template
-  problem.value.samples = data.samples
-  problem.value.samples = data.samples
-  problem.value.spj = data.spj
-  problem.value.spj_language = data.spj_language
-  problem.value.spj_code = data.spj_code
-  problem.value.spj_compile_ok = data.spj_compile_ok
-  problem.value.test_case_id = data.test_case_id
-  problem.value.test_case_score = data.test_case_score
-  problem.value.rule_type = data.rule_type
-  problem.value.hint = data.hint
-  problem.value.source = data.source
-  problem.value.io_mode = data.io_mode
-  if (problem.value.contest_id) {
-    problem.value.contest_id = problem.value.contest_id
-  }
-
-  // 下面是用来显示的：
-  // 代码模板 和 模板开关
-  problem.value.languages.forEach((lang) => {
-    if (data.template[lang]) {
-      template[lang] = data.template[lang]
-      toggleNeedTemplate(true)
+  try {
+    const { data } = await getProblem(props.problemID)
+    toggleReady(true)
+    problem.value.id = data.id
+    problem.value._id = data._id
+    problem.value.title = data.title
+    problem.value.description = data.description
+    problem.value.input_description = data.input_description
+    problem.value.output_description = data.output_description
+    problem.value.time_limit = data.time_limit
+    problem.value.memory_limit = data.memory_limit
+    problem.value.memory_limit = data.memory_limit
+    problem.value.difficulty = data.difficulty
+    problem.value.visible = data.visible
+    problem.value.share_submission = data.share_submission
+    problem.value.tags = data.tags
+    problem.value.languages = data.languages
+    problem.value.template = data.template
+    problem.value.samples = data.samples
+    problem.value.samples = data.samples
+    problem.value.spj = data.spj
+    problem.value.spj_language = data.spj_language
+    problem.value.spj_code = data.spj_code
+    problem.value.spj_compile_ok = data.spj_compile_ok
+    problem.value.test_case_id = data.test_case_id
+    problem.value.test_case_score = data.test_case_score
+    problem.value.rule_type = data.rule_type
+    problem.value.hint = data.hint
+    problem.value.source = data.source
+    problem.value.io_mode = data.io_mode
+    if (problem.value.contest_id) {
+      problem.value.contest_id = problem.value.contest_id
     }
-  })
-  // 标签
-  tags.value.select = data.tags
+
+    // 下面是用来显示的：
+    // 代码模板 和 模板开关
+    problem.value.languages.forEach((lang) => {
+      if (data.template[lang]) {
+        template[lang] = data.template[lang]
+        toggleNeedTemplate(true)
+      }
+    })
+    // 标签
+    tags.value.select = data.tags
+  } catch (error) {
+    message.error("获取题目失败")
+    router.push({ name: "admin problem list" })
+  }
 }
 
 async function getTagList() {

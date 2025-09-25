@@ -25,6 +25,7 @@ import App from "./App.vue"
 import { admins, ojs } from "./routes"
 
 import { toggleLogin } from "./shared/composables/modal"
+import { useUserStore } from "./shared/store/user"
 
 const router = createRouter({
   history: createWebHistory(),
@@ -41,23 +42,20 @@ router.beforeEach(async (to, from, next) => {
     }
   }
 
-  // 检查管理员权限
-  if (to.matched.some((record) => 
-    record.meta.requiresAdmin || 
-    record.meta.requiresSuperAdmin || 
-    record.meta.requiresProblemPermission
-  )) {
+  // 检查权限
+  if (
+    to.matched.some(
+      (record) =>
+        record.meta.requiresSuperAdmin || record.meta.requiresProblemPermission,
+    )
+  ) {
     if (!storage.get(STORAGE_KEY.AUTHED)) {
       toggleLogin(true)
       next("/")
       return
     }
 
-    // 动态导入用户store来检查权限
-    const { useUserStore } = await import("./shared/store/user")
     const userStore = useUserStore()
-    
-    // 确保用户信息已加载
     if (!userStore.user) {
       try {
         await userStore.getMyProfile()
@@ -66,26 +64,15 @@ router.beforeEach(async (to, from, next) => {
         return
       }
     }
-
-    // 检查super admin权限
     if (to.matched.some((record) => record.meta.requiresSuperAdmin)) {
       if (!userStore.isSuperAdmin) {
-        next("/admin")
+        next("/")
         return
       }
-    }
-    
-    // 检查题目权限
-    else if (to.matched.some((record) => record.meta.requiresProblemPermission)) {
+    } else if (
+      to.matched.some((record) => record.meta.requiresProblemPermission)
+    ) {
       if (!userStore.hasProblemPermission) {
-        next("/admin")
-        return
-      }
-    }
-    
-    // 检查基本admin权限
-    else if (to.matched.some((record) => record.meta.requiresAdmin)) {
-      if (!userStore.isAdminRole) {
         next("/")
         return
       }

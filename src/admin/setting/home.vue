@@ -3,7 +3,6 @@ import { NButton } from "naive-ui"
 import { getRank } from "oj/api"
 import Pagination from "~/shared/components/Pagination.vue"
 import { useUserStore } from "~/shared/store/user"
-import { usePermissions } from "~/utils/permissions"
 import { getACRate } from "~/utils/functions"
 import { Rank } from "~/utils/types"
 import { getBaseInfo, randomUser10 } from "../api"
@@ -14,14 +13,6 @@ const contestCount = ref(0)
 const userStore = useUserStore()
 const router = useRouter()
 const message = useMessage()
-const { isSuperAdmin } = usePermissions()
-
-// 权限检查：只有super_admin可以访问管理员首页
-if (!isSuperAdmin.value) {
-  message.error("您没有权限访问此页面")
-  router.push("/admin/problem/list")
-}
-
 const showModal = ref(false)
 const luckyGuy = ref("")
 const data = ref<Rank[]>([])
