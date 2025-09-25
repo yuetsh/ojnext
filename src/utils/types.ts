@@ -120,9 +120,9 @@ export interface Problem {
   total_score: number
   submission_number: number
   accepted_number: number
-  statistic_info: { [key in string]: number }
+  statistic_info: { time_cost: number; memory_cost: number }
   share_submission: boolean
-  contest: null
+  contest: number
   my_status: number
   visible: boolean
 }
@@ -220,9 +220,25 @@ export interface Submission {
     memory_cost?: number
   }
   ip: string
-  contest: null
-  problem: string
+  contest: number
+  problem: number // 不是 display_id
   can_unshare: boolean
+}
+
+export interface SubmissionListItem {
+  id: string
+  problem: string
+  show_link: boolean
+  create_time: string
+  user_id: number
+  username: string
+  result: SUBMISSION_RESULT
+  language: LANGUAGE
+  shared: boolean
+  statistic_info: {
+    time_cost: number
+    memory_cost: number
+  }
 }
 
 export interface SubmissionListPayload {

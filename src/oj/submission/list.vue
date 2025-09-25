@@ -2,7 +2,7 @@
 import { NButton, NH2, NText } from "naive-ui"
 import { adminRejudge, getSubmissions, getTodaySubmissionCount } from "oj/api"
 import { filterEmptyValue, parseTime } from "utils/functions"
-import { LANGUAGE, Submission } from "utils/types"
+import { LANGUAGE, SubmissionListItem } from "utils/types"
 import Pagination from "~/shared/components/Pagination.vue"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
@@ -29,7 +29,7 @@ const router = useRouter()
 const userStore = useUserStore()
 const message = useMessage()
 
-const submissions = ref([])
+const submissions = ref<SubmissionListItem[]>([])
 const total = ref(0)
 const todayCount = ref(0)
 const query = reactive<Query>({
@@ -42,6 +42,7 @@ const query = reactive<Query>({
   language: <LANGUAGE | "">route.query.language ?? "",
 })
 const submissionID = ref("")
+const problemDisplayID = ref("")
 const [statisticPanel, toggleStatisticPanel] = useToggle(false)
 const [codePanel, toggleCodePanel] = useToggle(false)
 
@@ -130,7 +131,7 @@ async function rejudge(submissionID: string) {
   listSubmissions()
 }
 
-function problemClicked(row: Submission) {
+function problemClicked(row: SubmissionListItem) {
   if (route.name === "contest submissions") {
     const path = router.resolve({
       name: "contest problem",
@@ -144,9 +145,10 @@ function problemClicked(row: Submission) {
   }
 }
 
-function showCodePanel(id: string) {
+function showCodePanel(id: string, problem: string) {
   toggleCodePanel(true)
   submissionID.value = id
+  problemDisplayID.value = problem
 }
 
 watch(() => query.page, routerPush)
@@ -178,7 +180,7 @@ watch(
 )
 
 const columns = computed(() => {
-  const res: DataTableColumn<Submission>[] = [
+  const res: DataTableColumn<SubmissionListItem>[] = [
     {
       title: renderTableTitle("提交时间", "noto:seven-oclock"),
       key: "create_time",
@@ -192,7 +194,7 @@ const columns = computed(() => {
       render: (row) =>
         h(SubmissionLink, {
           submission: row,
-          onShowCode: () => showCodePanel(row.id),
+          onShowCode: () => showCodePanel(row.id, row.problem),
         }),
     },
     {
@@ -347,7 +349,11 @@ const columns = computed(() => {
     :content-style="{ overflow: 'auto' }"
     title="代码详情"
   >
-    <SubmissionDetail :submissionID="submissionID" hideList />
+    <SubmissionDetail
+      :problemID="problemDisplayID"
+      :submissionID="submissionID"
+      hideList
+    />
   </n-modal>
 </template>
 <style scoped>

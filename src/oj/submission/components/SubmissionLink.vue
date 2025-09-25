@@ -16,12 +16,11 @@
 
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
-import { Submission } from "~/utils/types"
+import { SubmissionListItem } from "~/utils/types"
 
 interface Props {
-  submission: Submission
+  submission: SubmissionListItem
 }
-const router = useRouter()
 const props = defineProps<Props>()
 defineEmits(["showCode"])
 

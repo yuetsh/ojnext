@@ -1,6 +1,7 @@
 import { getTime, intervalToDuration, parseISO, type Duration } from "date-fns"
 import { User } from "./types"
 import { USER_TYPE } from "./constants"
+import { strFromU8, strToU8, unzlibSync, zlibSync } from "fflate"
 
 function calculateACRate(acCount: number, totalCount: number): string {
   if (totalCount === 0) return "0.00"
@@ -182,6 +183,20 @@ export function getCSRFToken(): string {
   }
   const match = document.cookie.match(/(?:^|;\s*)csrftoken=([^;]+)/)
   return match ? decodeURIComponent(match[1]) : ""
+}
+
+export function utoa(data: string): string {
+  const buffer = strToU8(data)
+  const zipped = zlibSync(buffer, { level: 9 })
+  const binary = strFromU8(zipped, true)
+  return btoa(binary)
+}
+
+export function atou(base64: string): string {
+  const binary = atob(base64)
+  const buffer = strToU8(binary, true)
+  const unzipped = unzlibSync(buffer)
+  return strFromU8(unzipped)
 }
 
 // function getChromeVersion() {
