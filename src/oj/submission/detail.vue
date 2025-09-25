@@ -10,6 +10,7 @@ import {
 } from "utils/functions"
 import { Submission } from "utils/types"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
+import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 
 const props = defineProps<{
   submissionID: string
@@ -80,7 +81,7 @@ onMounted(init)
 
 <template>
   <n-flex vertical v-if="submission" :size="24">
-    <n-flex justify="space-between">
+    <n-flex :vertical="isMobile" justify="space-between">
       <n-alert
         style="flex: 1"
         :type="JUDGE_STATUS[submission.result]['type']"
@@ -92,7 +93,7 @@ onMounted(init)
           <span>用户：{{ submission.username }}</span>
         </n-flex>
       </n-alert>
-      <n-flex vertical>
+      <n-flex :vertical="isDesktop" justify="center">
         <n-button secondary @click="copyToCat">复制到自测猫</n-button>
         <n-button secondary @click="copyToProblem">回到题目</n-button>
       </n-flex>
