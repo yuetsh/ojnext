@@ -36,6 +36,42 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const errMsg = ref("无数据")
+const route = useRoute()
+const router = useRouter()
+
+const tabOptions = computed(() => {
+  const options: string[] = ["content"]
+  if (isMobile.value) {
+    options.push("editor")
+  }
+  options.push("info")
+  if (!props.contestID) {
+    options.push("comment")
+  }
+  options.push("submission")
+  return options
+})
+
+const currentTab = ref("content")
+
+watch(
+  [() => route.query.tab, () => tabOptions.value],
+  ([rawTab]) => {
+    const tabs = tabOptions.value
+    const fallback = tabs[0] ?? "content"
+    currentTab.value = tabs.includes(rawTab as string)
+      ? (rawTab as string)
+      : fallback
+  },
+  { immediate: true },
+)
+
+watch(currentTab, (tab) => {
+  if (!tabOptions.value.includes(tab) || route.query.tab === tab) return
+  router.replace({
+    query: { ...route.query, tab },
+  })
+})
 
 async function init() {
   resetScreenMode()
@@ -69,7 +105,7 @@ watch(isMobile, (value) => {
   >
     <n-gi :span="isDesktop ? 1 : 2" v-if="bothAndProblem">
       <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
-        <n-tabs default-value="content" type="segment">
+        <n-tabs v-model:value="currentTab" type="segment">
           <n-tab-pane name="content" tab="题目描述">
             <ProblemContent />
           </n-tab-pane>
@@ -84,7 +120,7 @@ watch(isMobile, (value) => {
           </n-tab-pane>
         </n-tabs>
       </n-scrollbar>
-      <n-tabs v-else default-value="content" type="segment">
+      <n-tabs v-else v-model:value="currentTab" type="segment">
         <n-tab-pane name="content" tab="题目描述">
           <ProblemContent />
         </n-tab-pane>

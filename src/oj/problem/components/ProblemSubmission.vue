@@ -102,6 +102,7 @@ async function listSubmissions() {
 }
 
 async function getRankOfThisProblem() {
+ 
   loading.value = true
   const res = await getRankOfProblem(<string>route.params.problemID ?? "")
   loading.value = false
@@ -114,7 +115,9 @@ async function getRankOfThisProblem() {
 
 onMounted(() => {
   listSubmissions()
-  getRankOfThisProblem()
+  if (route.name === "problem") {
+    getRankOfThisProblem()
+  }
 })
 watch(query, listSubmissions)
 </script>
