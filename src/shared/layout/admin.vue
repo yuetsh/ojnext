@@ -35,6 +35,11 @@ const options = computed<MenuOption[]>(() => {
       },
       {
         label: () =>
+          h(RouterLink, { to: "/admin/config" }, { default: () => "设置" }),
+        key: "admin config",
+      },
+      {
+        label: () =>
           h(
             RouterLink,
             { to: "/admin/problem/list" },
@@ -50,11 +55,6 @@ const options = computed<MenuOption[]>(() => {
             { default: () => "比赛" },
           ),
         key: "admin contest list",
-      },
-      {
-        label: () =>
-          h(RouterLink, { to: "/admin/config" }, { default: () => "设置" }),
-        key: "admin config",
       },
       {
         label: () =>
