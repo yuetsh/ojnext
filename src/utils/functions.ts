@@ -131,17 +131,17 @@ export function debounce<T extends (...args: any[]) => any>(
 
 export function getUserRole(role: User["admin_type"]): {
   type: "default" | "info" | "error"
-  tagString: "普通" | "管理员" | "超管"
+  label: "普通" | "管理员" | "超管"
 } {
   const roleMap = {
     [USER_TYPE.REGULAR_USER]: {
       type: "default" as const,
-      tagString: "普通" as const,
+      label: "普通" as const,
     },
-    [USER_TYPE.ADMIN]: { type: "info" as const, tagString: "管理员" as const },
+    [USER_TYPE.ADMIN]: { type: "info" as const, label: "管理员" as const },
     [USER_TYPE.SUPER_ADMIN]: {
       type: "error" as const,
-      tagString: "超管" as const,
+      label: "超管" as const,
     },
   }
 

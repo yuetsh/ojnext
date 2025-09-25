@@ -12,7 +12,7 @@ import {
 } from "../api"
 import Actions from "./components/Actions.vue"
 import Name from "./components/Name.vue"
-import { USER_TYPE } from "~/utils/constants"
+import { PROBLEM_PERMISSION, USER_TYPE } from "~/utils/constants"
 
 const message = useMessage()
 const router = useRouter()
@@ -41,11 +41,11 @@ const rowKey = (row: User) => row.id
 
 const columns: DataTableColumn<User>[] = [
   { type: "selection" },
-  { title: "ID", key: "id", width: 100 },
+  { title: "ID", key: "id", width: 80 },
   {
     title: "用户名",
     key: "username",
-    width: 200,
+    width: 220,
     render: (row) => h(Name, { user: row }),
   },
   {
@@ -89,6 +89,12 @@ const options: SelectOption[] = [
   { label: "普通", value: USER_TYPE.REGULAR_USER },
   { label: "管理员", value: USER_TYPE.ADMIN },
   { label: "超级管理员", value: USER_TYPE.SUPER_ADMIN },
+]
+
+const problemPermissionOptions: SelectOption[] = [
+  { label: "无权限", value: PROBLEM_PERMISSION.NONE },
+  { label: "仅管理自己创建", value: PROBLEM_PERMISSION.OWN },
+  { label: "管理全部题目", value: PROBLEM_PERMISSION.ALL },
 ]
 
 function routerPush() {
@@ -147,8 +153,8 @@ function createNewUser() {
     username: "",
     real_name: "",
     email: "",
-    admin_type: "Super Admin",
-    problem_permission: "",
+    admin_type: "Admin",
+    problem_permission: "None",
     create_time: new Date(),
     last_login: new Date(),
     two_factor_auth: false,
@@ -294,6 +300,17 @@ watch(
         <n-form-item-gi v-if="!create" :span="1" label="类型">
           <n-select v-model:value="userEditing.admin_type" :options="options" />
         </n-form-item-gi>
+        <n-form-item-gi
+          v-if="!create && userEditing.admin_type === USER_TYPE.ADMIN"
+          :span="1"
+          label="出题权限"
+        >
+          <n-select
+            v-model:value="userEditing.problem_permission"
+            :options="problemPermissionOptions"
+          />
+        </n-form-item-gi>
+
         <n-form-item-gi v-if="!create" :span="1" label="是否封禁">
           <n-switch v-model:value="userEditing.is_disabled">封号</n-switch>
         </n-form-item-gi>
