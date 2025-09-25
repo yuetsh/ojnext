@@ -2,6 +2,7 @@
 import { NButton, NTag } from "naive-ui"
 import { parseTime } from "~/utils/functions"
 import { Server } from "~/utils/types"
+import { usePermissions } from "~/utils/permissions"
 import {
   deleteJudgeServer,
   editWebsite,
@@ -17,6 +18,14 @@ interface Testcase {
 }
 
 const message = useMessage()
+const router = useRouter()
+const { canManageSystemConfig } = usePermissions()
+
+// 权限检查：只有super_admin可以管理系统配置
+if (!canManageSystemConfig.value) {
+  message.error("您没有权限访问此页面")
+  router.push("/admin")
+}
 
 const testcaseColumns: DataTableColumn<Testcase>[] = [
   { title: "测试用例 ID", key: "id" },

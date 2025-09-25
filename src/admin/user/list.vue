@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { DataTableRowKey, SelectOption } from "naive-ui"
 import Pagination from "~/shared/components/Pagination.vue"
-import { parseTime } from "~/utils/functions"
+import { parseTime, filterEmptyValue } from "~/utils/functions"
 import { User } from "~/utils/types"
+import { usePermissions } from "~/utils/permissions"
 import {
   deleteUsers,
   editUser,
@@ -15,6 +16,15 @@ import Name from "./components/Name.vue"
 import { USER_TYPE } from "~/utils/constants"
 
 const message = useMessage()
+const router = useRouter()
+const route = useRoute()
+const { canManageUsers } = usePermissions()
+
+// 权限检查：只有super_admin可以管理用户
+if (!canManageUsers.value) {
+  message.error("您没有权限访问此页面")
+  router.push("/admin")
+}
 
 const total = ref(0)
 const users = ref<User[]>([])
@@ -23,8 +33,14 @@ const query = reactive({
   limit: 10,
   page: 1,
   keyword: "",
-  admin: false,
+  type: "",
 })
+
+const adminOptions = [
+  { label: "全部用户", value: "" },
+  { label: "管理员", value: USER_TYPE.ADMIN },
+  { label: "超级管理员", value: USER_TYPE.SUPER_ADMIN },
+]
 const [create, toggleCreate] = useToggle(false)
 const password = ref("")
 const userIDs = ref<DataTableRowKey[]>([])
@@ -78,15 +94,27 @@ const columns: DataTableColumn<User>[] = [
 ]
 
 const options: SelectOption[] = [
-  { label: "普通", value: "Regular User" },
-  { label: "管理员", value: "Admin" },
-  { label: "超级管理员", value: "Super Admin" },
+  { label: "普通", value: USER_TYPE.REGULAR_USER },
+  { label: "管理员", value: USER_TYPE.ADMIN },
+  { label: "超级管理员", value: USER_TYPE.SUPER_ADMIN },
 ]
 
+function routerPush() {
+  router.push({
+    path: route.path,
+    query: filterEmptyValue(query),
+  })
+}
+
 async function listUsers() {
+  query.keyword = <string>route.query.keyword ?? ""
+  query.page = parseInt(<string>route.query.page) || 1
+  query.limit = parseInt(<string>route.query.limit) || 10
+  query.type = <string>route.query.type ?? ""
+
+  if (query.page < 1) query.page = 1
   const offset = (query.page - 1) * query.limit
-  const isAdmin = query.admin ? "1" : "0"
-  const res = await getUserList(offset, query.limit, isAdmin, query.keyword)
+  const res = await getUserList(offset, query.limit, query.type, query.keyword)
   total.value = res.data.total
   users.value = res.data.results
 }
@@ -127,7 +155,7 @@ function createNewUser() {
     username: "",
     real_name: "",
     email: "",
-    admin_type: "Regular User",
+    admin_type: "Super Admin",
     problem_permission: "",
     create_time: new Date(),
     last_login: new Date(),
@@ -177,7 +205,28 @@ async function handleEditUser() {
 }
 
 onMounted(listUsers)
-watch(query, listUsers, { deep: true })
+watch(() => query.page, routerPush)
+watch(
+  () => [query.limit, query.keyword, query.type],
+  () => {
+    query.page = 1
+    routerPush()
+  },
+)
+watchDebounced(
+  () => query.keyword,
+  () => {
+    query.page = 1
+    routerPush()
+  },
+  { debounce: 500, maxWait: 1000 },
+)
+watch(
+  () => route.name === "admin user list" && route.query,
+  (newVal) => {
+    if (newVal) listUsers()
+  },
+)
 </script>
 
 <template>
@@ -200,8 +249,12 @@ watch(query, listUsers, { deep: true })
         确定删除选中的用户吗？删除后无法恢复！
       </n-popconfirm>
       <n-flex align="center">
-        <span>超管出列</span>
-        <n-switch v-model:value="query.admin" />
+        <n-select
+          v-model:value="query.type"
+          :options="adminOptions"
+          placeholder="选择用户类型"
+          style="width: 120px"
+        />
         <div>
           <n-input style="width: 200px" v-model:value="query.keyword" />
         </div>

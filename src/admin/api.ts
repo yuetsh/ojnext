@@ -84,11 +84,11 @@ export function getContestProblem(id: number) {
 export function getUserList(
   offset = 0,
   limit = 10,
-  admin = "0",
+  type = "",
   keyword: string,
 ) {
   return http.get("admin/user", {
-    params: { paging: true, offset, limit, keyword, admin },
+    params: { paging: true, offset, limit, keyword, type },
   })
 }
 

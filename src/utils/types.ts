@@ -1,4 +1,4 @@
-import { ContestStatus, ContestType } from "./constants"
+import { ContestStatus, ContestType, USER_TYPE } from "./constants"
 
 export interface Profile {
   id: number
@@ -33,12 +33,14 @@ export interface Profile {
   submission_number: number
 }
 
+export type UserAdminType = "Regular User" | "Admin" | "Super Admin"
+
 export interface User {
   id: number
   username: string
   real_name: string
   email: string
-  admin_type: "Regular User" | "Super Admin" | "Admin"
+  admin_type: UserAdminType
   problem_permission: string
   create_time: Date
   last_login: Date

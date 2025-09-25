@@ -70,16 +70,22 @@ async function listSubmissions() {
 
   if (query.page < 1) query.page = 1
   const offset = query.limit * (query.page - 1)
-  const res = await getSubmissions({
-    ...query,
-    myself: query.myself ? "1" : "0",
-    offset,
-    problem_id: <string>route.query.problem ?? "",
-    contest_id: <string>route.params.contestID ?? "",
-    language: query.language,
-  })
-  submissions.value = res.data.results
-  total.value = res.data.total
+  try {
+    const res = await getSubmissions({
+      ...query,
+      myself: query.myself ? "1" : "0",
+      offset,
+      problem_id: <string>route.query.problem ?? "",
+      contest_id: <string>route.params.contestID ?? "",
+      language: query.language,
+    })
+    submissions.value = res.data.results
+    total.value = res.data.total
+  } catch (error: any) {
+    if (error.data === "Problem doesn't exist") {
+      message.error("题目不存在")
+    }
+  }
 }
 
 async function getTodayCount() {

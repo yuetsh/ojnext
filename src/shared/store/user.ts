@@ -13,6 +13,9 @@ export const useUserStore = defineStore("user", () => {
       user.value?.admin_type === USER_TYPE.ADMIN ||
       user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
   )
+  const isTheAdmin = computed(
+    () => user.value?.admin_type === USER_TYPE.ADMIN,
+  )
   const isSuperAdmin = computed(
     () => user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
   )
@@ -37,6 +40,7 @@ export const useUserStore = defineStore("user", () => {
     isFinished,
     user,
     isAdminRole,
+    isTheAdmin,
     isSuperAdmin,
     hasProblemPermission,
     isAuthed,

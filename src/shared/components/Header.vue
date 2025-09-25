@@ -87,7 +87,12 @@ const menus = computed<MenuOption[]>(() => [
     icon: renderIcon("streamline-emojis:palm-tree"),
   },
   {
-    label: () => h(RouterLink, { to: "/admin" }, { default: () => "后台" }),
+    label: () =>
+      h(
+        RouterLink,
+        { to: userStore.isTheAdmin ? "/admin/problem/list" : "/admin" },
+        { default: () => (userStore.isTheAdmin ? "我出的题" : "后台") },
+      ),
     show: userStore.isAdminRole,
     key: "admin",
     icon: renderIcon("streamline-emojis:ghost"),

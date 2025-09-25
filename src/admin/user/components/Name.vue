@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { USER_TYPE } from "~/utils/constants"
 import { getUserRole } from "~/utils/functions"
 import { User } from "~/utils/types"
 
@@ -6,7 +7,9 @@ interface Props {
   user: User
 }
 const props = defineProps<Props>()
-const isAdmin = computed(() => props.user.admin_type !== "Regular User")
+const isNotRegularUser = computed(
+  () => props.user.admin_type !== USER_TYPE.REGULAR_USER,
+)
 </script>
 <template>
   <n-flex align="center">
@@ -14,7 +17,7 @@ const isAdmin = computed(() => props.user.admin_type !== "Regular User")
       封号中
     </n-tag>
     <n-tag
-      v-if="isAdmin"
+      v-if="isNotRegularUser"
       :type="getUserRole(props.user.admin_type).type"
       size="small"
     >
