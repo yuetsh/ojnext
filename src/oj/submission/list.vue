@@ -282,9 +282,6 @@ const columns = computed(() => {
             :options="languageOptions"
           />
         </n-form-item>
-        <n-form-item v-if="userStore.isAuthed" label="只看自己">
-          <n-switch v-model:value="query.myself" />
-        </n-form-item>
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item>
@@ -302,6 +299,9 @@ const columns = computed(() => {
             v-model:value="query.problem"
             placeholder="题号"
           />
+        </n-form-item>
+        <n-form-item v-if="userStore.isAuthed" label="只看自己">
+          <n-switch v-model:value="query.myself" />
         </n-form-item>
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
@@ -362,7 +362,7 @@ const columns = computed(() => {
 }
 
 .input {
-  width: 200px;
+  width: 180px;
 }
 
 .code {

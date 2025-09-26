@@ -121,19 +121,19 @@ watch(isMobile, (value) => {
         </n-tabs>
       </n-scrollbar>
       <n-tabs v-else v-model:value="currentTab" type="segment">
-        <n-tab-pane name="content" tab="题目描述">
+        <n-tab-pane name="content" tab="描述">
           <ProblemContent />
         </n-tab-pane>
-        <n-tab-pane name="editor" tab="代码编辑">
+        <n-tab-pane name="editor" tab="编辑">
           <Editor />
         </n-tab-pane>
-        <n-tab-pane name="info" tab="题目统计">
+        <n-tab-pane name="info" tab="统计">
           <ProblemInfo />
         </n-tab-pane>
-        <n-tab-pane v-if="!props.contestID" name="comment" tab="题目点评">
+        <n-tab-pane v-if="!props.contestID" name="comment" tab="点评">
           <ProblemComment />
         </n-tab-pane>
-        <n-tab-pane name="submission" tab="我的提交">
+        <n-tab-pane name="submission" tab="提交">
           <ProblemSubmission />
         </n-tab-pane>
       </n-tabs>

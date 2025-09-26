@@ -156,6 +156,8 @@ function rowProps(row: Contest) {
         <n-form-item label="标签">
           <n-select class="select" :options="tags" v-model:value="query.tag" />
         </n-form-item>
+      </n-form>
+      <n-form :show-feedback="false" label-placement="left" inline>
         <n-form-item>
           <n-input
             class="input"
@@ -164,8 +166,6 @@ function rowProps(row: Contest) {
             placeholder="比赛标题"
           />
         </n-form-item>
-      </n-form>
-      <n-form :show-feedback="false" label-placement="left" inline>
         <n-form-item>
           <n-flex>
             <n-button @click="search(query.keyword)">搜索</n-button>
