@@ -1,25 +1,32 @@
 <script setup lang="ts">
 import { NTag } from "naive-ui"
 import { getContestList } from "oj/api"
-import { duration, filterEmptyValue, parseTime } from "utils/functions"
+import { duration, parseTime } from "utils/functions"
 import { Contest } from "utils/types"
 import ContestTitle from "~/shared/components/ContestTitle.vue"
 import Pagination from "~/shared/components/Pagination.vue"
 import { toggleLogin } from "~/shared/composables/modal"
+import { usePagination } from "~/shared/composables/pagination"
 import { useUserStore } from "~/shared/store/user"
 import { CONTEST_STATUS, ContestType } from "~/utils/constants"
 import { renderTableTitle } from "~/utils/renders"
 
-const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
-const query = reactive({
-  page: parseInt(<string>route.query.page) || 1,
-  limit: parseInt(<string>route.query.limit) || 10,
-  keyword: <string>route.query.keyword ?? "",
-  status: <string>route.query.status ?? "",
-  tag: <string>route.query.tag ?? "",
+
+interface ContestQuery {
+  keyword: string
+  status: string
+  tag: string
+}
+
+// 使用分页 composable
+const { query, clearQuery } = usePagination<ContestQuery>({
+  keyword: "",
+  status: "",
+  tag: "",
 })
+
 const data = ref<Contest[]>([])
 const total = ref(0)
 
@@ -88,45 +95,28 @@ async function listContests() {
   total.value = res.data.total
 }
 
-function routerPush() {
-  router.push({
-    path: route.path,
-    query: filterEmptyValue(query),
-  })
-}
 
 function search(value: string) {
   query.keyword = value
 }
 
 function clear() {
-  query.keyword = ""
-  query.status = ""
-  query.tag = ""
+  clearQuery()
 }
 
 onMounted(listContests)
-watch(() => query.page, routerPush)
-watch(
-  () => [query.limit, query.status, query.tag],
-  () => {
-    query.page = 1
-    routerPush()
-  },
-)
+
+// 监听搜索关键词变化（防抖）
 watchDebounced(
   () => query.keyword,
-  () => {
-    query.page = 1
-    routerPush()
-  },
+  listContests,
   { debounce: 500, maxWait: 1000 },
 )
+
+// 监听其他查询条件变化
 watch(
-  () => route.name === "contests" && route.query,
-  (newVal) => {
-    if (newVal) listContests()
-  },
+  () => [query.page, query.limit, query.status, query.tag],
+  listContests,
 )
 
 function rowProps(row: Contest) {

@@ -1,4 +1,6 @@
 import axios from "axios"
+import storage from "./storage"
+import { STORAGE_KEY } from "./constants"
 
 const http = axios.create({
   baseURL: "/api",
@@ -9,8 +11,9 @@ const http = axios.create({
 http.interceptors.response.use(
   (res) => {
     if (res.data.error) {
-      // // TODO: 若后端返回为登录，则为session失效，应退出当前登录用户
-      if (res.data.data.startsWith("Please login")) {
+      if (res.data.data && res.data.data.startsWith("Please login")) {
+        storage.remove(STORAGE_KEY.AUTHED)
+        window.location.reload()
       }
       return Promise.reject(res.data)
     } else {

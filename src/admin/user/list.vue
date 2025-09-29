@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { DataTableRowKey, SelectOption } from "naive-ui"
 import Pagination from "~/shared/components/Pagination.vue"
-import { parseTime, filterEmptyValue } from "~/utils/functions"
+import { usePagination } from "~/shared/composables/pagination"
+import { parseTime } from "~/utils/functions"
 import { User } from "~/utils/types"
 import {
   deleteUsers,
@@ -15,18 +16,21 @@ import Name from "./components/Name.vue"
 import { PROBLEM_PERMISSION, USER_TYPE } from "~/utils/constants"
 
 const message = useMessage()
-const router = useRouter()
-const route = useRoute()
+
+interface UserQuery {
+  keyword: string
+  type: string
+}
+
+// 使用分页 composable
+const { query, clearQuery } = usePagination<UserQuery>({
+  keyword: "",
+  type: "",
+})
 
 const total = ref(0)
 const users = ref<User[]>([])
 const userEditing = ref<User | null>(null)
-const query = reactive({
-  limit: 10,
-  page: 1,
-  keyword: "",
-  type: "",
-})
 
 const adminOptions = [
   { label: "全部用户", value: "" },
@@ -97,19 +101,8 @@ const problemPermissionOptions: SelectOption[] = [
   { label: "管理全部题目", value: PROBLEM_PERMISSION.ALL },
 ]
 
-function routerPush() {
-  router.push({
-    path: route.path,
-    query: filterEmptyValue(query),
-  })
-}
 
 async function listUsers() {
-  query.keyword = <string>route.query.keyword ?? ""
-  query.page = parseInt(<string>route.query.page) || 1
-  query.limit = parseInt(<string>route.query.limit) || 10
-  query.type = <string>route.query.type ?? ""
-
   if (query.page < 1) query.page = 1
   const offset = (query.page - 1) * query.limit
   const res = await getUserList(offset, query.limit, query.type, query.keyword)
@@ -203,27 +196,18 @@ async function handleEditUser() {
 }
 
 onMounted(listUsers)
-watch(() => query.page, routerPush)
-watch(
-  () => [query.limit, query.keyword, query.type],
-  () => {
-    query.page = 1
-    routerPush()
-  },
-)
+
+// 监听搜索关键词变化（防抖）
 watchDebounced(
   () => query.keyword,
-  () => {
-    query.page = 1
-    routerPush()
-  },
+  listUsers,
   { debounce: 500, maxWait: 1000 },
 )
+
+// 监听其他查询条件变化
 watch(
-  () => route.name === "admin user list" && route.query,
-  (newVal) => {
-    if (newVal) listUsers()
-  },
+  () => [query.page, query.limit, query.type],
+  listUsers,
 )
 </script>
 

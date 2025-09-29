@@ -1,11 +1,12 @@
 <script setup lang="ts">
 import { NButton, NH2, NText } from "naive-ui"
 import { adminRejudge, getSubmissions, getTodaySubmissionCount } from "oj/api"
-import { filterEmptyValue, parseTime } from "utils/functions"
+import { parseTime } from "utils/functions"
 import { LANGUAGE, SubmissionListItem } from "utils/types"
 import Pagination from "~/shared/components/Pagination.vue"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
+import { usePagination } from "~/shared/composables/pagination"
 import { useUserStore } from "~/shared/store/user"
 import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
 import { renderTableTitle } from "~/utils/renders"
@@ -14,11 +15,9 @@ import StatisticsPanel from "./components/StatisticsPanel.vue"
 import SubmissionLink from "./components/SubmissionLink.vue"
 import SubmissionDetail from "./detail.vue"
 
-interface Query {
+interface SubmissionQuery {
   username: string
   result: string
-  limit: number
-  page: number
   myself: boolean
   problem: string
   language: LANGUAGE | ""
@@ -32,14 +31,14 @@ const message = useMessage()
 const submissions = ref<SubmissionListItem[]>([])
 const total = ref(0)
 const todayCount = ref(0)
-const query = reactive<Query>({
-  result: <string>route.query.result ?? "",
-  page: parseInt(<string>route.query.page) || 1,
-  limit: parseInt(<string>route.query.limit) || 10,
-  username: <string>route.query.username ?? "",
-  myself: route.query.myself === "1",
-  problem: <string>route.query.problem ?? "",
-  language: <LANGUAGE | "">route.query.language ?? "",
+
+// 使用分页 composable
+const { query, clearQuery } = usePagination<SubmissionQuery>({
+  username: "",
+  result: "",
+  myself: false,
+  problem: "",
+  language: "",
 })
 const submissionID = ref("")
 const problemDisplayID = ref("")
@@ -61,14 +60,6 @@ const languageOptions: SelectOption[] = [
   { label: "C++", value: "C++" },
 ]
 async function listSubmissions() {
-  query.result = <string>route.query.result ?? ""
-  query.page = parseInt(<string>route.query.page) || 1
-  query.limit = parseInt(<string>route.query.limit) || 10
-  query.username = <string>route.query.username ?? ""
-  query.myself = route.query.myself === "1"
-  query.problem = <string>route.query.problem ?? ""
-  query.language = <LANGUAGE>route.query.language ?? ""
-
   if (query.page < 1) query.page = 1
   const offset = query.limit * (query.page - 1)
   try {
@@ -76,7 +67,7 @@ async function listSubmissions() {
       ...query,
       myself: query.myself ? "1" : "0",
       offset,
-      problem_id: <string>route.query.problem ?? "",
+      problem_id: query.problem,
       contest_id: <string>route.params.contestID ?? "",
       language: query.language,
     })
@@ -101,16 +92,6 @@ onMounted(() => {
   }
 })
 
-function routerPush() {
-  const newQuery = {
-    ...query,
-    myself: query.myself ? "1" : "0",
-  }
-  router.push({
-    path: route.path,
-    query: filterEmptyValue(newQuery),
-  })
-}
 
 function search(username: string, problem: string) {
   query.username = username
@@ -118,11 +99,7 @@ function search(username: string, problem: string) {
 }
 
 function clear() {
-  query.username = ""
-  query.myself = false
-  query.result = ""
-  query.problem = ""
-  query.language = ""
+  clearQuery()
 }
 
 async function rejudge(submissionID: string) {
@@ -151,23 +128,17 @@ function showCodePanel(id: string, problem: string) {
   problemDisplayID.value = problem
 }
 
-watch(() => query.page, routerPush)
-
-watch(
-  () => [query.limit, query.myself, query.result, query.language],
-  () => {
-    query.page = 1
-    routerPush()
-  },
-)
-
+// 监听用户名和题号变化（防抖）
 watchDebounced(
   () => [query.username, query.problem],
-  () => {
-    query.page = 1
-    routerPush()
-  },
+  listSubmissions,
   { debounce: 500, maxWait: 1000 },
+)
+
+// 监听其他查询条件变化
+watch(
+  () => [query.page, query.limit, query.myself, query.result, query.language],
+  listSubmissions,
 )
 
 watch(

@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { NSwitch } from "naive-ui"
 import Pagination from "~/shared/components/Pagination.vue"
-import { parseTime, filterEmptyValue } from "~/utils/functions"
+import { usePagination } from "~/shared/composables/pagination"
+import { parseTime } from "~/utils/functions"
 import { AdminProblemFiltered } from "~/utils/types"
 import { getProblemList, toggleProblemVisible } from "../api"
 import Actions from "./components/Actions.vue"
@@ -30,10 +31,14 @@ const [show, toggleShow] = useToggle()
 const { count, inc } = useCounter(0)
 const total = ref(0)
 const problems = ref<AdminProblemFiltered[]>([])
-const query = reactive({
-  limit: parseInt(<string>route.query.limit) || 10,
-  page: parseInt(<string>route.query.page) || 1,
-  keyword: <string>route.query.keyword ?? "",
+
+interface ProblemQuery {
+  keyword: string
+}
+
+// 使用分页 composable
+const { query, clearQuery } = usePagination<ProblemQuery>({
+  keyword: "",
 })
 
 const columns: DataTableColumn<AdminProblemFiltered>[] = [
@@ -71,18 +76,8 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   },
 ]
 
-function routerPush() {
-  router.push({
-    path: route.path,
-    query: filterEmptyValue(query),
-  })
-}
 
 async function listProblems() {
-  query.keyword = <string>route.query.keyword ?? ""
-  query.page = parseInt(<string>route.query.page) || 1
-  query.limit = parseInt(<string>route.query.limit) || 10
-
   if (query.page < 1) query.page = 1
   const offset = (query.page - 1) * query.limit
   const res = await getProblemList(
@@ -118,27 +113,18 @@ async function selectProblems() {
 }
 
 onMounted(listProblems)
-watch(() => query.page, routerPush)
-watch(
-  () => [query.limit, query.keyword],
-  () => {
-    query.page = 1
-    routerPush()
-  },
-)
+
+// 监听搜索关键词变化（防抖）
 watchDebounced(
   () => query.keyword,
-  () => {
-    query.page = 1
-    routerPush()
-  },
+  listProblems,
   { debounce: 500, maxWait: 1000 },
 )
+
+// 监听其他查询条件变化
 watch(
-  () => route.name === "admin problem list" && route.query,
-  (newVal) => {
-    if (newVal) listProblems()
-  },
+  () => [query.page, query.limit],
+  listProblems,
 )
 </script>
 

@@ -2,12 +2,13 @@
 import { Icon } from "@iconify/vue"
 import { NSpace, NTag } from "naive-ui"
 import { getProblemList } from "oj/api"
-import { filterEmptyValue, getTagColor } from "utils/functions"
+import { getTagColor } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
 import { getProblemTagList } from "~/shared/api"
 import Hitokoto from "~/shared/components/Hitokoto.vue"
 import Pagination from "~/shared/components/Pagination.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
+import { usePagination } from "~/shared/composables/pagination"
 import { useUserStore } from "~/shared/store/user"
 import { renderTableTitle } from "~/utils/renders"
 import ProblemStatus from "./components/ProblemStatus.vue"
@@ -18,12 +19,10 @@ interface Tag {
   checked: boolean
 }
 
-interface Query {
+interface ProblemQuery {
   keyword: string
   difficulty: string
   tag: string
-  page: number
-  limit: number
 }
 
 const difficultyOptions = [
@@ -34,7 +33,6 @@ const difficultyOptions = [
 ]
 
 const router = useRouter()
-const route = useRoute()
 
 const userStore = useUserStore()
 const problems = ref<ProblemFiltered[]>([])
@@ -42,21 +40,14 @@ const total = ref(0)
 const tags = ref<Tag[]>([])
 const [showTag, toggleShowTag] = useToggle(isDesktop.value)
 
-const query = reactive<Query>({
-  keyword: <string>route.query.keyword ?? "",
-  difficulty: <string>route.query.difficulty ?? "",
-  tag: <string>route.query.tag ?? "",
-  page: parseInt(<string>route.query.page) || 1,
-  limit: parseInt(<string>route.query.limit) || 10,
+// 使用分页 composable
+const { query, clearQuery } = usePagination<ProblemQuery>({
+  keyword: "",
+  difficulty: "",
+  tag: "",
 })
 
 async function listProblems() {
-  query.keyword = <string>route.query.keyword ?? ""
-  query.difficulty = <string>route.query.difficulty ?? ""
-  query.tag = <string>route.query.tag ?? ""
-  query.page = parseInt(<string>route.query.page) || 1
-  query.limit = parseInt(<string>route.query.limit) || 10
-
   if (query.page < 1) query.page = 1
   const offset = (query.page - 1) * query.limit
   const res = await getProblemList(offset, query.limit, {
@@ -76,12 +67,6 @@ async function listTags() {
   }))
 }
 
-function routerPush() {
-  router.push({
-    path: route.path,
-    query: filterEmptyValue(query),
-  })
-}
 
 function search(value: string) {
   query.keyword = value
@@ -100,9 +85,7 @@ function chooseTag(tag: Tag) {
 }
 
 function clear() {
-  query.keyword = ""
-  query.tag = ""
-  query.difficulty = ""
+  clearQuery()
 }
 
 // async function getRandom() {
@@ -110,22 +93,20 @@ function clear() {
 //   router.push("/problem/" + res.data)
 // }
 
-watch(() => query.page, routerPush)
-watch(
-  () => [query.tag, query.difficulty, query.limit],
-  () => {
-    query.page = 1
-    routerPush()
-  },
-)
+// 监听搜索关键词变化（防抖）
 watchDebounced(
   () => query.keyword,
-  () => {
-    query.page = 1
-    routerPush()
-  },
-  { debounce: 500, maxWait: 1000 },
+  listProblems,
+  { debounce: 500, maxWait: 1000 }
 )
+
+// 监听其他查询条件变化
+watch(
+  () => [query.tag, query.difficulty, query.limit, query.page],
+  listProblems
+)
+
+// 监听标签变化，更新标签选中状态
 watch(
   () => query.tag,
   () => {
@@ -135,15 +116,16 @@ watch(
     }))
   },
 )
-watch(
-  () => route.path === "/" && route.query,
-  (newVal) => {
-    if (newVal) listProblems()
-  },
-)
 
-// TODO: 这里会在登录时候执行两次，有BUG
-watch(() => userStore.isFinished && userStore.isAuthed, listProblems)
+// 监听用户认证状态变化，只在认证完成且已登录时刷新问题列表
+watch(
+  () => userStore.isFinished && userStore.isAuthed,
+  (isAuthenticatedAndFinished) => {
+    if (isAuthenticatedAndFinished) {
+      listProblems()
+    }
+  }
+)
 
 onMounted(() => {
   listProblems()
