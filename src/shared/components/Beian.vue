@@ -1,12 +1,9 @@
 <template>
   <n-space v-if="!hiddenICP" justify="center" class="beian">
     <n-button text @click="goICP">浙ICP备2023044109号</n-button>
-    <div>
-      <img src="/备案图标.png" alt="备案图标" />
-      <n-button text @click="goPublicSecurity">
-        浙公网安备33100402331786号
-      </n-button>
-    </div>
+    <n-button text @click="goPublicSecurity">
+      浙公网安备33100402331786号
+    </n-button>
   </n-space>
 </template>
 <script lang="ts" setup>
