@@ -1,7 +1,11 @@
 <script setup lang="ts">
 import qs from "query-string"
 import { getSubmission } from "oj/api"
-import { JUDGE_STATUS, LANGUAGE_FORMAT_VALUE } from "utils/constants"
+import {
+  JUDGE_STATUS,
+  LANGUAGE_FORMAT_VALUE,
+  LANGUAGE_SHOW_VALUE,
+} from "utils/constants"
 import {
   parseTime,
   submissionMemoryFormat,
@@ -89,7 +93,7 @@ onMounted(init)
       >
         <n-flex>
           <span>提交时间：{{ parseTime(submission.create_time) }}</span>
-          <span>编程语言：{{ submission.language }}</span>
+          <span>编程语言：{{ LANGUAGE_SHOW_VALUE[submission.language] }}</span>
           <span>用户：{{ submission.username }}</span>
         </n-flex>
       </n-alert>
