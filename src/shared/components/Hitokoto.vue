@@ -15,9 +15,9 @@ async function receive() {
 onMounted(receive)
 </script>
 <template>
-  <div class="hitokoto" @click="receive">
+  <div class="hitokoto" @click="receive" v-if="hitokoto.sentence">
     <div class="sentence">{{ hitokoto.sentence }}</div>
-    <div class="from">{{ "from " + hitokoto.from }}</div>
+    <div class="from">{{ "来自 " + hitokoto.from }}</div>
   </div>
 </template>
 <style scoped>

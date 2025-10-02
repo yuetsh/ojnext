@@ -153,7 +153,7 @@ watch(query, listSubmissions)
           </n-flex>
         </template>
       </n-alert>
-      <n-alert class="tip" type="error" :show-icon="false" v-else>
+      <n-alert class="tip" type="error" :show-icon="false" v-if="rank === -1 && class_ac_count > 0">
         <template #header>
           <n-flex>
             <div>
@@ -212,7 +212,7 @@ watch(query, listSubmissions)
           </n-flex>
         </template>
       </n-alert>
-      <n-alert class="tip" type="error" :show-icon="false" v-else>
+      <n-alert class="tip" type="error" :show-icon="false" v-if="rank === -1 && all_ac_count > 0">
         <template #header>
           <n-flex align="center">
             <div>

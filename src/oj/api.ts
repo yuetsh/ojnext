@@ -56,6 +56,10 @@ export async function getProblemList(
   }
 }
 
+export function getAuthors() {
+  return http.get("problem/author")
+}
+
 export function getRandomProblemID() {
   return http.get("pickone")
 }
@@ -84,7 +88,7 @@ export function submitCode(data: SubmitCodePayload) {
   return http.post("submission", data)
 }
 
-export function getSubmissions(params: SubmissionListPayload) {
+export function getSubmissions(params: Partial<SubmissionListPayload>) {
   const endpoint = !!params.contest_id ? "contest_submissions" : "submissions"
   return http.get(endpoint, { params })
 }
@@ -249,10 +253,7 @@ export function getAIDetailData(start: string, end: string) {
   return http.get("ai/detail", { params: { start, end } })
 }
 
-export function getAIWeeklyData(
-  end: string,
-  duration: string,
-) {
+export function getAIWeeklyData(end: string, duration: string) {
   return http.get("ai/weekly", { params: { end, duration } })
 }
 

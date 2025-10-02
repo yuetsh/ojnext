@@ -7,6 +7,7 @@ import { AdminProblemFiltered } from "~/utils/types"
 import { getProblemList, toggleProblemVisible } from "../api"
 import Actions from "./components/Actions.vue"
 import Modal from "./components/Modal.vue"
+import { useRouteQuery } from "@vueuse/router"
 
 interface Props {
   contestID?: string
@@ -38,7 +39,7 @@ interface ProblemQuery {
 
 // 使用分页 composable
 const { query, clearQuery } = usePagination<ProblemQuery>({
-  keyword: "",
+  keyword: useRouteQuery("keyword", "").value,
 })
 
 const columns: DataTableColumn<AdminProblemFiltered>[] = [
@@ -152,7 +153,7 @@ watch(
         从题库中选择
       </n-button>
       <div>
-        <n-input v-model:value="query.keyword" placeholder="输入标题关键字" />
+        <n-input v-model:value="query.keyword" placeholder="输入标题关键字" clearable @clear="clearQuery" />
       </div>
     </n-flex>
   </n-flex>

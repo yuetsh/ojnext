@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
 import { NSpace, NTag } from "naive-ui"
-import { getProblemList } from "oj/api"
+import { useRouteQuery } from "@vueuse/router"
+import { getAuthors, getProblemList, getRandomProblemID } from "oj/api"
 import { getTagColor } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
 import { getProblemTagList } from "~/shared/api"
@@ -23,6 +24,7 @@ interface ProblemQuery {
   keyword: string
   difficulty: string
   tag: string
+  author: string
 }
 
 const difficultyOptions = [
@@ -31,6 +33,8 @@ const difficultyOptions = [
   { label: "中等", value: "Mid" },
   { label: "困难", value: "High" },
 ]
+
+const authorOptions = ref([{label: "全部", value: ""}])
 
 const router = useRouter()
 
@@ -42,10 +46,21 @@ const [showTag, toggleShowTag] = useToggle(isDesktop.value)
 
 // 使用分页 composable
 const { query, clearQuery } = usePagination<ProblemQuery>({
-  keyword: "",
-  difficulty: "",
-  tag: "",
+  keyword: useRouteQuery("keyword", "").value,
+  difficulty: useRouteQuery("difficulty", "").value,
+  tag: useRouteQuery("tag", "").value,
+  author: useRouteQuery("author", "").value,
 })
+
+async function getAuthorOptions() {
+  authorOptions.value = [{label: "全部", value: ""}]
+  const res = await getAuthors()
+  const remotes = res.data.map((item: {username: string, problem_count: number}) => ({
+    label: `${item.username} (${item.problem_count})`,
+    value: item.username,
+  }))
+  authorOptions.value = [...authorOptions.value, ...remotes]
+}
 
 async function listProblems() {
   if (query.page < 1) query.page = 1
@@ -54,6 +69,7 @@ async function listProblems() {
     keyword: query.keyword,
     tag: query.tag,
     difficulty: query.difficulty,
+    author: query.author,
   })
   total.value = res.total
   problems.value = res.results
@@ -65,11 +81,6 @@ async function listTags() {
     ...r,
     checked: query.tag === r.name,
   }))
-}
-
-
-function search(value: string) {
-  query.keyword = value
 }
 
 function chooseTag(tag: Tag) {
@@ -84,26 +95,21 @@ function chooseTag(tag: Tag) {
   })
 }
 
-function clear() {
-  clearQuery()
+async function getRandom() {
+  const res = await getRandomProblemID()
+  router.push("/problem/" + res.data)
 }
 
-// async function getRandom() {
-//   const res = await getRandomProblemID()
-//   router.push("/problem/" + res.data)
-// }
-
 // 监听搜索关键词变化（防抖）
-watchDebounced(
-  () => query.keyword,
-  listProblems,
-  { debounce: 500, maxWait: 1000 }
-)
+watchDebounced(() => query.keyword, listProblems, {
+  debounce: 500,
+  maxWait: 1000,
+})
 
 // 监听其他查询条件变化
 watch(
-  () => [query.tag, query.difficulty, query.limit, query.page],
-  listProblems
+  () => [query.tag, query.difficulty, query.limit, query.page, query.author],
+  listProblems,
 )
 
 // 监听标签变化，更新标签选中状态
@@ -117,14 +123,13 @@ watch(
   },
 )
 
-// 监听用户认证状态变化，只在认证完成且已登录时刷新问题列表
 watch(
   () => userStore.isFinished && userStore.isAuthed,
   (isAuthenticatedAndFinished) => {
     if (isAuthenticatedAndFinished) {
       listProblems()
     }
-  }
+  },
 )
 
 onMounted(() => {
@@ -212,12 +217,22 @@ function rowProps(row: ProblemFiltered) {
                 :options="difficultyOptions"
               />
             </n-form-item>
+            <n-form-item label="出题者">
+              <n-select
+                style="width: 160px"
+                v-model:value="query.author"
+                remote
+                @update:show="getAuthorOptions"
+                @update:value="(val) => (query.author = val)"
+                :options="authorOptions"
+              />
+            </n-form-item>
             <n-form-item>
               <n-input
                 clearable
                 style="width: 200px"
                 v-model:value="query.keyword"
-                placeholder="题号或者标题"
+                placeholder="编号或者标题"
               />
             </n-form-item>
           </n-form>
@@ -226,9 +241,8 @@ function rowProps(row: ProblemFiltered) {
           <n-form :show-feedback="false" inline label-placement="left">
             <n-form-item>
               <n-flex align="center">
-                <n-button @click="search(query.keyword)">搜索</n-button>
-                <n-button @click="clear" quaternary>重置</n-button>
-                <!-- <n-button @click="getRandom" quaternary>试试手气</n-button> -->
+                <n-button @click="clearQuery" quaternary>重置</n-button>
+                <n-button @click="getRandom" quaternary>试试手气</n-button>
               </n-flex>
             </n-form-item>
           </n-form>

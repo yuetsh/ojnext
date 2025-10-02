@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { useRouteQuery } from "@vueuse/router"
 import { NTag } from "naive-ui"
 import { getContestList } from "oj/api"
 import { duration, parseTime } from "utils/functions"
@@ -22,9 +23,9 @@ interface ContestQuery {
 
 // 使用分页 composable
 const { query, clearQuery } = usePagination<ContestQuery>({
-  keyword: "",
-  status: "",
-  tag: "",
+  keyword: useRouteQuery("keyword", "").value,
+  status: useRouteQuery("status", "").value,
+  tag: useRouteQuery("tag", "").value,
 })
 
 const data = ref<Contest[]>([])

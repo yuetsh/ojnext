@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { NButton, NH2, NText } from "naive-ui"
+import { useRouteQuery } from "@vueuse/router"
 import { adminRejudge, getSubmissions, getTodaySubmissionCount } from "oj/api"
 import { parseTime } from "utils/functions"
 import { LANGUAGE, SubmissionListItem } from "utils/types"
@@ -18,7 +19,7 @@ import SubmissionDetail from "./detail.vue"
 interface SubmissionQuery {
   username: string
   result: string
-  myself: boolean
+  myself: "0" | "1"
   problem: string
   language: LANGUAGE | ""
 }
@@ -34,11 +35,11 @@ const todayCount = ref(0)
 
 // 使用分页 composable
 const { query, clearQuery } = usePagination<SubmissionQuery>({
-  username: "",
-  result: "",
-  myself: false,
-  problem: "",
-  language: "",
+  username: useRouteQuery("username", "").value,
+  result: useRouteQuery("result", "").value,
+  myself: useRouteQuery("myself", "0").value,
+  problem: useRouteQuery("problem", "").value,
+  language: useRouteQuery("language", "").value,
 })
 const submissionID = ref("")
 const problemDisplayID = ref("")
@@ -65,7 +66,6 @@ async function listSubmissions() {
   try {
     const res = await getSubmissions({
       ...query,
-      myself: query.myself ? "1" : "0",
       offset,
       problem_id: query.problem,
       contest_id: <string>route.params.contestID ?? "",
@@ -91,7 +91,6 @@ onMounted(() => {
     getTodayCount()
   }
 })
-
 
 function search(username: string, problem: string) {
   query.username = username
@@ -129,11 +128,10 @@ function showCodePanel(id: string, problem: string) {
 }
 
 // 监听用户名和题号变化（防抖）
-watchDebounced(
-  () => [query.username, query.problem],
-  listSubmissions,
-  { debounce: 500, maxWait: 1000 },
-)
+watchDebounced(() => [query.username, query.problem], listSubmissions, {
+  debounce: 500,
+  maxWait: 1000,
+})
 
 // 监听其他查询条件变化
 watch(
@@ -272,7 +270,11 @@ const columns = computed(() => {
           />
         </n-form-item>
         <n-form-item v-if="userStore.isAuthed" label="只看自己">
-          <n-switch v-model:value="query.myself" />
+          <n-switch
+            v-model:value="query.myself"
+            checked-value="1"
+            unchecked-value="0"
+          />
         </n-form-item>
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
