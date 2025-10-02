@@ -227,6 +227,10 @@ function rowProps(row: ProblemFiltered) {
                 :options="authorOptions"
               />
             </n-form-item>
+          </n-form>
+        </div>
+        <div>
+          <n-form :show-feedback="false" inline label-placement="left">
             <n-form-item>
               <n-input
                 clearable
@@ -235,14 +239,10 @@ function rowProps(row: ProblemFiltered) {
                 placeholder="编号或者标题"
               />
             </n-form-item>
-          </n-form>
-        </div>
-        <div>
-          <n-form :show-feedback="false" inline label-placement="left">
             <n-form-item>
               <n-flex align="center">
                 <n-button @click="clearQuery" quaternary>重置</n-button>
-                <n-button @click="getRandom" quaternary>试试手气</n-button>
+                <n-button @click="getRandom" quaternary v-if="isDesktop">试试手气</n-button>
               </n-flex>
             </n-form-item>
           </n-form>
