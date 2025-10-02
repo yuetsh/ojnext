@@ -34,7 +34,7 @@ const difficultyOptions = [
   { label: "困难", value: "High" },
 ]
 
-const authorOptions = ref([{label: "全部", value: ""}])
+const authorOptions = ref([{ label: "全部", value: "" }])
 
 const router = useRouter()
 
@@ -53,12 +53,14 @@ const { query, clearQuery } = usePagination<ProblemQuery>({
 })
 
 async function getAuthorOptions() {
-  authorOptions.value = [{label: "全部", value: ""}]
+  authorOptions.value = [{ label: "全部", value: "" }]
   const res = await getAuthors()
-  const remotes = res.data.map((item: {username: string, problem_count: number}) => ({
-    label: `${item.username} (${item.problem_count})`,
-    value: item.username,
-  }))
+  const remotes = res.data.map(
+    (item: { username: string; problem_count: number }) => ({
+      label: `${item.username} (${item.problem_count})`,
+      value: item.username,
+    }),
+  )
   authorOptions.value = [...authorOptions.value, ...remotes]
 }
 
@@ -242,18 +244,22 @@ function rowProps(row: ProblemFiltered) {
             <n-form-item>
               <n-flex align="center">
                 <n-button @click="clearQuery" quaternary>重置</n-button>
-                <n-button @click="getRandom" quaternary v-if="isDesktop">试试手气</n-button>
+                <n-button @click="getRandom" quaternary>试试手气</n-button>
               </n-flex>
             </n-form-item>
+            <n-button
+              @click="toggleShowTag()"
+              quaternary
+              icon-placement="right"
+            >
+              <template #icon>
+                <Icon v-if="showTag" icon="ph:caret-down"></Icon>
+                <Icon v-else icon="ph:caret-up"></Icon>
+              </template>
+              标签
+            </n-button>
           </n-form>
         </div>
-        <n-button @click="toggleShowTag()" quaternary icon-placement="right">
-          <template #icon>
-            <Icon v-if="showTag" icon="ph:caret-down"></Icon>
-            <Icon v-else icon="ph:caret-up"></Icon>
-          </template>
-          标签
-        </n-button>
       </n-flex>
       <Hitokoto v-if="isDesktop" />
     </n-flex>
