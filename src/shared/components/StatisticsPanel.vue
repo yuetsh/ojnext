@@ -27,6 +27,9 @@
       <n-form-item>
         <n-button type="primary" @click="handleStatistics">统计</n-button>
       </n-form-item>
+      <n-form-item v-if="route.name !== 'submissions'">
+        <n-button @click="goSubmissions">前往提交列表</n-button>
+      </n-form-item>
     </n-form>
     <n-space v-if="count.total > 0" size="large">
       <n-h1 style="margin-bottom: 0">
@@ -125,6 +128,9 @@ const person = reactive({
   count: 0,
   rate: 0,
 })
+const route = useRoute()
+const router = useRouter()
+
 const list = ref([])
 const listUnaccepted = ref([])
 const [unaccepted, toggleUnaccepted] = useToggle()
@@ -138,6 +144,15 @@ const subOptions = computed<Duration>(() => {
   return { [unit]: parseInt(n) }
 })
 
+function goSubmissions() {
+  router.push({
+    name: "submissions",
+    query: {
+      username: query.username,
+      problem: query.problem,
+    },
+  })
+}
 async function handleStatistics() {
   const current = Date.now()
   const end = formatISO(current)

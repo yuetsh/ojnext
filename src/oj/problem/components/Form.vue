@@ -9,6 +9,7 @@ import { createTestSubmission } from "~/utils/judge"
 import storage from "~/utils/storage"
 import { LANGUAGE } from "~/utils/types"
 import Submit from "./Submit.vue"
+import StatisticsPanel from "~/shared/components/StatisticsPanel.vue"
 
 interface Props {
   storageKey: string
@@ -25,6 +26,8 @@ const router = useRouter()
 const userStore = useUserStore()
 
 const emit = defineEmits(["changeLanguage"])
+
+const statisticPanel = ref(false)
 
 function copy() {
   copyText(code.value)
@@ -58,8 +61,7 @@ async function test() {
 }
 
 const menu = computed<DropdownOption[]>(() => [
-  { label: "提交信息", key: "submissions", show: isMobile.value },
-  { label: "自测猫", key: "test", show: isMobile.value },
+  { label: "去自测猫", key: "test", show: isMobile.value },
   { label: "复制代码", key: "copy" },
   { label: "重置代码", key: "reset" },
 ])
@@ -82,9 +84,6 @@ const options: DropdownOption[] = problem.value!.languages.map((it) => ({
 
 async function select(key: string) {
   switch (key) {
-    case "submissions":
-      goSubmissions()
-      break
     case "reset":
       reset()
       break
@@ -106,6 +105,10 @@ function gotoTestCat() {
   const url = import.meta.env.PUBLIC_CODE_URL
   window.open(url, "_blank")
 }
+
+function showStatisticsPanel() {
+  statisticPanel.value = true
+}
 </script>
 
 <template>
@@ -124,19 +127,38 @@ function gotoTestCat() {
     <n-flex align="center" v-if="!withTest">
       <Submit />
       <n-button v-if="isDesktop" @click="gotoTestCat">自测猫</n-button>
-      <n-button v-if="isDesktop" @click="goSubmissions">提交信息</n-button>
+      <n-button
+        :size="isDesktop ? 'medium' : 'small'"
+        v-if="!userStore.isSuperAdmin && userStore.showSubmissions"
+        @click="goSubmissions"
+      >
+        提交信息
+      </n-button>
+      <n-button
+        :size="isDesktop ? 'medium' : 'small'"
+        v-if="userStore.isSuperAdmin"
+        @click="showStatisticsPanel"
+      >
+        数据统计
+      </n-button>
       <n-dropdown size="large" :options="menu" @select="select">
         <n-button :size="isDesktop ? 'medium' : 'small'">操作</n-button>
       </n-dropdown>
-      <n-button
-        v-if="isDesktop && userStore.isSuperAdmin"
-        type="warning"
-        @click="goEdit"
-      >
+      <n-button v-if="isDesktop && userStore.isSuperAdmin" @click="goEdit">
         编辑
       </n-button>
     </n-flex>
   </n-flex>
+  <n-modal
+    v-if="userStore.isSuperAdmin"
+    v-model:show="statisticPanel"
+    preset="card"
+    :style="{ maxWidth: isDesktop && '70vw', maxHeight: '80vh' }"
+    :content-style="{ overflow: 'auto' }"
+    title="提交记录的统计"
+  >
+    <StatisticsPanel :problem="problem!._id" username="" />
+  </n-modal>
 </template>
 
 <style scoped>

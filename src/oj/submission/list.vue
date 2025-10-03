@@ -12,7 +12,7 @@ import { useUserStore } from "~/shared/store/user"
 import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
 import { renderTableTitle } from "~/utils/renders"
 import ButtonWithSearch from "./components/ButtonWithSearch.vue"
-import StatisticsPanel from "./components/StatisticsPanel.vue"
+import StatisticsPanel from "~/shared/components/StatisticsPanel.vue"
 import SubmissionLink from "./components/SubmissionLink.vue"
 import SubmissionDetail from "./detail.vue"
 

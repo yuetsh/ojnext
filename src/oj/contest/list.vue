@@ -96,7 +96,6 @@ async function listContests() {
   total.value = res.data.total
 }
 
-
 function search(value: string) {
   query.keyword = value
 }
@@ -108,17 +107,13 @@ function clear() {
 onMounted(listContests)
 
 // 监听搜索关键词变化（防抖）
-watchDebounced(
-  () => query.keyword,
-  listContests,
-  { debounce: 500, maxWait: 1000 },
-)
+watchDebounced(() => query.keyword, listContests, {
+  debounce: 500,
+  maxWait: 1000,
+})
 
 // 监听其他查询条件变化
-watch(
-  () => [query.page, query.limit, query.status, query.tag],
-  listContests,
-)
+watch(() => [query.page, query.limit, query.status, query.tag], listContests)
 
 function rowProps(row: Contest) {
   return {

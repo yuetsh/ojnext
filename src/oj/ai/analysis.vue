@@ -1,9 +1,9 @@
 <template>
-  <n-grid :cols="isDesktop ? 5: 1" :x-gap="20">
+  <n-grid :cols="isDesktop ? 5 : 1" :x-gap="20">
     <n-gi :span="2">
       <n-flex vertical size="large">
         <n-flex align="center" justify="space-between">
-          <n-h3 style="margin: 0;">请选择时间范围，智能分析学习情况</n-h3>
+          <n-h3 style="margin: 0">请选择时间范围，智能分析学习情况</n-h3>
           <n-select
             style="width: 140px"
             :options="options"

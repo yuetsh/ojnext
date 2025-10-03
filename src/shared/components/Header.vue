@@ -69,6 +69,7 @@ const menus = computed<MenuOption[]>(() => [
       h(RouterLink, { to: "/submission" }, { default: () => "提交" }),
     key: "submission",
     icon: renderIcon("streamline-emojis:bouquet"),
+    show: userStore.showSubmissions,
   },
   {
     label: () => h(RouterLink, { to: "/contest" }, { default: () => "比赛" }),

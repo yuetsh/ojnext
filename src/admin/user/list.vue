@@ -101,7 +101,6 @@ const problemPermissionOptions: SelectOption[] = [
   { label: "管理全部题目", value: PROBLEM_PERMISSION.ALL },
 ]
 
-
 async function listUsers() {
   if (query.page < 1) query.page = 1
   const offset = (query.page - 1) * query.limit
@@ -198,17 +197,10 @@ async function handleEditUser() {
 onMounted(listUsers)
 
 // 监听搜索关键词变化（防抖）
-watchDebounced(
-  () => query.keyword,
-  listUsers,
-  { debounce: 500, maxWait: 1000 },
-)
+watchDebounced(() => query.keyword, listUsers, { debounce: 500, maxWait: 1000 })
 
 // 监听其他查询条件变化
-watch(
-  () => [query.page, query.limit, query.type],
-  listUsers,
-)
+watch(() => [query.page, query.limit, query.type], listUsers)
 </script>
 
 <template>

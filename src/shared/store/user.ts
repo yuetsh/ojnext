@@ -2,8 +2,11 @@ import { PROBLEM_PERMISSION, STORAGE_KEY, USER_TYPE } from "utils/constants"
 import storage from "utils/storage"
 import { Profile, User } from "~/utils/types"
 import { getProfile } from "../api"
+import { useConfigStore } from "./config"
 
 export const useUserStore = defineStore("user", () => {
+  const configStore = useConfigStore()
+
   const profile = ref<Profile | null>(null)
   const [isFinished] = useToggle(false)
   const user = computed<User | null>(() => profile.value?.user ?? null)
@@ -13,15 +16,19 @@ export const useUserStore = defineStore("user", () => {
       user.value?.admin_type === USER_TYPE.ADMIN ||
       user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
   )
-  const isTheAdmin = computed(
-    () => user.value?.admin_type === USER_TYPE.ADMIN,
-  )
+  const isTheAdmin = computed(() => user.value?.admin_type === USER_TYPE.ADMIN)
   const isSuperAdmin = computed(
     () => user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
   )
   const hasProblemPermission = computed(
     () => user.value?.problem_permission !== PROBLEM_PERMISSION.NONE,
   )
+
+  const showSubmissions = computed(() => {
+    let flag = configStore.config.submission_list_show_all
+    if (isAdminRole.value) flag = true
+    return flag
+  })
 
   async function getMyProfile() {
     isFinished.value = false
@@ -44,6 +51,7 @@ export const useUserStore = defineStore("user", () => {
     isSuperAdmin,
     hasProblemPermission,
     isAuthed,
+    showSubmissions,
     getMyProfile,
     clearProfile,
   }

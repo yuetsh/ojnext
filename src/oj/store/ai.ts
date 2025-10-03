@@ -25,10 +25,7 @@ export const useAIStore = defineStore("ai", () => {
 
   const mdContent = ref("")
 
-  async function fetchDetailsData(
-    start: string,
-    end: string,
-  ) {
+  async function fetchDetailsData(start: string, end: string) {
     loading.details = true
     const res = await getAIDetailData(start, end)
     detailsData.start = res.data.start
@@ -42,10 +39,7 @@ export const useAIStore = defineStore("ai", () => {
     loading.details = false
   }
 
-  async function fetchWeeklyData(
-    end: string,
-    duration: string,
-  ) {
+  async function fetchWeeklyData(end: string, duration: string) {
     loading.weekly = true
     const res = await getAIWeeklyData(end, duration)
     weeklyData.value = res.data

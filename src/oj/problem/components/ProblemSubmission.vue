@@ -75,16 +75,9 @@ const query = reactive({
   page: 1,
 })
 
-const showList = computed(() => {
-  if (!userStore.isAuthed) return false
-  else if (userStore.isSuperAdmin) return true
-  else return configStore.config.submission_list_show_all
-})
-
 const errorMsg = computed(() => {
   if (!userStore.isAuthed) return "请先登录"
-  else if (!configStore.config.submission_list_show_all)
-    return "提交列表已被管理员关闭"
+  else if (!userStore.showSubmissions) return "提交列表已被管理员关闭"
   else return ""
 })
 
@@ -102,7 +95,6 @@ async function listSubmissions() {
 }
 
 async function getRankOfThisProblem() {
- 
   loading.value = true
   const res = await getRankOfProblem(<string>route.params.problemID ?? "")
   loading.value = false
@@ -122,7 +114,12 @@ onMounted(() => {
 watch(query, listSubmissions)
 </script>
 <template>
-  <n-alert class="tip" type="error" v-if="!showList" :title="errorMsg" />
+  <n-alert
+    class="tip"
+    type="error"
+    v-if="!userStore.showSubmissions"
+    :title="errorMsg"
+  />
 
   <template v-if="!loading && route.name === 'problem' && userStore.isAuthed">
     <template v-if="class_name">
@@ -134,7 +131,7 @@ watch(query, listSubmissions)
               >，你们班共有 <b>{{ class_ac_count }}</b> 人答案正确
             </div>
             <n-button
-              v-if="showList"
+              v-if="userStore.showSubmissions"
               @click="
                 router.push({
                   name: 'submissions',
@@ -153,7 +150,12 @@ watch(query, listSubmissions)
           </n-flex>
         </template>
       </n-alert>
-      <n-alert class="tip" type="error" :show-icon="false" v-if="rank === -1 && class_ac_count > 0">
+      <n-alert
+        class="tip"
+        type="error"
+        :show-icon="false"
+        v-if="rank === -1 && class_ac_count > 0"
+      >
         <template #header>
           <n-flex>
             <div>
@@ -162,7 +164,7 @@ watch(query, listSubmissions)
               共有 <b>{{ class_ac_count }}</b> 人答案正确
             </div>
             <n-button
-              v-if="showList"
+              v-if="userStore.showSubmissions"
               secondary
               @click="
                 router.push({
@@ -194,7 +196,7 @@ watch(query, listSubmissions)
             <div></div>
             <n-button
               secondary
-              v-if="showList"
+              v-if="userStore.showSubmissions"
               @click="
                 router.push({
                   name: 'submissions',
@@ -212,7 +214,12 @@ watch(query, listSubmissions)
           </n-flex>
         </template>
       </n-alert>
-      <n-alert class="tip" type="error" :show-icon="false" v-if="rank === -1 && all_ac_count > 0">
+      <n-alert
+        class="tip"
+        type="error"
+        :show-icon="false"
+        v-if="rank === -1 && all_ac_count > 0"
+      >
         <template #header>
           <n-flex align="center">
             <div>
@@ -220,7 +227,7 @@ watch(query, listSubmissions)
               <b>{{ all_ac_count }}</b> 人答案正确
             </div>
             <n-button
-              v-if="showList"
+              v-if="userStore.showSubmissions"
               secondary
               @click="
                 router.push({
@@ -242,7 +249,7 @@ watch(query, listSubmissions)
     </template>
   </template>
 
-  <template v-if="showList">
+  <template v-if="userStore.showSubmissions">
     <n-data-table striped :columns="columns" :data="submissions" />
     <Pagination
       :total="total"

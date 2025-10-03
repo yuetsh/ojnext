@@ -51,7 +51,6 @@ const { query, clearQuery } = usePagination<ProblemQuery>({
   author: useRouteQuery("author", "").value,
 })
 
-
 async function listProblems() {
   if (query.page < 1) query.page = 1
   const offset = (query.page - 1) * query.limit

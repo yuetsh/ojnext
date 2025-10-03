@@ -55,7 +55,7 @@ const numbers = computed(() => {
     {
       icon: "streamline-emojis:sparkles",
       title: parseFloat(beatRate.value),
-      content: "你击败的用户",
+      content: "击败用户",
       int: false,
       suffix: "%",
     },
