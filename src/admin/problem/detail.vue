@@ -70,6 +70,7 @@ const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
   rule_type: "ACM",
   hint: "",
   source: "",
+  prompt: "",
   io_mode: {
     io_mode: "Standard IO",
     input: "input.txt",
@@ -148,6 +149,7 @@ async function getProblemDetail() {
     problem.value.rule_type = data.rule_type
     problem.value.hint = data.hint
     problem.value.source = data.source
+    problem.value.prompt = data.prompt
     problem.value.io_mode = data.io_mode
     if (problem.value.contest_id) {
       problem.value.contest_id = problem.value.contest_id
@@ -459,13 +461,16 @@ watch(
   <n-button class="addSamples box" tertiary type="primary" @click="addSample">
     添加用例
   </n-button>
-  <TextEditor v-if="ready" v-model:value="problem.hint" title="提示" />
+  <TextEditor v-if="ready" v-model:value="problem.hint" title="提示（选填）" />
   <n-form>
-    <n-form-item label="题目的来源">
+    <n-form-item label="题目的来源（选填）">
       <n-input
         v-model:value="problem.source"
         placeholder="比如来自某道题的改编等，或者网上的资料"
       />
+    </n-form-item>
+    <n-form-item label="本题的考察知识点（选填）">
+      <n-input v-model:value="problem.prompt" placeholder="这里的内容是方便喂给 AI 进行辅助分析的" />
     </n-form-item>
   </n-form>
   <n-form v-if="needTemplate">
@@ -519,7 +524,7 @@ watch(
   </n-alert>
   <n-space style="margin-bottom: 100px" justify="space-between">
     <n-form inline label-placement="left" :show-feedback="false">
-      <n-form-item label="语言">
+      <n-form-item label="编程语言">
         <n-checkbox-group v-model:value="problem.languages">
           <n-flex align="center">
             <n-checkbox
@@ -554,7 +559,7 @@ watch(
         <template #trigger>
           <n-button text>温馨提醒</n-button>
         </template>
-        【测试用例】最好要有10个，要考虑边界情况，不要跟【测试样例】一模一样
+        【测试用例】最好要有10个，要考虑边界情况，且不要跟【测试样例】一模一样
       </n-tooltip>
       <div>
         <n-upload

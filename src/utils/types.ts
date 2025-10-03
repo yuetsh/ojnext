@@ -117,6 +117,7 @@ export interface Problem {
   rule_type: string
   difficulty: "Low" | "Mid" | "High"
   source: string
+  prompt: string
   total_score: number
   submission_number: number
   accepted_number: number
