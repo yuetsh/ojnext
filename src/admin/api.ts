@@ -25,8 +25,8 @@ export async function getProblemList(
   offset = 0,
   limit = 10,
   keyword: string,
+  author?: string,
   contestID?: string,
-  ruleType?: "ACM" | "OI",
 ) {
   const endpoint = !!contestID ? "admin/contest/problem" : "admin/problem"
   const res = await http.get(endpoint, {
@@ -35,8 +35,8 @@ export async function getProblemList(
       offset,
       limit,
       keyword,
+      author,
       contest_id: contestID,
-      rule_type: ruleType,
     },
   })
   return {

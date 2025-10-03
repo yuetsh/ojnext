@@ -8,6 +8,7 @@ import { getProblemList, toggleProblemVisible } from "../api"
 import Actions from "./components/Actions.vue"
 import Modal from "./components/Modal.vue"
 import { useRouteQuery } from "@vueuse/router"
+import AuthorSelect from "~/shared/components/AuthorSelect.vue"
 
 interface Props {
   contestID?: string
@@ -35,11 +36,13 @@ const problems = ref<AdminProblemFiltered[]>([])
 
 interface ProblemQuery {
   keyword: string
+  author: string
 }
 
 // 使用分页 composable
 const { query, clearQuery } = usePagination<ProblemQuery>({
   keyword: useRouteQuery("keyword", "").value,
+  author: useRouteQuery("author", "").value,
 })
 
 const columns: DataTableColumn<AdminProblemFiltered>[] = [
@@ -77,7 +80,6 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   },
 ]
 
-
 async function listProblems() {
   if (query.page < 1) query.page = 1
   const offset = (query.page - 1) * query.limit
@@ -85,6 +87,7 @@ async function listProblems() {
     offset,
     query.limit,
     query.keyword,
+    query.author,
     props.contestID,
   )
   total.value = res.total
@@ -116,17 +119,13 @@ async function selectProblems() {
 onMounted(listProblems)
 
 // 监听搜索关键词变化（防抖）
-watchDebounced(
-  () => query.keyword,
-  listProblems,
-  { debounce: 500, maxWait: 1000 },
-)
+watchDebounced(() => query.keyword, listProblems, {
+  debounce: 500,
+  maxWait: 1000,
+})
 
 // 监听其他查询条件变化
-watch(
-  () => [query.page, query.limit],
-  listProblems,
-)
+watch(() => [query.page, query.limit, query.author], listProblems)
 </script>
 
 <template>
@@ -152,8 +151,17 @@ watch(
       >
         从题库中选择
       </n-button>
+      <n-flex align="center" v-if="!props.contestID">
+        <span>出题人</span>
+        <AuthorSelect v-model:value="query.author" all />
+      </n-flex>
       <div>
-        <n-input v-model:value="query.keyword" placeholder="输入标题关键字" clearable @clear="clearQuery" />
+        <n-input
+          v-model:value="query.keyword"
+          placeholder="输入标题关键字"
+          clearable
+          @clear="clearQuery"
+        />
       </div>
     </n-flex>
   </n-flex>

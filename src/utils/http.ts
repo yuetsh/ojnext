@@ -13,7 +13,6 @@ http.interceptors.response.use(
     if (res.data.error) {
       if (res.data.data && res.data.data.startsWith("Please login")) {
         storage.remove(STORAGE_KEY.AUTHED)
-        window.location.reload()
       }
       return Promise.reject(res.data)
     } else {

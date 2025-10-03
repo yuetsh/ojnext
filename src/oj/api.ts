@@ -56,8 +56,12 @@ export async function getProblemList(
   }
 }
 
-export function getAuthors() {
-  return http.get("problem/author")
+export function getAuthors(all = false) {
+  return http.get("problem/author", {
+    params: {
+      all: all ? "1" : "0",
+    },
+  })
 }
 
 export function getRandomProblemID() {

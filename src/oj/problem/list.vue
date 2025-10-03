@@ -2,7 +2,7 @@
 import { Icon } from "@iconify/vue"
 import { NSpace, NTag } from "naive-ui"
 import { useRouteQuery } from "@vueuse/router"
-import { getAuthors, getProblemList, getRandomProblemID } from "oj/api"
+import { getProblemList, getRandomProblemID } from "oj/api"
 import { getTagColor } from "utils/functions"
 import { ProblemFiltered } from "utils/types"
 import { getProblemTagList } from "~/shared/api"
@@ -13,6 +13,7 @@ import { usePagination } from "~/shared/composables/pagination"
 import { useUserStore } from "~/shared/store/user"
 import { renderTableTitle } from "~/utils/renders"
 import ProblemStatus from "./components/ProblemStatus.vue"
+import AuthorSelect from "~/shared/components/AuthorSelect.vue"
 
 interface Tag {
   id: number
@@ -34,8 +35,6 @@ const difficultyOptions = [
   { label: "困难", value: "High" },
 ]
 
-const authorOptions = ref([{ label: "全部", value: "" }])
-
 const router = useRouter()
 
 const userStore = useUserStore()
@@ -52,17 +51,6 @@ const { query, clearQuery } = usePagination<ProblemQuery>({
   author: useRouteQuery("author", "").value,
 })
 
-async function getAuthorOptions() {
-  authorOptions.value = [{ label: "全部", value: "" }]
-  const res = await getAuthors()
-  const remotes = res.data.map(
-    (item: { username: string; problem_count: number }) => ({
-      label: `${item.username} (${item.problem_count})`,
-      value: item.username,
-    }),
-  )
-  authorOptions.value = [...authorOptions.value, ...remotes]
-}
 
 async function listProblems() {
   if (query.page < 1) query.page = 1
@@ -220,14 +208,7 @@ function rowProps(row: ProblemFiltered) {
               />
             </n-form-item>
             <n-form-item label="出题者">
-              <n-select
-                style="width: 160px"
-                v-model:value="query.author"
-                remote
-                @update:show="getAuthorOptions"
-                @update:value="(val) => (query.author = val)"
-                :options="authorOptions"
-              />
+              <AuthorSelect v-model:value="query.author" />
             </n-form-item>
           </n-form>
         </div>
@@ -242,22 +223,24 @@ function rowProps(row: ProblemFiltered) {
               />
             </n-form-item>
             <n-form-item>
-              <n-flex align="center">
-                <n-button @click="clearQuery" quaternary>重置</n-button>
-                <n-button @click="getRandom" quaternary>试试手气</n-button>
-              </n-flex>
+              <n-button @click="clearQuery" quaternary>重置</n-button>
             </n-form-item>
-            <n-button
-              @click="toggleShowTag()"
-              quaternary
-              icon-placement="right"
-            >
-              <template #icon>
-                <Icon v-if="showTag" icon="ph:caret-down"></Icon>
-                <Icon v-else icon="ph:caret-up"></Icon>
-              </template>
-              标签
-            </n-button>
+            <!-- <n-form-item>
+              <n-button @click="getRandom" quaternary>随机</n-button>
+            </n-form-item> -->
+            <n-form-item>
+              <n-button
+                @click="toggleShowTag()"
+                quaternary
+                icon-placement="right"
+              >
+                <template #icon>
+                  <Icon v-if="showTag" icon="ph:caret-down"></Icon>
+                  <Icon v-else icon="ph:caret-up"></Icon>
+                </template>
+                标签
+              </n-button>
+            </n-form-item>
           </n-form>
         </div>
       </n-flex>
