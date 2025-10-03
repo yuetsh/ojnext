@@ -1,87 +1,71 @@
 <template>
-  <n-flex size="large" vertical>
-    <n-form :show-feedback="false" inline label-placement="left">
-      <n-form-item>
-        <n-input
-          placeholder="用户（可选）"
-          v-model:value="query.username"
-          style="width: 200px"
-          clearable
-        />
-      </n-form-item>
-      <n-form-item>
-        <n-input
-          placeholder="题号（可选）"
-          v-model:value="query.problem"
-          style="width: 200px"
-          clearable
-        />
-      </n-form-item>
-      <n-form-item>
-        <n-select
-          style="width: 120px"
-          v-model:value="query.duration"
-          :options="options"
-        />
-      </n-form-item>
-      <n-form-item>
-        <n-button type="primary" @click="handleStatistics">统计</n-button>
-      </n-form-item>
-      <n-form-item v-if="route.name !== 'submissions'">
-        <n-button @click="goSubmissions">前往提交列表</n-button>
-      </n-form-item>
-    </n-form>
-    <n-space v-if="count.total > 0" size="large">
-      <n-h1 style="margin-bottom: 0">
-        <n-gradient-text type="primary">
-          正确提交数：{{ count.accepted }}
-        </n-gradient-text>
-      </n-h1>
-      <n-h1 style="margin-bottom: 0">
-        <n-gradient-text type="info">
-          总提交数：{{ count.total }}
-        </n-gradient-text>
-      </n-h1>
-      <n-h1 style="margin-bottom: 0">
-        <n-gradient-text type="warning">
-          正确率：{{ count.rate }}
-        </n-gradient-text>
-      </n-h1>
-    </n-space>
-    <n-space v-if="count.total > 0" size="large">
-      <n-h1>
-        <n-gradient-text type="error">
-          回答正确的人数：{{ list.length }}
-        </n-gradient-text>
-      </n-h1>
-      <n-h1 v-if="person.count > 0">
-        <n-gradient-text type="warning">
-          班级人数：{{ person.count }}
-        </n-gradient-text>
-      </n-h1>
-      <n-h1 v-if="person.count > 0">
-        <n-gradient-text type="success">
-          班级完成度：{{ person.rate }}
-        </n-gradient-text>
-      </n-h1>
-      <n-flex v-if="listUnaccepted.length > 0" style="margin-top: 8px">
-        <n-button type="warning" @click="toggleUnaccepted(!unaccepted)">
-          {{ unaccepted ? "隐藏没有完成的" : "显示没有完成的" }}
-        </n-button>
-      </n-flex>
-    </n-space>
-    <n-h1 v-if="count.total === 0">
-      <n-gradient-text type="primary">暂无数据统计</n-gradient-text>
-    </n-h1>
-    <n-space v-if="unaccepted" size="large">
-      <n-h1>这{{ listUnaccepted.length }}位没有完成：</n-h1>
-      <n-h1 v-for="name in listUnaccepted" :key="name">
-        {{ name }}
-      </n-h1>
-      <n-text v-if="message">{{ message }}</n-text>
-    </n-space>
-    <n-data-table v-if="list.length" striped :columns="columns" :data="list" />
+  <n-flex>
+    <n-input
+      placeholder="用户（可选）"
+      v-model:value="query.username"
+      style="width: 160px"
+      clearable
+    />
+    <n-input
+      placeholder="题号（可选）"
+      v-model:value="query.problem"
+      style="width: 160px"
+      clearable
+    />
+    <n-select
+      style="width: 120px"
+      v-model:value="query.duration"
+      :options="options"
+    />
+    <n-button type="primary" @click="handleStatistics">统计</n-button>
+    <n-button v-if="route.name !== 'submissions'" @click="goSubmissions">
+      前往提交列表
+    </n-button>
   </n-flex>
+  <n-flex style="margin: 20px 0" v-if="count.total > 0">
+    <n-gradient-text font-size="24" type="primary">
+      正确提交数：{{ count.accepted }}
+    </n-gradient-text>
+    <n-gradient-text font-size="24" type="info">
+      总提交数：{{ count.total }}
+    </n-gradient-text>
+    <n-gradient-text font-size="24" type="warning">
+      正确率：{{ count.rate }}
+    </n-gradient-text>
+  </n-flex>
+  <n-flex style="margin: 20px 0" v-if="count.total > 0">
+    <n-gradient-text font-size="24" type="error">
+      回答正确的人数：{{ list.length }}
+    </n-gradient-text>
+    <n-gradient-text font-size="24" v-if="person.count > 0" type="warning">
+      班级人数：{{ person.count }}
+    </n-gradient-text>
+    <n-gradient-text font-size="24" v-if="person.count > 0" type="success">
+      班级完成度：{{ person.rate }}
+    </n-gradient-text>
+    <n-flex v-if="listUnaccepted.length > 0">
+      <n-button type="warning" @click="toggleUnaccepted(!unaccepted)">
+        {{ unaccepted ? "隐藏没有完成的" : "显示没有完成的" }}
+      </n-button>
+    </n-flex>
+  </n-flex>
+  <n-gradient-text
+    font-size="24"
+    style="margin-top: 20px"
+    v-if="count.total === 0"
+    type="primary"
+  >
+    暂无数据统计
+  </n-gradient-text>
+  <n-flex style="margin-bottom: 20px" v-if="unaccepted" size="large">
+    <span style="font-size: 24px">
+      这 {{ listUnaccepted.length }} 位没有完成：
+    </span>
+    <span style="font-size: 24px" v-for="name in listUnaccepted" :key="name">
+      {{ name }}
+    </span>
+  </n-flex>
+  <n-data-table v-if="list.length" striped :columns="columns" :data="list" />
 </template>
 <script setup lang="ts">
 import { formatISO, sub, type Duration } from "date-fns"
@@ -134,7 +118,6 @@ const router = useRouter()
 const list = ref([])
 const listUnaccepted = ref([])
 const [unaccepted, toggleUnaccepted] = useToggle()
-const message = ref("")
 
 const subOptions = computed<Duration>(() => {
   let dur = options.find((it) => it.value === query.duration) ?? options[0]
@@ -171,6 +154,5 @@ async function handleStatistics() {
   person.rate = res.data.person_rate
 
   toggleUnaccepted(false)
-  message.value = ""
 }
 </script>

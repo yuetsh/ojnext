@@ -139,7 +139,7 @@ function showStatisticsPanel() {
         v-if="userStore.isSuperAdmin"
         @click="showStatisticsPanel"
       >
-        数据统计
+        {{ isDesktop ? "统计信息" : "统计" }}
       </n-button>
       <n-dropdown size="large" :options="menu" @select="select">
         <n-button :size="isDesktop ? 'medium' : 'small'">操作</n-button>
