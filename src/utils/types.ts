@@ -118,6 +118,7 @@ export interface Problem {
   difficulty: "Low" | "Mid" | "High"
   source: string
   prompt: string
+  answers: {language: LANGUAGE, code: string}[]
   total_score: number
   submission_number: number
   accepted_number: number

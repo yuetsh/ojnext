@@ -71,6 +71,7 @@ const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
   hint: "",
   source: "",
   prompt: "",
+  answers: [],
   io_mode: {
     io_mode: "Standard IO",
     input: "input.txt",
@@ -91,10 +92,11 @@ const tags = useLocalStorage<Tags>(STORAGE_KEY.ADMIN_PROBLEM_TAGS, {
   upload: [],
 })
 
-// 这三个用的少，就不缓存本地了
+// 这几个用的少，就不缓存本地了
 const [needTemplate, toggleNeedTemplate] = useToggle(false)
 const template = reactive(JSON.parse(JSON.stringify(CODE_TEMPLATES)))
-const currentActiveTemplate = ref<LANGUAGE>("C")
+const currentActiveTemplate = ref<LANGUAGE>("Python3")
+const currentActiveAnswer = ref<LANGUAGE>("Python3")
 
 // 给 TextEditor 用
 const [ready, toggleReady] = useToggle(false)
@@ -150,6 +152,14 @@ async function getProblemDetail() {
     problem.value.hint = data.hint
     problem.value.source = data.source
     problem.value.prompt = data.prompt
+    if (data.answers && data.answers.length) {
+      problem.value.answers = data.answers
+    } else {
+      problem.value.answers = data.languages.map((lang: LANGUAGE) => ({
+        language: lang,
+        code: "",
+      }))
+    }
     problem.value.io_mode = data.io_mode
     if (problem.value.contest_id) {
       problem.value.contest_id = problem.value.contest_id
@@ -302,11 +312,18 @@ function filterHint() {
   }
 }
 
+function filterAnswers() {
+  problem.value.answers = problem.value.answers.filter(
+    (ans) => ans.code.trim() !== "",
+  )
+}
+
 async function submit() {
   const notCompleted = detectProblemCompletion()
   if (notCompleted) return
   filterHint()
   getTemplate()
+  filterAnswers()
   const api = {
     "admin problem create": createProblem,
     "admin problem edit": editProblem,
@@ -373,6 +390,19 @@ watch(
     const uniqueTags = unique<string>(tags[0].concat(tags[1]))
     problem.value.tags = uniqueTags
   },
+)
+watch(
+  () => problem.value.languages,
+  (langs) => {
+    const answers = langs.map((lang) => {
+      const existing = problem.value.answers.find(
+        (ans) => ans.language === lang,
+      )
+      return existing || { language: lang, code: "" }
+    })
+    problem.value.answers = answers
+  },
+  { immediate: true },
 )
 </script>
 
@@ -470,33 +500,63 @@ watch(
       />
     </n-form-item>
     <n-form-item label="本题的考察知识点（选填）">
-      <n-input v-model:value="problem.prompt" placeholder="这里的内容是方便喂给 AI 进行辅助分析的" />
-    </n-form-item>
-  </n-form>
-  <n-form v-if="needTemplate">
-    <n-form-item label="编写代码模板">
-      <n-tabs
-        type="segment"
-        default-value="C"
-        class="template box"
-        v-model:value="currentActiveTemplate"
-      >
-        <n-tab-pane
-          v-for="(lang, index) in problem.languages"
-          :key="index"
-          :name="lang"
-        >
-          <CodeEditor
-            v-model:value="template[lang]"
-            :language="lang"
-            :font-size="16"
-            height="200px"
-          />
-        </n-tab-pane>
-      </n-tabs>
+      <n-input
+        v-model:value="problem.prompt"
+        placeholder="这里的内容是方便喂给 AI 进行辅助分析的"
+      />
     </n-form-item>
   </n-form>
 
+  <n-grid :cols="2" x-gap="20">
+    <n-gi>
+      <n-form>
+        <n-form-item label="本题参考答案（用于 AI 分析，不会泄露）">
+          <n-tabs
+            type="segment"
+            default-value="Python3"
+            v-model:value="currentActiveAnswer"
+          >
+            <n-tab-pane
+              v-for="(answer, index) in problem.answers"
+              :key="index"
+              :name="answer.language"
+            >
+              <CodeEditor
+                v-model:value="answer.code"
+                :language="answer.language"
+                :font-size="16"
+                height="200px"
+              />
+            </n-tab-pane>
+          </n-tabs>
+        </n-form-item>
+      </n-form>
+    </n-gi>
+    <n-gi>
+      <n-form v-if="needTemplate">
+        <n-form-item label="编写代码模板">
+          <n-tabs
+            type="segment"
+            default-value="Python3"
+            v-model:value="currentActiveTemplate"
+          >
+            <n-tab-pane
+              v-for="(lang, index) in problem.languages"
+              :key="index"
+              :name="lang"
+            >
+              <CodeEditor
+                v-model:value="template[lang]"
+                :language="lang"
+                :font-size="16"
+                height="200px"
+              />
+            </n-tab-pane>
+          </n-tabs>
+        </n-form-item>
+      </n-form>
+    </n-gi>
+  </n-grid>
   <n-alert
     class="box"
     v-if="problem.test_case_score.length"
@@ -598,9 +658,5 @@ watch(
 
 .addSamples {
   width: 100%;
-}
-
-.template {
-  width: 60%;
 }
 </style>
