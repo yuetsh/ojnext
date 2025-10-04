@@ -2,6 +2,7 @@ import { getTime, intervalToDuration, parseISO, type Duration } from "date-fns"
 import { User } from "./types"
 import { USER_TYPE } from "./constants"
 import { strFromU8, strToU8, unzlibSync, zlibSync } from "fflate"
+import copyTextFallback from "copy-text-to-clipboard"
 
 function calculateACRate(acCount: number, totalCount: number): string {
   if (totalCount === 0) return "0.00"
@@ -197,6 +198,33 @@ export function atou(base64: string): string {
   const buffer = strToU8(binary, true)
   const unzipped = unzlibSync(buffer)
   return strFromU8(unzipped)
+}
+
+/**
+ * 复制文本到剪贴板
+ * 优先使用 Clipboard API（支持在 modal 中使用），失败时回退到 copy-text-to-clipboard
+ * @param text 要复制的文本
+ * @returns Promise<boolean> 复制是否成功
+ */
+export async function copyToClipboard(text: string): Promise<boolean> {
+  // 优先使用现代 Clipboard API
+  if (navigator.clipboard && window.isSecureContext) {
+    try {
+      await navigator.clipboard.writeText(text)
+      return true
+    } catch (error) {
+      console.warn("Clipboard API 复制失败，尝试使用回退方法:", error)
+    }
+  }
+
+  // 回退到 copy-text-to-clipboard
+  try {
+    const success = copyTextFallback(text)
+    return success
+  } catch (error) {
+    console.error("复制失败:", error)
+    return false
+  }
 }
 
 // function getChromeVersion() {

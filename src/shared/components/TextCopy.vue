@@ -9,16 +9,20 @@
   </n-tooltip>
 </template>
 <script lang="ts" setup>
-import copyText from "copy-text-to-clipboard"
+import { copyToClipboard } from "~/utils/functions"
 
 const message = useMessage()
 
 const slots = useSlots()
 
-function handleClick() {
+async function handleClick() {
   const textToCopy = getTextFromSlot()
-  copyText(textToCopy)
-  message.success("已复制")
+  const success = await copyToClipboard(textToCopy)
+  if (success) {
+    message.success("已复制")
+  } else {
+    message.error("复制失败")
+  }
 }
 
 function getTextFromSlot() {

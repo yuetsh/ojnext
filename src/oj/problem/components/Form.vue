@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import copyText from "copy-text-to-clipboard"
+import { copyToClipboard } from "~/utils/functions"
 import { code, input, output } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
 import { LANGUAGE_SHOW_VALUE, SOURCES, STORAGE_KEY } from "utils/constants"
@@ -57,9 +57,13 @@ const languageOptions: DropdownOption[] = problem.value!.languages.map((it) => (
   value: it,
 }))
 
-const copy = () => {
-  copyText(code.value)
-  message.success("代码复制成功")
+const copy = async () => {
+  const success = await copyToClipboard(code.value)
+  if (success) {
+    message.success("代码复制成功")
+  } else {
+    message.error("代码复制失败")
+  }
 }
 
 const reset = () => {

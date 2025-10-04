@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
-import copy from "copy-text-to-clipboard"
+import { copyToClipboard } from "~/utils/functions"
 
 defineProps<{ value: string }>()
 const [copied, toggle] = useToggle()
@@ -9,10 +9,12 @@ const { start } = useTimeoutFn(() => toggle(false), 1000, { immediate: false })
 const COPY = h(Icon, { icon: "twemoji:clipboard" })
 const OK = h(Icon, { icon: "twemoji:check-mark-button" })
 
-function handleClick(value: string) {
-  copy(value)
-  toggle(true)
-  start()
+async function handleClick(value: string) {
+  const success = await copyToClipboard(value)
+  if (success) {
+    toggle(true)
+    start()
+  }
 }
 </script>
 <template>
