@@ -134,7 +134,7 @@ function rowProps(row: Contest) {
       <n-form :show-feedback="false" label-placement="left" inline>
         <n-form-item label="比赛状态">
           <n-select
-            class="select"
+            style="width: 120px"
             :options="options"
             v-model:value="query.status"
           />
@@ -146,7 +146,7 @@ function rowProps(row: Contest) {
       <n-form :show-feedback="false" label-placement="left" inline>
         <n-form-item>
           <n-input
-            class="input"
+            style="width: 200px"
             clearable
             v-model:value="query.keyword"
             placeholder="比赛标题"
@@ -173,13 +173,3 @@ function rowProps(row: Contest) {
     :total="total"
   />
 </template>
-
-<style scoped>
-.select {
-  width: 120px;
-}
-
-.input {
-  width: 200px;
-}
-</style>

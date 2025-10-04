@@ -109,7 +109,7 @@ onMounted(getBeatRate)
     <n-gi v-for="item in numbers" :key="item.content">
       <n-card hoverable>
         <n-flex align="center">
-          <Icon :icon="item.icon" width="40" />
+          <Icon v-if="isDesktop" :icon="item.icon" width="40" />
           <div>
             <n-h2 class="number">
               <n-number-animation

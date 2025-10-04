@@ -10,6 +10,7 @@ import storage from "~/utils/storage"
 import { LANGUAGE } from "~/utils/types"
 import Submit from "./Submit.vue"
 import StatisticsPanel from "~/shared/components/StatisticsPanel.vue"
+import {Icon} from "@iconify/vue"
 
 interface Props {
   storageKey: string
@@ -144,8 +145,10 @@ function showStatisticsPanel() {
       <n-dropdown size="large" :options="menu" @select="select">
         <n-button :size="isDesktop ? 'medium' : 'small'">操作</n-button>
       </n-dropdown>
-      <n-button v-if="isDesktop && userStore.isSuperAdmin" @click="goEdit">
-        编辑
+      <n-button circle v-if="isDesktop && userStore.isSuperAdmin" @click="goEdit">
+        <template #icon>
+          <Icon icon="streamline-ultimate-color:file-code-edit" />
+        </template>
       </n-button>
     </n-flex>
   </n-flex>

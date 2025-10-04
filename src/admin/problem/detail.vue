@@ -510,7 +510,7 @@ watch(
   <n-grid :cols="2" x-gap="20">
     <n-gi>
       <n-form>
-        <n-form-item label="本题参考答案（用于 AI 分析，不会泄露）">
+        <n-form-item label="本题参考答案（选填，用于 AI 分析，不会泄露）">
           <n-tabs
             type="segment"
             default-value="Python3"

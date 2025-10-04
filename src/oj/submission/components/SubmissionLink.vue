@@ -3,11 +3,16 @@
     <n-button text type="info" @click="$emit('showCode')">
       {{ props.submission.id.slice(0, 12) }}
     </n-button>
-    <n-button text @click="goto">
-      <template #icon>
-        <Icon icon="streamline-emojis:backhand-index-pointing-right-1"></Icon>
+    <n-tooltip>
+      <template #trigger>
+        <n-button text @click="goto">
+          <template #icon>
+            <Icon icon="catppuccin:folder-debug"></Icon>
+          </template>
+        </n-button>
       </template>
-    </n-button>
+      查看测试详情
+    </n-tooltip>
   </n-flex>
   <span v-else>
     {{ props.submission.id.slice(0, 12) }}

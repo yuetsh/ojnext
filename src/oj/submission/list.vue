@@ -6,7 +6,7 @@ import { parseTime } from "utils/functions"
 import { LANGUAGE, SubmissionListItem } from "utils/types"
 import Pagination from "~/shared/components/Pagination.vue"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
-import { isDesktop } from "~/shared/composables/breakpoints"
+import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { usePagination } from "~/shared/composables/pagination"
 import { useUserStore } from "~/shared/store/user"
 import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
@@ -15,6 +15,7 @@ import ButtonWithSearch from "./components/ButtonWithSearch.vue"
 import StatisticsPanel from "~/shared/components/StatisticsPanel.vue"
 import SubmissionLink from "./components/SubmissionLink.vue"
 import SubmissionDetail from "./detail.vue"
+import { Icon } from "@iconify/vue"
 
 interface SubmissionQuery {
   username: string
@@ -180,6 +181,7 @@ const columns = computed(() => {
         h(
           ButtonWithSearch,
           {
+            type: "题目",
             onClick: () => problemClicked(row),
             onSearch: () => (query.problem = row.problem),
           },
@@ -206,8 +208,11 @@ const columns = computed(() => {
         h(
           ButtonWithSearch,
           {
+            type: "用户",
+            username: row.username,
             onClick: () => window.open("/user?name=" + row.username, "_blank"),
             onSearch: () => (query.username = row.username),
+            onFilterClass: (classname: string) => (query.username = classname),
           },
           () => row.username,
         ),
@@ -237,6 +242,13 @@ const columns = computed(() => {
   <n-flex vertical size="large">
     <n-space>
       <n-form :show-feedback="false" inline label-placement="left">
+        <n-form-item v-if="isDesktop && userStore.isAuthed" label="只看自己">
+          <n-switch
+            v-model:value="query.myself"
+            checked-value="1"
+            unchecked-value="0"
+          />
+        </n-form-item>
         <n-form-item label="提交状态">
           <n-select
             class="select"
@@ -269,27 +281,31 @@ const columns = computed(() => {
             placeholder="题号"
           />
         </n-form-item>
-        <n-form-item v-if="userStore.isAuthed" label="只看自己">
+      </n-form>
+      <n-form :show-feedback="false" inline label-placement="left">
+        <n-form-item v-if="isMobile && userStore.isAuthed" label="只看自己">
           <n-switch
             v-model:value="query.myself"
             checked-value="1"
             unchecked-value="0"
           />
         </n-form-item>
-      </n-form>
-      <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item>
           <n-button @click="search(query.username, query.problem)">
             搜索
           </n-button>
         </n-form-item>
+        <n-form-item>
+          <n-button @click="clear" quaternary>重置</n-button>
+        </n-form-item>
         <n-form-item
           v-if="userStore.isSuperAdmin && route.name === 'submissions'"
         >
-          <n-button @click="toggleStatisticPanel(true)">数据统计</n-button>
-        </n-form-item>
-        <n-form-item>
-          <n-button @click="clear" quaternary>重置</n-button>
+          <n-button circle @click="toggleStatisticPanel(true)">
+            <template #icon>
+              <Icon icon="streamline-emojis:bar-chart" />
+            </template>
+          </n-button>
         </n-form-item>
         <n-form-item v-if="todayCount > 0">
           <component :is="isDesktop ? NH2 : NText" class="todayCount">
