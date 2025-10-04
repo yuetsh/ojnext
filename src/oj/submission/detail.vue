@@ -10,6 +10,7 @@ import {
   submissionMemoryFormat,
   submissionTimeFormat,
   utoa,
+  copyToClipboard,
 } from "utils/functions"
 import { Submission } from "utils/types"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
@@ -23,6 +24,7 @@ const props = defineProps<{
 }>()
 
 const router = useRouter()
+const message = useMessage()
 
 const submission = ref<Submission>()
 
@@ -64,7 +66,13 @@ function copyToCat() {
   window.open(url, "_blank")
 }
 
-function copyToProblem() {
+async function copyToProblem() {
+  const success = await copyToClipboard(submission.value!.code)
+  if (success) {
+    message.success("代码复制成功")
+  } else {
+    message.error("代码复制失败")
+  }
   router.push({
     name: "problem",
     params: {
