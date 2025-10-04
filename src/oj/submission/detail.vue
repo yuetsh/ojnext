@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import qs from "query-string"
 import { getSubmission } from "oj/api"
 import {
   JUDGE_STATUS,
@@ -61,12 +60,7 @@ function copyToCat() {
     input: "",
   }
   const base64 = utoa(JSON.stringify(data))
-  const url = qs.stringifyUrl({
-    url: import.meta.env.PUBLIC_CODE_URL,
-    query: {
-      share: base64,
-    },
-  })
+  const url = `${import.meta.env.PUBLIC_CODE_URL}?share=${encodeURIComponent(base64)}`
   window.open(url, "_blank")
 }
 
