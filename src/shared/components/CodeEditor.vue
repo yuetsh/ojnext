@@ -28,7 +28,7 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  language: "C",
+  language: "Python3",
   fontSize: 20,
   height: "100%",
   readonly: false,
@@ -40,7 +40,7 @@ const code = defineModel<string>("value")
 const isDark = useDark()
 
 const lang = computed(() => {
-  if (props.language === "Python3" || props.language === "Python2") {
+  if (["Python2", "Python3"].includes(props.language)) {
     return python()
   }
   return cpp()
