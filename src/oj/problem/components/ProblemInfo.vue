@@ -6,6 +6,7 @@ import { getACRateNumber, getTagColor, parseTime } from "utils/functions"
 import { Pie } from "vue-chartjs"
 import { getProblemBeatRate } from "~/oj/api"
 import { isDesktop } from "~/shared/composables/breakpoints"
+import { registerChart } from "~/utils/registerChart"
 
 const beatRate = ref("0")
 
@@ -73,6 +74,7 @@ async function getBeatRate() {
   beatRate.value = res.data
 }
 
+onBeforeMount(registerChart)
 onMounted(getBeatRate)
 </script>
 

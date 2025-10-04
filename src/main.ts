@@ -2,22 +2,6 @@ import { addAPIProvider } from "@iconify/vue"
 import { createPinia } from "pinia"
 import { createRouter, createWebHistory } from "vue-router"
 
-import {
-  ArcElement,
-  BarElement,
-  BarController,
-  CategoryScale,
-  Chart as ChartJS,
-  Colors,
-  Legend,
-  LinearScale,
-  LineController,
-  Title,
-  Tooltip,
-  LineElement,
-  PointElement,
-} from "chart.js"
-
 import { STORAGE_KEY } from "utils/constants"
 import storage from "utils/storage"
 
@@ -81,21 +65,6 @@ router.beforeEach(async (to, from, next) => {
 
   next()
 })
-
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  BarElement,
-  BarController,
-  ArcElement,
-  LineElement,
-  LineController,
-  PointElement,
-  Colors,
-  Title,
-  Tooltip,
-  Legend,
-)
 
 const pinia = createPinia()
 const app = createApp(App)
