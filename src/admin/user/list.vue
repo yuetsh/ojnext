@@ -14,6 +14,8 @@ import {
 import Actions from "./components/Actions.vue"
 import Name from "./components/Name.vue"
 import { PROBLEM_PERMISSION, USER_TYPE } from "~/utils/constants"
+import { useRouteQuery } from "@vueuse/router"
+import TextCopy from "~/shared/components/TextCopy.vue"
 
 const message = useMessage()
 
@@ -23,9 +25,9 @@ interface UserQuery {
 }
 
 // 使用分页 composable
-const { query, clearQuery } = usePagination<UserQuery>({
-  keyword: "",
-  type: "",
+const { query } = usePagination<UserQuery>({
+  keyword: useRouteQuery("keyword", "").value,
+  type: useRouteQuery("type", "").value,
 })
 
 const total = ref(0)
@@ -56,6 +58,7 @@ const columns: DataTableColumn<User>[] = [
     title: "密码",
     key: "raw_password",
     width: 100,
+    render: (row) => h(TextCopy, () => row.raw_password),
   },
   {
     title: "创建时间",
@@ -72,7 +75,7 @@ const columns: DataTableColumn<User>[] = [
         ? parseTime(row.last_login, "YYYY-MM-DD HH:mm:ss")
         : "从未登录",
   },
-  { title: "真名", key: "real_name", width: 100 },
+  { title: "真名", key: "real_name", width: 100, render: (row) => h(TextCopy, () => row.real_name) },
   { title: "邮箱", key: "email", width: 200 },
   {
     key: "actions",

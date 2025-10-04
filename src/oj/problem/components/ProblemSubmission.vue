@@ -3,14 +3,12 @@ import { NButton } from "naive-ui"
 import { getSubmissions, getRankOfProblem } from "~/oj/api"
 import Pagination from "~/shared/components/Pagination.vue"
 import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
-import { useConfigStore } from "~/shared/store/config"
 import { useUserStore } from "~/shared/store/user"
 import { LANGUAGE_SHOW_VALUE } from "~/utils/constants"
 import { parseTime } from "~/utils/functions"
 import { renderTableTitle } from "~/utils/renders"
 import { Submission } from "~/utils/types"
 
-const configStore = useConfigStore()
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
@@ -117,7 +115,7 @@ watch(query, listSubmissions)
   <n-alert
     class="tip"
     type="error"
-    v-if="!userStore.showSubmissions"
+    v-if="!userStore.showSubmissions || !userStore.isAuthed"
     :title="errorMsg"
   />
 
@@ -126,11 +124,12 @@ watch(query, listSubmissions)
       <n-alert class="tip" type="success" :show-icon="false" v-if="rank !== -1">
         <template #header>
           <n-flex align="center">
-            <div>
+            <span>
               本道题你在班上排名第 <b>{{ rank }}</b
               >，你们班共有 <b>{{ class_ac_count }}</b> 人答案正确
-            </div>
+            </span>
             <n-button
+              secondary
               v-if="userStore.showSubmissions"
               @click="
                 router.push({
@@ -157,12 +156,10 @@ watch(query, listSubmissions)
         v-if="rank === -1 && class_ac_count > 0"
       >
         <template #header>
-          <n-flex>
-            <div>
-              本道题你还没有解决，
-              <div v-if="class_name">你们班</div>
-              共有 <b>{{ class_ac_count }}</b> 人答案正确
-            </div>
+          <n-flex align="center">
+            <span>
+              本道题你还没有解决，你们班共有 <b>{{ class_ac_count }}</b> 人答案正确
+            </span>
             <n-button
               v-if="userStore.showSubmissions"
               secondary
@@ -189,11 +186,10 @@ watch(query, listSubmissions)
       <n-alert class="tip" type="success" :show-icon="false" v-if="rank !== -1">
         <template #header>
           <n-flex align="center">
-            <div>
+            <span>
               本道题你在全服排名第 <b>{{ rank }}</b
               >，全服共有 <b>{{ all_ac_count }}</b> 人答案正确
-            </div>
-            <div></div>
+            </span>
             <n-button
               secondary
               v-if="userStore.showSubmissions"
@@ -222,10 +218,9 @@ watch(query, listSubmissions)
       >
         <template #header>
           <n-flex align="center">
-            <div>
-              本道题你还没有解决，全服共有
-              <b>{{ all_ac_count }}</b> 人答案正确
-            </div>
+            <span>
+              本道题你还没有解决，全服共有 <b>{{ all_ac_count }}</b> 人答案正确
+            </span>
             <n-button
               v-if="userStore.showSubmissions"
               secondary
@@ -249,8 +244,8 @@ watch(query, listSubmissions)
     </template>
   </template>
 
-  <template v-if="userStore.showSubmissions">
-    <n-data-table striped :columns="columns" :data="submissions" />
+  <template v-if="userStore.showSubmissions && userStore.isAuthed">
+    <n-data-table v-if="submissions.length > 0" striped :columns="columns" :data="submissions" />
     <Pagination
       :total="total"
       v-model:limit="query.limit"

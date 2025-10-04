@@ -3,23 +3,21 @@ import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
 import { EditorView } from "@codemirror/view"
 import { Codemirror } from "vue-codemirror"
+import type { Extension } from "@codemirror/state"
 import { LANGUAGE } from "~/utils/types"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
+import { useCodeSync } from "../composables/sync"
 
-const styleTheme = EditorView.baseTheme({
-  "& .cm-scroller": {
-    "font-family": "Monaco",
-  },
-  "&.cm-editor.cm-focused": {
-    outline: "none",
-  },
-  "&.cm-editor .cm-tooltip.cm-tooltip-autocomplete ul": {
-    "font-family": "Monaco",
-  },
-})
+interface EditorReadyPayload {
+  view: EditorView
+  state: any
+  container: HTMLElement
+}
 
 interface Props {
+  sync?: boolean
+  problem?: string
   language?: LANGUAGE
   fontSize?: number
   height?: string
@@ -28,6 +26,8 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  sync: false,
+  problem: "",
   language: "Python3",
   fontSize: 20,
   height: "100%",
@@ -35,25 +35,105 @@ const props = withDefaults(defineProps<Props>(), {
   placeholder: "",
 })
 
+const { readonly, placeholder, height, fontSize } = toRefs(props)
 const code = defineModel<string>("value")
+
+const emit = defineEmits<{
+  syncClosed: []
+  syncStatusChange: [
+    status: { otherUser?: { name: string; isSuperAdmin: boolean } },
+  ]
+}>()
 
 const isDark = useDark()
 
-const lang = computed(() => {
-  if (["Python2", "Python3"].includes(props.language)) {
-    return python()
-  }
-  return cpp()
+const styleTheme = EditorView.baseTheme({
+  "& .cm-scroller": { "font-family": "Monaco" },
+  "&.cm-editor.cm-focused": { outline: "none" },
+  "&.cm-editor .cm-tooltip.cm-tooltip-autocomplete ul": {
+    "font-family": "Monaco",
+  },
 })
+
+const lang = computed((): Extension => {
+  return ["Python2", "Python3"].includes(props.language) ? python() : cpp()
+})
+
+const extensions = computed((): Extension[] => [
+  styleTheme,
+  lang.value,
+  isDark.value ? oneDark : smoothy,
+  getInitialExtension(),
+])
+
+const { startSync, stopSync, getInitialExtension } = useCodeSync()
+const editorView = ref<EditorView | null>(null)
+let cleanupSync: (() => void) | null = null
+
+const cleanupSyncResources = () => {
+  if (cleanupSync) {
+    cleanupSync()
+    cleanupSync = null
+  }
+  stopSync()
+}
+
+const initSync = async () => {
+  if (!editorView.value || !props.problem) return
+
+  cleanupSyncResources()
+
+  cleanupSync = await startSync({
+    problemId: props.problem,
+    editorView: editorView.value as EditorView,
+    onStatusChange: (status) => {
+      if (status.error === "超管已离开" && !status.connected) {
+        emit("syncClosed")
+      }
+      emit("syncStatusChange", { otherUser: status.otherUser })
+    },
+  })
+}
+
+const handleEditorReady = (payload: EditorReadyPayload) => {
+  editorView.value = payload.view as EditorView
+  if (props.sync && props.problem) {
+    initSync()
+  }
+}
+
+watch(
+  () => props.sync,
+  (shouldSync) => {
+    if (shouldSync && props.problem && editorView.value) {
+      initSync()
+    } else {
+      cleanupSyncResources()
+    }
+  },
+)
+
+watch(
+  () => props.problem,
+  (newProblem, oldProblem) => {
+    if (newProblem !== oldProblem && props.sync && editorView.value) {
+      initSync()
+    }
+  },
+)
+
+onUnmounted(cleanupSyncResources)
 </script>
+
 <template>
   <Codemirror
     v-model="code"
     indentWithTab
-    :extensions="[styleTheme, lang, isDark ? oneDark : smoothy]"
-    :disabled="props.readonly"
-    :tabSize="4"
-    :placeholder="props.placeholder"
-    :style="{ height: props.height, fontSize: props.fontSize + 'px' }"
+    :extensions="extensions"
+    :disabled="readonly"
+    :tab-size="4"
+    :placeholder="placeholder"
+    :style="{ height, fontSize: `${fontSize}px` }"
+    @ready="handleEditorReady"
   />
 </template>

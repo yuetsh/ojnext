@@ -2,6 +2,7 @@
 import { PROBLEM_PERMISSION, USER_TYPE } from "~/utils/constants"
 import { getUserRole } from "~/utils/functions"
 import { User } from "~/utils/types"
+import TextCopy from "~/shared/components/TextCopy.vue"
 
 interface Props {
   user: User
@@ -30,6 +31,6 @@ const isNotRegularUser = computed(
           : "仅自己"
       }}
     </n-tag>
-    {{ props.user.username }}
+    <TextCopy>{{ props.user.username }}</TextCopy>
   </n-flex>
 </template>

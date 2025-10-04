@@ -7,6 +7,7 @@ interface ImportMetaEnv {
   readonly PUBLIC_CODE_URL: string
   readonly PUBLIC_JUDGE0_URL: string
   readonly PUBLIC_ICONIFY_URL: string
+  readonly PUBLIC_SIGNALING_URL: string
 }
 
 interface ImportMeta {
