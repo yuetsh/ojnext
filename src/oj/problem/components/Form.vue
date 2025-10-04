@@ -175,7 +175,7 @@ defineExpose({
         @click="toggleSync"
       />
       
-      <template v-if="props.isSynced">
+      <template v-if="isDesktop && props.isSynced">
         <n-tag v-if="otherUserInfo" type="info">
           与 {{ otherUserInfo.name }} 同步中
         </n-tag>

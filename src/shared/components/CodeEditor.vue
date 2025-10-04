@@ -8,6 +8,7 @@ import { LANGUAGE } from "~/utils/types"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
 import { useCodeSync } from "../composables/sync"
+import { isDesktop } from "../composables/breakpoints"
 
 interface EditorReadyPayload {
   view: EditorView
@@ -59,7 +60,7 @@ const lang = computed((): Extension => {
   return ["Python2", "Python3"].includes(props.language) ? python() : cpp()
 })
 
-const extensions = computed((): Extension[] => [
+const extensions = computed(() => [
   styleTheme,
   lang.value,
   isDark.value ? oneDark : smoothy,
@@ -79,7 +80,7 @@ const cleanupSyncResources = () => {
 }
 
 const initSync = async () => {
-  if (!editorView.value || !props.problem) return
+  if (!editorView.value || !props.problem || !isDesktop.value) return
 
   cleanupSyncResources()
 
@@ -97,7 +98,7 @@ const initSync = async () => {
 
 const handleEditorReady = (payload: EditorReadyPayload) => {
   editorView.value = payload.view as EditorView
-  if (props.sync && props.problem) {
+  if (props.sync) {
     initSync()
   }
 }
@@ -105,7 +106,7 @@ const handleEditorReady = (payload: EditorReadyPayload) => {
 watch(
   () => props.sync,
   (shouldSync) => {
-    if (shouldSync && props.problem && editorView.value) {
+    if (shouldSync) {
       initSync()
     } else {
       cleanupSyncResources()
@@ -116,7 +117,7 @@ watch(
 watch(
   () => props.problem,
   (newProblem, oldProblem) => {
-    if (newProblem !== oldProblem && props.sync && editorView.value) {
+    if (newProblem !== oldProblem && props.sync) {
       initSync()
     }
   },

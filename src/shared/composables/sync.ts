@@ -234,6 +234,8 @@ export function useCodeSync() {
       import("y-codemirror.next"),
     ])
 
+    console.log("Yjs 相关模块导入完成")
+
     // 初始化文档和提供者
     ydoc = new Y.Doc()
     ytext = ydoc.getText("codemirror")
