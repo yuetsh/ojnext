@@ -1,4 +1,4 @@
-import { ContestStatus, ContestType, USER_TYPE } from "./constants"
+import { ContestStatus, ContestType, LANGUAGE_SHOW_VALUE } from "./constants"
 
 export interface Profile {
   id: number
@@ -59,6 +59,8 @@ export type LANGUAGE =
   | "Java"
   | "JavaScript"
   | "Golang"
+
+export type LANGUAGE_SHOW_LABEL = typeof LANGUAGE_SHOW_VALUE[keyof typeof LANGUAGE_SHOW_VALUE]
 
 export type SUBMISSION_RESULT = -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9
 

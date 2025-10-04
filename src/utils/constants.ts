@@ -154,7 +154,7 @@ export const SOURCES = {
   Python2: "",
   JavaScript: "",
   Golang: "",
-}
+} as const
 
 export const LANGUAGE_ID = {
   C: 50,
@@ -164,7 +164,7 @@ export const LANGUAGE_ID = {
   Python2: 0,
   JavaScript: 0,
   Golang: 0,
-}
+} as const
 
 export const LANGUAGE_FORMAT_VALUE = {
   C: "c",
@@ -174,7 +174,7 @@ export const LANGUAGE_FORMAT_VALUE = {
   Python3: "python",
   JavaScript: "javascript",
   Golang: "go",
-}
+} as const
 
 export const LANGUAGE_SHOW_VALUE = {
   C: "C",
@@ -184,7 +184,7 @@ export const LANGUAGE_SHOW_VALUE = {
   Python3: "Python",
   JavaScript: "JS",
   Golang: "Go",
-}
+} as const
 
 const cTemplate = `//TEMPLATE BEGIN
 #include <stdio.h>
@@ -220,7 +220,7 @@ export const CODE_TEMPLATES = {
   Java: blankTemplate,
   JavaScript: blankTemplate,
   Golang: blankTemplate,
-}
+} as const
 
 export enum ScreenMode {
   both = "题目 | 自测",
