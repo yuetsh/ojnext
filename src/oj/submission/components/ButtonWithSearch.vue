@@ -32,7 +32,7 @@ function filterClass() {
           </template>
         </n-button>
       </template>
-      {{ "搜索" + props.type}}
+      {{ "搜索" + props.type }}
     </n-tooltip>
     <n-tooltip v-if="showFilterClass">
       <template #trigger>

@@ -15,7 +15,7 @@ import ButtonWithSearch from "./components/ButtonWithSearch.vue"
 import StatisticsPanel from "~/shared/components/StatisticsPanel.vue"
 import SubmissionLink from "./components/SubmissionLink.vue"
 import SubmissionDetail from "./detail.vue"
-import { Icon } from "@iconify/vue"
+import IconButton from "~/shared/components/IconButton.vue"
 
 interface SubmissionQuery {
   username: string
@@ -301,11 +301,11 @@ const columns = computed(() => {
         <n-form-item
           v-if="userStore.isSuperAdmin && route.name === 'submissions'"
         >
-          <n-button circle @click="toggleStatisticPanel(true)">
-            <template #icon>
-              <Icon icon="streamline-emojis:bar-chart" />
-            </template>
-          </n-button>
+          <IconButton
+            icon="streamline-emojis:bar-chart"
+            tip="数据统计"
+            @click="toggleStatisticPanel(true)"
+          />
         </n-form-item>
         <n-form-item v-if="todayCount > 0">
           <component :is="isDesktop ? NH2 : NText" class="todayCount">
