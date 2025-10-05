@@ -68,6 +68,10 @@ function goSignup() {
   toggleLogin(false)
   toggleSignup(true)
 }
+
+onMounted(() => {
+  msg.value = ""
+})
 </script>
 
 <template>
@@ -115,14 +119,21 @@ function goSignup() {
       </n-form-item>
       <n-alert v-if="msg" type="error" :show-icon="false"> {{ msg }}</n-alert>
       <n-form-item>
-        <n-space>
-          <n-button type="primary" :loading="isLoading" @click="submit">
+        <n-flex style="width: 100%">
+          <n-button
+            type="primary"
+            :loading="isLoading"
+            @click="submit"
+            :style="{
+              flex: configStore.config?.allow_register ? '0 0 auto' : '1',
+            }"
+          >
             登录
           </n-button>
           <n-button v-if="configStore.config?.allow_register" @click="goSignup">
             没有账号？立即注册
           </n-button>
-        </n-space>
+        </n-flex>
       </n-form-item>
     </n-form>
   </n-modal>
