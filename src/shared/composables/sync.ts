@@ -116,12 +116,12 @@ export function useCodeSync() {
           connected: false,
           roomUsers: 0,
           canSync: false,
-          message: `超管 ${superAdminInfo.name} 已退出`,
+          message: `超管 ${superAdminInfo.name} 已离开`,
           error: "超管已离开",
         },
         onStatusChange,
       )
-      message.warning(`超管 ${superAdminInfo.name} 溜了，协同编辑已断开连接`)
+      message.warning(`超管 ${superAdminInfo.name} 已离开`)
       stopSync()
     }
   }
