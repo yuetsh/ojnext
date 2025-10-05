@@ -6,9 +6,9 @@ import "./index.css"
 const isDark = useDark()
 
 // 延迟加载 highlight.js，避免阻塞首屏
-let hljsInstance: any = null
+const hljsInstance = ref<any>(null)
 const loadHighlightJS = async () => {
-  if (hljsInstance) return hljsInstance
+  if (hljsInstance.value) return hljsInstance.value
 
   const hljs = (await import("highlight.js/lib/core")).default
   const c = (await import("highlight.js/lib/languages/c")).default
@@ -19,7 +19,7 @@ const loadHighlightJS = async () => {
   hljs.registerLanguage("python", python)
   hljs.registerLanguage("cpp", cpp)
 
-  hljsInstance = hljs
+  hljsInstance.value = hljs
   return hljs
 }
 
@@ -32,10 +32,7 @@ onMounted(() => {
   }
 })
 
-provide(
-  "hljs",
-  computed(() => hljsInstance),
-)
+provide("hljs", hljsInstance)
 </script>
 
 <template>
