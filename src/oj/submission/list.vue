@@ -256,7 +256,7 @@ const columns = computed(() => {
             :options="resultOptions"
           />
         </n-form-item>
-        <n-form-item label="语言">
+        <n-form-item label="语言" v-if="route.name !== 'contest submissions'">
           <n-select
             class="select"
             v-model:value="query.language"

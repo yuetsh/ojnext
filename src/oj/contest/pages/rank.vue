@@ -167,11 +167,15 @@ async function addColumns() {
             const status = row.submission_info[problem.id]
             if (status.is_first_ac) {
               backgroundColor = theme.value.primaryColor
+              color = theme.value.baseColor
             } else if (status.is_ac) {
-              backgroundColor = "#dff0d8"
+              const success = theme.value.successColor
+              backgroundColor = success + "50"
+              color = theme.value.textColorBase
             } else {
-              backgroundColor = theme.value.warningColor
-              color = theme.value.errorColor
+              const error = theme.value.errorColor
+              backgroundColor = error + "50"
+              color = theme.value.textColorBase
             }
           }
           return { style: { backgroundColor, color } }
