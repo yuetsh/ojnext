@@ -93,7 +93,7 @@ const columns: DataTableColumn<User>[] = [
   {
     key: "actions",
     title: "选项",
-    width: 260,
+    width: 280,
     render: (row) =>
       h(Actions, {
         user: row,

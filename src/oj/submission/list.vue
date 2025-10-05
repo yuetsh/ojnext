@@ -203,7 +203,7 @@ const columns = computed(() => {
         "streamline-emojis:smiling-face-with-sunglasses",
       ),
       key: "username",
-      minWidth: 160,
+      minWidth: 200,
       render: (row) =>
         h(
           ButtonWithSearch,
