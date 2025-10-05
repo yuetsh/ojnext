@@ -74,31 +74,48 @@ export default defineConfig(({ envMode }) => {
         strategy: "split-by-module",
         override: {
           cacheGroups: {
-            // 将大型编辑器库单独分包
-            editor: {
-              test: /[\\/]node_modules[\\/](codemirror|@codemirror|vue-codemirror|@wangeditor-next|md-editor-v3|y-codemirror\.next)[\\/]/,
-              name: "vendor-editor",
-              priority: 30,
-            },
-            // Chart.js 独立分包（包含 canvas-confetti）
-            charts: {
-              test: /[\\/]node_modules[\\/](chart\.js|vue-chartjs|@kurkle|canvas-confetti)[\\/]/,
-              name: "vendor-charts",
-              priority: 25,
-            },
-            // UI 框架（Naive UI 及其依赖）
-            ui: {
-              test: /[\\/]node_modules[\\/](naive-ui|@css-render|css-render|seemly|vooks|vueuc|treemate|vdirs|evtd)[\\/]/,
-              name: "vendor-ui",
-              priority: 20,
-            },
-            // Vue 生态
+            // ===== 核心框架层 (100+) =====
+            // Vue 生态 - 框架基础，最高优先级
             vue: {
               test: /[\\/]node_modules[\\/](vue|vue-router|pinia|@vue|@vueuse)[\\/]/,
               name: "vendor-vue",
-              priority: 15,
+              priority: 100,
             },
-            // 其他常用库
+            // ===== UI 层 (90+) =====
+            // Naive UI 及其依赖 - 核心 UI 框架
+            ui: {
+              test: /[\\/]node_modules[\\/](naive-ui|@css-render|css-render|seemly|vooks|vueuc|treemate|vdirs|evtd)[\\/]/,
+              name: "vendor-ui",
+              priority: 90,
+            },
+            // ===== 编辑器层 (70-80) =====
+            // CodeMirror - 代码编辑器（使用最频繁）
+            editor: {
+              test: /[\\/]node_modules[\\/](codemirror|@codemirror|vue-codemirror|y-codemirror\.next)[\\/]/,
+              name: "vendor-editor",
+              priority: 80,
+            },
+            // Markdown 编辑器
+            mdeditor: {
+              test: /[\\/]node_modules[\\/]md-editor-v3[\\/]/,
+              name: "vendor-mdeditor",
+              priority: 75,
+            },
+            // WangEditor - 富文本编辑器
+            wangeditor: {
+              test: /[\\/]node_modules[\\/]@wangeditor-next[\\/]/,
+              name: "vendor-wangeditor",
+              priority: 70,
+            },
+            // ===== 功能库层 (50-60) =====
+            // Chart.js - 图表库（按需加载）
+            charts: {
+              test: /[\\/]node_modules[\\/](chart\.js|vue-chartjs|@kurkle|canvas-confetti)[\\/]/,
+              name: "vendor-charts",
+              priority: 60,
+            },
+            // ===== 通用层 (10) =====
+            // 其他常用库 - 兜底分组
             common: {
               test: /[\\/]node_modules[\\/]/,
               name: "vendor-common",
