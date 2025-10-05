@@ -160,7 +160,7 @@ const columns = computed(() => {
     {
       title: renderTableTitle("提交编号", "fluent-emoji-flat:input-numbers"),
       key: "id",
-      minWidth: 160,
+      minWidth: 180,
       render: (row) =>
         h(SubmissionLink, {
           submission: row,
@@ -170,7 +170,7 @@ const columns = computed(() => {
     {
       title: renderTableTitle("状态", "streamline-emojis:panda-face"),
       key: "status",
-      width: 160,
+      width: 140,
       render: (row) => h(SubmissionResultTag, { result: row.result }),
     },
     {
