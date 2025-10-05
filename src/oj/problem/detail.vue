@@ -9,7 +9,8 @@ import {
 } from "~/shared/composables/switchScreen"
 import { problem } from "../composables/problem"
 
-const Editor = defineAsyncComponent(() => import("./components/Editor.vue"))
+const ProblemEditor = defineAsyncComponent(() => import("./components/ProblemEditor.vue"))
+const ContestEditor = defineAsyncComponent(() => import("./components/ContestEditor.vue"))
 const EditorWithTest = defineAsyncComponent(
   () => import("./components/EditorWithTest.vue"),
 )
@@ -53,6 +54,8 @@ const tabOptions = computed(() => {
 })
 
 const currentTab = ref("content")
+
+const shouldUseProblemEditor = computed(() => route.name === "problem")
 
 watch(
   [() => route.query.tab, () => tabOptions.value],
@@ -125,7 +128,8 @@ watch(isMobile, (value) => {
           <ProblemContent />
         </n-tab-pane>
         <n-tab-pane name="editor" tab="编辑">
-          <Editor />
+          <ProblemEditor v-if="shouldUseProblemEditor" />
+          <ContestEditor v-else />
         </n-tab-pane>
         <n-tab-pane name="info" tab="统计">
           <ProblemInfo />
@@ -139,7 +143,8 @@ watch(isMobile, (value) => {
       </n-tabs>
     </n-gi>
     <n-gi v-if="isDesktop && screenMode === ScreenMode.both">
-      <Editor />
+      <ProblemEditor v-if="shouldUseProblemEditor" />
+      <ContestEditor v-else />
     </n-gi>
     <n-gi v-if="isDesktop && screenMode === ScreenMode.code">
       <EditorWithTest />

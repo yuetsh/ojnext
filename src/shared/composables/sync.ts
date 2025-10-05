@@ -121,7 +121,7 @@ export function useCodeSync() {
         },
         onStatusChange,
       )
-      message.warning(`超管 ${superAdminInfo.name} 已退出`)
+      message.warning(`🎈 超管 ${superAdminInfo.name} 溜了，协同编辑已断开连接`)
       stopSync()
     }
   }
@@ -150,7 +150,7 @@ export function useCodeSync() {
         onStatusChange,
       )
       if (lastSyncState !== "error") {
-        message.warning("协同编辑需要至少一个超级管理员")
+        message.warning("🎓 协同编辑需要一位超级管理员坐镇哦")
         lastSyncState = "error"
       }
     } else if (canSync) {
@@ -159,13 +159,13 @@ export function useCodeSync() {
           connected: true,
           roomUsers,
           canSync: true,
-          message: "协同编辑已激活，可以开始协作！",
+          message: "🎉 协同编辑已激活，开始愉快的代码之旅吧！",
           otherUser,
         },
         onStatusChange,
       )
       if (lastSyncState !== "active") {
-        message.success("协同编辑已激活，可以开始协作！")
+        message.success("🎉 协同编辑已激活，开始愉快的代码之旅吧！")
         lastSyncState = "active"
       }
     } else {
@@ -174,7 +174,7 @@ export function useCodeSync() {
           connected: true,
           roomUsers,
           canSync: false,
-          message: roomUsers === 1 ? "正在等待加入" : "等待超级管理员加入...",
+          message: roomUsers === 1 ? "👋 正在等待小伙伴加入..." : "🎓 等待超级管理员加入...",
           otherUser,
         },
         onStatusChange,
@@ -213,17 +213,6 @@ export function useCodeSync() {
     const { problemId, editorView, onStatusChange } = options
 
     if (!userStore.isAuthed) {
-      updateStatus(
-        {
-          connected: false,
-          roomUsers: 0,
-          canSync: false,
-          message: "请先登录后再使用同步功能",
-          error: "用户未登录",
-        },
-        onStatusChange,
-      )
-      message.error("请先登录后再使用同步功能")
       return () => {}
     }
 
@@ -260,7 +249,7 @@ export function useCodeSync() {
           },
           onStatusChange,
         )
-        message.warning("协同编辑连接已断开")
+        message.warning("📡 协同编辑连接断开了，可能网络不太稳定呢")
       }
     })
 
@@ -280,7 +269,7 @@ export function useCodeSync() {
           onStatusChange,
         )
         message.warning(
-          `房间人数已满（最多${SYNC_CONSTANTS.MAX_ROOM_USERS}人），已自动断开连接`,
+          `🚪 哎呀，房间已经坐满了（最多${SYNC_CONSTANTS.MAX_ROOM_USERS}人），已自动断开连接`,
         )
         stopSync()
         return
@@ -349,13 +338,13 @@ export function useCodeSync() {
           connected: true,
           roomUsers: 1,
           canSync: false,
-          message: "正在等待加入",
+          message: "🚀 协同编辑已准备就绪，等待伙伴加入...",
         },
         onStatusChange,
       )
 
       message.info(
-        userStore.isSuperAdmin ? "正在等待学生加入..." : "正在等待超管加入...",
+        userStore.isSuperAdmin ? "👀 正在等待学生加入房间..." : "🎯 正在等待超管加入房间...",
       )
       lastSyncState = "waiting"
     }

@@ -7,18 +7,8 @@ import type { Extension } from "@codemirror/state"
 import { LANGUAGE } from "~/utils/types"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
-import { useCodeSync } from "../composables/sync"
-import { isDesktop } from "../composables/breakpoints"
-
-interface EditorReadyPayload {
-  view: EditorView
-  state: any
-  container: HTMLElement
-}
 
 interface Props {
-  sync?: boolean
-  problem?: string
   language?: LANGUAGE
   fontSize?: number
   height?: string
@@ -27,8 +17,6 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  sync: false,
-  problem: "",
   language: "Python3",
   fontSize: 20,
   height: "100%",
@@ -38,13 +26,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const { readonly, placeholder, height, fontSize } = toRefs(props)
 const code = defineModel<string>("value")
-
-const emit = defineEmits<{
-  syncClosed: []
-  syncStatusChange: [
-    status: { otherUser?: { name: string; isSuperAdmin: boolean } },
-  ]
-}>()
 
 const isDark = useDark()
 
@@ -64,66 +45,7 @@ const extensions = computed(() => [
   styleTheme,
   lang.value,
   isDark.value ? oneDark : smoothy,
-  getInitialExtension(),
 ])
-
-const { startSync, stopSync, getInitialExtension } = useCodeSync()
-const editorView = ref<EditorView | null>(null)
-let cleanupSync: (() => void) | null = null
-
-const cleanupSyncResources = () => {
-  if (cleanupSync) {
-    cleanupSync()
-    cleanupSync = null
-  }
-  stopSync()
-}
-
-const initSync = async () => {
-  if (!editorView.value || !props.problem || !isDesktop.value) return
-
-  cleanupSyncResources()
-
-  cleanupSync = await startSync({
-    problemId: props.problem,
-    editorView: editorView.value as EditorView,
-    onStatusChange: (status) => {
-      if (status.error === "超管已离开" && !status.connected) {
-        emit("syncClosed")
-      }
-      emit("syncStatusChange", { otherUser: status.otherUser })
-    },
-  })
-}
-
-const handleEditorReady = (payload: EditorReadyPayload) => {
-  editorView.value = payload.view as EditorView
-  if (props.sync) {
-    initSync()
-  }
-}
-
-watch(
-  () => props.sync,
-  (shouldSync) => {
-    if (shouldSync) {
-      initSync()
-    } else {
-      cleanupSyncResources()
-    }
-  },
-)
-
-watch(
-  () => props.problem,
-  (newProblem, oldProblem) => {
-    if (newProblem !== oldProblem && props.sync) {
-      initSync()
-    }
-  },
-)
-
-onUnmounted(cleanupSyncResources)
 </script>
 
 <template>
@@ -135,6 +57,5 @@ onUnmounted(cleanupSyncResources)
     :tab-size="4"
     :placeholder="placeholder"
     :style="{ height, fontSize: `${fontSize}px` }"
-    @ready="handleEditorReady"
   />
 </template>
