@@ -195,9 +195,9 @@ function rowProps(row: ProblemFiltered) {
 
 <template>
   <n-flex vertical size="large">
-    <n-flex justify="space-between">
-      <n-flex>
-        <div>
+    <n-card embedded>
+      <n-flex justify="space-between">
+        <n-space>
           <n-form :show-feedback="false" inline label-placement="left">
             <n-form-item label="难度">
               <n-select
@@ -210,8 +210,6 @@ function rowProps(row: ProblemFiltered) {
               <AuthorSelect v-model:value="query.author" />
             </n-form-item>
           </n-form>
-        </div>
-        <div>
           <n-form :show-feedback="false" inline label-placement="left">
             <n-form-item>
               <n-input
@@ -241,10 +239,10 @@ function rowProps(row: ProblemFiltered) {
               </n-button>
             </n-form-item>
           </n-form>
-        </div>
+        </n-space>
+        <Hitokoto v-if="isDesktop" />
       </n-flex>
-      <Hitokoto v-if="isDesktop" />
-    </n-flex>
+    </n-card>
     <n-collapse-transition :show="showTag">
       <n-flex>
         <n-tag

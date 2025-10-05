@@ -32,7 +32,7 @@ onMounted(receive)
 }
 
 .hitokoto .sentence {
-  max-width: 500px;
+  max-width: 400px;
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: break-all;
