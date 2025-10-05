@@ -19,6 +19,7 @@ import {
   Tooltip,
   Legend,
   Colors,
+  LineController,
 } from "chart.js"
 import { useAIStore } from "oj/store/ai"
 import { parseTime } from "utils/functions"
@@ -34,6 +35,7 @@ ChartJS.register(
   Tooltip,
   Legend,
   Colors,
+  LineController,
 )
 
 const props = defineProps<{
