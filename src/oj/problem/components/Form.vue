@@ -183,11 +183,11 @@ defineExpose({
         <IconButton
           :icon="
             syncEnabled
-              ? 'streamline-stickies-color:earpod-connected'
-              : 'streamline-stickies-color:earpod-connected-duo'
+              ? 'streamline-ultimate-color:flash-off'
+              : 'streamline-ultimate-color:monitor-flash'
           "
           :tip="syncEnabled ? SYNC_MESSAGES.SYNC_ON : SYNC_MESSAGES.SYNC_OFF"
-          :type="syncEnabled ? 'info' : 'default'"
+          :type="syncEnabled ? 'warning' : 'default'"
           @click="toggleSync"
         />
 
