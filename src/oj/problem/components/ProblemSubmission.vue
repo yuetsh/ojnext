@@ -158,7 +158,8 @@ watch(query, listSubmissions)
         <template #header>
           <n-flex align="center">
             <span>
-              本道题你还没有解决，你们班共有 <b>{{ class_ac_count }}</b> 人答案正确
+              本道题你还没有解决，你们班共有
+              <b>{{ class_ac_count }}</b> 人答案正确
             </span>
             <n-button
               v-if="userStore.showSubmissions"
@@ -245,7 +246,12 @@ watch(query, listSubmissions)
   </template>
 
   <template v-if="userStore.showSubmissions && userStore.isAuthed">
-    <n-data-table v-if="submissions.length > 0" striped :columns="columns" :data="submissions" />
+    <n-data-table
+      v-if="submissions.length > 0"
+      striped
+      :columns="columns"
+      :data="submissions"
+    />
     <Pagination
       :total="total"
       v-model:limit="query.limit"

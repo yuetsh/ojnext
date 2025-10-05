@@ -75,7 +75,12 @@ const columns: DataTableColumn<User>[] = [
         ? parseTime(row.last_login, "YYYY-MM-DD HH:mm:ss")
         : "从未登录",
   },
-  { title: "真名", key: "real_name", width: 100, render: (row) => h(TextCopy, () => row.real_name) },
+  {
+    title: "真名",
+    key: "real_name",
+    width: 100,
+    render: (row) => h(TextCopy, () => row.real_name),
+  },
   { title: "邮箱", key: "email", width: 200 },
   {
     key: "actions",

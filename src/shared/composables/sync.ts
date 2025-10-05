@@ -175,9 +175,7 @@ export function useCodeSync() {
           roomUsers,
           canSync: false,
           message:
-            roomUsers === 1
-              ? "正在等待小伙伴加入..."
-              : "等待超级管理员加入...",
+            roomUsers === 1 ? "正在等待小伙伴加入..." : "等待超级管理员加入...",
           otherUser,
         },
         onStatusChange,

@@ -9,8 +9,12 @@ import {
 } from "~/shared/composables/switchScreen"
 import { problem } from "../composables/problem"
 
-const ProblemEditor = defineAsyncComponent(() => import("./components/ProblemEditor.vue"))
-const ContestEditor = defineAsyncComponent(() => import("./components/ContestEditor.vue"))
+const ProblemEditor = defineAsyncComponent(
+  () => import("./components/ProblemEditor.vue"),
+)
+const ContestEditor = defineAsyncComponent(
+  () => import("./components/ContestEditor.vue"),
+)
 const EditorWithTest = defineAsyncComponent(
   () => import("./components/EditorWithTest.vue"),
 )

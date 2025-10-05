@@ -43,10 +43,7 @@ const changeLanguage = (v: LANGUAGE) => {
 
 <template>
   <n-flex vertical>
-    <Form
-      :storage-key="storageKey"
-      @change-language="changeLanguage"
-    />
+    <Form :storage-key="storageKey" @change-language="changeLanguage" />
     <CodeEditor
       v-model:value="code.value"
       :language="code.language"
