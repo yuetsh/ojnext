@@ -7,7 +7,7 @@ import type { Extension } from "@codemirror/state"
 import { LANGUAGE } from "~/utils/types"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
-import { useCodeSync } from "../composables/sync"
+import { useCodeSync, SYNC_ERROR_CODES } from "../composables/sync"
 import { isDesktop } from "../composables/breakpoints"
 
 interface EditorReadyPayload {
@@ -88,7 +88,8 @@ const initSync = async () => {
     onStatusChange: (status) => {
       // 处理需要断开同步的情况
       if (
-        (status.error === "超管已离开" || status.error === "缺少超级管理员") 
+        (status.errorCode === SYNC_ERROR_CODES.SUPER_ADMIN_LEFT || 
+         status.errorCode === SYNC_ERROR_CODES.MISSING_SUPER_ADMIN) 
         && !status.connected
       ) {
         emit("syncClosed")

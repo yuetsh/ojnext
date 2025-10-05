@@ -3,6 +3,7 @@ import { copyToClipboard } from "~/utils/functions"
 import { code, input, output } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
 import { injectSyncStatus } from "oj/composables/syncStatus"
+import { SYNC_MESSAGES } from "~/shared/composables/sync"
 import { LANGUAGE_SHOW_VALUE, SOURCES, STORAGE_KEY } from "utils/constants"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
@@ -185,7 +186,7 @@ defineExpose({
               ? 'streamline-stickies-color:earpod-connected'
               : 'streamline-stickies-color:earpod-connected-duo'
           "
-          :tip="syncEnabled ? '断开同步' : '打开同步'"
+          :tip="syncEnabled ? SYNC_MESSAGES.SYNC_ON : SYNC_MESSAGES.SYNC_OFF"
           :type="syncEnabled ? 'info' : 'default'"
           @click="toggleSync"
         />
@@ -193,13 +194,13 @@ defineExpose({
         <!-- 同步状态标签 -->
         <template v-if="props.isConnected">
           <n-tag v-if="syncStatus.otherUser.value" type="info">
-            与 {{ syncStatus.otherUser.value.name }} 同步中
+            {{ SYNC_MESSAGES.SYNCING_WITH(syncStatus.otherUser.value.name) }}
           </n-tag>
           <n-tag
             v-if="userStore.isSuperAdmin && !syncStatus.otherUser.value && syncStatus.hadConnection.value"
             type="warning"
           >
-            学生已退出，可以关闭同步
+            {{ SYNC_MESSAGES.STUDENT_LEFT }}
           </n-tag>
         </template>
       </template>

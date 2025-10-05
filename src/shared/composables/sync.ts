@@ -13,8 +13,40 @@ const SYNC_CONSTANTS = {
   REGULAR_USER_COLOR: "#4dabf7",
 } as const
 
+// 错误类型码
+export const SYNC_ERROR_CODES = {
+  SUPER_ADMIN_LEFT: "SUPER_ADMIN_LEFT",
+  MISSING_SUPER_ADMIN: "MISSING_SUPER_ADMIN",
+} as const
+
+// 界面和通知文案
+export const SYNC_MESSAGES = {
+  // 超管离开
+  SUPER_ADMIN_LEFT: (name: string) => `👋 超管 ${name} 已离开`,
+  
+  // 缺少超管
+  MISSING_SUPER_ADMIN: "⚠️ 协同编辑需要超管",
+  
+  // 连接成功
+  SYNC_ACTIVE: "✅ 协同编辑已激活！",
+  
+  // 连接断开
+  CONNECTION_LOST: "⚠️ 协同编辑已断开",
+  
+  // 等待相关
+  WAITING_STUDENT: "⏳ 正在等待学生加入...",
+  WAITING_ADMIN: "⏳ 正在等待超管加入...",
+  
+  // Form.vue 界面文案
+  SYNC_ON: "断开同步",
+  SYNC_OFF: "开启同步",
+  SYNCING_WITH: (name: string) => `🔗 与 ${name} 同步中`,
+  STUDENT_LEFT: "💡 可以关闭同步",
+} as const
+
 // 类型定义
 type SyncState = "waiting" | "active" | "error"
+type SyncErrorCode = typeof SYNC_ERROR_CODES[keyof typeof SYNC_ERROR_CODES]
 
 interface UserInfo {
   name: string
@@ -45,6 +77,7 @@ export interface SyncStatus {
   canSync: boolean
   message: string
   error?: string
+  errorCode?: SyncErrorCode
   otherUser?: UserInfo
 }
 
@@ -108,17 +141,19 @@ export function useCodeSync() {
 
     if (superAdminInfo) {
       hasShownSuperAdminLeftMessage = true
+      const leftMessage = SYNC_MESSAGES.SUPER_ADMIN_LEFT(superAdminInfo.name)
       updateStatus(
         {
           connected: false,
           roomUsers: 0,
           canSync: false,
-          message: `超管 ${superAdminInfo.name} 已离开`,
-          error: "超管已离开",
+          message: leftMessage,
+          error: leftMessage,
+          errorCode: SYNC_ERROR_CODES.SUPER_ADMIN_LEFT,
         },
         onStatusChange,
       )
-      message.warning(`超管 ${superAdminInfo.name} 已离开`)
+      message.warning(leftMessage)
       stopSync()
     }
   }
@@ -142,13 +177,14 @@ export function useCodeSync() {
           connected: false,
           roomUsers,
           canSync: false,
-          message: "房间内必须有一个超级管理员",
-          error: "缺少超级管理员",
+          message: SYNC_MESSAGES.MISSING_SUPER_ADMIN,
+          error: SYNC_MESSAGES.MISSING_SUPER_ADMIN,
+          errorCode: SYNC_ERROR_CODES.MISSING_SUPER_ADMIN,
           otherUser,
         },
         onStatusChange,
       )
-      message.error("协同编辑需要一位超管")
+      message.error(SYNC_MESSAGES.MISSING_SUPER_ADMIN)
       lastSyncState = "error"
       stopSync()
       return
@@ -158,13 +194,13 @@ export function useCodeSync() {
           connected: true,
           roomUsers,
           canSync: true,
-          message: "协同编辑已激活！",
+          message: SYNC_MESSAGES.SYNC_ACTIVE,
           otherUser,
         },
         onStatusChange,
       )
       if (lastSyncState !== "active") {
-        message.success("协同编辑已激活！")
+        message.success(SYNC_MESSAGES.SYNC_ACTIVE)
         lastSyncState = "active"
       }
     } else {
@@ -174,7 +210,7 @@ export function useCodeSync() {
           roomUsers,
           canSync: false,
           message:
-            roomUsers === 1 ? "正在等待小伙伴加入..." : "等待超级管理员加入...",
+            roomUsers === 1 ? SYNC_MESSAGES.WAITING_STUDENT : SYNC_MESSAGES.WAITING_ADMIN,
           otherUser,
         },
         onStatusChange,
@@ -241,12 +277,12 @@ export function useCodeSync() {
             connected: false,
             roomUsers: 0,
             canSync: false,
-            message: "连接已断开",
-            error: "WebRTC 连接断开",
+            message: SYNC_MESSAGES.CONNECTION_LOST,
+            error: SYNC_MESSAGES.CONNECTION_LOST,
           },
           onStatusChange,
         )
-        message.warning("协同编辑连接已断开")
+        message.warning(SYNC_MESSAGES.CONNECTION_LOST)
       }
     })
 
@@ -311,21 +347,21 @@ export function useCodeSync() {
       setupContentSync(ytext, provider, savedContent)
 
       // 设置初始状态
+      const waitingMessage = userStore.isSuperAdmin
+        ? SYNC_MESSAGES.WAITING_STUDENT
+        : SYNC_MESSAGES.WAITING_ADMIN
+      
       updateStatus(
         {
           connected: true,
           roomUsers: 1,
           canSync: false,
-          message: "协同编辑已准备就绪，等待伙伴加入...",
+          message: waitingMessage,
         },
         onStatusChange,
       )
 
-      message.info(
-        userStore.isSuperAdmin
-          ? "正在等待学生加入..."
-          : "正在等待超管加入...",
-      )
+      message.info(waitingMessage)
       lastSyncState = "waiting"
     }
 
