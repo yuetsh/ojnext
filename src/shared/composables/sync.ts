@@ -184,7 +184,6 @@ export function useCodeSync() {
   }
 
   const setupContentSync = (
-    editorView: EditorView,
     ytext: Text,
     provider: WebrtcProvider,
     savedContent: string,
@@ -309,7 +308,7 @@ export function useCodeSync() {
       })
 
       // 设置内容同步
-      setupContentSync(editorView, ytext, provider, savedContent)
+      setupContentSync(ytext, provider, savedContent)
 
       // 设置初始状态
       updateStatus(
