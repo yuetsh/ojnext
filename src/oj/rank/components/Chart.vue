@@ -1,7 +1,28 @@
 <script setup lang="ts">
 import { Bar } from "vue-chartjs"
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  Colors,
+} from "chart.js"
 import { ChartType } from "utils/constants"
 import { Rank } from "utils/types"
+
+// 仅注册柱状图所需的 Chart.js 组件
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  Title,
+  Tooltip,
+  Legend,
+  Colors,
+)
 
 const props = defineProps<{ rankData: Rank[]; type: ChartType }>()
 

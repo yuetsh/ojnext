@@ -4,9 +4,19 @@ import { problem } from "oj/composables/problem"
 import { DIFFICULTY, JUDGE_STATUS } from "utils/constants"
 import { getACRateNumber, getTagColor, parseTime } from "utils/functions"
 import { Pie } from "vue-chartjs"
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Colors,
+} from "chart.js"
 import { getProblemBeatRate } from "oj/api"
 import { isDesktop } from "shared/composables/breakpoints"
-import { registerChart } from "utils/registerChart"
+
+// 仅注册饼图所需的 Chart.js 组件
+ChartJS.register(ArcElement, Title, Tooltip, Legend, Colors)
 
 const beatRate = ref("0")
 
@@ -74,7 +84,6 @@ async function getBeatRate() {
   beatRate.value = res.data
 }
 
-onBeforeMount(registerChart)
 onMounted(getBeatRate)
 </script>
 

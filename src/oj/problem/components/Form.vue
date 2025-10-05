@@ -197,7 +197,11 @@ defineExpose({
             {{ SYNC_MESSAGES.SYNCING_WITH(syncStatus.otherUser.value.name) }}
           </n-tag>
           <n-tag
-            v-if="userStore.isSuperAdmin && !syncStatus.otherUser.value && syncStatus.hadConnection.value"
+            v-if="
+              userStore.isSuperAdmin &&
+              !syncStatus.otherUser.value &&
+              syncStatus.hadConnection.value
+            "
             type="warning"
           >
             {{ SYNC_MESSAGES.STUDENT_LEFT }}

@@ -1,5 +1,4 @@
 import { RouteRecordRaw } from "vue-router"
-import { registerChart } from "./utils/registerChart"
 
 export const ojs: RouteRecordRaw = {
   path: "/",
@@ -66,7 +65,6 @@ export const ojs: RouteRecordRaw = {
     {
       path: "rank",
       component: () => import("oj/rank/list.vue"),
-      beforeEnter: registerChart,
     },
     {
       path: "announcement",
@@ -97,7 +95,6 @@ export const ojs: RouteRecordRaw = {
       path: "ai-analysis",
       component: () => import("oj/ai/analysis.vue"),
       meta: { requiresAuth: true },
-      beforeEnter: registerChart,
     },
   ],
 }

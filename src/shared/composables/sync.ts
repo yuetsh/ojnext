@@ -23,20 +23,20 @@ export const SYNC_ERROR_CODES = {
 export const SYNC_MESSAGES = {
   // 超管离开
   SUPER_ADMIN_LEFT: (name: string) => `👋 超管 ${name} 已离开`,
-  
+
   // 缺少超管
   MISSING_SUPER_ADMIN: "⚠️ 协同编辑需要超管",
-  
+
   // 连接成功
   SYNC_ACTIVE: "✅ 协同编辑已激活！",
-  
+
   // 连接断开
   CONNECTION_LOST: "⚠️ 协同编辑已断开",
-  
+
   // 等待相关
   WAITING_STUDENT: "⏳ 正在等待学生加入...",
   WAITING_ADMIN: "⏳ 正在等待超管加入...",
-  
+
   // Form.vue 界面文案
   SYNC_ON: "断开同步",
   SYNC_OFF: "开启同步",
@@ -46,7 +46,7 @@ export const SYNC_MESSAGES = {
 
 // 类型定义
 type SyncState = "waiting" | "active" | "error"
-type SyncErrorCode = typeof SYNC_ERROR_CODES[keyof typeof SYNC_ERROR_CODES]
+type SyncErrorCode = (typeof SYNC_ERROR_CODES)[keyof typeof SYNC_ERROR_CODES]
 
 interface UserInfo {
   name: string
@@ -171,7 +171,7 @@ export function useCodeSync() {
 
     if (roomUsers === SYNC_CONSTANTS.MAX_ROOM_USERS && !hasSuperAdmin) {
       if (lastSyncState === "error") return
-      
+
       updateStatus(
         {
           connected: false,
@@ -210,7 +210,9 @@ export function useCodeSync() {
           roomUsers,
           canSync: false,
           message:
-            roomUsers === 1 ? SYNC_MESSAGES.WAITING_STUDENT : SYNC_MESSAGES.WAITING_ADMIN,
+            roomUsers === 1
+              ? SYNC_MESSAGES.WAITING_STUDENT
+              : SYNC_MESSAGES.WAITING_ADMIN,
           otherUser,
         },
         onStatusChange,
@@ -350,7 +352,7 @@ export function useCodeSync() {
       const waitingMessage = userStore.isSuperAdmin
         ? SYNC_MESSAGES.WAITING_STUDENT
         : SYNC_MESSAGES.WAITING_ADMIN
-      
+
       updateStatus(
         {
           connected: true,

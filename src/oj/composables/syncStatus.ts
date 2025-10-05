@@ -6,7 +6,7 @@ export interface SyncStatusState {
 }
 
 // 提供/注入的 key
-export const SYNC_STATUS_KEY = Symbol('syncStatus')
+export const SYNC_STATUS_KEY = Symbol("syncStatus")
 
 // 创建同步状态
 export function createSyncStatus() {
@@ -42,10 +42,10 @@ export function provideSyncStatus() {
 
 // 注入同步状态
 export function injectSyncStatus() {
-  const syncStatus = inject<ReturnType<typeof createSyncStatus>>(SYNC_STATUS_KEY)
+  const syncStatus =
+    inject<ReturnType<typeof createSyncStatus>>(SYNC_STATUS_KEY)
   if (!syncStatus) {
-    throw new Error('syncStatus must be provided by a parent component')
+    throw new Error("syncStatus must be provided by a parent component")
   }
   return syncStatus
 }
-

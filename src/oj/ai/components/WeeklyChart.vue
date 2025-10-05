@@ -8,8 +8,33 @@
 <script setup lang="ts">
 import type { ChartData, ChartOptions, TooltipItem } from "chart.js"
 import { Chart } from "vue-chartjs"
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+  Colors,
+} from "chart.js"
 import { useAIStore } from "oj/store/ai"
 import { parseTime } from "utils/functions"
+
+// 注册混合图表（Bar + Line）所需的 Chart.js 组件
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  LineElement,
+  PointElement,
+  Title,
+  Tooltip,
+  Legend,
+  Colors,
+)
 
 const props = defineProps<{
   end: string

@@ -88,9 +88,9 @@ const initSync = async () => {
     onStatusChange: (status) => {
       // 处理需要断开同步的情况
       if (
-        (status.errorCode === SYNC_ERROR_CODES.SUPER_ADMIN_LEFT || 
-         status.errorCode === SYNC_ERROR_CODES.MISSING_SUPER_ADMIN) 
-        && !status.connected
+        (status.errorCode === SYNC_ERROR_CODES.SUPER_ADMIN_LEFT ||
+          status.errorCode === SYNC_ERROR_CODES.MISSING_SUPER_ADMIN) &&
+        !status.connected
       ) {
         emit("syncClosed")
       }

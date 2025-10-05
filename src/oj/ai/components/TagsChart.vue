@@ -5,6 +5,18 @@
 </template>
 <script setup lang="ts">
 import { Pie } from "vue-chartjs"
+import {
+  Chart as ChartJS,
+  ArcElement,
+  Title,
+  Tooltip,
+  Legend,
+  Colors,
+} from "chart.js"
+
+// 仅注册饼图所需的 Chart.js 组件
+ChartJS.register(ArcElement, Title, Tooltip, Legend, Colors)
+
 const props = defineProps<{
   tags: { [key: string]: number }
 }>()
