@@ -5,7 +5,7 @@ import { code } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
 import { createTestSubmission } from "utils/judge"
 import { Problem, ProblemStatus } from "utils/types"
-import Copy from "~/shared/components/Copy.vue"
+import Copy from "shared/components/Copy.vue"
 
 type Sample = Problem["samples"][number] & {
   id: number

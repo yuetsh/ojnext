@@ -13,8 +13,8 @@ import {
   copyToClipboard,
 } from "utils/functions"
 import { Submission } from "utils/types"
-import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
-import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
+import SubmissionResultTag from "shared/components/SubmissionResultTag.vue"
+import { isDesktop, isMobile } from "shared/composables/breakpoints"
 
 const props = defineProps<{
   submissionID: string

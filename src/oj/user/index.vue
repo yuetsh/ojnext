@@ -1,10 +1,10 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
 import { NH2, NH3 } from "naive-ui"
-import { getProfile } from "~/shared/api"
-import { isDesktop } from "~/shared/composables/breakpoints"
-import { durationToDays, parseTime } from "~/utils/functions"
-import { Profile } from "~/utils/types"
+import { getProfile } from "shared/api"
+import { isDesktop } from "shared/composables/breakpoints"
+import { durationToDays, parseTime } from "utils/functions"
+import { Profile } from "utils/types"
 import { getMetrics } from "../api"
 
 const route = useRoute()

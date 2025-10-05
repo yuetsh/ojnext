@@ -1,7 +1,7 @@
-import { DetailsData, WeeklyData } from "~/utils/types"
-import { consumeJSONEventStream } from "~/utils/stream"
+import { DetailsData, WeeklyData } from "utils/types"
+import { consumeJSONEventStream } from "utils/stream"
 import { getAIDetailData, getAIWeeklyData } from "../api"
-import { getCSRFToken } from "~/utils/functions"
+import { getCSRFToken } from "utils/functions"
 
 export const useAIStore = defineStore("ai", () => {
   const duration = ref("months:6")

@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { deleteTutorial } from "~/admin/api"
+import { deleteTutorial } from "admin/api"
 
 interface Props {
   tutorialID: number

@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { DataTableRowKey, SelectOption } from "naive-ui"
-import Pagination from "~/shared/components/Pagination.vue"
-import { usePagination } from "~/shared/composables/pagination"
-import { parseTime } from "~/utils/functions"
-import { User } from "~/utils/types"
+import Pagination from "shared/components/Pagination.vue"
+import { usePagination } from "shared/composables/pagination"
+import { parseTime } from "utils/functions"
+import { User } from "utils/types"
 import {
   deleteUsers,
   editUser,
@@ -13,9 +13,9 @@ import {
 } from "../api"
 import Actions from "./components/Actions.vue"
 import Name from "./components/Name.vue"
-import { PROBLEM_PERMISSION, USER_TYPE } from "~/utils/constants"
+import { PROBLEM_PERMISSION, USER_TYPE } from "utils/constants"
 import { useRouteQuery } from "@vueuse/router"
-import TextCopy from "~/shared/components/TextCopy.vue"
+import TextCopy from "shared/components/TextCopy.vue"
 
 const message = useMessage()
 

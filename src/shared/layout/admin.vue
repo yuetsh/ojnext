@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { RouterLink } from "vue-router"
-import { STORAGE_KEY } from "~/utils/constants"
-import storage from "~/utils/storage"
+import { STORAGE_KEY } from "utils/constants"
+import storage from "utils/storage"
 import { useUserStore } from "../store/user"
 
 const route = useRoute()

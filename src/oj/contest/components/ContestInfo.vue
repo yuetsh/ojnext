@@ -2,7 +2,7 @@
 import { Icon } from "@iconify/vue"
 import { useContestStore } from "oj/store/contest"
 import { parseTime } from "utils/functions"
-import ContestType from "~/shared/components/ContestType.vue"
+import ContestType from "shared/components/ContestType.vue"
 
 const contestStore = useContestStore()
 </script>

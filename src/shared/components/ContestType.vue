@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ContestType } from "~/utils/constants"
-import { Contest } from "~/utils/types"
+import { ContestType } from "utils/constants"
+import { Contest } from "utils/types"
 
 interface Props {
   contest: Contest

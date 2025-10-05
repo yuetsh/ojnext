@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { formatISO } from "date-fns"
-import TextEditor from "~/shared/components/TextEditor.vue"
-import { parseTime } from "~/utils/functions"
-import { BlankContest } from "~/utils/types"
+import TextEditor from "shared/components/TextEditor.vue"
+import { parseTime } from "utils/functions"
+import { BlankContest } from "utils/types"
 import { createContest, editContest, getContest } from "../api"
 
 interface Props {

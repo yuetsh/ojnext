@@ -2,10 +2,10 @@
 import { code } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
 import { SOURCES } from "utils/constants"
-import CodeEditor from "~/shared/components/CodeEditor.vue"
-import { isDesktop } from "~/shared/composables/breakpoints"
-import storage from "~/utils/storage"
-import { LANGUAGE } from "~/utils/types"
+import CodeEditor from "shared/components/CodeEditor.vue"
+import { isDesktop } from "shared/composables/breakpoints"
+import storage from "utils/storage"
+import { LANGUAGE } from "utils/types"
 import Form from "./Form.vue"
 
 const route = useRoute()

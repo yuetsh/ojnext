@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import { NSwitch } from "naive-ui"
-import Pagination from "~/shared/components/Pagination.vue"
-import { usePagination } from "~/shared/composables/pagination"
-import { parseTime } from "~/utils/functions"
-import { AdminProblemFiltered } from "~/utils/types"
+import Pagination from "shared/components/Pagination.vue"
+import { usePagination } from "shared/composables/pagination"
+import { parseTime } from "utils/functions"
+import { AdminProblemFiltered } from "utils/types"
 import { getProblemList, toggleProblemVisible } from "../api"
 import Actions from "./components/Actions.vue"
 import Modal from "./components/Modal.vue"
 import { useRouteQuery } from "@vueuse/router"
-import AuthorSelect from "~/shared/components/AuthorSelect.vue"
+import AuthorSelect from "shared/components/AuthorSelect.vue"
 
 interface Props {
   contestID?: string

@@ -47,10 +47,10 @@ import TagsChart from "./TagsChart.vue"
 import DifficultyChart from "./DifficultyChart.vue"
 import TagTitle from "./TagTitle.vue"
 import AI from "./AI.vue"
-import { parseTime } from "~/utils/functions"
-import { SolvedProblem } from "~/utils/types"
-import { useAIStore } from "~/oj/store/ai"
-import { isDesktop } from "~/shared/composables/breakpoints"
+import { parseTime } from "utils/functions"
+import { SolvedProblem } from "utils/types"
+import { useAIStore } from "oj/store/ai"
+import { isDesktop } from "shared/composables/breakpoints"
 
 const props = defineProps<{
   start: string

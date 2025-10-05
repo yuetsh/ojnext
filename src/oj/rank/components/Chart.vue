@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Bar } from "vue-chartjs"
-import { ChartType } from "~/utils/constants"
-import { Rank } from "~/utils/types"
+import { ChartType } from "utils/constants"
+import { Rank } from "utils/types"
 
 const props = defineProps<{ rankData: Rank[]; type: ChartType }>()
 

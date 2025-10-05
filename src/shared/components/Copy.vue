@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
-import { copyToClipboard } from "~/utils/functions"
+import { copyToClipboard } from "utils/functions"
 
 defineProps<{ value: string }>()
 const [copied, toggle] = useToggle()

@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { getProblem } from "oj/api"
 import { ScreenMode } from "utils/constants"
-import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
+import { isDesktop, isMobile } from "shared/composables/breakpoints"
 import {
   bothAndProblem,
   resetScreenMode,
   screenMode,
-} from "~/shared/composables/switchScreen"
+} from "shared/composables/switchScreen"
 import { problem } from "../composables/problem"
 
 const ProblemEditor = defineAsyncComponent(

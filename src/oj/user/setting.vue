@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { updateProfile, uploadAvatar } from "oj/api"
-import { useUserStore } from "~/shared/store/user"
+import { useUserStore } from "shared/store/user"
 
 const userStore = useUserStore()
 const message = useMessage()

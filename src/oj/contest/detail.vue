@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
 import { CONTEST_STATUS, ContestStatus } from "utils/constants"
-import { isDesktop } from "~/shared/composables/breakpoints"
+import { isDesktop } from "shared/composables/breakpoints"
 import { useContestStore } from "../store/contest"
 import ContestInfo from "./components/ContestInfo.vue"
 import ContestMenu from "./components/ContestMenu.vue"

@@ -21,7 +21,7 @@
 
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
-import { SubmissionListItem } from "~/utils/types"
+import { SubmissionListItem } from "utils/types"
 
 interface Props {
   submission: SubmissionListItem

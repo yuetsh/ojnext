@@ -7,9 +7,9 @@ import { problem } from "oj/composables/problem"
 import { JUDGE_STATUS, SubmissionStatus } from "utils/constants"
 import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
 import { Submission, SubmitCodePayload } from "utils/types"
-import SubmissionResultTag from "~/shared/components/SubmissionResultTag.vue"
-import { isDesktop } from "~/shared/composables/breakpoints"
-import { useUserStore } from "~/shared/store/user"
+import SubmissionResultTag from "shared/components/SubmissionResultTag.vue"
+import { isDesktop } from "shared/composables/breakpoints"
+import { useUserStore } from "shared/store/user"
 
 const ProblemComment = defineAsyncComponent(
   () => import("./ProblemComment.vue"),

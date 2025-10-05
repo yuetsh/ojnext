@@ -1,5 +1,5 @@
 import http from "utils/http"
-import { Profile, Tag } from "~/utils/types"
+import { Profile, Tag } from "utils/types"
 
 export function login(data: { username: string; password: string }) {
   return http.post("login", data)

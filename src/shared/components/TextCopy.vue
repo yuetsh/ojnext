@@ -9,7 +9,7 @@
   </n-tooltip>
 </template>
 <script lang="ts" setup>
-import { copyToClipboard } from "~/utils/functions"
+import { copyToClipboard } from "utils/functions"
 
 const message = useMessage()
 

@@ -17,7 +17,7 @@
 </template>
 <script setup lang="ts">
 import { type HeatmapData } from "naive-ui"
-import { getAIHeatmapData } from "~/oj/api"
+import { getAIHeatmapData } from "oj/api"
 
 const data = ref<HeatmapData>([])
 

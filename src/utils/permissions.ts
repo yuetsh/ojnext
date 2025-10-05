@@ -1,4 +1,4 @@
-import { useUserStore } from "~/shared/store/user"
+import { useUserStore } from "shared/store/user"
 
 /**
  * 权限检查工具函数

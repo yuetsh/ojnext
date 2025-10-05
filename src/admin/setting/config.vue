@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NButton, NTag } from "naive-ui"
-import { parseTime } from "~/utils/functions"
-import { Server } from "~/utils/types"
+import { parseTime } from "utils/functions"
+import { Server } from "utils/types"
 import {
   deleteJudgeServer,
   editWebsite,

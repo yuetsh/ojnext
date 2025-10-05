@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { deleteContestProblem, deleteProblem } from "~/admin/api"
-import download from "~/utils/download"
+import { deleteContestProblem, deleteProblem } from "admin/api"
+import download from "utils/download"
 
 interface Props {
   problemID: number

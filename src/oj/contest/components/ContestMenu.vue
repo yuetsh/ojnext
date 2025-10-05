@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useContestStore } from "oj/store/contest"
-import { isDesktop } from "~/shared/composables/breakpoints"
-import { ContestStatus } from "~/utils/constants"
+import { isDesktop } from "shared/composables/breakpoints"
+import { ContestStatus } from "utils/constants"
 
 const route = useRoute()
 const router = useRouter()

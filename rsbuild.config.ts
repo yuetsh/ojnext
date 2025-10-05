@@ -76,10 +76,10 @@ export default defineConfig(({ envMode }) => {
     },
     resolve: {
       alias: {
-        "~": "./src",
         utils: "./src/utils",
         oj: "./src/oj",
         admin: "./src/admin",
+        shared: "./src/shared",
       },
     },
     server: {

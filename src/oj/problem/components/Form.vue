@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { copyToClipboard } from "~/utils/functions"
+import { copyToClipboard } from "utils/functions"
 import { code, input, output } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
 import { injectSyncStatus } from "oj/composables/syncStatus"
-import { SYNC_MESSAGES } from "~/shared/composables/sync"
+import { SYNC_MESSAGES } from "shared/composables/sync"
 import { LANGUAGE_SHOW_VALUE, SOURCES, STORAGE_KEY } from "utils/constants"
-import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
-import { useUserStore } from "~/shared/store/user"
-import { createTestSubmission } from "~/utils/judge"
-import storage from "~/utils/storage"
-import { LANGUAGE } from "~/utils/types"
+import { isDesktop, isMobile } from "shared/composables/breakpoints"
+import { useUserStore } from "shared/store/user"
+import { createTestSubmission } from "utils/judge"
+import storage from "utils/storage"
+import { LANGUAGE } from "utils/types"
 import Submit from "./Submit.vue"
-import StatisticsPanel from "~/shared/components/StatisticsPanel.vue"
-import IconButton from "~/shared/components/IconButton.vue"
+import StatisticsPanel from "shared/components/StatisticsPanel.vue"
+import IconButton from "shared/components/IconButton.vue"
 
 interface Props {
   storageKey: string

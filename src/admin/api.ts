@@ -11,7 +11,7 @@ import {
   Tutorial,
   User,
   WebsiteConfig,
-} from "~/utils/types"
+} from "utils/types"
 
 export function getBaseInfo() {
   return http.get("admin/dashboard_info")

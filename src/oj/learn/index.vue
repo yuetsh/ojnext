@@ -68,11 +68,11 @@ import { Icon } from "@iconify/vue"
 
 import { MdPreview } from "md-editor-v3"
 import "md-editor-v3/lib/preview.css"
-import { Tutorial } from "~/utils/types"
+import { Tutorial } from "utils/types"
 import { getTutorial, getTutorials } from "../api"
 
 const CodeEditor = defineAsyncComponent(
-  () => import("~/shared/components/CodeEditor.vue"),
+  () => import("shared/components/CodeEditor.vue"),
 )
 
 const isDark = useDark()

@@ -1,6 +1,6 @@
 import { PROBLEM_PERMISSION, STORAGE_KEY, USER_TYPE } from "utils/constants"
 import storage from "utils/storage"
-import { Profile, User } from "~/utils/types"
+import { Profile, User } from "utils/types"
 import { getProfile } from "../api"
 import { useConfigStore } from "./config"
 

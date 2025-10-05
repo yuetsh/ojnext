@@ -1,4 +1,4 @@
-import { ScreenMode } from "~/utils/constants"
+import { ScreenMode } from "utils/constants"
 
 export const { state: screenMode, next: switchScreenMode } = useCycleList(
   Object.values(ScreenMode),

@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { getAuthors } from "~/oj/api"
+import { getAuthors } from "oj/api"
 
 interface Props {
   all?: boolean

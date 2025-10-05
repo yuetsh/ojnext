@@ -4,9 +4,9 @@ import { problem } from "oj/composables/problem"
 import { DIFFICULTY, JUDGE_STATUS } from "utils/constants"
 import { getACRateNumber, getTagColor, parseTime } from "utils/functions"
 import { Pie } from "vue-chartjs"
-import { getProblemBeatRate } from "~/oj/api"
-import { isDesktop } from "~/shared/composables/breakpoints"
-import { registerChart } from "~/utils/registerChart"
+import { getProblemBeatRate } from "oj/api"
+import { isDesktop } from "shared/composables/breakpoints"
+import { registerChart } from "utils/registerChart"
 
 const beatRate = ref("0")
 

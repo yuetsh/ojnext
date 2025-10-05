@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { NSwitch } from "naive-ui"
-import Pagination from "~/shared/components/Pagination.vue"
-import { parseTime } from "~/utils/functions"
-import { Announcement } from "~/utils/types"
+import Pagination from "shared/components/Pagination.vue"
+import { parseTime } from "utils/functions"
+import { Announcement } from "utils/types"
 import { editAnnouncement, getAnnouncementList } from "../api"
 import Actions from "./components/Actions.vue"
 

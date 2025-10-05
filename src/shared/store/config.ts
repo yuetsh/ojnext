@@ -1,5 +1,5 @@
-import { getWebsiteConfig } from "~/oj/api"
-import { WebsiteConfig } from "~/utils/types"
+import { getWebsiteConfig } from "oj/api"
+import { WebsiteConfig } from "utils/types"
 
 export const useConfigStore = defineStore("config", () => {
   const config = ref<WebsiteConfig>({

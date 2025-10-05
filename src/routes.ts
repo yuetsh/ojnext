@@ -3,7 +3,7 @@ import { registerChart } from "./utils/registerChart"
 
 export const ojs: RouteRecordRaw = {
   path: "/",
-  component: () => import("~/shared/layout/default.vue"),
+  component: () => import("shared/layout/default.vue"),
   children: [
     { path: "", component: () => import("oj/problem/list.vue") },
     {
@@ -104,12 +104,12 @@ export const ojs: RouteRecordRaw = {
 
 export const admins: RouteRecordRaw = {
   path: "/admin",
-  component: () => import("~/shared/layout/admin.vue"),
+  component: () => import("shared/layout/admin.vue"),
   children: [
     {
       path: "",
       name: "admin home",
-      component: () => import("~/admin/setting/home.vue"),
+      component: () => import("admin/setting/home.vue"),
       meta: { requiresSuperAdmin: true },
     },
     {
@@ -127,7 +127,7 @@ export const admins: RouteRecordRaw = {
     {
       path: "user/generate",
       name: "admin user generate",
-      component: () => import("~/admin/user/generate.vue"),
+      component: () => import("admin/user/generate.vue"),
       meta: { requiresSuperAdmin: true },
     },
     // admin和super_admin都可以访问的路由 (需要题目权限)

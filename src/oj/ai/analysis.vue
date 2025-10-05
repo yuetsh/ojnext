@@ -23,7 +23,7 @@
   </n-grid>
 </template>
 <script setup lang="ts">
-import { isDesktop } from "~/shared/composables/breakpoints"
+import { isDesktop } from "shared/composables/breakpoints"
 import { formatISO, sub, type Duration } from "date-fns"
 import WeeklyChart from "./components/WeeklyChart.vue"
 import Details from "./components/Details.vue"

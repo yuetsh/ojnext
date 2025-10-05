@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { deleteComment } from "~/admin/api"
+import { deleteComment } from "admin/api"
 
 const props = defineProps<{ commentID: number }>()
 const emit = defineEmits(["deleted"])

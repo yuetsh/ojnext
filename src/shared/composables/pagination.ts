@@ -1,4 +1,4 @@
-import { filterEmptyValue } from "~/utils/functions"
+import { filterEmptyValue } from "utils/functions"
 
 export interface PaginationQuery {
   page: number

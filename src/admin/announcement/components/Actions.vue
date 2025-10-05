@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { deleteAnnouncement } from "~/admin/api"
+import { deleteAnnouncement } from "admin/api"
 
 interface Props {
   announcementID: number

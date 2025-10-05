@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ProblemFiltered } from "utils/types"
-import ProblemStatus from "~/oj/problem/components/ProblemStatus.vue"
-import { useContestStore } from "~/oj/store/contest"
-import { renderTableTitle } from "~/utils/renders"
+import ProblemStatus from "oj/problem/components/ProblemStatus.vue"
+import { useContestStore } from "oj/store/contest"
+import { renderTableTitle } from "utils/renders"
 
 const props = defineProps<{ contestID: string }>()
 

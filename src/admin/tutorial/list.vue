@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { NSwitch } from "naive-ui"
-import { parseTime } from "~/utils/functions"
-import { Tutorial } from "~/utils/types"
+import { parseTime } from "utils/functions"
+import { Tutorial } from "utils/types"
 import { getTutorialList, setTutorialVisibility } from "../api"
 import Actions from "./components/Actions.vue"
 

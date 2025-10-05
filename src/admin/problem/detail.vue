@@ -1,14 +1,14 @@
 <script setup lang="ts">
-import { getProblemTagList } from "~/shared/api"
-import TextEditor from "~/shared/components/TextEditor.vue"
+import { getProblemTagList } from "shared/api"
+import TextEditor from "shared/components/TextEditor.vue"
 import {
   CODE_TEMPLATES,
   LANGUAGE_SHOW_VALUE,
   STORAGE_KEY,
-} from "~/utils/constants"
-import download from "~/utils/download"
-import { unique } from "~/utils/functions"
-import { BlankProblem, LANGUAGE, Tag } from "~/utils/types"
+} from "utils/constants"
+import download from "utils/download"
+import { unique } from "utils/functions"
+import { BlankProblem, LANGUAGE, Tag } from "utils/types"
 import {
   createContestProblem,
   createProblem,
@@ -19,7 +19,7 @@ import {
 } from "../api"
 
 const CodeEditor = defineAsyncComponent(
-  () => import("~/shared/components/CodeEditor.vue"),
+  () => import("shared/components/CodeEditor.vue"),
 )
 
 interface Props {

@@ -18,9 +18,9 @@
 </template>
 <script lang="ts" setup>
 import { NButton } from "naive-ui"
-import Pagination from "~/shared/components/Pagination.vue"
-import { parseTime } from "~/utils/functions"
-import { Comment } from "~/utils/types"
+import Pagination from "shared/components/Pagination.vue"
+import { parseTime } from "utils/functions"
+import { Comment } from "utils/types"
 import { getCommentList } from "../api"
 import CommentActions from "./components/CommentActions.vue"
 

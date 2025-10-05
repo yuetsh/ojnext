@@ -8,8 +8,8 @@
 <script setup lang="ts">
 import type { ChartData, ChartOptions, TooltipItem } from "chart.js"
 import { Chart } from "vue-chartjs"
-import { useAIStore } from "~/oj/store/ai"
-import { parseTime } from "~/utils/functions"
+import { useAIStore } from "oj/store/ai"
+import { parseTime } from "utils/functions"
 
 const props = defineProps<{
   end: string

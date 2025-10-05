@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { addProblemForContest } from "~/admin/api"
+import { addProblemForContest } from "admin/api"
 
 interface Props {
   problemID: number

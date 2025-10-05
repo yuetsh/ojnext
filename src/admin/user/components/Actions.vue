@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import { editUser } from "~/admin/api"
-import { User } from "~/utils/types"
+import { editUser } from "admin/api"
+import { User } from "utils/types"
 
 interface Props {
   user: User

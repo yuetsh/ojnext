@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { PROBLEM_PERMISSION, USER_TYPE } from "~/utils/constants"
-import { getUserRole } from "~/utils/functions"
-import { User } from "~/utils/types"
-import TextCopy from "~/shared/components/TextCopy.vue"
+import { PROBLEM_PERMISSION, USER_TYPE } from "utils/constants"
+import { getUserRole } from "utils/functions"
+import { User } from "utils/types"
+import TextCopy from "shared/components/TextCopy.vue"
 
 interface Props {
   user: User
