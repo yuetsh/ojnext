@@ -4,7 +4,6 @@ import { RouterLink } from "vue-router"
 import { isDesktop, isMobile } from "shared/composables/breakpoints"
 import { toggleLogin, toggleSignup } from "shared/composables/modal"
 import { screenMode, switchScreenMode } from "shared/composables/switchScreen"
-import { avatar } from "utils/constants"
 import { logout } from "../api"
 import { useConfigStore } from "../store/config"
 import { useUserStore } from "../store/user"
@@ -15,6 +14,36 @@ const userStore = useUserStore()
 const configStore = useConfigStore()
 const route = useRoute()
 const router = useRouter()
+
+const names = [
+  "man-with-chinese-cap-1",
+  "cat-face",
+  "china",
+  "chicken",
+  "eyes",
+  "elephant",
+  "hear-no-evil-monkey",
+  "panda-face",
+  "penguin-1",
+  "rooster",
+  "star-struck-1",
+  "tomato",
+  "rocket",
+  "sparkles",
+  "money-bag",
+  "ghost",
+  "game-dice",
+  "ewe-1",
+  "artist-palette",
+  "baby-bottle",
+]
+
+function getRandomAvatar() {
+  const name = names[Math.floor(Math.random() * names.length)]
+  return `streamline-emojis:${name}`
+}
+
+const avatar = ref(getRandomAvatar())
 
 const envVersion = computed(() => {
   if (import.meta.env.PUBLIC_ENV === "test") {
