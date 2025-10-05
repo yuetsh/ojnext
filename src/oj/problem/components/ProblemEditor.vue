@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { code } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
+import { provideSyncStatus } from "oj/composables/syncStatus"
 import { SOURCES } from "utils/constants"
 import SyncCodeEditor from "~/shared/components/SyncCodeEditor.vue"
 import { isDesktop } from "~/shared/composables/breakpoints"
@@ -12,8 +13,8 @@ const route = useRoute()
 const formRef = useTemplateRef<InstanceType<typeof Form>>("formRef")
 
 const sync = ref(false)
-const otherUserInfo = ref<{ name: string; isSuperAdmin: boolean }>()
-const hadConnection = ref(false)
+// 提供同步状态给子组件使用
+const syncStatus = provideSyncStatus()
 
 const contestID = route.params.contestID || null
 const storageKey = computed(
@@ -48,24 +49,20 @@ const changeLanguage = (v: LANGUAGE) => {
 const toggleSync = (value: boolean) => {
   sync.value = value
   if (!value) {
-    hadConnection.value = false
+    syncStatus.reset()
   }
 }
 
 const handleSyncClosed = () => {
   sync.value = false
-  otherUserInfo.value = undefined
-  hadConnection.value = false
+  syncStatus.reset()
   formRef.value?.resetSyncStatus()
 }
 
 const handleSyncStatusChange = (status: {
   otherUser?: { name: string; isSuperAdmin: boolean }
 }) => {
-  otherUserInfo.value = status.otherUser
-  if (status.otherUser) {
-    hadConnection.value = true
-  }
+  syncStatus.setOtherUser(status.otherUser)
 }
 </script>
 
@@ -74,9 +71,7 @@ const handleSyncStatusChange = (status: {
     <Form
       ref="formRef"
       :storage-key="storageKey"
-      :other-user-info="otherUserInfo"
       :is-connected="sync"
-      :had-connection="hadConnection"
       @change-language="changeLanguage"
       @toggle-sync="toggleSync"
     />

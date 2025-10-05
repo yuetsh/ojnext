@@ -2,6 +2,7 @@
 import { copyToClipboard } from "~/utils/functions"
 import { code, input, output } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
+import { injectSyncStatus } from "oj/composables/syncStatus"
 import { LANGUAGE_SHOW_VALUE, SOURCES, STORAGE_KEY } from "utils/constants"
 import { isDesktop, isMobile } from "~/shared/composables/breakpoints"
 import { useUserStore } from "~/shared/store/user"
@@ -15,16 +16,16 @@ import IconButton from "~/shared/components/IconButton.vue"
 interface Props {
   storageKey: string
   withTest?: boolean
-  otherUserInfo?: { name: string; isSuperAdmin: boolean }
   isConnected?: boolean // WebSocket 实际的连接状态（已建立/未建立）
-  hadConnection?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   withTest: false,
   isConnected: false,
-  hadConnection: false,
 })
+
+// 注入同步状态
+const syncStatus = injectSyncStatus()
 
 const emit = defineEmits<{
   changeLanguage: [v: LANGUAGE]
@@ -191,11 +192,11 @@ defineExpose({
 
         <!-- 同步状态标签 -->
         <template v-if="props.isConnected">
-          <n-tag v-if="otherUserInfo" type="info">
-            与 {{ otherUserInfo.name }} 同步中
+          <n-tag v-if="syncStatus.otherUser.value" type="info">
+            与 {{ syncStatus.otherUser.value.name }} 同步中
           </n-tag>
           <n-tag
-            v-if="userStore.isSuperAdmin && !otherUserInfo && hadConnection"
+            v-if="userStore.isSuperAdmin && !syncStatus.otherUser.value && syncStatus.hadConnection.value"
             type="warning"
           >
             学生已退出，可以关闭同步

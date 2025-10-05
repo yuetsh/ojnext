@@ -86,7 +86,11 @@ const initSync = async () => {
     problemId: props.problem,
     editorView: editorView.value as EditorView,
     onStatusChange: (status) => {
-      if (status.error === "超管已离开" && !status.connected) {
+      // 处理需要断开同步的情况
+      if (
+        (status.error === "超管已离开" || status.error === "缺少超级管理员") 
+        && !status.connected
+      ) {
         emit("syncClosed")
       }
       emit("syncStatusChange", { otherUser: status.otherUser })

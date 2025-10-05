@@ -22,8 +22,6 @@ interface UserInfo {
 }
 
 interface PeersEvent {
-  added: string[]
-  removed: string[]
   webrtcPeers: string[]
 }
 
@@ -54,7 +52,6 @@ export function useCodeSync() {
   const userStore = useUserStore()
   const message = useMessage()
 
-  // 状态变量
   let ydoc: Doc | null = null
   let provider: WebrtcProvider | null = null
   let ytext: Text | null = null
@@ -138,9 +135,11 @@ export function useCodeSync() {
     const otherUser = getOtherUserInfo(awarenessStates)
 
     if (roomUsers === SYNC_CONSTANTS.MAX_ROOM_USERS && !hasSuperAdmin) {
+      if (lastSyncState === "error") return
+      
       updateStatus(
         {
-          connected: true,
+          connected: false,
           roomUsers,
           canSync: false,
           message: "房间内必须有一个超级管理员",
@@ -149,23 +148,23 @@ export function useCodeSync() {
         },
         onStatusChange,
       )
-      if (lastSyncState !== "error") {
-        message.warning("协同编辑需要一位超级管理员坐镇哦")
-        lastSyncState = "error"
-      }
+      message.error("协同编辑需要一位超管")
+      lastSyncState = "error"
+      stopSync()
+      return
     } else if (canSync) {
       updateStatus(
         {
           connected: true,
           roomUsers,
           canSync: true,
-          message: "协同编辑已激活，开始愉快的代码之旅吧！",
+          message: "协同编辑已激活！",
           otherUser,
         },
         onStatusChange,
       )
       if (lastSyncState !== "active") {
-        message.success("协同编辑已激活，开始愉快的代码之旅吧！")
+        message.success("协同编辑已激活！")
         lastSyncState = "active"
       }
     } else {
@@ -224,8 +223,6 @@ export function useCodeSync() {
       import("y-codemirror.next"),
     ])
 
-    console.log("Yjs 相关模块导入完成")
-
     // 初始化文档和提供者
     ydoc = new Y.Doc()
     ytext = ydoc.getText("codemirror")
@@ -257,23 +254,6 @@ export function useCodeSync() {
     // 监听用户加入/离开
     provider.on("peers", (event: PeersEvent) => {
       const roomUsers = event.webrtcPeers.length + 1
-
-      if (roomUsers > SYNC_CONSTANTS.MAX_ROOM_USERS) {
-        updateStatus(
-          {
-            connected: false,
-            roomUsers,
-            canSync: false,
-            message: "房间人数已满，已自动断开连接",
-            error: `房间最多只能有${SYNC_CONSTANTS.MAX_ROOM_USERS}个人`,
-          },
-          onStatusChange,
-        )
-        message.warning(`哎呀，房间已经坐满了，已自动断开连接`)
-        stopSync()
-        return
-      }
-
       setTimeout(() => {
         checkRoomPermissions(roomUsers, onStatusChange)
       }, SYNC_CONSTANTS.AWARENESS_SYNC_DELAY)
@@ -344,8 +324,8 @@ export function useCodeSync() {
 
       message.info(
         userStore.isSuperAdmin
-          ? "正在等待学生加入房间..."
-          : "正在等待超管加入房间...",
+          ? "正在等待学生加入..."
+          : "正在等待超管加入...",
       )
       lastSyncState = "waiting"
     }
