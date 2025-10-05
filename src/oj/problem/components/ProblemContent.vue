@@ -17,6 +17,18 @@ type Sample = Problem["samples"][number] & {
 const theme = useThemeVars()
 const style = computed(() => "color: " + theme.value.primaryColor)
 
+// 判断用户是否尝试过但未通过
+// my_status === 0: 已通过
+// my_status !== 0 && my_status !== null: 尝试过但未通过
+// my_status === null: 从未尝试
+const hasTriedButNotPassed = computed(() => {
+  return (
+    problem.value?.my_status !== undefined &&
+    problem.value?.my_status !== null &&
+    problem.value?.my_status !== 0
+  )
+})
+
 const samples = ref<Sample[]>(
   problem.value!.samples.map((sample, index) => ({
     ...sample,
@@ -89,13 +101,24 @@ function type(status: ProblemStatus) {
 
 <template>
   <div v-if="problem" class="problemContent">
+    <!-- 已通过 -->
     <n-alert
-      class="success"
+      class="status-alert"
       v-if="problem.my_status === 0"
       type="success"
       title="🎉 本 题 已 经 被 你 解 决 啦"
-    />
+    >
+    </n-alert>
 
+    <!-- 尝试过但未通过 -->
+    <n-alert
+      class="status-alert"
+      v-else-if="hasTriedButNotPassed"
+      type="warning"
+      title="💪 你已经尝试过这道题，但还没有通过"
+    >
+      不要放弃！仔细检查代码逻辑，或者寻求 AI 的帮助获取灵感。
+    </n-alert>
     <n-flex align="center">
       <n-tag>{{ problem._id }}</n-tag>
       <h2 class="problemTitle">{{ problem.title }}</h2>
@@ -202,8 +225,8 @@ function type(status: ProblemStatus) {
   font-family: "Monaco";
 }
 
-.problemContent .success {
-  margin-bottom: 8px;
+.problemContent .status-alert {
+  margin-bottom: 16px;
 }
 
 .problemContent .content > p {

@@ -257,3 +257,32 @@ export function deleteTutorial(id: number) {
 export function setTutorialVisibility(id: number, is_public: boolean) {
   return http.put("admin/tutorial/visibility", { id, is_public })
 }
+
+// 将竞赛题目转为公开题目
+export function makeProblemPublic(id: number, display_id: string) {
+  return http.post("admin/contest_problem/make_public", {
+    id,
+    display_id,
+  })
+}
+
+// 比赛辅助检查
+export function getACMHelperList(contest_id: number) {
+  return http.get("admin/contest/acm_helper", {
+    params: { contest_id },
+  })
+}
+
+export function updateACMHelperChecked(
+  contest_id: number,
+  rank_id: number,
+  problem_id: string,
+  checked: boolean,
+) {
+  return http.put("admin/contest/acm_helper", {
+    contest_id,
+    rank_id,
+    problem_id,
+    checked,
+  })
+}

@@ -59,6 +59,7 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   {
     title: "可见",
     key: "visible",
+    minWidth: 80,
     render: (row) =>
       h(NSwitch, {
         value: row.visible,
@@ -70,12 +71,12 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   {
     title: "选项",
     key: "actions",
-    width: 260,
+    width: 330,
     render: (row) =>
       h(Actions, {
         problemID: row.id,
         problemDisplayID: row._id,
-        onDeleted: listProblems,
+        onUpdated: listProblems,
       }),
   },
 ]

@@ -73,13 +73,27 @@ async function copyToProblem() {
   } else {
     message.error("代码复制失败")
   }
-  router.push({
-    name: "problem",
-    params: {
-      contestID: submission.value!.contest,
-      problemID: props.problemID,
-    },
-  })
+
+  // 判断是否是竞赛题目
+  const contestID = submission.value!.contest
+  if (contestID) {
+    // 竞赛题目
+    router.push({
+      name: "contest problem",
+      params: {
+        contestID: String(contestID),
+        problemID: props.problemID,
+      },
+    })
+  } else {
+    // 普通题目
+    router.push({
+      name: "problem",
+      params: {
+        problemID: props.problemID,
+      },
+    })
+  }
 }
 
 onMounted(init)

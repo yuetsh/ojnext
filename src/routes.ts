@@ -187,6 +187,13 @@ export const admins: RouteRecordRaw = {
       props: true,
       meta: { requiresSuperAdmin: true },
     },
+    {
+      path: "contest/:contestID/helper",
+      name: "admin contest helper",
+      component: () => import("admin/contest/helper.vue"),
+      props: true,
+      meta: { requiresSuperAdmin: true },
+    },
     // 只有super_admin可以访问的路由
     {
       path: "announcement/list",
