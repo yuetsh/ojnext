@@ -22,12 +22,14 @@ const message = useMessage()
 interface UserQuery {
   keyword: string
   type: string
+  orderBy: string
 }
 
 // 使用分页 composable
-const { query } = usePagination<UserQuery>({
+const { query, clearQuery } = usePagination<UserQuery>({
   keyword: useRouteQuery("keyword", "").value,
   type: useRouteQuery("type", "").value,
+  orderBy: useRouteQuery("orderBy", "").value,
 })
 
 const total = ref(0)
@@ -38,6 +40,12 @@ const adminOptions = [
   { label: "全部用户", value: "" },
   { label: "管理员", value: USER_TYPE.ADMIN },
   { label: "超级管理员", value: USER_TYPE.SUPER_ADMIN },
+]
+
+const sortOptions = [
+  { label: "默认排序", value: "" },
+  { label: "最近登录", value: "-last_login" },
+  { label: "最早登录", value: "last_login" },
 ]
 const [create, toggleCreate] = useToggle(false)
 const password = ref("")
@@ -112,7 +120,13 @@ const problemPermissionOptions: SelectOption[] = [
 async function listUsers() {
   if (query.page < 1) query.page = 1
   const offset = (query.page - 1) * query.limit
-  const res = await getUserList(offset, query.limit, query.type, query.keyword)
+  const res = await getUserList(
+    offset,
+    query.limit,
+    query.type,
+    query.keyword,
+    query.orderBy,
+  )
   total.value = res.data.total
   users.value = res.data.results
 }
@@ -208,7 +222,7 @@ onMounted(listUsers)
 watchDebounced(() => query.keyword, listUsers, { debounce: 500, maxWait: 1000 })
 
 // 监听其他查询条件变化
-watch(() => [query.page, query.limit, query.type], listUsers)
+watch(() => [query.page, query.limit, query.type, query.orderBy], listUsers)
 </script>
 
 <template>
@@ -232,13 +246,24 @@ watch(() => [query.page, query.limit, query.type], listUsers)
       </n-popconfirm>
       <n-flex align="center">
         <n-select
+          v-model:value="query.orderBy"
+          :options="sortOptions"
+          placeholder="排序方式"
+          style="width: 120px"
+        />
+        <n-select
           v-model:value="query.type"
           :options="adminOptions"
           placeholder="选择用户类型"
           style="width: 120px"
         />
         <div>
-          <n-input style="width: 200px" v-model:value="query.keyword" />
+          <n-input
+            style="width: 200px"
+            v-model:value="query.keyword"
+            clearable
+            @clear="clearQuery"
+          />
         </div>
       </n-flex>
     </n-flex>

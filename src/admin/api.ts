@@ -86,9 +86,10 @@ export function getUserList(
   limit = 10,
   type = "",
   keyword: string,
+  orderBy = "",
 ) {
   return http.get("admin/user", {
-    params: { paging: true, offset, limit, keyword, type },
+    params: { paging: true, offset, limit, keyword, type, order_by: orderBy },
   })
 }
 
