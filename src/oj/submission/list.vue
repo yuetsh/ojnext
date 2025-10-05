@@ -249,14 +249,14 @@ const columns = computed(() => {
             unchecked-value="0"
           />
         </n-form-item>
-        <n-form-item label="提交状态">
+        <n-form-item label="状态">
           <n-select
             class="select"
             v-model:value="query.result"
             :options="resultOptions"
           />
         </n-form-item>
-        <n-form-item label="编程语言">
+        <n-form-item label="语言">
           <n-select
             class="select"
             v-model:value="query.language"
@@ -307,6 +307,8 @@ const columns = computed(() => {
             @click="toggleStatisticPanel(true)"
           />
         </n-form-item>
+      </n-form>
+      <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item v-if="todayCount > 0">
           <component :is="isDesktop ? NH2 : NText" class="todayCount">
             <n-gradient-text>今日提交数：{{ todayCount }}</n-gradient-text>
