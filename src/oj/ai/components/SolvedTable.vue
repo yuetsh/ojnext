@@ -4,7 +4,7 @@
     striped
     :data="solvedProblems"
     :columns="columns"
-    :max-height="isDesktop ? 1600 : 400"
+    :max-height="isDesktop ? 1200 : 400"
   />
 </template>
 
