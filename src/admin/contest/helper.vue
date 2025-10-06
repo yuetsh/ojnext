@@ -69,10 +69,10 @@ async function toggleChecked(item: HelperItem) {
     // 更新本地状态
     item.checked = newChecked
     item.ac_info.checked = newChecked
-    
+
     // 强制触发响应式更新
     submissions.value = [...submissions.value]
-    
+
     message.success(newChecked ? "已标记为已检查" : "已取消标记")
   } catch (err: any) {
     message.error(err.data || "操作失败")
@@ -99,10 +99,10 @@ async function markAllAsChecked() {
       item.checked = true
       item.ac_info.checked = true
     }
-    
+
     // 强制触发响应式更新
     submissions.value = [...submissions.value]
-    
+
     loadingMsg.destroy()
     message.success(`已标记 ${unchecked.length} 个提交为已检查`)
   } catch (err: any) {
@@ -114,14 +114,11 @@ async function markAllAsChecked() {
 // 过滤后的提交列表
 const filteredSubmissions = computed(() => {
   return submissions.value.filter((item) => {
-    if (query.username && !item.username.includes(query.username))
-      return false
+    if (query.username && !item.username.includes(query.username)) return false
     if (query.problemId && !item.problem_display_id.includes(query.problemId))
       return false
-    if (query.checked === "checked" && !item.checked)
-      return false
-    if (query.checked === "unchecked" && item.checked)
-      return false
+    if (query.checked === "checked" && !item.checked) return false
+    if (query.checked === "unchecked" && item.checked) return false
     return true
   })
 })
@@ -254,12 +251,8 @@ onMounted(loadData)
     <n-flex justify="space-between" align="center">
       <n-flex align="center">
         <h2 style="margin: 0">比赛辅助检查</h2>
-        <n-tag type="info" size="large">
-          总计: {{ stats.total }}
-        </n-tag>
-        <n-tag type="success" size="large">
-          已检查: {{ stats.checked }}
-        </n-tag>
+        <n-tag type="info" size="large"> 总计: {{ stats.total }} </n-tag>
+        <n-tag type="success" size="large"> 已检查: {{ stats.checked }} </n-tag>
         <n-tag type="warning" size="large">
           未检查: {{ stats.unchecked }}
         </n-tag>
@@ -328,4 +321,3 @@ onMounted(loadData)
   margin-top: 16px;
 }
 </style>
-

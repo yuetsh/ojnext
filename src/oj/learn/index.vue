@@ -1,71 +1,49 @@
 <template>
-  <n-grid :cols="2" :x-gap="24" v-if="!!tutorial.id">
+  <n-grid :cols="5" :x-gap="16" v-if="tutorial.id">
     <n-gi :span="1">
-      <n-flex vertical>
-        <n-flex align="center">
-          <n-button text :disabled="step == 1" @click="prev">
-            <Icon :width="30" icon="pepicons-pencil:arrow-left"></Icon>
-          </n-button>
-          <n-dropdown size="large" :options="menu" trigger="click">
-            <n-button tertiary style="flex: 1" size="large">
-              <n-flex align="center">
-                <span style="font-weight: bold">
-                  {{ title }}
-                </span>
-                <Icon :width="24" icon="proicons:chevron-down"></Icon>
-              </n-flex>
-            </n-button>
-          </n-dropdown>
-          <n-button text :disabled="step == titles.length" @click="next">
-            <Icon :width="30" icon="pepicons-pencil:arrow-right"></Icon>
-          </n-button>
-        </n-flex>
-        <n-flex vertical size="large">
-          <MdPreview
-            preview-theme="vuepress"
-            :theme="isDark ? 'dark' : 'light'"
-            :model-value="tutorial.content"
-          />
-          <n-flex justify="space-between">
-            <div style="flex: 1">
-              <n-button
-                block
-                style="height: 40px"
-                v-if="step !== 1"
-                @click="prev"
+      <n-card title="目录" :bordered="false" size="small">
+        <n-scrollbar :style="{ maxHeight: 'calc(100vh - 180px)' }">
+          <n-list hoverable clickable>
+            <n-list-item
+              v-for="(item, index) in titles"
+              :key="item.id"
+              @click="goToLesson(index + 1)"
+            >
+              <n-text
+                :type="step === index + 1 ? 'primary' : undefined"
+                :strong="step === index + 1"
               >
-                上一课时
-              </n-button>
-            </div>
-            <div style="flex: 1">
-              <n-button
-                block
-                style="height: 40px"
-                v-if="step !== titles.length"
-                @click="next"
-              >
-                下一课时
-              </n-button>
-            </div>
-          </n-flex>
-        </n-flex>
-      </n-flex>
+                {{ index + 1 }}. {{ item.title }}
+              </n-text>
+            </n-list-item>
+          </n-list>
+        </n-scrollbar>
+      </n-card>
     </n-gi>
-    <n-gi :span="1">
-      <n-flex vertical>
-        <CodeEditor
-          v-show="!!tutorial.code"
-          language="Python3"
-          v-model="tutorial.code"
+
+    <n-gi :span="tutorial.code ? 2 : 4">
+      <n-card
+        :title="`第 ${step} 课：${titles[step - 1]?.title}`"
+        :bordered="false"
+        size="small"
+      >
+        <MdPreview
+          preview-theme="vuepress"
+          :theme="isDark ? 'dark' : 'light'"
+          :model-value="tutorial.content"
         />
-      </n-flex>
+      </n-card>
+    </n-gi>
+
+    <n-gi :span="2" v-if="tutorial.code">
+      <n-card title="示例代码" :bordered="false" size="small">
+        <CodeEditor language="Python3" v-model="tutorial.code" />
+      </n-card>
     </n-gi>
   </n-grid>
 </template>
 
 <script setup lang="ts">
-import { Icon } from "@iconify/vue"
-
 import { MdPreview } from "md-editor-v3"
 import "md-editor-v3/lib/preview.css"
 import { Tutorial } from "utils/types"
@@ -94,23 +72,11 @@ const tutorial = ref<Partial<Tutorial>>({
 })
 
 const titles = ref<{ id: number; title: string }[]>([])
-const title = computed(
-  () => `第 ${step.value} 课：${titles.value[step.value - 1].title}`,
-)
 
-const menu = computed<DropdownOption[]>(() => {
-  return titles.value.map((item, index) => {
-    const id = (index + 1).toString().padStart(2, "0")
-    const prefix = `第 ${index + 1} 课：`
-    return {
-      key: id,
-      label: prefix + item.title,
-      props: {
-        onClick: () => router.push(`/learn/${id}`),
-      },
-    }
-  })
-})
+function goToLesson(lessonNumber: number) {
+  const dest = lessonNumber.toString().padStart(2, "0")
+  router.push("/learn/" + dest)
+}
 
 async function init() {
   const res1 = await getTutorials()
@@ -119,18 +85,6 @@ async function init() {
   const id = titles.value[step.value - 1].id
   const res2 = await getTutorial(id)
   tutorial.value = res2.data
-}
-
-function next() {
-  if (step.value === titles.value.length) return
-  const dest = (step.value + 1).toString().padStart(2, "0")
-  router.push("/learn/" + dest)
-}
-
-function prev() {
-  if (step.value === 1) return
-  const dest = (step.value - 1).toString().padStart(2, "0")
-  router.push("/learn/" + dest)
 }
 
 watch(
@@ -143,8 +97,8 @@ watch(
 )
 </script>
 
-<style>
-.md-editor-preview .md-editor-code .md-editor-code-head {
+<style scoped>
+:deep(.md-editor-preview .md-editor-code .md-editor-code-head) {
   z-index: 100;
 }
 </style>

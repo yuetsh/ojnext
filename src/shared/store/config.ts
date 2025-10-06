@@ -8,7 +8,7 @@ export const useConfigStore = defineStore("config", () => {
     website_name_shortcut: "",
     website_footer: "",
     submission_list_show_all: true,
-    allow_register: true,
+    allow_register: false,
     class_list: [],
   })
   async function getConfig() {

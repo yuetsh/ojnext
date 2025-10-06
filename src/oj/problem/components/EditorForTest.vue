@@ -86,9 +86,7 @@ const languageOptions: DropdownOption[] = problem.value!.languages.map(
               :options="languageOptions"
               @update:value="changeLanguage"
             />
-            <n-button @click="copy">
-              复制代码
-            </n-button>
+            <n-button @click="copy">复制代码</n-button>
             <n-button @click="reset">重置代码</n-button>
             <n-button type="primary" secondary @click="runCode">
               运行代码

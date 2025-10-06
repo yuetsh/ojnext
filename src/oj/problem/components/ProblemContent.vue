@@ -204,116 +204,138 @@ function type(status: ProblemStatus) {
   </div>
 </template>
 
-<style>
-.problemContent .problemTitle {
+<style scoped>
+.problemContent {
+  --border-color-light: rgb(239, 239, 245);
+  --bg-code-light: rgb(250, 250, 252);
+  --bg-code-dark: rgb(24, 24, 28);
+  --bg-table-light: rgba(250, 250, 252, 1);
+  --bg-table-dark: rgba(38, 38, 42, 1);
+  --border-color-dark: rgba(255, 255, 255, 0.09);
+  --blockquote-color: #7b7b7b;
+  --blockquote-border: #bbbec4;
+  --link-color: #18a058;
+  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.problemTitle {
   margin: 0;
 }
 
-.problemContent .title {
+.title {
   font-size: 20px;
   margin: 12px 0;
 }
 
-.problemContent .content {
+.testcase {
+  font-size: 14px;
+  white-space: pre;
+  font-family: "Monaco", monospace;
+}
+
+.status-alert {
+  margin-bottom: 16px;
+}
+
+.content {
   font-size: 16px;
   line-height: 2;
 }
 
-.problemContent .testcase {
-  font-size: 14px;
-  white-space: pre;
-  font-family: "Monaco";
-}
-
-.problemContent .status-alert {
-  margin-bottom: 16px;
-}
-
-.problemContent .content > p {
+/* 针对 v-html 渲染内容的深度样式 */
+.content :deep(p) {
   margin: 0;
 }
 
-.problemContent .content > blockquote {
-  border-left: 3px solid #bbbec4;
+.content :deep(blockquote) {
+  border-left: 3px solid var(--blockquote-border);
   padding-left: 10px;
   margin: 10px 0;
-  color: #7b7b7b;
+  color: var(--blockquote-color);
 }
 
-.problemContent .content > pre {
+.content :deep(pre) {
   width: 100%;
-  background-color: rgb(250, 250, 252);
-  border: 1px solid rgb(239, 239, 245);
+  background-color: var(--bg-code-light);
+  border: 1px solid var(--border-color-light);
   word-break: break-word;
   box-sizing: border-box;
   transition:
-    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color var(--transition),
+    border-color var(--transition);
 }
 
-.problemContent .content > pre > code {
-  font-family: "Monaco";
+.content :deep(pre code) {
+  font-family: "Monaco", monospace;
 }
 
-.dark .problemContent .content > pre {
-  background-color: rgb(24, 24, 28);
-  border-color: rgba(255, 255, 255, 0.09);
+.dark .content :deep(pre) {
+  background-color: var(--bg-code-dark);
+  border-color: var(--border-color-dark);
 }
 
-.problemContent .content > table {
+.content :deep(table) {
   width: 100%;
   border-spacing: 0;
-  border: 1px solid rgba(239, 239, 245, 1);
+  border: 1px solid var(--border-color-light);
   transition:
-    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color var(--transition),
+    border-color var(--transition);
 }
 
-.problemContent .content > table th {
-  background-color: rgba(250, 250, 252, 1);
+.content :deep(table th) {
+  background-color: var(--bg-table-light);
+  padding: 8px;
   transition:
-    background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1),
-    border-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background-color var(--transition),
+    border-color var(--transition);
 }
 
-.dark .problemContent .content > table th {
-  background-color: rgba(38, 38, 42, 1);
+.dark .content :deep(table th) {
+  background-color: var(--bg-table-dark);
 }
 
-.problemContent .content > table td {
+.content :deep(table td) {
   padding: 8px;
 }
 
-.problemContent .content > table td,
-.problemContent .content > table th {
-  border-right: 1px solid rgba(239, 239, 245, 1);
-  border-bottom: 1px solid rgba(239, 239, 245, 1);
+.content :deep(table td),
+.content :deep(table th) {
+  border-right: 1px solid var(--border-color-light);
+  border-bottom: 1px solid var(--border-color-light);
 }
 
-.problemContent .content > table th:last-child,
-.problemContent .content > table td:last-child {
-  border-right: 0px solid rgba(239, 239, 245, 1);
+.content :deep(table th:last-child),
+.content :deep(table td:last-child) {
+  border-right: none;
 }
 
-.problemContent .content > table tr:last-child td {
-  border-bottom: 0px solid rgba(239, 239, 245, 1);
+.content :deep(table tr:last-child td) {
+  border-bottom: none;
 }
 
-.problemContent .content > p > code {
+.content :deep(p code) {
   font-size: 90%;
   padding: 2px 5px;
-  margin: 0px 4px;
+  margin: 0 4px;
   background-color: rgba(27, 31, 35, 0.05);
   border-radius: 3px;
   line-height: 1.5;
+  font-family: "Monaco", monospace;
 }
 
-.problemContent .content img {
-  max-width: 100% !important;
-  height: 100% !important;
+.content :deep(img) {
+  max-width: 100%;
+  height: auto;
 }
 
-.problemContent .content a {
-  color: #18a058;
+.content :deep(a) {
+  color: var(--link-color);
+  text-decoration: none;
+  transition: opacity var(--transition);
+}
+
+.content :deep(a:hover) {
+  opacity: 0.8;
 }
 </style>
