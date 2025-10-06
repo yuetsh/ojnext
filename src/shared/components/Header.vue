@@ -86,7 +86,6 @@ const menus = computed<MenuOption[]>(() => [
     label: () => h(RouterLink, { to: "/learn/01" }, { default: () => "自学" }),
     key: "learn",
     icon: renderIcon("streamline-emojis:snake"),
-    show: isDesktop.value,
   },
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "题库" }),
