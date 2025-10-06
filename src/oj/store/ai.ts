@@ -51,7 +51,11 @@ export const useAIStore = defineStore("ai", () => {
   }
 
   // 统一获取分析数据（details + duration）
-  async function fetchAnalysisData(start: string, end: string, duration: string) {
+  async function fetchAnalysisData(
+    start: string,
+    end: string,
+    duration: string,
+  ) {
     loading.fetching = true
     try {
       await Promise.all([

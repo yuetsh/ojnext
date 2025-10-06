@@ -14,7 +14,12 @@
           </g>
 
           <g v-for="(day, i) in WEEK_DAYS" :key="i">
-            <text :x="0" :y="MONTH_HEIGHT + i * CELL_TOTAL + 8" class="label" font-size="9">
+            <text
+              :x="0"
+              :y="MONTH_HEIGHT + i * CELL_TOTAL + 8"
+              class="label"
+              font-size="9"
+            >
               {{ day }}
             </text>
           </g>
@@ -39,7 +44,11 @@
         <div class="legend">
           <span>少</span>
           <div class="legend-colors">
-            <div v-for="(color, i) in COLORS" :key="i" :style="{ backgroundColor: color }" />
+            <div
+              v-for="(color, i) in COLORS"
+              :key="i"
+              :style="{ backgroundColor: color }"
+            />
           </div>
           <span>多</span>
         </div>
@@ -72,13 +81,18 @@ const LEGEND_HEIGHT = 20
 const COLORS = ["#ebedf0", "#c6e48b", "#7bc96f", "#239a3b", "#196127"]
 const WEEK_DAYS = ["", "一", "", "三", "", "五", ""]
 
-const getColor = (count: number) => 
-  count === 0 ? COLORS[0] :
-  count <= 2 ? COLORS[1] :
-  count <= 4 ? COLORS[2] :
-  count <= 7 ? COLORS[3] : COLORS[4]
+const getColor = (count: number) =>
+  count === 0
+    ? COLORS[0]
+    : count <= 2
+      ? COLORS[1]
+      : count <= 4
+        ? COLORS[2]
+        : count <= 7
+          ? COLORS[3]
+          : COLORS[4]
 
-const cells = computed(() => 
+const cells = computed(() =>
   aiStore.heatmapData.map((item, i) => ({
     date: new Date(item.timestamp),
     count: item.value,
@@ -87,17 +101,17 @@ const cells = computed(() =>
     day: i % 7,
     x: Math.floor(i / 7) * CELL_TOTAL,
     y: (i % 7) * CELL_TOTAL,
-  }))
+  })),
 )
 
 const monthLabels = computed(() => {
   const labels: { text: string; x: number }[] = []
   let lastMonth = -1
-  
+
   cells.value.forEach((cell, i) => {
     const month = cell.date.getMonth()
     const isWeekStart = cell.date.getDay() === 0 || i === 0
-    
+
     if (month !== lastMonth && (isWeekStart || cell.date.getDay() <= 3)) {
       labels.push({
         text: `${month + 1}月`,
@@ -106,17 +120,16 @@ const monthLabels = computed(() => {
       lastMonth = month
     }
   })
-  
+
   return labels
 })
 
-const svgWidth = computed(() => 
-  DAY_WIDTH + Math.ceil(cells.value.length / 7) * CELL_TOTAL + RIGHT_PADDING
+const svgWidth = computed(
+  () =>
+    DAY_WIDTH + Math.ceil(cells.value.length / 7) * CELL_TOTAL + RIGHT_PADDING,
 )
 
-const svgHeight = computed(() => 
-  MONTH_HEIGHT + 7 * CELL_TOTAL + LEGEND_HEIGHT
-)
+const svgHeight = computed(() => MONTH_HEIGHT + 7 * CELL_TOTAL + LEGEND_HEIGHT)
 
 interface Cell {
   date: Date
@@ -141,13 +154,13 @@ const tooltipStyle = computed(() => ({
   top: `${tooltip.value?.y}px`,
 }))
 
-const getTooltipText = (count: number) => 
+const getTooltipText = (count: number) =>
   count === 0 ? "没有提交记录" : `提交了 ${count} 次`
 
 const showTooltip = (e: MouseEvent, cell: Cell) => {
   const rect = (e.target as HTMLElement).getBoundingClientRect()
   const containerRect = containerRef.value?.getBoundingClientRect()
-  
+
   if (containerRect) {
     tooltip.value = {
       x: rect.left - containerRect.left + rect.width / 2,

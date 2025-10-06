@@ -31,7 +31,9 @@ ChartJS.register(
 const aiStore = useAIStore()
 
 const show = computed(() => {
-  return Object.values(aiStore.detailsData.difficulty).reduce((a, b) => a + b, 0) > 0
+  return (
+    Object.values(aiStore.detailsData.difficulty).reduce((a, b) => a + b, 0) > 0
+  )
 })
 
 const data = computed(() => {

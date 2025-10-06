@@ -195,54 +195,52 @@ function rowProps(row: ProblemFiltered) {
 
 <template>
   <n-flex vertical size="large">
-    <n-card embedded>
-      <n-flex justify="space-between">
-        <n-space>
-          <n-form :show-feedback="false" inline label-placement="left">
-            <n-form-item label="难度">
-              <n-select
-                style="width: 120px"
-                v-model:value="query.difficulty"
-                :options="difficultyOptions"
-              />
-            </n-form-item>
-            <n-form-item label="出题者">
-              <AuthorSelect v-model:value="query.author" />
-            </n-form-item>
-          </n-form>
-          <n-form :show-feedback="false" inline label-placement="left">
-            <n-form-item>
-              <n-input
-                clearable
-                style="width: 200px"
-                v-model:value="query.keyword"
-                placeholder="编号或者标题"
-              />
-            </n-form-item>
-            <n-form-item>
-              <n-button @click="clearQuery" quaternary>重置</n-button>
-            </n-form-item>
-            <!-- <n-form-item>
+    <n-flex justify="space-between">
+      <n-space>
+        <n-form :show-feedback="false" inline label-placement="left">
+          <n-form-item label="难度">
+            <n-select
+              style="width: 120px"
+              v-model:value="query.difficulty"
+              :options="difficultyOptions"
+            />
+          </n-form-item>
+          <n-form-item label="出题者">
+            <AuthorSelect v-model:value="query.author" />
+          </n-form-item>
+        </n-form>
+        <n-form :show-feedback="false" inline label-placement="left">
+          <n-form-item>
+            <n-input
+              clearable
+              style="width: 200px"
+              v-model:value="query.keyword"
+              placeholder="编号或者标题"
+            />
+          </n-form-item>
+          <n-form-item>
+            <n-button @click="clearQuery" quaternary>重置</n-button>
+          </n-form-item>
+          <!-- <n-form-item>
               <n-button @click="getRandom" quaternary>随机</n-button>
             </n-form-item> -->
-            <n-form-item>
-              <n-button
-                @click="toggleShowTag()"
-                quaternary
-                icon-placement="right"
-              >
-                <template #icon>
-                  <Icon v-if="showTag" icon="ph:caret-down"></Icon>
-                  <Icon v-else icon="ph:caret-up"></Icon>
-                </template>
-                标签
-              </n-button>
-            </n-form-item>
-          </n-form>
-        </n-space>
-        <Hitokoto v-if="isDesktop" />
-      </n-flex>
-    </n-card>
+          <n-form-item>
+            <n-button
+              @click="toggleShowTag()"
+              quaternary
+              icon-placement="right"
+            >
+              <template #icon>
+                <Icon v-if="showTag" icon="ph:caret-down"></Icon>
+                <Icon v-else icon="ph:caret-up"></Icon>
+              </template>
+              标签
+            </n-button>
+          </n-form-item>
+        </n-form>
+      </n-space>
+      <Hitokoto v-if="isDesktop" />
+    </n-flex>
     <n-collapse-transition :show="showTag">
       <n-flex>
         <n-tag

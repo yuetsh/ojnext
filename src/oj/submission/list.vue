@@ -240,84 +240,87 @@ const columns = computed(() => {
 </script>
 <template>
   <n-flex vertical size="large">
-    <n-card embedded>
-      <n-space>
-        <n-form :show-feedback="false" inline label-placement="left">
-          <n-form-item v-if="isDesktop && userStore.isAuthed" label="只看自己">
-            <n-switch
-              v-model:value="query.myself"
-              checked-value="1"
-              unchecked-value="0"
-            />
-          </n-form-item>
-          <n-form-item label="状态">
-            <n-select
-              class="select"
-              v-model:value="query.result"
-              :options="resultOptions"
-            />
-          </n-form-item>
-          <n-form-item label="语言" v-if="route.name !== 'contest submissions'">
-            <n-select
-              class="select"
-              v-model:value="query.language"
-              :options="languageOptions"
-            />
-          </n-form-item>
-        </n-form>
-        <n-form :show-feedback="false" inline label-placement="left">
-          <n-form-item>
-            <n-input
-              class="input"
-              clearable
-              v-model:value="query.username"
-              placeholder="用户"
-            />
-          </n-form-item>
-          <n-form-item>
-            <n-input
-              class="input"
-              clearable
-              v-model:value="query.problem"
-              placeholder="题号"
-            />
-          </n-form-item>
-        </n-form>
-        <n-form :show-feedback="false" inline label-placement="left">
-          <n-form-item v-if="isMobile && userStore.isAuthed" label="只看自己">
-            <n-switch
-              v-model:value="query.myself"
-              checked-value="1"
-              unchecked-value="0"
-            />
-          </n-form-item>
-          <n-form-item>
-            <n-button @click="search(query.username, query.problem)">
-              搜索
-            </n-button>
-          </n-form-item>
-          <n-form-item>
-            <n-button @click="clear" quaternary>重置</n-button>
-          </n-form-item>
-          <n-form-item
-            v-if="userStore.isSuperAdmin && route.name === 'submissions'"
-          >
-            <IconButton
-              icon="streamline-emojis:bar-chart"
-              tip="数据统计"
-              @click="toggleStatisticPanel(true)"
-            />
-          </n-form-item>
-        </n-form>
-        <n-form :show-feedback="false" inline label-placement="left">
-          <n-form-item v-if="todayCount > 0">
-            <component :is="isDesktop ? NH2 : NText" class="todayCount">
-              <n-gradient-text>今日提交数：{{ todayCount }}</n-gradient-text>
-            </component>
-          </n-form-item>
-        </n-form>
-      </n-space>
-    </n-card>
+    <n-space>
+      <n-form :show-feedback="false" inline label-placement="left">
+        <n-form-item v-if="isDesktop && userStore.isAuthed" label="只看自己">
+          <n-switch
+            v-model:value="query.myself"
+            checked-value="1"
+            unchecked-value="0"
+          />
+        </n-form-item>
+        <n-form-item label="状态">
+          <n-select
+            class="select"
+            v-model:value="query.result"
+            :options="resultOptions"
+          />
+        </n-form-item>
+        <n-form-item label="语言" v-if="route.name !== 'contest submissions'">
+          <n-select
+            class="select"
+            v-model:value="query.language"
+            :options="languageOptions"
+          />
+        </n-form-item>
+      </n-form>
+      <n-form :show-feedback="false" inline label-placement="left">
+        <n-form-item>
+          <n-input
+            class="input"
+            clearable
+            v-model:value="query.username"
+            placeholder="用户"
+          />
+        </n-form-item>
+        <n-form-item>
+          <n-input
+            class="input"
+            clearable
+            v-model:value="query.problem"
+            placeholder="题号"
+          />
+        </n-form-item>
+      </n-form>
+      <n-form :show-feedback="false" inline label-placement="left">
+        <n-form-item v-if="isMobile && userStore.isAuthed" label="只看自己">
+          <n-switch
+            v-model:value="query.myself"
+            checked-value="1"
+            unchecked-value="0"
+          />
+        </n-form-item>
+        <n-form-item>
+          <n-button @click="search(query.username, query.problem)">
+            搜索
+          </n-button>
+        </n-form-item>
+        <n-form-item>
+          <n-button @click="clear" quaternary>重置</n-button>
+        </n-form-item>
+        <n-form-item
+          v-if="userStore.isSuperAdmin && route.name === 'submissions'"
+        >
+          <IconButton
+            icon="streamline-emojis:bar-chart"
+            tip="数据统计"
+            @click="toggleStatisticPanel(true)"
+          />
+        </n-form-item>
+      </n-form>
+      <n-form
+        :show-feedback="false"
+        inline
+        label-placement="left"
+        v-if="todayCount > 0"
+      >
+        <n-form-item>
+          <component :is="isDesktop ? NH2 : NText" class="todayCount">
+            <n-gradient-text>今日提交数：{{ todayCount }}</n-gradient-text>
+          </component>
+        </n-form-item>
+      </n-form>
+    </n-space>
     <n-data-table :bordered="false" :columns="columns" :data="submissions" />
   </n-flex>
   <Pagination

@@ -130,42 +130,40 @@ function rowProps(row: Contest) {
 </script>
 <template>
   <n-flex vertical size="large">
-    <n-card embedded>
-      <n-space>
-        <n-form :show-feedback="false" label-placement="left" inline>
-          <n-form-item label="比赛状态">
-            <n-select
-              style="width: 120px"
-              :options="options"
-              v-model:value="query.status"
-            />
-          </n-form-item>
-          <n-form-item label="标签">
-            <n-select
-              style="width: 120px"
-              :options="tags"
-              v-model:value="query.tag"
-            />
-          </n-form-item>
-        </n-form>
-        <n-form :show-feedback="false" label-placement="left" inline>
-          <n-form-item>
-            <n-input
-              style="width: 200px"
-              clearable
-              v-model:value="query.keyword"
-              placeholder="比赛标题"
-            />
-          </n-form-item>
-          <n-form-item>
-            <n-flex>
-              <n-button @click="search(query.keyword)">搜索</n-button>
-              <n-button @click="clear" quaternary>重置</n-button>
-            </n-flex>
-          </n-form-item>
-        </n-form>
-      </n-space>
-    </n-card>
+    <n-space>
+      <n-form :show-feedback="false" label-placement="left" inline>
+        <n-form-item label="比赛状态">
+          <n-select
+            style="width: 120px"
+            :options="options"
+            v-model:value="query.status"
+          />
+        </n-form-item>
+        <n-form-item label="标签">
+          <n-select
+            style="width: 120px"
+            :options="tags"
+            v-model:value="query.tag"
+          />
+        </n-form-item>
+      </n-form>
+      <n-form :show-feedback="false" label-placement="left" inline>
+        <n-form-item>
+          <n-input
+            style="width: 180px"
+            clearable
+            v-model:value="query.keyword"
+            placeholder="比赛标题"
+          />
+        </n-form-item>
+        <n-form-item>
+          <n-flex :wrap="false">
+            <n-button @click="search(query.keyword)">搜索</n-button>
+            <n-button @click="clear" quaternary>重置</n-button>
+          </n-flex>
+        </n-form-item>
+      </n-form>
+    </n-space>
     <n-data-table
       :bordered="false"
       :columns="columns"

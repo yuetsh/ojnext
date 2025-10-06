@@ -138,7 +138,6 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
     },
   }
 })
-
 </script>
 <style scoped>
 .chart {
