@@ -1,5 +1,10 @@
 <template>
   <n-card title="过去一年的提交热力图" size="small">
+    <template #header-extra>
+      <n-text depth="3" style="font-size: 12px">
+        激励持续学习
+      </n-text>
+    </template>
     <n-spin :show="aiStore.loading.heatmap">
       <div class="heatmap-container" ref="containerRef">
         <svg
@@ -41,18 +46,6 @@
           </g>
         </svg>
 
-        <div class="legend">
-          <span>少</span>
-          <div class="legend-colors">
-            <div
-              v-for="(color, i) in COLORS"
-              :key="i"
-              :style="{ backgroundColor: color }"
-            />
-          </div>
-          <span>多</span>
-        </div>
-
         <div v-if="tooltip" class="tooltip" :style="tooltipStyle">
           <div class="tooltip-date">{{ tooltip.date }}</div>
           <div class="tooltip-count" :class="{ active: tooltip.count > 0 }">
@@ -77,7 +70,6 @@ const CELL_TOTAL = CELL_SIZE + CELL_GAP
 const DAY_WIDTH = 20
 const MONTH_HEIGHT = 20
 const RIGHT_PADDING = 5
-const LEGEND_HEIGHT = 20
 const COLORS = ["#ebedf0", "#c6e48b", "#7bc96f", "#239a3b", "#196127"]
 const WEEK_DAYS = ["", "一", "", "三", "", "五", ""]
 
@@ -129,7 +121,7 @@ const svgWidth = computed(
     DAY_WIDTH + Math.ceil(cells.value.length / 7) * CELL_TOTAL + RIGHT_PADDING,
 )
 
-const svgHeight = computed(() => MONTH_HEIGHT + 7 * CELL_TOTAL + LEGEND_HEIGHT)
+const svgHeight = computed(() => MONTH_HEIGHT + 7 * CELL_TOTAL)
 
 interface Cell {
   date: Date
@@ -206,28 +198,6 @@ const hideTooltip = () => {
   stroke: rgba(0, 0, 0, 0.3);
   stroke-width: 1.5;
   filter: brightness(0.9);
-}
-
-.legend {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 4px;
-  margin-top: 10px;
-  font-size: 12px;
-  opacity: 0.7;
-}
-
-.legend-colors {
-  display: flex;
-  gap: 3px;
-}
-
-.legend-colors > div {
-  width: 12px;
-  height: 12px;
-  border-radius: 2px;
-  border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .tooltip {

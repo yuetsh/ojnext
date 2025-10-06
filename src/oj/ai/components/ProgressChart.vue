@@ -1,5 +1,10 @@
 <template>
   <n-card :title="title" size="small" v-if="show">
+    <template #header-extra>
+      <n-text depth="3" style="font-size: 12px">
+        追踪学习成长轨迹
+      </n-text>
+    </template>
     <div class="chart">
       <Chart type="line" :data="data" :options="options" />
     </div>
@@ -23,7 +28,6 @@ import {
 import { useAIStore } from "oj/store/ai"
 import { parseTime } from "utils/functions"
 import type { Grade } from "utils/types"
-import { DURATION_OPTIONS } from "utils/constants"
 
 // 注册折线图所需的 Chart.js 组件
 ChartJS.register(
@@ -49,49 +53,54 @@ const gradeColors: Record<Grade, string> = {
 }
 
 const title = computed(() => {
-  const option = DURATION_OPTIONS.find((opt) => opt.value === aiStore.duration)
-  return option ? `${option.label}的进步曲线` : "进步曲线"
+  if (aiStore.duration === "months:2") {
+    return "过去两个月的进步曲线"
+  } else if (aiStore.duration === "months:6") {
+    return "过去半年的进步曲线"
+  } else if (aiStore.duration === "years:1") {
+    return "过去一年的进步曲线"
+  } else {
+    return "过去四周的进步曲线"
+  }
 })
 
 // 判断是否有数据
 const show = computed(() => {
-  return aiStore.detailsData.solved.length > 0
-})
-
-// 按时间排序的题目列表
-const sortedProblems = computed(() => {
-  return [...aiStore.detailsData.solved].sort(
-    (a, b) => new Date(a.ac_time).getTime() - new Date(b.ac_time).getTime(),
-  )
+  return aiStore.durationData.length > 0
 })
 
 // 计算累计题目数量和等级趋势
 const progressData = computed(() => {
-  const problems = sortedProblems.value
   let cumulativeCount = 0
-  const gradeValues: { [key: string]: number } = { C: 0, B: 0, A: 0, S: 0 }
+  let totalWeightedGrade = 0 // 累计加权等级
+  let totalProblems = 0 // 累计题目总数
 
-  return problems.map((problem) => {
-    cumulativeCount++
-    const grade = problem.grade || "C"
-    gradeValues[grade]++
+  return aiStore.durationData.map((duration) => {
+    const problemCount = duration.problem_count || 0
+    cumulativeCount += problemCount
 
-    // 计算平均等级（加权平均）
-    let totalWeight = 0
-    let weightedSum = 0
-    for (const [g, count] of Object.entries(gradeValues)) {
-      totalWeight += count
-      weightedSum += gradeOrder.indexOf(g as Grade) * count
-    }
-    const avgGrade = totalWeight > 0 ? weightedSum / totalWeight : 0
+    // 计算本期等级的权重值
+    const currentGradeValue = gradeOrder.indexOf(duration.grade || "C")
+    
+    // 累加加权等级
+    totalWeightedGrade += currentGradeValue * problemCount
+    totalProblems += problemCount
+
+    // 计算累计平均等级
+    const avgGradeValue = totalProblems > 0 ? totalWeightedGrade / totalProblems : 0
 
     return {
-      time: parseTime(problem.ac_time, "M/D"),
-      fullTime: parseTime(problem.ac_time, "YYYY-MM-DD HH:mm:ss"),
+      label: [
+        parseTime(duration.start, "M月D日"),
+        parseTime(duration.end, "M月D日"),
+      ].join("～"),
+      start: parseTime(duration.start, "YYYY-MM-DD"),
+      end: parseTime(duration.end, "YYYY-MM-DD"),
       count: cumulativeCount,
-      grade: problem.grade || "C",
-      avgGrade: avgGrade,
-      problem: problem.problem,
+      grade: duration.grade || "C",
+      gradeValue: currentGradeValue,
+      avgGradeValue: avgGradeValue, // 累计平均等级
+      problemCount: problemCount,
     }
   })
 })
@@ -101,7 +110,7 @@ const data = computed<ChartData<"line">>(() => {
   const progress = progressData.value
 
   return {
-    labels: progress.map((p) => p.time),
+    labels: progress.map((p) => p.label),
     datasets: [
       {
         type: "line",
@@ -109,27 +118,30 @@ const data = computed<ChartData<"line">>(() => {
         data: progress.map((p) => p.count),
         borderColor: "#4CAF50",
         backgroundColor: "rgba(76, 175, 80, 0.1)",
-        tension: 0.3,
+        tension: 0.4,
         yAxisID: "y",
         fill: true,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        borderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        borderWidth: 2.5,
+        pointBackgroundColor: "#4CAF50",
+        pointBorderColor: "#fff",
+        pointBorderWidth: 2,
       },
       {
         type: "line",
-        label: "平均等级",
-        data: progress.map((p) => p.avgGrade),
+        label: "累计平均等级",
+        data: progress.map((p) => p.avgGradeValue),
         borderColor: "#FF9800",
         backgroundColor: "rgba(255, 152, 0, 0.1)",
-        tension: 0.3,
+        tension: 0.4,
         yAxisID: "y1",
         fill: false,
-        pointRadius: 4,
-        pointHoverRadius: 6,
-        borderWidth: 2,
+        pointRadius: 5,
+        pointHoverRadius: 7,
+        borderWidth: 2.5,
         pointBackgroundColor: progress.map((p) => gradeColors[p.grade]),
-        pointBorderColor: progress.map((p) => gradeColors[p.grade]),
+        pointBorderColor: "#fff",
         pointBorderWidth: 2,
       },
     ],
@@ -176,14 +188,14 @@ const options = computed<ChartOptions<"line">>(() => {
         max: gradeOrder.length - 0.5,
         title: {
           display: true,
-          text: "平均等级",
+          text: "累计平均等级",
           font: {
             size: 14,
           },
         },
         ticks: {
           stepSize: 1,
-          callback: (v) => {
+          callback: (v: string | number) => {
             const idx = Math.round(Number(v))
             return gradeOrder[idx] || ""
           },
@@ -198,41 +210,51 @@ const options = computed<ChartOptions<"line">>(() => {
         display: false,
       },
       tooltip: {
+        backgroundColor: "rgba(0, 0, 0, 0.8)",
+        padding: 12,
         callbacks: {
           title: (items: TooltipItem<"line">[]) => {
             if (items.length > 0) {
               const idx = items[0].dataIndex
-              return progressData.value[idx]?.fullTime || ""
+              const progress = progressData.value[idx]
+              return progress ? `${progress.start} ~ ${progress.end}` : ""
             }
             return ""
           },
           label: (ctx: TooltipItem<"line">) => {
             const dsLabel = ctx.dataset.label || ""
             const idx = ctx.dataIndex
+            const progress = progressData.value[idx]
 
-            if ((ctx.dataset as any).yAxisID === "y1") {
-              const progress = progressData.value[idx]
-              if (progress) {
-                const avgIdx = Math.round(Number(ctx.parsed.y))
-                return [
-                  `${dsLabel}: ${gradeOrder[avgIdx] || ""}`,
-                  `当前题目等级: ${progress.grade}`,
-                  `题目: ${progress.problem.title}`,
-                ]
-              }
-            } else {
+            if (!progress) {
               return `${dsLabel}: ${ctx.formattedValue}`
             }
-            return `${dsLabel}: ${ctx.formattedValue}`
+
+            if ((ctx.dataset as any).yAxisID === "y1") {
+              // 累计平均等级轴
+              const avgIdx = Math.round(Number(ctx.parsed.y))
+              return [
+                `${dsLabel}: ${gradeOrder[avgIdx] || ""}`,
+                `本期等级: ${progress.grade}`,
+                `本期完成: ${progress.problemCount} 题`,
+              ]
+            } else {
+              // 累计题目数轴
+              return [
+                `${dsLabel}: ${ctx.formattedValue} 题`,
+                `本期完成: ${progress.problemCount} 题`,
+              ]
+            }
           },
         },
       },
       legend: {
         display: true,
-        position: "top",
+        position: "bottom" as const,
         labels: {
-          usePointStyle: true,
-          padding: 15,
+          boxWidth: 12,
+          boxHeight: 12,
+          padding: 8,
           font: {
             size: 12,
           },

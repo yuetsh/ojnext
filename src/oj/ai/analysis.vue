@@ -12,15 +12,18 @@
             />
           </n-flex>
           <Overview />
-          <n-grid :cols="2" :x-gap="20">
-            <n-gi :span="1">
-              <TagsChart />
+          <n-grid :cols="2" :x-gap="20" :y-gap="20">
+            <n-gi :span="isDesktop ? 1 : 2">
+              <DifficultyGradeChart />
             </n-gi>
-            <n-gi :span="1">
-              <n-flex vertical :size="20">
-                <DifficultyChart />
-                <GradeChart />
-              </n-flex>
+            <n-gi :span="isDesktop ? 1 : 2">
+              <TagsRadarChart />
+            </n-gi>
+            <n-gi :span="isDesktop ? 1 : 2">
+              <RankDistributionChart />
+            </n-gi>
+            <n-gi :span="isDesktop ? 1 : 2">
+              <TimeActivityHeatmap />
             </n-gi>
           </n-grid>
           <SolvedTable />
@@ -30,6 +33,7 @@
         <n-flex vertical size="large">
           <Heatmap />
           <ProgressChart />
+          <EfficiencyChart />
           <DurationChart />
           <AI v-if="aiStore.detailsData.solved.length >= 10" />
         </n-flex>
@@ -48,13 +52,15 @@
 <script setup lang="ts">
 import { isDesktop } from "shared/composables/breakpoints"
 import { formatISO, sub, type Duration } from "date-fns"
-import TagsChart from "./components/TagsChart.vue"
-import DifficultyChart from "./components/DifficultyChart.vue"
-import GradeChart from "./components/GradeChart.vue"
+import TagsRadarChart from "./components/TagsRadarChart.vue"
+import DifficultyGradeChart from "./components/DifficultyGradeChart.vue"
+import TimeActivityHeatmap from "./components/TimeActivityHeatmap.vue"
+import RankDistributionChart from "./components/RankDistributionChart.vue"
 import Overview from "./components/Overview.vue"
 import Heatmap from "./components/Heatmap.vue"
 import ProgressChart from "./components/ProgressChart.vue"
 import DurationChart from "./components/DurationChart.vue"
+import EfficiencyChart from "./components/EfficiencyChart.vue"
 import AI from "./components/AI.vue"
 import SolvedTable from "./components/SolvedTable.vue"
 import { useAIStore } from "../store/ai"

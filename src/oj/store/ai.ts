@@ -50,7 +50,6 @@ export const useAIStore = defineStore("ai", () => {
     loading.heatmap = false
   }
 
-  // 统一获取分析数据（details + duration）
   async function fetchAnalysisData(
     start: string,
     end: string,

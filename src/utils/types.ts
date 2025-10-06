@@ -433,6 +433,7 @@ export interface SolvedProblem {
   rank: number
   ac_count: number
   grade: Grade
+  difficulty: string
 }
 
 export interface DetailsData {

@@ -1,5 +1,10 @@
 <template>
   <n-card :title="title" size="small">
+    <template #header-extra>
+      <n-text depth="3" style="font-size: 12px">
+        全面评估学习情况
+      </n-text>
+    </template>
     <div class="chart">
       <Chart type="bar" :data="data" :options="options" />
     </div>
@@ -69,15 +74,17 @@ const data = computed<ChartData<"bar" | "line">>(() => {
     datasets: [
       {
         type: "bar",
-        label: "完成题目数量",
+        label: "完成题目数",
         data: aiStore.durationData.map((duration) => duration.problem_count),
         yAxisID: "y",
+        order: 2,
       },
       {
         type: "bar",
         label: "总提交次数",
         data: aiStore.durationData.map((duration) => duration.submission_count),
         yAxisID: "y",
+        order: 2,
       },
       {
         type: "line",
@@ -88,6 +95,10 @@ const data = computed<ChartData<"bar" | "line">>(() => {
         tension: 0.4,
         yAxisID: "y1",
         barThickness: 10,
+        order: 1,
+        borderWidth: 2,
+        pointRadius: 4,
+        pointHoverRadius: 6,
       },
     ],
   }
@@ -100,16 +111,26 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
     },
     maintainAspectRatio: false,
     scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+      },
       y: {
         ticks: {
           stepSize: 1,
         },
+        title: {
+          display: true,
+          text: "数量",
+        },
+        beginAtZero: true,
       },
       y1: {
         type: "linear",
         position: "right",
-        min: -1,
-        max: gradeOrder.length,
+        min: -0.5,
+        max: gradeOrder.length - 0.5,
         ticks: {
           stepSize: 1,
           callback: (v) => {
@@ -117,9 +138,27 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
             return gradeOrder[idx] || ""
           },
         },
+        title: {
+          display: true,
+          text: "等级",
+        },
+        grid: {
+          display: false,
+        },
       },
     },
     plugins: {
+      legend: {
+        display: true,
+        position: "bottom" as const,
+        labels: {
+          boxWidth: 12,
+          padding: 8,
+          font: {
+            size: 11,
+          },
+        },
+      },
       title: {
         display: false,
       },
@@ -132,6 +171,16 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
               return `${dsLabel}: ${gradeOrder[idx] || ""}`
             }
             return `${dsLabel}: ${ctx.formattedValue}`
+          },
+          footer: (items: TooltipItem<"bar">[]) => {
+            const barItems = items.filter(item => (item.dataset as any).yAxisID === "y")
+            if (barItems.length >= 2) {
+              const problemCount = barItems.find(item => item.dataset.label === "完成题目数")?.parsed.y || 0
+              const submissionCount = barItems.find(item => item.dataset.label === "总提交次数")?.parsed.y || 0
+              const efficiency = submissionCount > 0 ? ((problemCount / submissionCount) * 100).toFixed(1) : "0"
+              return `AC率: ${efficiency}%`
+            }
+            return ""
           },
         },
       },
