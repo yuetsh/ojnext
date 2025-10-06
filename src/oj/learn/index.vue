@@ -171,17 +171,3 @@ watch(
   { immediate: true },
 )
 </script>
-
-<style scoped>
-:deep(.md-editor-preview .md-editor-code .md-editor-code-head) {
-  z-index: 100;
-}
-
-:deep(.md-editor-preview h1) {
-  font-size: 1.6em;
-}
-
-:deep(.md-editor-preview h2) {
-  font-size: 1.4em;
-}
-</style>

@@ -23,6 +23,7 @@ import {
 import { useAIStore } from "oj/store/ai"
 import { parseTime } from "utils/functions"
 import type { Grade } from "utils/types"
+import { DURATION_OPTIONS } from "utils/constants"
 
 // 注册折线图所需的 Chart.js 组件
 ChartJS.register(
@@ -48,18 +49,8 @@ const gradeColors: Record<Grade, string> = {
 }
 
 const title = computed(() => {
-  const durationMap: Record<string, string> = {
-    "hours:1": "一节课内",
-    "hours:2": "两节课内",
-    "days:1": "一天内",
-    "weeks:1": "一周内",
-    "months:1": "一个月内",
-    "months:2": "两个月内",
-    "months:6": "半年内",
-    "years:1": "一年内",
-  }
-  const label = durationMap[aiStore.duration] || ""
-  return label ? `${label}做题的进步曲线` : "做题的进步曲线"
+  const option = DURATION_OPTIONS.find((opt) => opt.value === aiStore.duration)
+  return option ? `${option.label}的进步曲线` : "进步曲线"
 })
 
 // 判断是否有数据

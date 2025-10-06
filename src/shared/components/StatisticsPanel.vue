@@ -70,6 +70,7 @@
 <script setup lang="ts">
 import { formatISO, sub, type Duration } from "date-fns"
 import { getSubmissionStatistics } from "oj/api"
+import { DURATION_OPTIONS } from "utils/constants"
 
 interface Props {
   problem: string
@@ -82,13 +83,7 @@ const options: SelectOption[] = [
   { label: "10分钟内", value: "minutes:10" },
   { label: "20分钟内", value: "minutes:20" },
   { label: "30分钟内", value: "minutes:30" },
-  { label: "本节课内", value: "hours:1" },
-  { label: "两小时内", value: "hours:2" },
-  { label: "一天内", value: "days:1" },
-  { label: "一周内", value: "weeks:1" },
-  { label: "一个月内", value: "months:1" },
-  { label: "一年内", value: "years:1" },
-]
+].concat(DURATION_OPTIONS)
 
 const columns: DataTableColumn[] = [
   { title: "用户", key: "username" },

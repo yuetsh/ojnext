@@ -232,3 +232,15 @@ export enum ChartType {
   Rank,
   Activity,
 }
+
+// 时间范围配置
+export const DURATION_OPTIONS = [
+  { label: "本节课内", value: "hours:1" },
+  { label: "两节课内", value: "hours:2" },
+  { label: "一天内", value: "days:1" },
+  { label: "一周内", value: "weeks:1" },
+  { label: "一个月内", value: "months:1" },
+  { label: "两个月内", value: "months:2" },
+  { label: "半年内", value: "months:6" },
+  { label: "一年内", value: "years:1" },
+] as const

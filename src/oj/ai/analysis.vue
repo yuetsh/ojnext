@@ -53,19 +53,11 @@ import DurationChart from "./components/DurationChart.vue"
 import AI from "./components/AI.vue"
 import SolvedTable from "./components/SolvedTable.vue"
 import { useAIStore } from "../store/ai"
+import { DURATION_OPTIONS } from "utils/constants"
 
 const aiStore = useAIStore()
 
-const options: SelectOption[] = [
-  { label: "一节课内", value: "hours:1" },
-  { label: "两节课内", value: "hours:2" },
-  { label: "一天内", value: "days:1" },
-  { label: "一周内", value: "weeks:1" },
-  { label: "一个月内", value: "months:1" },
-  { label: "两个月内", value: "months:2" },
-  { label: "半年内", value: "months:6" },
-  { label: "一年内", value: "years:1" },
-]
+const options = [...DURATION_OPTIONS]
 
 const subOptions = computed<Duration>(() => {
   let dur = options.find((it) => it.value === aiStore.duration) ?? options[0]

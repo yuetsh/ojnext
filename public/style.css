@@ -1,4 +1,16 @@
 @font-face {
-    font-family: "Monaco";
-    src: url(/Monaco.ttf);
+  font-family: "Monaco";
+  src: url(/Monaco.ttf);
+}
+
+.md-editor-preview .md-editor-code .md-editor-code-head {
+  z-index: 100 !important;
+}
+
+.md-editor-preview h1 {
+  font-size: 1.6rem !important;
+}
+
+.md-editor-preview h2 {
+  font-size: 1.4rem !important;
 }
