@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { h } from "vue"
 import { RouterLink } from "vue-router"
 import { STORAGE_KEY } from "utils/constants"
 import storage from "utils/storage"
 import { useUserStore } from "../store/user"
+import type { MenuOption } from "naive-ui"
 
 const route = useRoute()
 const router = useRouter()
@@ -94,7 +96,20 @@ const options = computed<MenuOption[]>(() => {
   return baseOptions
 })
 
-const active = computed(() => (route.name as string) || "home")
+// 根据路径计算当前激活的菜单项
+const active = computed(() => {
+  const path = route.path
+  if (path === "/") return "return to OJ"
+  if (path === "/admin") return "admin home"
+  if (path.startsWith("/admin/config")) return "admin config"
+  if (path.startsWith("/admin/problem")) return "admin problem list"
+  if (path.startsWith("/admin/contest")) return "admin contest list"
+  if (path.startsWith("/admin/user")) return "admin user list"
+  if (path.startsWith("/admin/comment")) return "admin comment list"
+  if (path.startsWith("/admin/announcement")) return "admin announcement list"
+  if (path.startsWith("/admin/tutorial")) return "admin tutorial list"
+  return route.name as string
+})
 
 onMounted(async () => {
   if (!storage.get(STORAGE_KEY.AUTHED)) {
@@ -110,13 +125,24 @@ onMounted(async () => {
 
 <template>
   <n-layout has-sider position="absolute">
-    <n-layout-sider width="100" bordered :native-scrollbar="false">
-      <n-menu :options="options" :value="active" />
+    <!-- 侧边栏 -->
+    <n-layout-sider
+      bordered
+      :width="100"
+      :native-scrollbar="false"
+    >
+      <!-- 菜单 -->
+      <n-menu
+        :options="options"
+        :value="active"
+      />
     </n-layout-sider>
-    <n-layout-content content-style="padding: 16px; min-width: 600px">
-      <router-view></router-view>
-    </n-layout-content>
+
+    <!-- 主内容区域 -->
+    <n-layout>
+      <n-layout-content content-style="padding: 20px">
+        <router-view></router-view>
+      </n-layout-content>
+    </n-layout>
   </n-layout>
 </template>
-
-<style scoped></style>
