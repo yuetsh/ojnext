@@ -1,43 +1,270 @@
 <template>
-  <div class="chart">
-    <n-h1 class="title">过去一年的提交次数热力图</n-h1>
-    <n-heatmap
-      :loading="!data.length"
-      :color-theme="getRandomColorTheme()"
-      size="large"
-      :data="data"
-      :tooltip="{ placement: 'top' }"
-    >
-      <template #tooltip="{ timestamp, value }">
-        <div>{{ new Date(timestamp).toLocaleDateString() }}</div>
-        <div>提交次数: {{ value }}</div>
-      </template>
-    </n-heatmap>
-  </div>
+  <n-card title="过去一年的提交热力图" size="small">
+    <n-spin :show="aiStore.loading.heatmap">
+      <div class="heatmap-container" ref="containerRef">
+        <svg
+          :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
+          preserveAspectRatio="xMinYMin meet"
+          class="heatmap-svg"
+        >
+          <g v-for="label in monthLabels" :key="`${label.text}-${label.x}`">
+            <text :x="label.x" :y="10" class="label" font-size="10">
+              {{ label.text }}
+            </text>
+          </g>
+
+          <g v-for="(day, i) in WEEK_DAYS" :key="i">
+            <text :x="0" :y="MONTH_HEIGHT + i * CELL_TOTAL + 8" class="label" font-size="9">
+              {{ day }}
+            </text>
+          </g>
+
+          <g :transform="`translate(${DAY_WIDTH}, ${MONTH_HEIGHT})`">
+            <rect
+              v-for="(cell, i) in cells"
+              :key="i"
+              :x="cell.x"
+              :y="cell.y"
+              :width="CELL_SIZE"
+              :height="CELL_SIZE"
+              :fill="cell.color"
+              class="cell"
+              rx="2"
+              @mouseenter="(e) => showTooltip(e, cell)"
+              @mouseleave="hideTooltip"
+            />
+          </g>
+        </svg>
+
+        <div class="legend">
+          <span>少</span>
+          <div class="legend-colors">
+            <div v-for="(color, i) in COLORS" :key="i" :style="{ backgroundColor: color }" />
+          </div>
+          <span>多</span>
+        </div>
+
+        <div v-if="tooltip" class="tooltip" :style="tooltipStyle">
+          <div class="tooltip-date">{{ tooltip.date }}</div>
+          <div class="tooltip-count" :class="{ active: tooltip.count > 0 }">
+            {{ tooltip.text }}
+          </div>
+        </div>
+      </div>
+    </n-spin>
+  </n-card>
 </template>
+
 <script setup lang="ts">
-import { type HeatmapData } from "naive-ui"
-import { getAIHeatmapData } from "oj/api"
+import { useAIStore } from "oj/store/ai"
+import { parseTime } from "utils/functions"
 
-const data = ref<HeatmapData>([])
+const aiStore = useAIStore()
+const containerRef = ref<HTMLElement>()
 
-function getRandomColorTheme() {
-  const themes = ["green", "blue", "orange", "purple", "red"] as const
-  return themes[Math.floor(Math.random() * themes.length)]
-}
+const CELL_SIZE = 12
+const CELL_GAP = 3
+const CELL_TOTAL = CELL_SIZE + CELL_GAP
+const DAY_WIDTH = 20
+const MONTH_HEIGHT = 20
+const RIGHT_PADDING = 5
+const LEGEND_HEIGHT = 20
+const COLORS = ["#ebedf0", "#c6e48b", "#7bc96f", "#239a3b", "#196127"]
+const WEEK_DAYS = ["", "一", "", "三", "", "五", ""]
 
-onMounted(async () => {
-  const res = await getAIHeatmapData()
-  data.value = res.data
+const getColor = (count: number) => 
+  count === 0 ? COLORS[0] :
+  count <= 2 ? COLORS[1] :
+  count <= 4 ? COLORS[2] :
+  count <= 7 ? COLORS[3] : COLORS[4]
+
+const cells = computed(() => 
+  aiStore.heatmapData.map((item, i) => ({
+    date: new Date(item.timestamp),
+    count: item.value,
+    color: getColor(item.value),
+    week: Math.floor(i / 7),
+    day: i % 7,
+    x: Math.floor(i / 7) * CELL_TOTAL,
+    y: (i % 7) * CELL_TOTAL,
+  }))
+)
+
+const monthLabels = computed(() => {
+  const labels: { text: string; x: number }[] = []
+  let lastMonth = -1
+  
+  cells.value.forEach((cell, i) => {
+    const month = cell.date.getMonth()
+    const isWeekStart = cell.date.getDay() === 0 || i === 0
+    
+    if (month !== lastMonth && (isWeekStart || cell.date.getDay() <= 3)) {
+      labels.push({
+        text: `${month + 1}月`,
+        x: DAY_WIDTH + cell.week * CELL_TOTAL,
+      })
+      lastMonth = month
+    }
+  })
+  
+  return labels
 })
-</script>
-<style scoped>
-.chart {
-  margin: 0 auto;
+
+const svgWidth = computed(() => 
+  DAY_WIDTH + Math.ceil(cells.value.length / 7) * CELL_TOTAL + RIGHT_PADDING
+)
+
+const svgHeight = computed(() => 
+  MONTH_HEIGHT + 7 * CELL_TOTAL + LEGEND_HEIGHT
+)
+
+interface Cell {
+  date: Date
+  count: number
+  color: string
+  week: number
+  day: number
+  x: number
+  y: number
 }
-.title {
-  text-align: center;
-  font-size: 20px;
-  font-weight: bold;
+
+const tooltip = ref<{
+  x: number
+  y: number
+  date: string
+  text: string
+  count: number
+} | null>(null)
+
+const tooltipStyle = computed(() => ({
+  left: `${tooltip.value?.x}px`,
+  top: `${tooltip.value?.y}px`,
+}))
+
+const getTooltipText = (count: number) => 
+  count === 0 ? "没有提交记录" : `提交了 ${count} 次`
+
+const showTooltip = (e: MouseEvent, cell: Cell) => {
+  const rect = (e.target as HTMLElement).getBoundingClientRect()
+  const containerRect = containerRef.value?.getBoundingClientRect()
+  
+  if (containerRect) {
+    tooltip.value = {
+      x: rect.left - containerRect.left + rect.width / 2,
+      y: rect.top - containerRect.top - 10,
+      date: parseTime(cell.date, "YYYY年M月D日"),
+      text: getTooltipText(cell.count),
+      count: cell.count,
+    }
+  }
+}
+
+const hideTooltip = () => {
+  tooltip.value = null
+}
+</script>
+
+<style scoped>
+.heatmap-container {
+  width: 100%;
+  padding: 10px 0;
+  position: relative;
+}
+
+.heatmap-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.label {
+  fill: currentColor;
+  opacity: 0.7;
+}
+
+.cell {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  stroke: rgba(0, 0, 0, 0.05);
+  stroke-width: 0.5;
+}
+
+.cell:hover {
+  stroke: rgba(0, 0, 0, 0.3);
+  stroke-width: 1.5;
+  filter: brightness(0.9);
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  margin-top: 10px;
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+.legend-colors {
+  display: flex;
+  gap: 3px;
+}
+
+.legend-colors > div {
+  width: 12px;
+  height: 12px;
+  border-radius: 2px;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.tooltip {
+  position: absolute;
+  transform: translate(-50%, -100%);
+  background: rgba(0, 0, 0, 0.9);
+  color: white;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 12px;
+  line-height: 1.5;
+  pointer-events: none;
+  z-index: 1000;
+  white-space: nowrap;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  animation: fade-in 0.2s ease;
+}
+
+.tooltip::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 6px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.9);
+}
+
+.tooltip-date {
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+.tooltip-count {
+  opacity: 0.6;
+}
+
+.tooltip-count.active {
+  color: #7bc96f;
+  opacity: 0.9;
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 5px));
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -100%);
+  }
 }
 </style>

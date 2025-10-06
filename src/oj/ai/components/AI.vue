@@ -1,9 +1,11 @@
 <template>
-  <n-spin :show="aiStore.loading.ai">
-    <div class="container">
-      <MdPreview :model-value="aiStore.mdContent" />
-    </div>
-  </n-spin>
+  <n-card title="AI 智能分析" size="small">
+    <n-spin :show="aiStore.loading.ai">
+      <div class="container">
+        <MdPreview :model-value="aiStore.mdContent" />
+      </div>
+    </n-spin>
+  </n-card>
 </template>
 <script setup lang="ts">
 import { useAIStore } from "oj/store/ai"
@@ -12,9 +14,9 @@ import "md-editor-v3/lib/preview.css"
 
 const aiStore = useAIStore()
 watch(
-  () => [aiStore.loading.details, aiStore.loading.weekly],
-  (newVal) => {
-    if (newVal.every((val) => val === false)) {
+  () => aiStore.loading.fetching,
+  (isLoading) => {
+    if (!isLoading) {
       aiStore.fetchAIAnalysis()
     }
   },

@@ -1,5 +1,5 @@
 <template>
-  <n-card title="难度统计" size="small" v-if="show">
+  <n-card title="等级统计" size="small" v-if="show">
     <Bar :data="data" :options="options" />
   </n-card>
 </template>
@@ -15,6 +15,7 @@ import {
   Legend,
   Colors,
 } from "chart.js"
+import { Grade } from "utils/types"
 import { useAIStore } from "oj/store/ai"
 
 // 仅注册柱状图所需的 Chart.js 组件
@@ -30,17 +31,39 @@ ChartJS.register(
 
 const aiStore = useAIStore()
 
+const gradeOrder = ["S", "A", "B", "C"]
+
+const grades = computed(() =>
+  aiStore.detailsData.solved.map((item) => item.grade),
+)
+
+// 统计每个等级的题目数量
+const gradeCount = computed(() => {
+  const count: { [key: string]: number } = {
+    C: 0,
+    B: 0,
+    A: 0,
+    S: 0,
+  }
+  grades.value.forEach((grade) => {
+    if (grade && grade in count) {
+      count[grade]++
+    }
+  })
+  return count
+})
+
 const show = computed(() => {
-  return Object.values(aiStore.detailsData.difficulty).reduce((a, b) => a + b, 0) > 0
+  return grades.value.length > 0
 })
 
 const data = computed(() => {
   return {
-    labels: Object.keys(aiStore.detailsData.difficulty),
+    labels: gradeOrder,
     datasets: [
       {
-        data: Object.values(aiStore.detailsData.difficulty),
-        backgroundColor: ["#FF6384", "#36A2EB", "#FFCE56"],
+        data: gradeOrder.map((grade) => gradeCount.value[grade]),
+        backgroundColor: ["#FF6384", "#FFCE56", "#36A2EB", "#95F204"],
       },
     ],
   }

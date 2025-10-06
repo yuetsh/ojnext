@@ -1,7 +1,9 @@
 <template>
-  <div class="chart" v-if="show">
-    <Pie :data="data" :options="options" />
-  </div>
+  <n-card :title="title" size="small" v-if="show">
+    <div class="chart">
+      <Pie :data="data" :options="options" />
+    </div>
+  </n-card>
 </template>
 <script setup lang="ts">
 import { Pie } from "vue-chartjs"
@@ -13,24 +15,27 @@ import {
   Legend,
   Colors,
 } from "chart.js"
+import { useAIStore } from "oj/store/ai"
 
 // 仅注册饼图所需的 Chart.js 组件
 ChartJS.register(ArcElement, Title, Tooltip, Legend, Colors)
 
-const props = defineProps<{
-  tags: { [key: string]: number }
-}>()
+const aiStore = useAIStore()
 
 const show = computed(() => {
-  return Object.keys(props.tags).length > 0
+  return Object.keys(aiStore.detailsData.tags).length > 0
+})
+
+const title = computed(() => {
+  return `标签分布（前${Object.keys(aiStore.detailsData.tags).length}个）`
 })
 
 const data = computed(() => {
   return {
-    labels: Object.keys(props.tags),
+    labels: Object.keys(aiStore.detailsData.tags),
     datasets: [
       {
-        data: Object.values(props.tags),
+        data: Object.values(aiStore.detailsData.tags),
         backgroundColor: [
           "#FF6384",
           "#36A2EB",
@@ -49,15 +54,6 @@ const options = computed(() => {
       intersect: false,
     },
     maintainAspectRatio: false,
-    plugins: {
-      title: {
-        text: `题目的标签分布（前${Object.keys(props.tags).length}个）`,
-        display: true,
-        font: {
-          size: 20,
-        },
-      },
-    },
   }
 })
 </script>

@@ -126,16 +126,9 @@ onMounted(async () => {
 <template>
   <n-layout has-sider position="absolute">
     <!-- 侧边栏 -->
-    <n-layout-sider
-      bordered
-      :width="100"
-      :native-scrollbar="false"
-    >
+    <n-layout-sider bordered :width="100" :native-scrollbar="false">
       <!-- 菜单 -->
-      <n-menu
-        :options="options"
-        :value="active"
-      />
+      <n-menu :options="options" :value="active" />
     </n-layout-sider>
 
     <!-- 主内容区域 -->

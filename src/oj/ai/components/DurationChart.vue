@@ -1,9 +1,9 @@
 <template>
-  <n-spin :show="aiStore.loading.weekly">
+  <n-card :title="title" size="small">
     <div class="chart">
       <Chart type="bar" :data="data" :options="options" />
     </div>
-  </n-spin>
+  </n-card>
 </template>
 <script setup lang="ts">
 import type { ChartData, ChartOptions, TooltipItem } from "chart.js"
@@ -38,56 +38,52 @@ ChartJS.register(
   LineController,
 )
 
-const props = defineProps<{
-  end: string
-}>()
-
 const aiStore = useAIStore()
 
 const gradeOrder = ["C", "B", "A", "S"] as const
 
 const title = computed(() => {
   if (aiStore.duration === "months:2") {
-    return "过去两个月的每周综合情况一览图"
+    return "过去两个月的每周综合情况"
   } else if (aiStore.duration === "months:6") {
-    return "过去半年的每月综合情况一览图"
+    return "过去半年的每月综合情况"
   } else if (aiStore.duration === "years:1") {
-    return "过去一年的每月综合情况一览图"
+    return "过去一年的每月综合情况"
   } else {
-    return "过去四周的综合情况一览图"
+    return "过去四周的综合情况"
   }
 })
 
 const data = computed<ChartData<"bar" | "line">>(() => {
   return {
-    labels: aiStore.weeklyData.map((weekly) => {
+    labels: aiStore.durationData.map((duration) => {
       let prefix = "周"
-      if (weekly.unit === "months") {
+      if (duration.unit === "months") {
         prefix = "月"
       }
       return [
-        parseTime(weekly.start, "M月D日"),
-        parseTime(weekly.end, "M月D日"),
+        parseTime(duration.start, "M月D日"),
+        parseTime(duration.end, "M月D日"),
       ].join("～")
     }),
     datasets: [
       {
         type: "bar",
         label: "完成题目数量",
-        data: aiStore.weeklyData.map((weekly) => weekly.problem_count),
+        data: aiStore.durationData.map((duration) => duration.problem_count),
         yAxisID: "y",
       },
       {
         type: "bar",
         label: "总提交次数",
-        data: aiStore.weeklyData.map((weekly) => weekly.submission_count),
+        data: aiStore.durationData.map((duration) => duration.submission_count),
         yAxisID: "y",
       },
       {
         type: "line",
         label: "等级",
-        data: aiStore.weeklyData.map((weekly) =>
-          gradeOrder.indexOf(weekly.grade || "C"),
+        data: aiStore.durationData.map((duration) =>
+          gradeOrder.indexOf(duration.grade || "C"),
         ),
         tension: 0.4,
         yAxisID: "y1",
@@ -125,11 +121,7 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
     },
     plugins: {
       title: {
-        text: title.value,
-        display: true,
-        font: {
-          size: 20,
-        },
+        display: false,
       },
       tooltip: {
         callbacks: {
@@ -147,13 +139,6 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
   }
 })
 
-watch(
-  () => aiStore.duration,
-  () => {
-    aiStore.fetchWeeklyData(props.end, aiStore.duration)
-  },
-  { immediate: true },
-)
 </script>
 <style scoped>
 .chart {

@@ -1,11 +1,11 @@
-import { DetailsData, WeeklyData } from "utils/types"
+import { DetailsData, DurationData } from "utils/types"
 import { consumeJSONEventStream } from "utils/stream"
-import { getAIDetailData, getAIWeeklyData } from "../api"
+import { getAIDetailData, getAIDurationData, getAIHeatmapData } from "../api"
 import { getCSRFToken } from "utils/functions"
 
 export const useAIStore = defineStore("ai", () => {
   const duration = ref("months:6")
-  const weeklyData = ref<WeeklyData[]>([])
+  const durationData = ref<DurationData[]>([])
   const detailsData = reactive<DetailsData>({
     start: "",
     end: "",
@@ -16,17 +16,17 @@ export const useAIStore = defineStore("ai", () => {
     contest_count: 0,
     solved: [],
   })
+  const heatmapData = ref<{ timestamp: number; value: number }[]>([])
 
   const loading = reactive({
-    details: false,
-    weekly: false,
+    fetching: false, // 合并 details 和 duration 的 loading
     ai: false,
+    heatmap: false,
   })
 
   const mdContent = ref("")
 
   async function fetchDetailsData(start: string, end: string) {
-    loading.details = true
     const res = await getAIDetailData(start, end)
     detailsData.start = res.data.start
     detailsData.end = res.data.end
@@ -36,14 +36,31 @@ export const useAIStore = defineStore("ai", () => {
     detailsData.tags = res.data.tags
     detailsData.difficulty = res.data.difficulty
     detailsData.contest_count = res.data.contest_count
-    loading.details = false
   }
 
-  async function fetchWeeklyData(end: string, duration: string) {
-    loading.weekly = true
-    const res = await getAIWeeklyData(end, duration)
-    weeklyData.value = res.data
-    loading.weekly = false
+  async function fetchDurationData(end: string, duration: string) {
+    const res = await getAIDurationData(end, duration)
+    durationData.value = res.data
+  }
+
+  async function fetchHeatmapData() {
+    loading.heatmap = true
+    const res = await getAIHeatmapData()
+    heatmapData.value = res.data
+    loading.heatmap = false
+  }
+
+  // 统一获取分析数据（details + duration）
+  async function fetchAnalysisData(start: string, end: string, duration: string) {
+    loading.fetching = true
+    try {
+      await Promise.all([
+        fetchDetailsData(start, end),
+        fetchDurationData(end, duration),
+      ])
+    } finally {
+      loading.fetching = false
+    }
   }
 
   let aiController: AbortController | null = null
@@ -72,7 +89,7 @@ export const useAIStore = defineStore("ai", () => {
         headers,
         body: JSON.stringify({
           details: detailsData,
-          weekly: weeklyData.value,
+          duration: durationData.value,
         }),
         signal: controller.signal,
       })
@@ -126,11 +143,12 @@ export const useAIStore = defineStore("ai", () => {
   }
 
   return {
-    fetchWeeklyData,
-    fetchDetailsData,
+    fetchAnalysisData,
+    fetchHeatmapData,
     fetchAIAnalysis,
-    weeklyData,
+    durationData,
     detailsData,
+    heatmapData,
     duration,
     loading,
     mdContent,

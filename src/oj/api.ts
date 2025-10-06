@@ -257,8 +257,8 @@ export function getAIDetailData(start: string, end: string) {
   return http.get("ai/detail", { params: { start, end } })
 }
 
-export function getAIWeeklyData(end: string, duration: string) {
-  return http.get("ai/weekly", { params: { end, duration } })
+export function getAIDurationData(end: string, duration: string) {
+  return http.get("ai/duration", { params: { end, duration } })
 }
 
 export function getAIHeatmapData() {

@@ -412,7 +412,7 @@ export interface Tutorial {
   created_at?: Date
 }
 
-export interface WeeklyData {
+export interface DurationData {
   unit: string
   index: number
   start: string
