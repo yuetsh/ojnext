@@ -63,4 +63,7 @@ watch(
 .container {
   min-height: 200px;
 }
+:deep(.md-editor-preview h1) {
+  margin-top: 0;
+}
 </style>
