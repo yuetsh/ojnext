@@ -15,8 +15,8 @@ const ProblemEditor = defineAsyncComponent(
 const ContestEditor = defineAsyncComponent(
   () => import("./components/ContestEditor.vue"),
 )
-const EditorWithTest = defineAsyncComponent(
-  () => import("./components/EditorWithTest.vue"),
+const EditorForTest = defineAsyncComponent(
+  () => import("./components/EditorForTest.vue"),
 )
 const ProblemContent = defineAsyncComponent(
   () => import("./components/ProblemContent.vue"),
@@ -151,7 +151,7 @@ watch(isMobile, (value) => {
       <ContestEditor v-else />
     </n-gi>
     <n-gi v-if="isDesktop && screenMode === ScreenMode.code">
-      <EditorWithTest />
+      <EditorForTest />
     </n-gi>
   </n-grid>
   <n-empty v-else :description="errMsg"></n-empty>

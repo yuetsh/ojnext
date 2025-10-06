@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { copyToClipboard } from "utils/functions"
-import { code, input, output } from "oj/composables/code"
+import { code } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
 import { injectSyncStatus } from "oj/composables/syncStatus"
 import { SYNC_MESSAGES } from "shared/composables/sync"
 import { LANGUAGE_SHOW_VALUE, SOURCES, STORAGE_KEY } from "utils/constants"
 import { isDesktop, isMobile } from "shared/composables/breakpoints"
 import { useUserStore } from "shared/store/user"
-import { createTestSubmission } from "utils/judge"
 import storage from "utils/storage"
 import { LANGUAGE } from "utils/types"
 import Submit from "./Submit.vue"
@@ -16,12 +15,10 @@ import IconButton from "shared/components/IconButton.vue"
 
 interface Props {
   storageKey: string
-  withTest?: boolean
   isConnected?: boolean // WebSocket 实际的连接状态（已建立/未建立）
 }
 
 const props = withDefaults(defineProps<Props>(), {
-  withTest: false,
   isConnected: false,
 })
 
@@ -68,7 +65,6 @@ const languageOptions: DropdownOption[] = problem.value!.languages.map(
   }),
 )
 
-// 代码操作相关
 const copy = async () => {
   const success = await copyToClipboard(code.value)
   message[success ? "success" : "error"](`代码复制${success ? "成功" : "失败"}`)
@@ -85,12 +81,6 @@ const changeLanguage = (v: LANGUAGE) => {
   emit("changeLanguage", v)
 }
 
-const runCode = async () => {
-  const res = await createTestSubmission(code, input.value)
-  output.value = res.output
-}
-
-// 导航相关
 const goTestCat = () => {
   window.open(import.meta.env.PUBLIC_CODE_URL, "_blank")
 }
@@ -107,7 +97,6 @@ const goEdit = () => {
   window.open(router.resolve(url).href, "_blank")
 }
 
-// 菜单处理
 const handleMenuSelect = (key: string) => {
   const actions: Record<string, () => void> = {
     reset,
@@ -117,7 +106,6 @@ const handleMenuSelect = (key: string) => {
   actions[key]?.()
 }
 
-// 协同编辑相关
 const toggleSync = () => {
   syncEnabled.value = !syncEnabled.value
   emit("toggleSync", syncEnabled.value)
@@ -132,83 +120,74 @@ defineExpose({
 
 <template>
   <n-flex align="center">
-    <!-- 语言选择器 -->
     <n-select
       v-model:value="code.language"
-      class="language"
+      style="width: 120px"
       :size="buttonSize"
       :options="languageOptions"
       @update:value="changeLanguage"
     />
 
-    <template v-if="withTest">
-      <n-button @click="reset">重置代码</n-button>
-      <n-button type="primary" secondary @click="runCode">运行代码</n-button>
-    </template>
+    <Submit />
 
-    <n-flex v-else align="center">
-      <Submit />
+    <n-button
+      v-if="!userStore.isSuperAdmin && userStore.showSubmissions"
+      :size="buttonSize"
+      @click="goSubmissions"
+    >
+      提交信息
+    </n-button>
 
-      <n-button
-        v-if="!userStore.isSuperAdmin && userStore.showSubmissions"
-        :size="buttonSize"
-        @click="goSubmissions"
-      >
-        提交信息
-      </n-button>
+    <n-button
+      v-if="userStore.isSuperAdmin"
+      :size="buttonSize"
+      @click="statisticPanel = true"
+    >
+      {{ isDesktop ? "统计信息" : "统计" }}
+    </n-button>
 
-      <n-button
-        v-if="userStore.isSuperAdmin"
-        :size="buttonSize"
-        @click="statisticPanel = true"
-      >
-        {{ isDesktop ? "统计信息" : "统计" }}
-      </n-button>
+    <n-button v-if="isDesktop" @click="goTestCat">自测猫</n-button>
 
-      <n-button v-if="isDesktop" @click="goTestCat">自测猫</n-button>
+    <n-dropdown size="large" :options="menu" @select="handleMenuSelect">
+      <n-button :size="buttonSize">操作</n-button>
+    </n-dropdown>
 
-      <n-dropdown size="large" :options="menu" @select="handleMenuSelect">
-        <n-button :size="buttonSize">操作</n-button>
-      </n-dropdown>
+    <IconButton
+      v-if="isDesktop && userStore.isSuperAdmin"
+      icon="streamline-ultimate-color:file-code-edit"
+      tip="编辑题目"
+      @click="goEdit"
+    />
 
+    <template v-if="showSyncFeature">
       <IconButton
-        v-if="isDesktop && userStore.isSuperAdmin"
-        icon="streamline-ultimate-color:file-code-edit"
-        tip="编辑题目"
-        @click="goEdit"
+        :icon="
+          syncEnabled
+            ? 'streamline-ultimate-color:flash-off'
+            : 'streamline-ultimate-color:monitor-flash'
+        "
+        :tip="syncEnabled ? SYNC_MESSAGES.SYNC_ON : SYNC_MESSAGES.SYNC_OFF"
+        :type="syncEnabled ? 'warning' : 'default'"
+        @click="toggleSync"
       />
 
-      <!-- 协同编辑功能（仅在非比赛模式） -->
-      <template v-if="showSyncFeature">
-        <IconButton
-          :icon="
-            syncEnabled
-              ? 'streamline-ultimate-color:flash-off'
-              : 'streamline-ultimate-color:monitor-flash'
+      <!-- 同步状态标签 -->
+      <template v-if="props.isConnected">
+        <n-tag v-if="syncStatus.otherUser.value" type="info">
+          {{ SYNC_MESSAGES.SYNCING_WITH(syncStatus.otherUser.value.name) }}
+        </n-tag>
+        <n-tag
+          v-if="
+            userStore.isSuperAdmin &&
+            !syncStatus.otherUser.value &&
+            syncStatus.hadConnection.value
           "
-          :tip="syncEnabled ? SYNC_MESSAGES.SYNC_ON : SYNC_MESSAGES.SYNC_OFF"
-          :type="syncEnabled ? 'warning' : 'default'"
-          @click="toggleSync"
-        />
-
-        <!-- 同步状态标签 -->
-        <template v-if="props.isConnected">
-          <n-tag v-if="syncStatus.otherUser.value" type="info">
-            {{ SYNC_MESSAGES.SYNCING_WITH(syncStatus.otherUser.value.name) }}
-          </n-tag>
-          <n-tag
-            v-if="
-              userStore.isSuperAdmin &&
-              !syncStatus.otherUser.value &&
-              syncStatus.hadConnection.value
-            "
-            type="warning"
-          >
-            {{ SYNC_MESSAGES.STUDENT_LEFT }}
-          </n-tag>
-        </template>
+          type="warning"
+        >
+          {{ SYNC_MESSAGES.STUDENT_LEFT }}
+        </n-tag>
       </template>
-    </n-flex>
+    </template>
   </n-flex>
 
   <n-modal
@@ -222,9 +201,3 @@ defineExpose({
     <StatisticsPanel :problem="problem!._id" username="" />
   </n-modal>
 </template>
-
-<style scoped>
-.language {
-  width: 120px;
-}
-</style>
