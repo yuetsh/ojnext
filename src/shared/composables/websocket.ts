@@ -305,7 +305,7 @@ export interface SubmissionUpdate extends WebSocketMessage {
 class SubmissionWebSocket extends BaseWebSocket<SubmissionUpdate> {
   constructor() {
     super({
-      path: "/submission/",
+      path: "submission",
     })
   }
 
