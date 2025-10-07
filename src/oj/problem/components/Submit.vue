@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
-import confetti from "canvas-confetti"
 import { getComment, submitCode } from "oj/api"
 import { code } from "oj/composables/code"
 import { problem } from "oj/composables/problem"
+import { useFireworks } from "oj/problem/composables/useFireworks"
 import { useSubmissionMonitor } from "oj/problem/composables/useSubmissionMonitor"
 import { SubmissionStatus } from "utils/constants"
 import type { SubmitCodePayload } from "utils/types"
@@ -13,7 +13,7 @@ import { useUserStore } from "shared/store/user"
 
 // ==================== 异步组件 ====================
 const ProblemComment = defineAsyncComponent(
-  () => import("./ProblemComment.vue")
+  () => import("./ProblemComment.vue"),
 )
 
 // ==================== 基础状态 ====================
@@ -22,10 +22,12 @@ const route = useRoute()
 const contestID = <string>route.params.contestID ?? ""
 const [commentPanel] = useToggle()
 
+// ==================== 烟花效果 ====================
+const { celebrate } = useFireworks()
+
 // ==================== 判题监控 ====================
 const {
   submission,
-  submissionId,
   judging,
   pending,
   submitting,
@@ -48,7 +50,7 @@ const { start: showCommentPanelDelayed } = useTimeoutFn(
     }
   },
   1500,
-  { immediate: false }
+  { immediate: false },
 )
 
 // ==================== 计算属性 ====================
@@ -110,20 +112,14 @@ watch(
     // 1. 刷新题目状态
     problem.value!.my_status = 0
 
-    // 2. 放烟花
-    confetti({
-      particleCount: 300,
-      startVelocity: 30,
-      gravity: 0.5,
-      spread: 350,
-      origin: { x: 0.5, y: 0.4 },
-    })
+    // 2. 放烟花（随机效果）
+    celebrate()
 
     // 3. 显示评价框（非比赛模式）
     if (!contestID) {
       showCommentPanelDelayed()
     }
-  }
+  },
 )
 </script>
 
