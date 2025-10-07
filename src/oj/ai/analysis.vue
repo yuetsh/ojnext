@@ -1,5 +1,5 @@
 <template>
-  <n-spin :show="aiStore.loading.fetching">
+  <n-spin :show="aiStore.loading.fetching" :delay="50">
     <n-grid :cols="isDesktop ? 5 : 1" :x-gap="20" :y-gap="20">
       <n-gi :span="2">
         <n-flex vertical size="large">

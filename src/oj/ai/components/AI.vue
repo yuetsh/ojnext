@@ -5,7 +5,7 @@
         <span class="title-text">AI 帮你分析</span>
       </div>
     </template>
-    <n-spin :show="aiStore.loading.ai">
+    <n-spin :show="aiStore.loading.ai" :delay="50">
       <div class="container">
         <MdPreview :model-value="aiStore.mdContent" />
       </div>

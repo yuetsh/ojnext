@@ -3,7 +3,7 @@
     <template #header-extra>
       <n-text depth="3" style="font-size: 12px">激励持续学习</n-text>
     </template>
-    <n-spin :show="aiStore.loading.heatmap">
+    <n-spin :show="aiStore.loading.heatmap" :delay="50">
       <n-grid :cols="2" :x-gap="12" :y-gap="12">
         <n-gi>
           <n-statistic label="当前连续" :value="currentStreak">

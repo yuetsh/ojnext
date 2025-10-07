@@ -3,7 +3,7 @@
     <template #header-extra>
       <n-text depth="3" style="font-size: 12px">激励持续学习</n-text>
     </template>
-    <n-spin :show="aiStore.loading.heatmap">
+    <n-spin :show="aiStore.loading.heatmap" :delay="50">
       <div class="heatmap-container" ref="containerRef">
         <svg
           :viewBox="`0 0 ${svgWidth} ${svgHeight}`"
