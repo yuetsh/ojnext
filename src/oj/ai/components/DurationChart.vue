@@ -1,9 +1,7 @@
 <template>
   <n-card :title="title" size="small">
     <template #header-extra>
-      <n-text depth="3" style="font-size: 12px">
-        全面评估学习情况
-      </n-text>
+      <n-text depth="3" style="font-size: 12px"> 全面评估学习情况 </n-text>
     </template>
     <div class="chart">
       <Chart type="bar" :data="data" :options="options" />
@@ -173,11 +171,20 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
             return `${dsLabel}: ${ctx.formattedValue}`
           },
           footer: (items: TooltipItem<"bar">[]) => {
-            const barItems = items.filter(item => (item.dataset as any).yAxisID === "y")
+            const barItems = items.filter(
+              (item) => (item.dataset as any).yAxisID === "y",
+            )
             if (barItems.length >= 2) {
-              const problemCount = barItems.find(item => item.dataset.label === "完成题目数")?.parsed.y || 0
-              const submissionCount = barItems.find(item => item.dataset.label === "总提交次数")?.parsed.y || 0
-              const efficiency = submissionCount > 0 ? ((problemCount / submissionCount) * 100).toFixed(1) : "0"
+              const problemCount =
+                barItems.find((item) => item.dataset.label === "完成题目数")
+                  ?.parsed.y || 0
+              const submissionCount =
+                barItems.find((item) => item.dataset.label === "总提交次数")
+                  ?.parsed.y || 0
+              const efficiency =
+                submissionCount > 0
+                  ? ((problemCount / submissionCount) * 100).toFixed(1)
+                  : "0"
               return `AC率: ${efficiency}%`
             }
             return ""

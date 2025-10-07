@@ -1,9 +1,7 @@
 <template>
   <n-card title="过去一年的提交热力图" size="small">
     <template #header-extra>
-      <n-text depth="3" style="font-size: 12px">
-        激励持续学习
-      </n-text>
+      <n-text depth="3" style="font-size: 12px">激励持续学习</n-text>
     </template>
     <n-spin :show="aiStore.loading.heatmap">
       <div class="heatmap-container" ref="containerRef">

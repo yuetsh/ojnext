@@ -1,9 +1,7 @@
 <template>
   <n-card title="连续做题统计" size="small">
     <template #header-extra>
-      <n-text depth="3" style="font-size: 12px">
-        激励持续学习
-      </n-text>
+      <n-text depth="3" style="font-size: 12px">激励持续学习</n-text>
     </template>
     <n-spin :show="aiStore.loading.heatmap">
       <n-grid :cols="2" :x-gap="12" :y-gap="12">
@@ -11,7 +9,10 @@
           <n-statistic label="当前连续" :value="currentStreak">
             <template #suffix>
               <span style="font-size: 14px">天</span>
-              <span v-if="currentStreak > 0" style="font-size: 20px; margin-left: 4px">
+              <span
+                v-if="currentStreak > 0"
+                style="font-size: 20px; margin-left: 4px"
+              >
                 🔥
               </span>
             </template>
@@ -21,7 +22,10 @@
           <n-statistic label="最长连续" :value="maxStreak">
             <template #suffix>
               <span style="font-size: 14px">天</span>
-              <span v-if="maxStreak >= 7" style="font-size: 20px; margin-left: 4px">
+              <span
+                v-if="maxStreak >= 7"
+                style="font-size: 20px; margin-left: 4px"
+              >
                 ⭐
               </span>
             </template>
@@ -45,12 +49,8 @@
       <n-divider style="margin: 12px 0" />
       <n-flex vertical size="small">
         <n-text depth="2" style="font-size: 12px">
-          <span v-if="currentStreak === 0">
-            开始做题，建立学习连续记录！
-          </span>
-          <span v-else-if="currentStreak < 3">
-            继续保持，争取连续3天！
-          </span>
+          <span v-if="currentStreak === 0"> 开始做题，建立学习连续记录！ </span>
+          <span v-else-if="currentStreak < 3"> 继续保持，争取连续3天！ </span>
           <span v-else-if="currentStreak < 7">
             很棒！继续保持一周连续记录！
           </span>
@@ -175,4 +175,3 @@ const maxStreak = computed(() => streakData.value.maxStreak)
 const weekCount = computed(() => streakData.value.weekCount)
 const monthCount = computed(() => streakData.value.monthCount)
 </script>
-

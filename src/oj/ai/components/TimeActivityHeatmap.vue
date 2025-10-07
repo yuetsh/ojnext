@@ -1,9 +1,7 @@
 <template>
   <n-card title="时间活跃度分析" size="small" v-if="show">
     <template #header-extra>
-      <n-text depth="3" style="font-size: 12px">
-        发现最佳学习时段
-      </n-text>
+      <n-text depth="3" style="font-size: 12px">发现最佳学习时段</n-text>
     </template>
     <div style="height: 300px">
       <Bar :data="data" :options="options" />
@@ -75,7 +73,9 @@ const data = computed(() => {
   const datasets = TIME_PERIODS.map((period, periodIndex) => {
     return {
       label: period.label,
-      data: WEEKDAYS.map((_, weekday) => activityMatrix.value[weekday][periodIndex]),
+      data: WEEKDAYS.map(
+        (_, weekday) => activityMatrix.value[weekday][periodIndex],
+      ),
       backgroundColor: getTimePeriodColor(periodIndex),
       borderColor: getTimePeriodColor(periodIndex),
       borderWidth: 1,
@@ -150,4 +150,3 @@ const options = {
   },
 }
 </script>
-

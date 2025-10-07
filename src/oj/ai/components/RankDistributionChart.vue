@@ -1,9 +1,7 @@
 <template>
   <n-card title="解题排名分布" size="small" v-if="show">
     <template #header-extra>
-      <n-text depth="3" style="font-size: 12px">
-        了解解题速度和竞争力
-      </n-text>
+      <n-text depth="3" style="font-size: 12px">了解解题速度和竞争力</n-text>
     </template>
     <div style="height: 300px">
       <Pie :data="data" :options="options" />
@@ -13,13 +11,7 @@
 
 <script setup lang="ts">
 import { Pie } from "vue-chartjs"
-import {
-  Chart as ChartJS,
-  ArcElement,
-  Title,
-  Tooltip,
-  Legend,
-} from "chart.js"
+import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend } from "chart.js"
 import { useAIStore } from "oj/store/ai"
 
 ChartJS.register(ArcElement, Title, Tooltip, Legend)
@@ -111,8 +103,12 @@ const options = {
       callbacks: {
         label: (context: any) => {
           const count = context.parsed
-          const total = rankDistribution.value.reduce((sum, r) => sum + r.count, 0)
-          const percentage = total > 0 ? ((count / total) * 100).toFixed(1) : "0.0"
+          const total = rankDistribution.value.reduce(
+            (sum, r) => sum + r.count,
+            0,
+          )
+          const percentage =
+            total > 0 ? ((count / total) * 100).toFixed(1) : "0.0"
           const label = context.label || ""
           return `${label}: ${count} 道题 (${percentage}%)`
         },
@@ -122,7 +118,10 @@ const options = {
           if (problems.length > 0 && problems.length <= 5) {
             return problems
           } else if (problems.length > 5) {
-            return [...problems.slice(0, 3), `... 还有 ${problems.length - 3} 道题`]
+            return [
+              ...problems.slice(0, 3),
+              `... 还有 ${problems.length - 3} 道题`,
+            ]
           }
           return ""
         },
@@ -131,4 +130,3 @@ const options = {
   },
 }
 </script>
-

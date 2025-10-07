@@ -1,9 +1,7 @@
 <template>
   <n-card :title="title" size="small" v-if="show">
     <template #header-extra>
-      <n-text depth="3" style="font-size: 12px">
-        追踪学习成长轨迹
-      </n-text>
+      <n-text depth="3" style="font-size: 12px">追踪学习成长轨迹</n-text>
     </template>
     <div class="chart">
       <Chart type="line" :data="data" :options="options" />
@@ -81,13 +79,14 @@ const progressData = computed(() => {
 
     // 计算本期等级的权重值
     const currentGradeValue = gradeOrder.indexOf(duration.grade || "C")
-    
+
     // 累加加权等级
     totalWeightedGrade += currentGradeValue * problemCount
     totalProblems += problemCount
 
     // 计算累计平均等级
-    const avgGradeValue = totalProblems > 0 ? totalWeightedGrade / totalProblems : 0
+    const avgGradeValue =
+      totalProblems > 0 ? totalWeightedGrade / totalProblems : 0
 
     return {
       label: [

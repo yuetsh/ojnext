@@ -1,9 +1,7 @@
 <template>
   <n-card :title="title" size="small" v-if="show">
     <template #header-extra>
-      <n-text depth="3" style="font-size: 12px">
-        反映刷题质量提升
-      </n-text>
+      <n-text depth="3" style="font-size: 12px">反映刷题质量提升</n-text>
     </template>
     <div class="chart">
       <Chart type="line" :data="data" :options="options" />
@@ -63,14 +61,15 @@ const efficiencyData = computed(() => {
   return aiStore.durationData.map((duration) => {
     const problemCount = duration.problem_count || 0
     const submissionCount = duration.submission_count || 0
-    
+
     // 计算效率：提交次数/完成题目数
     // 值越接近1，说明一次AC率越高
     const efficiency = problemCount > 0 ? submissionCount / problemCount : 0
-    
+
     // 计算一次AC率（百分比）
-    const onePassRate = problemCount > 0 ? (problemCount / submissionCount) * 100 : 0
-    
+    const onePassRate =
+      problemCount > 0 ? (problemCount / submissionCount) * 100 : 0
+
     return {
       label: [
         parseTime(duration.start, "M月D日"),
@@ -233,4 +232,3 @@ const options = computed<ChartOptions<"line">>(() => {
   width: 100%;
 }
 </style>
-

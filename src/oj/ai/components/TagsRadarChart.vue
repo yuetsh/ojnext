@@ -1,9 +1,7 @@
 <template>
   <n-card :title="title" size="small" v-if="show">
     <template #header-extra>
-      <n-text depth="3" style="font-size: 12px">
-        可视化知识点覆盖面
-      </n-text>
+      <n-text depth="3" style="font-size: 12px">可视化知识点覆盖面</n-text>
     </template>
     <div class="chart">
       <Radar :data="data" :options="options" />
