@@ -1,13 +1,9 @@
 <script setup lang="ts">
 import { getProblem } from "oj/api"
-import { ScreenMode } from "utils/constants"
-import { isDesktop, isMobile } from "shared/composables/breakpoints"
-import {
-  bothAndProblem,
-  resetScreenMode,
-  screenMode,
-} from "shared/composables/switchScreen"
-import { problem } from "../composables/problem"
+import { useBreakpoints } from "shared/composables/breakpoints"
+import { storeToRefs } from "pinia"
+import { useProblemStore } from "oj/store/problem"
+import { useScreenModeStore } from "shared/store/screenMode"
 
 const ProblemEditor = defineAsyncComponent(
   () => import("./components/ProblemEditor.vue"),
@@ -43,6 +39,13 @@ const props = withDefaults(defineProps<Props>(), {
 const errMsg = ref("无数据")
 const route = useRoute()
 const router = useRouter()
+
+const problemStore = useProblemStore()
+const screenModeStore = useScreenModeStore()
+const { problem } = storeToRefs(problemStore)
+const { shouldShowProblem } = storeToRefs(screenModeStore)
+
+const { isMobile, isDesktop } = useBreakpoints()
 
 const tabOptions = computed(() => {
   const options: string[] = ["content"]
@@ -81,7 +84,7 @@ watch(currentTab, (tab) => {
 })
 
 async function init() {
-  resetScreenMode()
+  screenModeStore.resetScreenMode()
   try {
     const res = await getProblem(props.problemID, props.contestID)
     problem.value = res.data
@@ -96,11 +99,11 @@ onMounted(init)
 onBeforeUnmount(() => {
   problem.value = null
   errMsg.value = "无数据"
-  resetScreenMode()
+  screenModeStore.resetScreenMode()
 })
 
 watch(isMobile, (value) => {
-  if (value) resetScreenMode()
+  if (value) screenModeStore.resetScreenMode()
 })
 </script>
 
@@ -108,9 +111,9 @@ watch(isMobile, (value) => {
   <n-grid
     v-if="problem"
     x-gap="16"
-    :cols="screenMode === ScreenMode.both ? 2 : 1"
+    :cols="screenModeStore.isBothMode ? 2 : 1"
   >
-    <n-gi :span="isDesktop ? 1 : 2" v-if="bothAndProblem">
+    <n-gi :span="isDesktop ? 1 : 2" v-if="shouldShowProblem">
       <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
         <n-tabs v-model:value="currentTab" type="segment">
           <n-tab-pane name="content" tab="题目描述">
@@ -146,11 +149,11 @@ watch(isMobile, (value) => {
         </n-tab-pane>
       </n-tabs>
     </n-gi>
-    <n-gi v-if="isDesktop && screenMode === ScreenMode.both">
+    <n-gi v-if="isDesktop && screenModeStore.isBothMode">
       <ProblemEditor v-if="shouldUseProblemEditor" />
       <ContestEditor v-else />
     </n-gi>
-    <n-gi v-if="isDesktop && screenMode === ScreenMode.code">
+    <n-gi v-if="isDesktop && screenModeStore.isCodeOnlyMode">
       <EditorForTest />
     </n-gi>
   </n-grid>

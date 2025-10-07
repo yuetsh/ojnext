@@ -6,7 +6,7 @@ import { duration, parseTime } from "utils/functions"
 import { Contest } from "utils/types"
 import ContestTitle from "shared/components/ContestTitle.vue"
 import Pagination from "shared/components/Pagination.vue"
-import { toggleLogin } from "shared/composables/modal"
+import { useAuthModalStore } from "shared/store/authModal"
 import { usePagination } from "shared/composables/pagination"
 import { useUserStore } from "shared/store/user"
 import { CONTEST_STATUS, ContestType } from "utils/constants"
@@ -14,6 +14,7 @@ import { renderTableTitle } from "utils/renders"
 
 const router = useRouter()
 const userStore = useUserStore()
+const authStore = useAuthModalStore()
 
 interface ContestQuery {
   keyword: string
@@ -120,7 +121,7 @@ function rowProps(row: Contest) {
     style: "cursor: pointer",
     onClick() {
       if (!userStore.isAuthed && row.contest_type === ContestType.private) {
-        toggleLogin(true)
+        authStore.openLoginModal()
       } else {
         router.push("/contest/" + row.id)
       }

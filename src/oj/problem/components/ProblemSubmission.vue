@@ -8,10 +8,25 @@ import { LANGUAGE_SHOW_VALUE } from "utils/constants"
 import { parseTime } from "utils/functions"
 import { renderTableTitle } from "utils/renders"
 import { Submission } from "utils/types"
+import SubmissionDetail from "oj/submission/detail.vue"
+import { useBreakpoints } from "shared/composables/breakpoints"
 
 const userStore = useUserStore()
 const route = useRoute()
 const router = useRouter()
+const { isDesktop } = useBreakpoints()
+
+// 弹框状态管理
+const [codePanelVisible, toggleCodePanel] = useToggle(false)
+const submissionID = ref("")
+const problemID = ref("")
+
+// 显示代码弹框
+function showCodePanel(id: string, problem: string) {
+  submissionID.value = id
+  problemID.value = problem
+  toggleCodePanel(true)
+}
 
 const columns: DataTableColumn<Submission>[] = [
   {
@@ -25,22 +40,17 @@ const columns: DataTableColumn<Submission>[] = [
     key: "id",
     minWidth: 160,
     render: (row) => {
-      if (row.show_link) {
-        return h(
-          NButton,
-          {
-            text: true,
-            type: "info",
-            onClick: () => {
-              const data = router.resolve("/submission/" + row.id)
-              window.open(data.href, "_blank")
-            },
+      return h(
+        NButton,
+        {
+          text: true,
+          type: "info",
+          onClick: () => {
+            showCodePanel(row.id, <string>route.params.problemID ?? "")
           },
-          () => row.id.slice(0, 12),
-        )
-      } else {
-        return row.id.slice(0, 12)
-      }
+        },
+        () => row.id.slice(0, 12),
+      )
     },
   },
   {
@@ -258,6 +268,21 @@ watch(query, listSubmissions)
       v-model:page="query.page"
     />
   </template>
+
+  <!-- 代码详情弹框 -->
+  <n-modal
+    v-model:show="codePanelVisible"
+    preset="card"
+    :style="{ maxWidth: isDesktop && '70vw', maxHeight: '80vh' }"
+    :content-style="{ overflow: 'auto' }"
+    title="代码详情"
+  >
+    <SubmissionDetail
+      :problemID="problemID"
+      :submissionID="submissionID"
+      hideList
+    />
+  </n-modal>
 </template>
 
 <style scoped>

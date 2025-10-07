@@ -107,7 +107,8 @@
 </template>
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
-import { problem } from "oj/composables/problem"
+import { storeToRefs } from "pinia"
+import { useProblemStore } from "oj/store/problem"
 import { DIFFICULTY } from "utils/constants"
 import { createComment, getComment, getCommentStatistics } from "oj/api"
 import { useUserStore } from "shared/store/user"
@@ -121,6 +122,8 @@ const props = withDefaults(defineProps<Props>(), {
 })
 
 const userStore = useUserStore()
+const problemStore = useProblemStore()
+const { problem } = storeToRefs(problemStore)
 
 const message = useMessage()
 

@@ -324,37 +324,26 @@ class SubmissionWebSocket extends BaseWebSocket<SubmissionUpdate> {
   }
 }
 
-// 全局单例
-let wsInstance: SubmissionWebSocket | null = null
-
-/**
- * 获取 WebSocket 实例
- */
-export function getWebSocketInstance(): SubmissionWebSocket {
-  if (!wsInstance) {
-    wsInstance = new SubmissionWebSocket()
-  }
-  return wsInstance
-}
-
 /**
  * 用于组件中使用 WebSocket 的 Composable
+ * 每次调用创建新的 WebSocket 实例
  */
 export function useSubmissionWebSocket(
   handler?: MessageHandler<SubmissionUpdate>,
 ) {
-  const ws = getWebSocketInstance()
+  const ws = new SubmissionWebSocket()
 
   // 如果提供了处理器，添加到实例中
   if (handler) {
     ws.addHandler(handler)
   }
 
-  // 组件卸载时移除处理器
+  // 组件卸载时清理资源
   onUnmounted(() => {
     if (handler) {
       ws.removeHandler(handler)
     }
+    ws.disconnect()
   })
 
   return {

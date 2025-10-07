@@ -8,7 +8,7 @@ import { ProblemFiltered } from "utils/types"
 import { getProblemTagList } from "shared/api"
 import Hitokoto from "shared/components/Hitokoto.vue"
 import Pagination from "shared/components/Pagination.vue"
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 import { usePagination } from "shared/composables/pagination"
 import { useUserStore } from "shared/store/user"
 import { renderTableTitle } from "utils/renders"
@@ -38,6 +38,9 @@ const difficultyOptions = [
 const router = useRouter()
 
 const userStore = useUserStore()
+
+const { isDesktop } = useBreakpoints()
+
 const problems = ref<ProblemFiltered[]>([])
 const total = ref(0)
 const tags = ref<Tag[]>([])

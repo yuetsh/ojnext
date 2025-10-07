@@ -8,7 +8,8 @@ import { LANGUAGE } from "utils/types"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
 import { useCodeSync, SYNC_ERROR_CODES } from "../composables/sync"
-import { isDesktop } from "../composables/breakpoints"
+import { useBreakpoints } from "../composables/breakpoints"
+const isDark = useDark()
 
 interface EditorReadyPayload {
   view: EditorView
@@ -44,7 +45,7 @@ const emit = defineEmits<{
   ]
 }>()
 
-const isDark = useDark()
+const { isDesktop } = useBreakpoints()
 
 const styleTheme = EditorView.baseTheme({
   "& .cm-scroller": { "font-family": "Monaco" },

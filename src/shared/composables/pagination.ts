@@ -1,3 +1,5 @@
+import { reactive, watch } from "vue"
+import { useRoute, useRouter } from "vue-router"
 import { filterEmptyValue } from "utils/functions"
 
 export interface PaginationQuery {
@@ -17,6 +19,7 @@ export interface UsePaginationOptions {
 
 /**
  * 分页相关的 composable，处理分页状态和 URL 同步
+ * 每次调用创建新的分页状态实例
  * @param initialQuery 初始查询参数对象
  * @param options 配置选项
  */
@@ -139,6 +142,7 @@ export function usePagination<T extends Record<string, any>>(
 
 /**
  * 简化版本的分页 composable，只处理基本的分页逻辑
+ * 每次调用创建新的分页状态实例
  * @param defaultLimit 默认每页条数
  * @param defaultPage 默认页码
  */

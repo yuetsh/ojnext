@@ -1,3 +1,4 @@
+import { useMessage } from "naive-ui"
 import { useUserStore } from "../store/user"
 import type { EditorView } from "@codemirror/view"
 import { Compartment } from "@codemirror/state"
@@ -81,10 +82,15 @@ export interface SyncStatus {
   otherUser?: UserInfo
 }
 
+/**
+ * 代码同步 composable
+ * 每次调用创建新的同步实例
+ */
 export function useCodeSync() {
   const userStore = useUserStore()
   const message = useMessage()
 
+  // 每次调用创建新的实例变量
   let ydoc: Doc | null = null
   let provider: WebrtcProvider | null = null
   let ytext: Text | null = null

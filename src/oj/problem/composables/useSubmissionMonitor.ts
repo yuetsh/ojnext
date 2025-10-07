@@ -1,4 +1,5 @@
-import { ref } from "vue"
+import { ref, computed, watch, onUnmounted } from "vue"
+import { useIntervalFn, useTimeoutFn } from "@vueuse/core"
 import { getSubmission } from "oj/api"
 import { SubmissionStatus } from "utils/constants"
 import type { Submission } from "utils/types"
@@ -39,7 +40,7 @@ export function useSubmissionMonitor() {
       }
     },
     2000,
-    { immediate: false }
+    { immediate: false },
   )
 
   // ==================== WebSocket 处理 ====================
@@ -60,7 +61,7 @@ export function useSubmissionMonitor() {
     // 判题完成或出错，获取完整详情
     if (data.status === "finished" || data.status === "error") {
       console.log(
-        `[SubmissionMonitor] 判题${data.status === "finished" ? "完成" : "出错"}`
+        `[SubmissionMonitor] 判题${data.status === "finished" ? "完成" : "出错"}`,
       )
 
       // 停止轮询（WebSocket已成功）
@@ -97,7 +98,7 @@ export function useSubmissionMonitor() {
       }
     },
     5000,
-    { immediate: false }
+    { immediate: false },
   )
 
   // ==================== 启动监控 ====================
@@ -124,7 +125,7 @@ export function useSubmissionMonitor() {
           unwatch() // 订阅成功后停止监听
         }
       },
-      { immediate: true }
+      { immediate: true },
     )
 
     // 5秒后启动轮询保底（防止WebSocket失败）
@@ -133,15 +134,15 @@ export function useSubmissionMonitor() {
 
   // ==================== 计算属性 ====================
   const judging = computed(
-    () => submission.value?.result === SubmissionStatus.judging
+    () => submission.value?.result === SubmissionStatus.judging,
   )
 
   const pending = computed(
-    () => submission.value?.result === SubmissionStatus.pending
+    () => submission.value?.result === SubmissionStatus.pending,
   )
 
   const submitting = computed(
-    () => submission.value?.result === SubmissionStatus.submitting
+    () => submission.value?.result === SubmissionStatus.submitting,
   )
 
   const isProcessing = computed(() => {
@@ -157,16 +158,15 @@ export function useSubmissionMonitor() {
     // 状态
     submissionId,
     submission,
-    
+
     // 计算属性
     judging,
     pending,
     submitting,
     isProcessing,
-    
+
     // 方法
     startMonitoring,
     pausePolling,
   }
 }
-

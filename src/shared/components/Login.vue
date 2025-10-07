@@ -1,19 +1,21 @@
 <script setup lang="ts">
 import { login } from "../api"
-import { loginModal, toggleLogin, toggleSignup } from "../composables/modal"
+import { storeToRefs } from "pinia"
+import { useAuthModalStore } from "../store/authModal"
 import { useConfigStore } from "../store/config"
 import { useUserStore } from "../store/user"
 
 const userStore = useUserStore()
 const configStore = useConfigStore()
+const authStore = useAuthModalStore()
+
+const {
+  loginModalOpen,
+  loginForm: form,
+  loginLoading: isLoading,
+  loginError: msg,
+} = storeToRefs(authStore)
 const loginRef = ref()
-const [isLoading, toggleLoading] = useToggle()
-const msg = ref("")
-const form = reactive({
-  class: "",
-  username: "",
-  password: "",
-})
 const classList = computed<SelectOption[]>(() => {
   const defaults = [{ label: "没有我所在的班级", value: "" }]
   const configs =
@@ -35,29 +37,29 @@ async function submit() {
   loginRef.value!.validate(async (errors: FormRules | undefined) => {
     if (!errors) {
       try {
-        msg.value = ""
-        toggleLoading(true)
+        authStore.clearLoginError()
+        authStore.setLoginLoading(true)
         const merged = {
-          username: form.username,
-          password: form.password,
+          username: form.value.username,
+          password: form.value.password,
         }
-        if (form.class) {
-          merged.username = form.class + form.username
+        if (form.value.class) {
+          merged.username = form.value.class + form.value.username
         }
         await login(merged)
       } catch (err: any) {
         if (err.data === "Your account has been disabled") {
-          msg.value = "此账号已被封禁"
+          authStore.setLoginError("此账号已被封禁")
         } else if (err.data === "Invalid username or password") {
-          msg.value = "用户名或密码不正确"
+          authStore.setLoginError("用户名或密码不正确")
         } else {
-          msg.value = "无法登录"
+          authStore.setLoginError("无法登录")
         }
       } finally {
-        toggleLoading(false)
+        authStore.setLoginLoading(false)
       }
       if (!msg.value) {
-        toggleLogin(false)
+        authStore.closeLoginModal()
         userStore.getMyProfile()
       }
     }
@@ -65,19 +67,18 @@ async function submit() {
 }
 
 function goSignup() {
-  toggleLogin(false)
-  toggleSignup(true)
+  authStore.switchToSignup()
 }
 
 onMounted(() => {
-  msg.value = ""
+  authStore.clearLoginError()
 })
 </script>
 
 <template>
   <n-modal
     :mask-closable="false"
-    v-model:show="loginModal"
+    v-model:show="loginModalOpen"
     preset="card"
     title="登录"
     style="width: 400px"

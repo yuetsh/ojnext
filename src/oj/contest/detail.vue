@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
 import { CONTEST_STATUS, ContestStatus } from "utils/constants"
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 import { useContestStore } from "../store/contest"
 import ContestInfo from "./components/ContestInfo.vue"
 import ContestMenu from "./components/ContestMenu.vue"
@@ -11,6 +11,8 @@ const props = defineProps<{
 }>()
 const contestStore = useContestStore()
 const message = useMessage()
+
+const { isDesktop } = useBreakpoints()
 
 const password = ref("")
 

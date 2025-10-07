@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useContestStore } from "oj/store/contest"
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 import { ContestStatus } from "utils/constants"
 
 const route = useRoute()
 const router = useRouter()
 const contestStore = useContestStore()
+
+const { isDesktop } = useBreakpoints()
 
 const contestMenuVisible = computed(() => {
   if (contestStore.isContestAdmin) return true

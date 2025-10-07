@@ -14,7 +14,7 @@ export default defineConfig(({ envMode }) => {
     target: rawPublicVars["PUBLIC_OJ_URL"],
     changeOrigin: true,
   }
-  
+
   const wsProxyConfig = {
     target: rawPublicVars["PUBLIC_WS_URL"],
     ws: true,

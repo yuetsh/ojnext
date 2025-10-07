@@ -8,19 +8,29 @@ import storage from "utils/storage"
 import App from "./App.vue"
 import { admins, ojs } from "./routes"
 
-import { toggleLogin } from "./shared/composables/modal"
-import { useUserStore } from "./shared/store/user"
-
 const router = createRouter({
   history: createWebHistory(),
   routes: [ojs, admins],
 })
 
+const pinia = createPinia()
+
+// 创建 app 并安装插件
+const app = createApp(App)
+app.use(pinia)
+app.use(router)
+
+// 现在可以安全地使用 Store
+import { useAuthModalStore } from "./shared/store/authModal"
+import { useUserStore } from "./shared/store/user"
+
+const authStore = useAuthModalStore()
+
 router.beforeEach(async (to, from, next) => {
   // 检查是否需要认证
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     if (!storage.get(STORAGE_KEY.AUTHED)) {
-      toggleLogin(true)
+      authStore.openLoginModal()
       next("/")
       return
     }
@@ -34,7 +44,7 @@ router.beforeEach(async (to, from, next) => {
     )
   ) {
     if (!storage.get(STORAGE_KEY.AUTHED)) {
-      toggleLogin(true)
+      authStore.openLoginModal()
       next("/")
       return
     }
@@ -66,10 +76,6 @@ router.beforeEach(async (to, from, next) => {
   next()
 })
 
-const pinia = createPinia()
-const app = createApp(App)
-app.use(router)
-app.use(pinia)
 app.mount("#app")
 
 if (!!import.meta.env.PUBLIC_ICONIFY_URL) {

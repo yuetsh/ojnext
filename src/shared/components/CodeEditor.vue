@@ -7,7 +7,6 @@ import type { Extension } from "@codemirror/state"
 import { LANGUAGE } from "utils/types"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
-
 interface Props {
   language?: LANGUAGE
   fontSize?: number

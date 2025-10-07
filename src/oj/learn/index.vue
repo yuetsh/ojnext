@@ -105,15 +105,17 @@ import { MdPreview } from "md-editor-v3"
 import "md-editor-v3/lib/preview.css"
 import { Tutorial } from "utils/types"
 import { getTutorial, getTutorials } from "../api"
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
+const isDark = useDark()
 
 const CodeEditor = defineAsyncComponent(
   () => import("shared/components/CodeEditor.vue"),
 )
 
-const isDark = useDark()
 const route = useRoute()
 const router = useRouter()
+
+const { isDesktop } = useBreakpoints()
 
 const step = computed(() => {
   if (!route.params.step || !route.params.step.length) return 1

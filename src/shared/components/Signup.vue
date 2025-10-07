@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { getCaptcha, signup } from "../api"
-import { signupModal, toggleLogin, toggleSignup } from "../composables/modal"
-import { useUserStore } from "../store/user"
+import { storeToRefs } from "pinia"
+import { useAuthModalStore } from "../store/authModal"
 
-const userStore = useUserStore()
+const authStore = useAuthModalStore()
+
+const {
+  signupModalOpen,
+  signupForm: form,
+  signupLoading: isLoading,
+  signupError: msg,
+  captchaSrc,
+} = storeToRefs(authStore)
 const signupRef = ref()
-const captchaSrc = ref("")
-
-const form = reactive({
-  username: "",
-  email: "",
-  password: "",
-  passwordAgain: "",
-  captcha: "",
-})
 
 const rules: FormRules = {
   username: [{ required: true, message: "用户名必填", trigger: "blur" }],
@@ -26,7 +25,8 @@ const rules: FormRules = {
     { required: true, message: "密码必填", trigger: "blur" },
     { min: 6, max: 20, message: "长度在 6 到 20 位之间", trigger: "input" },
     {
-      validator: (_: FormItemRule, value: string) => value === form.password,
+      validator: (_: FormItemRule, value: string) =>
+        value === form.value.password,
       message: "两次密码输入不一致",
       trigger: "blur",
     },
@@ -36,43 +36,39 @@ const rules: FormRules = {
   ],
 }
 
-const [isLoading, toggleLoading] = useToggle()
-const msg = ref("")
-
 function goLogin() {
-  toggleLogin(true)
-  toggleSignup(false)
+  authStore.switchToLogin()
 }
 
 function submit() {
   signupRef.value!.validate(async (errors: FormRules | undefined) => {
     if (!errors) {
       try {
-        msg.value = ""
-        toggleLoading(true)
+        authStore.clearSignupError()
+        authStore.setSignupLoading(true)
         await signup({
-          username: form.username,
-          email: form.email,
-          password: form.password,
-          captcha: form.captcha,
+          username: form.value.username,
+          email: form.value.email,
+          password: form.value.password,
+          captcha: form.value.captcha,
         })
       } catch (err: any) {
         if (err.data === "Invalid captcha") {
-          msg.value = "验证码不正确"
+          authStore.setSignupError("验证码不正确")
         } else if (err.data === "Username already exists") {
-          msg.value = "用户名已存在"
+          authStore.setSignupError("用户名已存在")
         } else if (err.data === "Email already exists") {
-          msg.value = "邮箱已存在"
+          authStore.setSignupError("邮箱已存在")
         } else {
-          msg.value = "无法注册"
+          authStore.setSignupError("无法注册")
         }
         getCaptchaSrc()
-        form.captcha = ""
+        form.value.captcha = ""
       } finally {
-        toggleLoading(false)
+        authStore.setSignupLoading(false)
       }
       if (!msg.value) {
-        toggleSignup(false)
+        authStore.closeSignupModal()
       }
     }
   })
@@ -80,10 +76,10 @@ function submit() {
 
 async function getCaptchaSrc() {
   const res = await getCaptcha()
-  captchaSrc.value = res.data
+  authStore.setCaptchaSrc(res.data)
 }
 
-watch(signupModal, (v) => {
+watch(signupModalOpen, (v) => {
   if (v) getCaptchaSrc()
 })
 </script>
@@ -91,7 +87,7 @@ watch(signupModal, (v) => {
 <template>
   <n-modal
     :mask-closable="false"
-    v-model:show="signupModal"
+    v-model:show="signupModalOpen"
     preset="card"
     title="注册"
     style="width: 400px"

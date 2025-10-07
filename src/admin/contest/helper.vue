@@ -4,7 +4,7 @@ import { parseTime } from "utils/functions"
 import { getACMHelperList, getContest, updateACMHelperChecked } from "../api"
 import { getSubmission, getSubmissions } from "oj/api"
 import SubmissionDetail from "oj/submission/detail.vue"
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 
 interface Props {
   contestID: string
@@ -27,6 +27,8 @@ interface HelperItem {
 
 const props = defineProps<Props>()
 const message = useMessage()
+
+const { isDesktop } = useBreakpoints()
 
 const submissions = ref<HelperItem[]>([])
 const contestStartTime = ref<Date | null>(null)

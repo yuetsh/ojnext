@@ -1,19 +1,26 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
 import { RouterLink } from "vue-router"
-import { isDesktop, isMobile } from "shared/composables/breakpoints"
-import { toggleLogin, toggleSignup } from "shared/composables/modal"
-import { screenMode, switchScreenMode } from "shared/composables/switchScreen"
+import { useBreakpoints } from "shared/composables/breakpoints"
+import { useAuthModalStore } from "shared/store/authModal"
+import { useScreenModeStore } from "shared/store/screenMode"
 import { logout } from "../api"
 import { useConfigStore } from "../store/config"
 import { useUserStore } from "../store/user"
 
-const isDark = useDark()
-const toggleDark = useToggle(isDark)
 const userStore = useUserStore()
 const configStore = useConfigStore()
+const authStore = useAuthModalStore()
+const screenModeStore = useScreenModeStore()
 const route = useRoute()
 const router = useRouter()
+
+const { isMobile, isDesktop } = useBreakpoints()
+
+const isDark = useDark()
+
+// 从 store 中获取屏幕模式状态
+const { screenMode } = storeToRefs(screenModeStore)
 
 const names = [
   "man-with-chinese-cap-1",
@@ -213,7 +220,7 @@ function goHome() {
           isDesktop &&
           (route.name === 'problem' || route.name === 'contest problem')
         "
-        @click="() => switchScreenMode()"
+        @click="() => screenModeStore.switchScreenMode()"
       >
         {{ screenMode }}
       </n-button>
@@ -227,19 +234,23 @@ function goHome() {
           </n-button>
         </n-dropdown>
         <n-flex align="center" v-else>
-          <n-button secondary type="primary" @click="toggleLogin(true)">
+          <n-button
+            secondary
+            type="primary"
+            @click="authStore.openLoginModal()"
+          >
             登录
           </n-button>
           <n-button
             tertiary
             v-if="configStore.config?.allow_register"
-            @click="toggleSignup(true)"
+            @click="authStore.openSignupModal()"
           >
             注册
           </n-button>
         </n-flex>
       </div>
-      <n-button :bordered="false" circle @click="toggleDark()">
+      <n-button :bordered="false" circle @click="isDark = !isDark">
         <template #icon>
           <Icon v-if="isDark" icon="twemoji:sun-behind-small-cloud"></Icon>
           <Icon v-else icon="twemoji:cloud-with-lightning-and-rain"></Icon>

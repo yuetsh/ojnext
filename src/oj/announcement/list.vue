@@ -2,7 +2,7 @@
 import { NTag } from "naive-ui"
 import { getAnnouncement, getAnnouncementList } from "oj/api"
 import Pagination from "shared/components/Pagination.vue"
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 import { parseTime } from "utils/functions"
 import { renderTableTitle } from "utils/renders"
 import { Announcement } from "utils/types"
@@ -12,6 +12,9 @@ const total = ref(0)
 const content = ref("")
 const title = ref("")
 const [show, toggleShow] = useToggle(false)
+
+const { isDesktop } = useBreakpoints()
+
 const query = reactive({
   limit: 10,
   page: 1,

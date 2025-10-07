@@ -97,4 +97,3 @@ const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
   line-height: 1.5;
 }
 </style>
-

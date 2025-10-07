@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
-import { problem } from "oj/composables/problem"
+import { storeToRefs } from "pinia"
+import { useProblemStore } from "oj/store/problem"
 import { DIFFICULTY, JUDGE_STATUS } from "utils/constants"
 import { getACRateNumber, getTagColor, parseTime } from "utils/functions"
 import { Pie } from "vue-chartjs"
@@ -13,10 +14,15 @@ import {
   Colors,
 } from "chart.js"
 import { getProblemBeatRate } from "oj/api"
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 
 // 仅注册饼图所需的 Chart.js 组件
 ChartJS.register(ArcElement, Title, Tooltip, Legend, Colors)
+
+const problemStore = useProblemStore()
+const { problem } = storeToRefs(problemStore)
+
+const { isDesktop } = useBreakpoints()
 
 const beatRate = ref("0")
 
@@ -119,18 +125,16 @@ onMounted(getBeatRate)
   <n-grid :cols="isDesktop ? 4 : 2" :x-gap="10" :y-gap="10" class="cards">
     <n-gi v-for="item in numbers" :key="item.content">
       <n-card hoverable>
-        <n-flex align="center">
+        <n-flex vertical align="center">
           <Icon v-if="isDesktop" :icon="item.icon" width="40" />
-          <div>
-            <n-h2 class="number">
-              <n-number-animation
-                :to="item.title"
-                :precision="item.int ? 0 : 2"
-              />
-              <span v-if="item.suffix">{{ item.suffix }}</span>
-            </n-h2>
-            <n-h4 class="number-label">{{ item.content }}</n-h4>
-          </div>
+          <n-h2 class="number">
+            <n-number-animation
+              :to="item.title"
+              :precision="item.int ? 0 : 2"
+            />
+            <span v-if="item.suffix">{{ item.suffix }}</span>
+          </n-h2>
+          <n-h4 class="number-label">{{ item.content }}</n-h4>
         </n-flex>
       </n-card>
     </n-gi>
@@ -145,7 +149,7 @@ onMounted(getBeatRate)
 }
 
 .number {
-  margin-bottom: 0;
+  margin: 0;
   font-weight: bold;
 }
 

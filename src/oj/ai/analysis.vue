@@ -50,7 +50,7 @@
   </n-spin>
 </template>
 <script setup lang="ts">
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 import { formatISO, sub, type Duration } from "date-fns"
 import TagsRadarChart from "./components/TagsRadarChart.vue"
 import DifficultyGradeChart from "./components/DifficultyGradeChart.vue"
@@ -67,6 +67,8 @@ import { useAIStore } from "../store/ai"
 import { DURATION_OPTIONS } from "utils/constants"
 
 const aiStore = useAIStore()
+
+const { isDesktop } = useBreakpoints()
 
 const options = [...DURATION_OPTIONS]
 

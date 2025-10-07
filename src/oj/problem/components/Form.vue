@@ -1,11 +1,12 @@
 <script setup lang="ts">
+import { storeToRefs } from "pinia"
 import { copyToClipboard } from "utils/functions"
-import { code } from "oj/composables/code"
-import { problem } from "oj/composables/problem"
+import { useCodeStore } from "oj/store/code"
+import { useProblemStore } from "oj/store/problem"
 import { injectSyncStatus } from "oj/composables/syncStatus"
 import { SYNC_MESSAGES } from "shared/composables/sync"
 import { LANGUAGE_SHOW_VALUE, SOURCES, STORAGE_KEY } from "utils/constants"
-import { isDesktop, isMobile } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 import { useUserStore } from "shared/store/user"
 import storage from "utils/storage"
 import { LANGUAGE } from "utils/types"
@@ -34,6 +35,12 @@ const message = useMessage()
 const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
+const codeStore = useCodeStore()
+const problemStore = useProblemStore()
+const { code } = storeToRefs(codeStore)
+const { problem } = storeToRefs(problemStore)
+
+const { isMobile, isDesktop } = useBreakpoints()
 
 const syncEnabled = ref(false) // 用户点击按钮后的意图状态（想要开启/关闭）
 const statisticPanel = ref(false)
@@ -66,12 +73,15 @@ const languageOptions: DropdownOption[] = problem.value!.languages.map(
 )
 
 const copy = async () => {
-  const success = await copyToClipboard(code.value)
+  const success = await copyToClipboard(codeStore.code.value)
   message[success ? "success" : "error"](`代码复制${success ? "成功" : "失败"}`)
 }
 
 const reset = () => {
-  code.value = problem.value!.template[code.language] || SOURCES[code.language]
+  codeStore.setCode(
+    problem.value!.template[codeStore.code.language] ||
+      SOURCES[codeStore.code.language],
+  )
   storage.remove(props.storageKey)
   message.success("代码重置成功")
 }
@@ -121,7 +131,7 @@ defineExpose({
 <template>
   <n-flex align="center">
     <n-select
-      v-model:value="code.language"
+      v-model:value="codeStore.code.language"
       style="width: 120px"
       :size="buttonSize"
       :options="languageOptions"

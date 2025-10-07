@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 
 interface Props {
   total: number
@@ -15,6 +15,8 @@ const props = withDefaults(defineProps<Props>(), {
 const emit = defineEmits(["update:limit", "update:page"])
 
 const route = useRoute()
+
+const { isDesktop } = useBreakpoints()
 
 const limit = ref(props.limit)
 const page = ref(props.page)

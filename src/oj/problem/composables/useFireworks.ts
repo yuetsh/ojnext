@@ -14,7 +14,12 @@ export function useFireworks() {
       () => {
         const duration = 3000
         const animationEnd = Date.now() + duration
-        const defaults = { startVelocity: 30, spread: 360, ticks: 60, zIndex: 0 }
+        const defaults = {
+          startVelocity: 30,
+          spread: 360,
+          ticks: 60,
+          zIndex: 0,
+        }
 
         const interval: any = setInterval(() => {
           const timeLeft = animationEnd - Date.now()
@@ -46,7 +51,11 @@ export function useFireworks() {
         }
 
         function fire(particleRatio: number, opts: any) {
-          confetti({ ...defaults, ...opts, particleCount: Math.floor(200 * particleRatio) })
+          confetti({
+            ...defaults,
+            ...opts,
+            particleCount: Math.floor(200 * particleRatio),
+          })
         }
 
         fire(0.25, { spread: 26, startVelocity: 55 })
@@ -124,7 +133,14 @@ export function useFireworks() {
               x: Math.random(),
               y: Math.random() - 0.2,
             },
-            colors: ["#ff0000", "#00ff00", "#0000ff", "#ffff00", "#ff00ff", "#00ffff"],
+            colors: [
+              "#ff0000",
+              "#00ff00",
+              "#0000ff",
+              "#ffff00",
+              "#ff00ff",
+              "#00ffff",
+            ],
           })
         }, 200)
       },
@@ -201,7 +217,8 @@ export function useFireworks() {
     ]
 
     // 随机选择一种效果
-    const randomEffect = fireworkTypes[Math.floor(Math.random() * fireworkTypes.length)]
+    const randomEffect =
+      fireworkTypes[Math.floor(Math.random() * fireworkTypes.length)]
     randomEffect()
   }
 

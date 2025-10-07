@@ -2,7 +2,7 @@
 import { Icon } from "@iconify/vue"
 import { NH2, NH3 } from "naive-ui"
 import { getProfile } from "shared/api"
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 import { durationToDays, parseTime } from "utils/functions"
 import { Profile } from "utils/types"
 import { getMetrics } from "../api"
@@ -17,6 +17,8 @@ const toLatestAt = ref("")
 const learnDuration = ref("")
 const [loading, toggle] = useToggle()
 const [show, toggleShow] = useToggle(false)
+
+const { isDesktop } = useBreakpoints()
 
 async function init() {
   toggle(true)

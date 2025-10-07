@@ -2,7 +2,6 @@
 import { darkTheme, dateZhCN, zhCN } from "naive-ui"
 import "normalize.css"
 import "./index.css"
-
 const isDark = useDark()
 
 // 延迟加载 highlight.js，避免阻塞首屏

@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
 import { useThemeVars } from "naive-ui"
-import { code } from "oj/composables/code"
-import { problem } from "oj/composables/problem"
+import { storeToRefs } from "pinia"
+import { useCodeStore } from "oj/store/code"
+import { useProblemStore } from "oj/store/problem"
 import { createTestSubmission } from "utils/judge"
 import { Problem, ProblemStatus } from "utils/types"
 import Copy from "shared/components/Copy.vue"
@@ -16,6 +17,10 @@ type Sample = Problem["samples"][number] & {
 
 const theme = useThemeVars()
 const style = computed(() => "color: " + theme.value.primaryColor)
+
+const codeStore = useCodeStore()
+const problemStore = useProblemStore()
+const { problem } = storeToRefs(problemStore)
 
 // 判断用户是否尝试过但未通过
 // my_status === 0: 已通过
@@ -46,7 +51,7 @@ async function test(sample: Sample, index: number) {
     }
     return sample
   })
-  const res = await createTestSubmission(code, sample.input)
+  const res = await createTestSubmission(codeStore.code, sample.input)
   samples.value = samples.value.map((sample) => {
     if (sample.id === index) {
       const status =

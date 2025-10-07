@@ -14,7 +14,7 @@ import {
 } from "utils/functions"
 import { Submission } from "utils/types"
 import SubmissionResultTag from "shared/components/SubmissionResultTag.vue"
-import { isDesktop, isMobile } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 
 const props = defineProps<{
   submissionID: string
@@ -25,6 +25,8 @@ const props = defineProps<{
 
 const router = useRouter()
 const message = useMessage()
+
+const { isMobile, isDesktop } = useBreakpoints()
 
 const submission = ref<Submission>()
 
@@ -69,7 +71,7 @@ function copyToCat() {
 async function copyToProblem() {
   const success = await copyToClipboard(submission.value!.code)
   if (success) {
-    message.success("代码复制成功")
+    message.success("代码复制成功，需要手动粘贴到题目")
   } else {
     message.error("代码复制失败")
   }
@@ -115,7 +117,7 @@ onMounted(init)
       </n-alert>
       <n-flex :vertical="isDesktop" justify="center">
         <n-button secondary @click="copyToCat">复制到自测猫</n-button>
-        <n-button secondary @click="copyToProblem">回到题目</n-button>
+        <n-button secondary @click="copyToProblem">复制回到题目</n-button>
       </n-flex>
     </n-flex>
     <n-card embedded>

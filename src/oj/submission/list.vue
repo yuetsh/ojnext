@@ -6,7 +6,7 @@ import { parseTime } from "utils/functions"
 import { LANGUAGE, SubmissionListItem } from "utils/types"
 import Pagination from "shared/components/Pagination.vue"
 import SubmissionResultTag from "shared/components/SubmissionResultTag.vue"
-import { isDesktop, isMobile } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 import { usePagination } from "shared/composables/pagination"
 import { useUserStore } from "shared/store/user"
 import { LANGUAGE_SHOW_VALUE } from "utils/constants"
@@ -29,6 +29,8 @@ const route = useRoute()
 const router = useRouter()
 const userStore = useUserStore()
 const message = useMessage()
+
+const { isMobile, isDesktop } = useBreakpoints()
 
 const submissions = ref<SubmissionListItem[]>([])
 const total = ref(0)

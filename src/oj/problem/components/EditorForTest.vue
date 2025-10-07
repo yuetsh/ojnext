@@ -1,6 +1,7 @@
 <script lang="ts" setup>
-import { code, input, output } from "oj/composables/code"
-import { problem } from "oj/composables/problem"
+import { storeToRefs } from "pinia"
+import { useCodeStore } from "oj/store/code"
+import { useProblemStore } from "oj/store/problem"
 import { SOURCES } from "utils/constants"
 import CodeEditor from "shared/components/CodeEditor.vue"
 import storage from "utils/storage"
@@ -13,17 +14,24 @@ const message = useMessage()
 const route = useRoute()
 const contestID = !!route.params.contestID ? route.params.contestID : null
 
+const codeStore = useCodeStore()
+const problemStore = useProblemStore()
+const { input, output } = storeToRefs(codeStore)
+const { problem } = storeToRefs(problemStore)
+
 const storageKey = computed(
   () =>
-    `problem_${problem.value!._id}_contest_${contestID}_lang_${code.language}`,
+    `problem_${problem.value!._id}_contest_${contestID}_lang_${codeStore.code.language}`,
 )
 
 onMounted(() => {
   if (storage.get(storageKey.value)) {
-    code.value = storage.get(storageKey.value)
+    codeStore.setCode(storage.get(storageKey.value))
   } else {
-    code.value =
-      problem.value!.template[code.language] || SOURCES[code.language]
+    codeStore.setCode(
+      problem.value!.template[codeStore.code.language] ||
+        SOURCES[codeStore.code.language],
+    )
   }
 })
 
@@ -36,26 +44,31 @@ function changeLanguage(v: string) {
     storage.get(storageKey.value) &&
     storageKey.value.split("_").pop() === v
   ) {
-    code.value = storage.get(storageKey.value)
+    codeStore.setCode(storage.get(storageKey.value))
   } else {
-    code.value =
-      problem.value!.template[code.language] || SOURCES[code.language]
+    codeStore.setCode(
+      problem.value!.template[codeStore.code.language] ||
+        SOURCES[codeStore.code.language],
+    )
   }
 }
 
 const copy = async () => {
-  const success = await copyToClipboard(code.value)
+  const success = await copyToClipboard(codeStore.code.value)
   message[success ? "success" : "error"](`代码复制${success ? "成功" : "失败"}`)
 }
 
 const reset = () => {
-  code.value = problem.value!.template[code.language] || SOURCES[code.language]
+  codeStore.setCode(
+    problem.value!.template[codeStore.code.language] ||
+      SOURCES[codeStore.code.language],
+  )
   storage.remove(storageKey.value)
   message.success("代码重置成功")
 }
 
 const runCode = async () => {
-  const res = await createTestSubmission(code, input.value)
+  const res = await createTestSubmission(codeStore.code, input.value)
   output.value = res.output
 }
 
@@ -81,7 +94,7 @@ const languageOptions: DropdownOption[] = problem.value!.languages.map(
         <n-flex vertical>
           <n-flex align="center">
             <n-select
-              v-model:value="code.language"
+              v-model:value="codeStore.code.language"
               style="width: 120px"
               :options="languageOptions"
               @update:value="changeLanguage"
@@ -93,9 +106,9 @@ const languageOptions: DropdownOption[] = problem.value!.languages.map(
             </n-button>
           </n-flex>
           <CodeEditor
-            v-model:value="code.value"
+            v-model:value="codeStore.code.value"
             @update:model-value="changeCode"
-            :language="code.language"
+            :language="codeStore.code.language"
           />
         </n-flex>
       </template>

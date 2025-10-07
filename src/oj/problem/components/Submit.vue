@@ -1,14 +1,15 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
+import { storeToRefs } from "pinia"
 import { getComment, submitCode } from "oj/api"
-import { code } from "oj/composables/code"
-import { problem } from "oj/composables/problem"
+import { useCodeStore } from "oj/store/code"
+import { useProblemStore } from "oj/store/problem"
 import { useFireworks } from "oj/problem/composables/useFireworks"
 import { useSubmissionMonitor } from "oj/problem/composables/useSubmissionMonitor"
 import { SubmissionStatus } from "utils/constants"
 import type { SubmitCodePayload } from "utils/types"
 import SubmissionResult from "./SubmissionResult.vue"
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 import { useUserStore } from "shared/store/user"
 
 // ==================== 异步组件 ====================
@@ -18,9 +19,14 @@ const ProblemComment = defineAsyncComponent(
 
 // ==================== 基础状态 ====================
 const userStore = useUserStore()
+const codeStore = useCodeStore()
+const problemStore = useProblemStore()
+const { problem } = storeToRefs(problemStore)
 const route = useRoute()
 const contestID = <string>route.params.contestID ?? ""
 const [commentPanel] = useToggle()
+
+const { isDesktop } = useBreakpoints()
 
 // ==================== 烟花效果 ====================
 const { celebrate } = useFireworks()
@@ -58,7 +64,7 @@ const { start: showCommentPanelDelayed } = useTimeoutFn(
 const submitDisabled = computed(() => {
   return (
     !userStore.isAuthed ||
-    code.value.trim() === "" ||
+    codeStore.code.value.trim() === "" ||
     isProcessing.value ||
     isCooldown.value
   )
@@ -87,8 +93,8 @@ async function submit() {
   // 1. 构建提交数据
   const data: SubmitCodePayload = {
     problem_id: problem.value!.id,
-    language: code.language,
-    code: code.value,
+    language: codeStore.code.language,
+    code: codeStore.code.value,
   }
   if (contestID) {
     data.contest_id = parseInt(contestID)

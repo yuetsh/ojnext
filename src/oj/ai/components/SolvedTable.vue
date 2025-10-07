@@ -13,10 +13,12 @@ import { NButton } from "naive-ui"
 import TagTitle from "./TagTitle.vue"
 import { SolvedProblem } from "utils/types"
 import { useAIStore } from "oj/store/ai"
-import { isDesktop } from "shared/composables/breakpoints"
+import { useBreakpoints } from "shared/composables/breakpoints"
 
 const router = useRouter()
 const aiStore = useAIStore()
+
+const { isDesktop } = useBreakpoints()
 
 const solvedProblems = computed(() => aiStore.detailsData.solved)
 
