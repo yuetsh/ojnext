@@ -62,9 +62,7 @@ export class BaseWebSocket<T extends WebSocketMessage = WebSocketMessage> {
   public status: Ref<ConnectionStatus> = ref<ConnectionStatus>("disconnected")
 
   constructor(config: WebSocketConfig) {
-    const protocol = window.location.protocol === "https:" ? "wss:" : "ws:"
-    const host = window.location.host
-    this.url = `${protocol}//${host}/ws/${config.path}/`
+    this.url = import.meta.env.PUBLIC_WS_URL
 
     this.maxReconnectAttempts = config.maxReconnectAttempts ?? 5
     this.reconnectDelay = config.reconnectDelay ?? 1000

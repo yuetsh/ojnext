@@ -10,19 +10,15 @@ export default defineConfig(({ envMode }) => {
     mode: envMode,
   })
 
-  const url = rawPublicVars["PUBLIC_OJ_URL"]
   const proxyConfig = {
-    target: url,
-    headers: { Referer: url },
+    target: rawPublicVars["PUBLIC_OJ_URL"],
     changeOrigin: true,
   }
   
-  // WebSocket 代理配置（开发环境 Daphne 在 8001 端口）
   const wsProxyConfig = {
-    target: url.replace(':8000', ':8001').replace('http:', 'ws:'), // http://localhost:8001 → ws://localhost:8001
-    ws: true, // 启用 WebSocket 代理
+    target: rawPublicVars["PUBLIC_WS_URL"],
+    ws: true,
     changeOrigin: true,
-    logLevel: 'debug' as const, // 显示代理日志
   }
   return {
     plugins: [pluginVue()],
@@ -149,7 +145,7 @@ export default defineConfig(({ envMode }) => {
       proxy: {
         "/api": proxyConfig,
         "/public": proxyConfig,
-        "/ws": wsProxyConfig, // WebSocket 使用单独的代理配置
+        "/ws": wsProxyConfig,
       },
     },
   }
