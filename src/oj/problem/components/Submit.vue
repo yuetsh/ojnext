@@ -9,6 +9,10 @@ import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
 import { Submission, SubmitCodePayload } from "utils/types"
 import SubmissionResultTag from "shared/components/SubmissionResultTag.vue"
 import { isDesktop } from "shared/composables/breakpoints"
+import {
+  useSubmissionWebSocket,
+  type SubmissionUpdate,
+} from "shared/composables/websocket"
 import { useUserStore } from "shared/store/user"
 
 const ProblemComment = defineAsyncComponent(
@@ -39,7 +43,7 @@ const { start: showCommentPanel } = useTimeoutFn(
   { immediate: false },
 )
 
-const { start: fetchSubmission } = useTimeoutFn(
+const { start: fetchSubmission, stop: stopFetchSubmission } = useTimeoutFn(
   async () => {
     const res = await getSubmission(submissionId.value)
     submission.value = res.data
@@ -57,45 +61,76 @@ const { start: fetchSubmission } = useTimeoutFn(
   { immediate: false },
 )
 
+// WebSocket 消息处理器
+const handleSubmissionUpdate = (data: SubmissionUpdate) => {
+  console.log("[Submit] 收到提交更新:", data)
+  
+  if (data.submission_id !== submissionId.value) {
+    console.log(`[Submit] 提交ID不匹配: 期望=${submissionId.value}, 实际=${data.submission_id}`)
+    return
+  }
+
+  if (!submission.value) {
+    submission.value = {} as Submission
+  }
+
+  submission.value.result = data.result as Submission["result"]
+
+  // 判题完成，获取完整提交详情
+  if (data.status === "finished") {
+    console.log("[Submit] 判题完成，获取详细信息")
+    getSubmission(submissionId.value).then((res) => {
+      submission.value = res.data
+      submitted.value = false
+      
+      // 判题完成后，15 分钟无新提交则断开 WebSocket 连接
+      // 考虑到学生换题间隔约 10 分钟，15 分钟可覆盖大部分场景
+      scheduleDisconnect(15 * 60 * 1000)
+    })
+  } else if (data.status === "error") {
+    console.log("[Submit] 判题出错")
+    submitted.value = false
+    // 判题出错后，15 分钟无新提交则断开 WebSocket 连接
+    scheduleDisconnect(15 * 60 * 1000)
+  }
+}
+
+// 初始化 WebSocket（按需连接模式）
+const {
+  connect,
+  subscribe,
+  scheduleDisconnect,
+  cancelScheduledDisconnect,
+  status: wsStatus,
+} = useSubmissionWebSocket(handleSubmissionUpdate)
+
+// 组件卸载时停止轮询
+onUnmounted(() => {
+  stopFetchSubmission()
+})
+
 const judging = computed(
-  () =>
-    !!(
-      submission.value && submission.value.result === SubmissionStatus.judging
-    ),
+  () => submission.value?.result === SubmissionStatus.judging,
 )
 
 const pending = computed(
-  () =>
-    !!(
-      submission.value && submission.value.result === SubmissionStatus.pending
-    ),
+  () => submission.value?.result === SubmissionStatus.pending,
 )
 
 const submitting = computed(
-  () =>
-    !!(
-      submission.value &&
-      submission.value.result === SubmissionStatus.submitting
-    ),
+  () => submission.value?.result === SubmissionStatus.submitting,
 )
 
 const submitDisabled = computed(() => {
-  if (!userStore.isAuthed) {
-    return true
-  }
-  if (code.value.trim() === "") {
-    return true
-  }
-  if (judging.value || pending.value || submitting.value) {
-    return true
-  }
-  if (submitted.value) {
-    return true
-  }
-  if (isPending.value) {
-    return true
-  }
-  return false
+  return (
+    !userStore.isAuthed ||
+    code.value.trim() === "" ||
+    judging.value ||
+    pending.value ||
+    submitting.value ||
+    submitted.value ||
+    isPending.value
+  )
 })
 
 const submitLabel = computed(() => {
@@ -115,43 +150,39 @@ const submitLabel = computed(() => {
 })
 
 const msg = computed(() => {
+  if (!submission.value) return ""
+
   let msg = ""
-  const result = submission.value && submission.value.result
+  const result = submission.value.result
+
   if (
     result === SubmissionStatus.compile_error ||
     result === SubmissionStatus.runtime_error
   ) {
     msg += "请仔细检查，看看代码的格式是不是写错了！\n\n"
   }
-  if (
-    submission.value &&
-    submission.value.statistic_info &&
-    submission.value.statistic_info.err_info
-  ) {
+
+  if (submission.value.statistic_info?.err_info) {
     msg += submission.value.statistic_info.err_info
   }
+
   return msg
 })
 
 const infoTable = computed(() => {
+  if (!submission.value?.info?.data?.length) return []
+
+  const result = submission.value.result
   if (
-    submission.value &&
-    submission.value.result !== SubmissionStatus.accepted &&
-    submission.value.result !== SubmissionStatus.compile_error &&
-    submission.value.result !== SubmissionStatus.runtime_error &&
-    submission.value.info &&
-    submission.value.info.data &&
-    submission.value.info.data.length
+    result === SubmissionStatus.accepted ||
+    result === SubmissionStatus.compile_error ||
+    result === SubmissionStatus.runtime_error
   ) {
-    const data = submission.value.info.data
-    if (data.some((item) => item.result === 0)) {
-      return submission.value.info.data
-    } else {
-      return []
-    }
-  } else {
     return []
   }
+
+  const data = submission.value.info.data
+  return data.some((item) => item.result === 0) ? data : []
 })
 
 const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
@@ -175,9 +206,8 @@ const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
 ]
 
 async function submit() {
-  if (!userStore.isAuthed) {
-    return
-  }
+  if (!userStore.isAuthed) return
+
   const data: SubmitCodePayload = {
     problem_id: problem.value!.id,
     language: code.language,
@@ -186,35 +216,73 @@ async function submit() {
   if (contestID) {
     data.contest_id = parseInt(contestID)
   }
+
   submission.value = { result: 9 } as Submission
   const res = await submitCode(data)
   submissionId.value = res.data.submission_id
-  // 防止重复提交
+  console.log(`[Submit] 代码已提交: ID=${submissionId.value}`)
   submitPending()
   submitted.value = true
-  // 查询结果
-  fetchSubmission()
+
+  // 取消之前安排的断开倒计时（如果有新提交）
+  cancelScheduledDisconnect()
+
+  // 按需连接 WebSocket
+  if (wsStatus.value !== "connected") {
+    console.log(`[Submit] WebSocket 未连接，正在连接... 当前状态: ${wsStatus.value}`)
+    connect()
+  } else {
+    console.log("[Submit] WebSocket 已连接，直接订阅")
+  }
+
+  // 优先使用 WebSocket 实时更新
+  if (wsStatus.value === "connected" || wsStatus.value === "connecting") {
+    // 等待连接完成后订阅
+    const checkConnection = setInterval(() => {
+      if (wsStatus.value === "connected") {
+        clearInterval(checkConnection)
+        console.log(`[Submit] 订阅提交更新: ID=${submissionId.value}`)
+        subscribe(submissionId.value)
+      }
+    }, 100)
+
+    // 5 秒后如果还在判题中，降级到轮询作为保险
+    // 考虑到判题一般 1-3 秒完成，5 秒足以覆盖绝大部分情况
+    setTimeout(() => {
+      clearInterval(checkConnection)
+      if (
+        submission.value &&
+        (submission.value.result === SubmissionStatus.judging ||
+          submission.value.result === SubmissionStatus.pending ||
+          submission.value.result === 9)
+      ) {
+        console.log("WebSocket 未及时响应，降级到轮询模式")
+        fetchSubmission()
+      }
+    }, 5000)
+  } else {
+    // WebSocket 连接失败，直接使用轮询
+    fetchSubmission()
+  }
 }
 
 watch(
-  () => submission?.value?.result,
+  () => submission.value?.result,
   (result) => {
-    if (result === SubmissionStatus.accepted) {
-      // 刷新题目状态
-      problem.value!.my_status = 0
-      // 放烟花
-      confetti({
-        particleCount: 300,
-        startVelocity: 30,
-        gravity: 0.5,
-        spread: 350,
-        origin: { x: 0.5, y: 0.4 },
-      })
-      // 题目在第一次完成之后，弹出点评框
-      if (!contestID) {
-        showCommentPanel()
-      }
-    }
+    if (result !== SubmissionStatus.accepted) return
+
+    // 刷新题目状态
+    problem.value!.my_status = 0
+    // 放烟花
+    confetti({
+      particleCount: 300,
+      startVelocity: 30,
+      gravity: 0.5,
+      spread: 350,
+      origin: { x: 0.5, y: 0.4 },
+    })
+    // 题目在第一次完成之后，弹出点评框
+    if (!contestID) showCommentPanel()
   },
 )
 </script>
