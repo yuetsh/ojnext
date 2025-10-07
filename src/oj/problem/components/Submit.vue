@@ -144,7 +144,7 @@ const submitLabel = computed(() => {
     return "正在评分"
   }
   if (isPending.value) {
-    return "运行结果"
+    return "正在冷却"
   }
   return "提交代码"
 })
