@@ -1,7 +1,7 @@
 <template>
   <n-spin :show="aiStore.loading.fetching" :delay="50">
-    <n-grid :cols="isDesktop ? 5 : 1" :x-gap="20" :y-gap="20">
-      <n-gi :span="2">
+    <n-grid :cols="isDesktop ? 2 : 1" :x-gap="20" :y-gap="20">
+      <n-gi :span="1">
         <n-flex vertical size="large">
           <n-flex align="center" justify="space-between">
             <n-h3 style="margin: 0">请选择时间范围，智能分析学习情况</n-h3>
@@ -29,7 +29,7 @@
           <SolvedTable />
         </n-flex>
       </n-gi>
-      <n-gi :span="3">
+      <n-gi :span="1">
         <n-flex vertical size="large">
           <Heatmap />
           <ProgressChart />
@@ -38,7 +38,7 @@
           <AI v-if="aiStore.detailsData.solved.length >= 10" />
         </n-flex>
       </n-gi>
-      <n-gi :span="5">
+      <n-gi :span="2">
         <AI
           v-if="
             aiStore.detailsData.solved.length > 0 &&
