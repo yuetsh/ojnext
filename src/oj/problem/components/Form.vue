@@ -194,7 +194,7 @@ defineExpose({
           "
           type="warning"
         >
-          {{ SYNC_MESSAGES.STUDENT_LEFT }}
+          {{ SYNC_MESSAGES.STUDENT_LEFT(syncStatus.lastLeftUser.value?.name) }}
         </n-tag>
       </template>
     </template>

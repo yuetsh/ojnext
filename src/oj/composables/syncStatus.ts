@@ -6,8 +6,9 @@ import { ref, provide, inject } from "vue"
  */
 
 export interface SyncStatusState {
-  otherUser?: { name: string; isSuperAdmin: boolean }
   hadConnection: boolean
+  otherUser?: { name: string; isSuperAdmin: boolean }
+  lastLeftUser?: { name: string; isSuperAdmin: boolean } // 保存离开之人的信息
 }
 
 // 提供/注入的 key
@@ -20,8 +21,13 @@ export const SYNC_STATUS_KEY = Symbol("syncStatus")
 export function createSyncStatus() {
   const otherUser = ref<{ name: string; isSuperAdmin: boolean }>()
   const hadConnection = ref(false)
+  const lastLeftUser = ref<{ name: string; isSuperAdmin: boolean }>()
 
   const setOtherUser = (user?: { name: string; isSuperAdmin: boolean }) => {
+    // 如果之前有其他用户，现在没有了，说明用户离开了
+    if (otherUser.value && !user) {
+      lastLeftUser.value = otherUser.value
+    }
     otherUser.value = user
     if (user) {
       hadConnection.value = true
@@ -31,11 +37,13 @@ export function createSyncStatus() {
   const reset = () => {
     otherUser.value = undefined
     hadConnection.value = false
+    lastLeftUser.value = undefined
   }
 
   return {
     otherUser,
     hadConnection,
+    lastLeftUser,
     setOtherUser,
     reset,
   }
