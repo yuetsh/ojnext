@@ -35,14 +35,14 @@
           <ProgressChart />
           <EfficiencyChart />
           <DurationChart />
-          <AI v-if="aiStore.detailsData.solved.length >= 10" />
+          <AI v-if="aiStore.detailsData.solved.length > 10" />
         </n-flex>
       </n-gi>
       <n-gi :span="2">
         <AI
           v-if="
             aiStore.detailsData.solved.length > 0 &&
-            aiStore.detailsData.solved.length < 10
+            aiStore.detailsData.solved.length <= 10
           "
         />
       </n-gi>
