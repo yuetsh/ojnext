@@ -42,7 +42,7 @@ export const SYNC_MESSAGES = {
   SYNC_ON: "断开同步",
   SYNC_OFF: "开启同步",
   SYNCING_WITH: (name: string) => `🔗 与 ${name} 同步中`,
-  STUDENT_LEFT: (name?: string) => name ? `💡 ${name} 已离开，可以关闭同步` : "💡 可以关闭同步",
+  STUDENT_LEFT: (name?: string) => name ? `💡 ${name}已离开` : "💡 可以关闭同步",
 } as const
 
 // 类型定义
