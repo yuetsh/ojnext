@@ -331,7 +331,7 @@ function type(status: ProblemStatus) {
 
 .content :deep(img) {
   max-width: 100%;
-  height: auto;
+  height: auto !important;
 }
 
 .content :deep(a) {
