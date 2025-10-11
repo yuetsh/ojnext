@@ -199,6 +199,8 @@ h2 {
 }
 
 .desc {
-  margin: 0;
+  margin: 0 auto;
+  word-wrap: break-word;
+  max-width: 100%;
 }
 </style>
