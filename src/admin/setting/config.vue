@@ -213,7 +213,7 @@ onMounted(() => {
         <n-switch v-model:value="websiteConfig.submission_list_show_all" />
       </n-flex>
       <n-flex align="center">
-        <span>启用右下角 AI 入口</span>
+        <span>启用AI小助手</span>
         <n-switch v-model:value="websiteConfig.enable_maxkb" />
       </n-flex>
     </n-flex>
