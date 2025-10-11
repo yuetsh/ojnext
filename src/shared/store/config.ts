@@ -10,6 +10,7 @@ export const useConfigStore = defineStore("config", () => {
     submission_list_show_all: true,
     allow_register: false,
     class_list: [],
+    enable_maxkb: true,
   })
   async function getConfig() {
     const res = await getWebsiteConfig()

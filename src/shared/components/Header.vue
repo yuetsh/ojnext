@@ -83,11 +83,6 @@ function renderIcon(icon: string) {
   return () => h(Icon, { icon, width: 24, height: 24 })
 }
 
-onMounted(() => {
-  userStore.getMyProfile()
-  configStore.getConfig()
-})
-
 const menus = computed<MenuOption[]>(() => [
   {
     label: () => h(RouterLink, { to: "/learn/01" }, { default: () => "自学" }),

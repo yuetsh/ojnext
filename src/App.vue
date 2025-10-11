@@ -2,7 +2,24 @@
 import { darkTheme, dateZhCN, zhCN } from "naive-ui"
 import "normalize.css"
 import "./index.css"
+import { useConfigStore } from "shared/store/config"
+import { useConfigUpdate } from "shared/composables/configUpdate"
+import { useMaxKB } from "shared/composables/maxkb"
+import { useUserStore } from "shared/store/user"
+
 const isDark = useDark()
+const configStore = useConfigStore()
+const userStore = useUserStore()
+
+// 初始化配置和实时更新
+onMounted(() => {
+  configStore.getConfig()
+  userStore.getMyProfile()
+})
+
+// 使用配置更新和 MaxKB 功能
+useConfigUpdate()
+useMaxKB()
 
 // 延迟加载 highlight.js，避免阻塞首屏
 const hljsInstance = ref<any>(null)

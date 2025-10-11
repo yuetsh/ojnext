@@ -340,6 +340,7 @@ export interface WebsiteConfig {
   allow_register: boolean
   submission_list_show_all: boolean
   class_list: string[] & never[]
+  enable_maxkb: boolean
 }
 
 export interface Server {

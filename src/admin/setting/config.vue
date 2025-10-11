@@ -2,6 +2,8 @@
 import { NButton, NTag } from "naive-ui"
 import { parseTime } from "utils/functions"
 import { Server } from "utils/types"
+import { useConfigStore } from "shared/store/config"
+import { useConfigWebSocket } from "shared/composables/websocket"
 import {
   deleteJudgeServer,
   editWebsite,
@@ -17,6 +19,8 @@ interface Testcase {
 }
 
 const message = useMessage()
+const configStore = useConfigStore()
+const { updateConfig } = useConfigWebSocket()
 
 const testcaseColumns: DataTableColumn<Testcase>[] = [
   { title: "测试用例 ID", key: "id" },
@@ -106,6 +110,7 @@ const websiteConfig = reactive({
   allow_register: true,
   submission_list_show_all: true,
   class_list: [],
+  enable_maxkb: true,
 })
 
 async function getWebsiteConfig() {
@@ -117,12 +122,18 @@ async function getWebsiteConfig() {
   websiteConfig.allow_register = res.data.allow_register
   websiteConfig.submission_list_show_all = res.data.submission_list_show_all
   websiteConfig.class_list = res.data.class_list
+  websiteConfig.enable_maxkb = res.data.enable_maxkb
 }
 
 async function saveWebsiteConfig() {
   await editWebsite(websiteConfig)
   message.success("网站配置保存成功")
   getWebsiteConfig()
+  configStore.getConfig()
+  
+  // 通过 WebSocket 广播配置变化，实现实时切换
+  updateConfig('enable_maxkb', websiteConfig.enable_maxkb)
+  updateConfig('submission_list_show_all', websiteConfig.submission_list_show_all)
 }
 
 async function deleteTestcase(id?: string) {
@@ -197,6 +208,10 @@ onMounted(() => {
       <n-flex align="center">
         <span>显示所有提交</span>
         <n-switch v-model:value="websiteConfig.submission_list_show_all" />
+      </n-flex>
+      <n-flex align="center">
+        <span>启用右下角 AI 入口</span>
+        <n-switch v-model:value="websiteConfig.enable_maxkb" />
       </n-flex>
     </n-flex>
   </n-card>

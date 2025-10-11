@@ -410,3 +410,63 @@ export function createWebSocketComposable<T extends WebSocketMessage>(
     removeHandler: (h: MessageHandler<T>) => ws.removeHandler(h),
   }
 }
+
+/**
+ * 配置更新消息类型
+ */
+export interface ConfigUpdate extends WebSocketMessage {
+  type: "config_update"
+  key: string
+  value: any
+}
+
+/**
+ * 配置 WebSocket 连接管理类
+ */
+class ConfigWebSocket extends BaseWebSocket<ConfigUpdate> {
+  constructor() {
+    super({
+      path: "config",
+    })
+  }
+
+  /**
+   * 发送配置更新
+   */
+  updateConfig(key: string, value: any) {
+    this.send({
+      type: "config_update",
+      key,
+      value,
+    })
+  }
+}
+
+/**
+ * 用于组件中使用配置 WebSocket 的 Composable
+ */
+export function useConfigWebSocket(handler?: MessageHandler<ConfigUpdate>) {
+  const ws = new ConfigWebSocket()
+
+  onMounted(() => {
+    if (handler) {
+      ws.addHandler(handler)
+    }
+  })
+
+  onUnmounted(() => {
+    if (handler) {
+      ws.removeHandler(handler)
+    }
+    ws.disconnect()
+  })
+
+  return {
+    connect: () => ws.connect(),
+    disconnect: () => ws.disconnect(),
+    updateConfig: (key: string, value: any) => ws.updateConfig(key, value),
+    status: ws.status,
+    addHandler: (h: MessageHandler<ConfigUpdate>) => ws.addHandler(h),
+    removeHandler: (h: MessageHandler<ConfigUpdate>) => ws.removeHandler(h),
+  }
+}
