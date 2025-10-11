@@ -204,7 +204,6 @@
 - `GET /api/admin/versions` - 版本信息
 
 ### 6. 题目管理相关（admin）
-- `POST /api/admin/compile_spj` - 编译Special Judge
 - `POST /api/admin/export_problem` - 导出题目
 - `POST /api/admin/import_problem` - 导入题目
 - `POST /api/admin/import_fps` - 导入FPS格式题目
@@ -278,7 +277,6 @@
 - **版本信息**: versions（显示系统版本）
 - **FPS导入**: import_fps（特定格式题目导入）
 - **文件上传**: upload_file（目前只有图片上传）
-- **Special Judge编译**: compile_spj（高级题目功能）
 
 ### 4. 可选功能
 - **生成用户**: generate_user（批量生成测试用户）

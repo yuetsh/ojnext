@@ -61,10 +61,6 @@ const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
     { input: "", output: "" },
     { input: "", output: "" },
   ],
-  spj: false,
-  spj_language: "",
-  spj_code: "",
-  spj_compile_ok: false,
   test_case_id: "",
   test_case_score: [],
   rule_type: "ACM",
@@ -142,10 +138,6 @@ async function getProblemDetail() {
     problem.value.template = data.template
     problem.value.samples = data.samples
     problem.value.samples = data.samples
-    problem.value.spj = data.spj
-    problem.value.spj_language = data.spj_language
-    problem.value.spj_code = data.spj_code
-    problem.value.spj_compile_ok = data.spj_compile_ok
     problem.value.test_case_id = data.test_case_id
     problem.value.test_case_score = data.test_case_score
     problem.value.rule_type = data.rule_type
@@ -225,9 +217,6 @@ async function handleUploadTestcases({ file }: UploadCustomRequestOptions) {
     const testcases = res.data.info
     for (let file of testcases) {
       file.score = (100 / testcases.length).toFixed(0)
-      if (!file.output_name && problem.value.spj) {
-        file.output_name = "-"
-      }
     }
     problem.value.test_case_score = testcases
     problem.value.test_case_id = res.data.id

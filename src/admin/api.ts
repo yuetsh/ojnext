@@ -134,7 +134,6 @@ export async function uploadImage(file: File): Promise<string> {
 export function uploadTestcases(file: File) {
   const form = new window.FormData()
   form.append("file", file)
-  form.append("spj", "false")
   return http.post<TestcaseUploadedReturns>("admin/test_case", form, {
     headers: { "content-type": "multipart/form-data" },
   })

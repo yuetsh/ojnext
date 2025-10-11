@@ -81,7 +81,6 @@ export interface Tag {
 export interface TestcaseUploadedReturns {
   id: string
   info: Testcase[]
-  spj: boolean
 }
 
 export interface Testcase {
@@ -115,8 +114,6 @@ export interface Problem {
     output: string
     io_mode: string
   }
-  spj: boolean
-  spj_language: string
   rule_type: string
   difficulty: "Low" | "Mid" | "High"
   source: string
@@ -135,9 +132,6 @@ export interface Problem {
 export type AdminProblem = Problem & AlterProblem
 
 interface AlterProblem {
-  spj_language: string
-  spj_code: string
-  spj_compile_ok: boolean
   test_case_id: string
   test_case_score: Testcase[]
   contest_id?: string
