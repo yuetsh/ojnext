@@ -313,7 +313,6 @@ class SubmissionWebSocket extends BaseWebSocket<SubmissionUpdate> {
    * 订阅特定提交的更新
    */
   subscribe(submissionId: string) {
-    console.log(`[WebSocket] 发送订阅请求: submission_id=${submissionId}`)
     const success = this.send({
       type: "subscribe",
       submission_id: submissionId,

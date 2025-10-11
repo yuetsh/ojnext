@@ -108,11 +108,7 @@ watch(isMobile, (value) => {
 </script>
 
 <template>
-  <n-grid
-    v-if="problem"
-    x-gap="16"
-    :cols="screenModeStore.isBothMode ? 2 : 1"
-  >
+  <n-grid v-if="problem" x-gap="16" :cols="screenModeStore.isBothMode ? 2 : 1">
     <n-gi :span="isDesktop ? 1 : 2" v-if="shouldShowProblem">
       <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
         <n-tabs v-model:value="currentTab" type="segment">

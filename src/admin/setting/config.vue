@@ -130,10 +130,13 @@ async function saveWebsiteConfig() {
   message.success("网站配置保存成功")
   getWebsiteConfig()
   configStore.getConfig()
-  
+
   // 通过 WebSocket 广播配置变化，实现实时切换
-  updateConfig('enable_maxkb', websiteConfig.enable_maxkb)
-  updateConfig('submission_list_show_all', websiteConfig.submission_list_show_all)
+  updateConfig("enable_maxkb", websiteConfig.enable_maxkb)
+  updateConfig(
+    "submission_list_show_all",
+    websiteConfig.submission_list_show_all,
+  )
 }
 
 async function deleteTestcase(id?: string) {

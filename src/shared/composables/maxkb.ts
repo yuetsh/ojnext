@@ -1,14 +1,16 @@
 import { useConfigStore } from "shared/store/config"
-import { useConfigWebSocket, type ConfigUpdate } from "shared/composables/websocket"
+import {
+  useConfigWebSocket,
+  type ConfigUpdate,
+} from "shared/composables/websocket"
 
 export function useMaxKB() {
   const configStore = useConfigStore()
   const isLoaded = ref(false)
-  
+
   // 处理 WebSocket 配置更新 - 只处理 MaxKB 相关
   const handleConfigUpdate = (data: ConfigUpdate) => {
-    console.log("MaxKB 收到配置更新:", data)
-    if (data.key === 'enable_maxkb') {
+    if (data.key === "enable_maxkb") {
       if (data.value) {
         loadMaxKBScript()
       } else {
@@ -16,7 +18,7 @@ export function useMaxKB() {
       }
     }
   }
-  
+
   // 初始化 WebSocket
   const { connect } = useConfigWebSocket(handleConfigUpdate)
 
@@ -27,7 +29,9 @@ export function useMaxKB() {
       return
     }
 
-    const existingScript = document.querySelector(`script[src="${import.meta.env.PUBLIC_MAXKB_URL}"]`)
+    const existingScript = document.querySelector(
+      `script[src="${import.meta.env.PUBLIC_MAXKB_URL}"]`,
+    )
     if (existingScript) {
       isLoaded.value = true
       return
@@ -38,12 +42,11 @@ export function useMaxKB() {
     script.src = import.meta.env.PUBLIC_MAXKB_URL
     script.async = true
     script.defer = true
-    
+
     script.onload = () => {
       isLoaded.value = true
-      console.log("MaxKB script loaded successfully")
     }
-    
+
     script.onerror = () => {
       console.error("Failed to load MaxKB script")
     }
@@ -52,15 +55,41 @@ export function useMaxKB() {
   }
 
   const removeMaxKBScript = () => {
+    // 把 script 也删除
+    const script = document.querySelector(
+      `script[src="${import.meta.env.PUBLIC_MAXKB_URL}"]`,
+    )
+    if (script) {
+      script.remove()
+    }
+    // 等待DOM加载完成后删除所有id以"maxkb-"开头的元素
+    const removeMaxKBElements = () => {
+      // 查找所有id以"maxkb-"开头的元素
+      const elements = document.querySelectorAll('[id^="maxkb-"]')
+
+      elements.forEach((element) => {
+        element.remove()
+      })
+    }
+
+    // 如果DOM已经加载完成，直接执行删除
+    if (document.readyState === "complete") {
+      removeMaxKBElements()
+    } else {
+      // 等待DOM加载完成
+      window.addEventListener("load", removeMaxKBElements, { once: true })
+    }
+
+    // 移除MaxKB脚本标签
+    const existingScript = document.querySelector(
+      `script[src="${import.meta.env.PUBLIC_MAXKB_URL}"]`,
+    )
+    if (existingScript) {
+      existingScript.remove()
+    }
+
+    // 重置加载状态
     isLoaded.value = false
-    const maxkbChatButton = document.getElementById("maxkb-chat-button")
-    const maxkbChatContainer = document.getElementById("maxkb-chat-container")
-    if (maxkbChatButton) {
-      maxkbChatButton.remove()
-    }
-    if (maxkbChatContainer) {
-      maxkbChatContainer.remove()
-    }
   }
 
   // 连接 WebSocket
@@ -70,20 +99,19 @@ export function useMaxKB() {
 
   watch(
     () => configStore.config.enable_maxkb,
-    (newValue) => {
-      if (newValue) {
+    (enabled) => {
+      if (enabled) {
         loadMaxKBScript()
       } else {
-        console.log("removeMaxKBScript")
         removeMaxKBScript()
       }
     },
-    { immediate: true }
+    { immediate: true },
   )
 
   return {
     loadMaxKBScript,
     removeMaxKBScript,
-    isLoaded: readonly(isLoaded)
+    isLoaded: readonly(isLoaded),
   }
 }
