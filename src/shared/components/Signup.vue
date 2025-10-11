@@ -99,14 +99,18 @@ watch(signupModalOpen, (v) => {
           v-model:value="form.username"
           autofocus
           clearable
-          name="signup username"
+          name="username"
+          id="signup-username"
+          autocomplete="username"
         />
       </n-form-item>
       <n-form-item label="邮箱" path="email">
         <n-input
           v-model:value="form.email"
           clearable
-          name="signup email"
+          name="email"
+          id="signup-email"
+          autocomplete="email"
           @change="submit"
         />
       </n-form-item>
@@ -115,7 +119,9 @@ watch(signupModalOpen, (v) => {
           v-model:value="form.password"
           clearable
           type="password"
-          name="signup password"
+          name="password"
+          id="signup-password"  
+          autocomplete="new-password"
         />
       </n-form-item>
       <n-form-item label="确认密码" path="passwordAgain">
@@ -123,7 +129,9 @@ watch(signupModalOpen, (v) => {
           v-model:value="form.passwordAgain"
           clearable
           type="password"
-          name="signup password again"
+          name="passwordAgain"
+          id="signup-password-again"
+          autocomplete="new-password"
         />
       </n-form-item>
       <n-form-item label="验证码" path="captcha">
@@ -131,7 +139,9 @@ watch(signupModalOpen, (v) => {
           <n-input
             v-model:value="form.captcha"
             clearable
-            name="signup captcha"
+            name="captcha"
+            id="signup-captcha"
+            autocomplete="off"
           />
           <img class="captcha" :src="captchaSrc" @click="getCaptchaSrc" />
         </n-space>

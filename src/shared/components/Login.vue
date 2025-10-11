@@ -99,7 +99,8 @@ onMounted(() => {
           v-model:value="form.class"
           :options="classList"
           clearable
-          name="login class"
+          name="class"
+          id="login-class"
         />
       </n-form-item>
       <n-form-item label="用户名" path="username">
@@ -107,7 +108,9 @@ onMounted(() => {
           v-model:value="form.username"
           autofocus
           clearable
-          name="login username"
+          name="username"
+          id="login-username"
+          autocomplete="username"
         />
       </n-form-item>
       <n-form-item label="密码" path="password">
@@ -115,7 +118,10 @@ onMounted(() => {
           v-model:value="form.password"
           clearable
           type="password"
-          name="login password"
+          name="password"
+          id="login-password"
+          autocomplete="current-password"
+          @keyup.enter="submit"
         />
       </n-form-item>
       <n-alert v-if="msg" type="error" :show-icon="false"> {{ msg }}</n-alert>
