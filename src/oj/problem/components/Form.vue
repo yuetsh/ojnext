@@ -5,7 +5,7 @@ import { useCodeStore } from "oj/store/code"
 import { useProblemStore } from "oj/store/problem"
 import { injectSyncStatus } from "oj/composables/syncStatus"
 import { SYNC_MESSAGES } from "shared/composables/sync"
-import { LANGUAGE_SHOW_VALUE, SOURCES, STORAGE_KEY } from "utils/constants"
+import { ICON_SET, LANGUAGE_SHOW_VALUE, SOURCES, STORAGE_KEY } from "utils/constants"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { useUserStore } from "shared/store/user"
 import storage from "utils/storage"
@@ -13,6 +13,8 @@ import { LANGUAGE } from "utils/types"
 import Submit from "./Submit.vue"
 import StatisticsPanel from "shared/components/StatisticsPanel.vue"
 import IconButton from "shared/components/IconButton.vue"
+import { Icon } from "@iconify/vue"
+import { NFlex } from "naive-ui"
 
 interface Props {
   storageKey: string
@@ -37,7 +39,6 @@ const router = useRouter()
 const userStore = useUserStore()
 const codeStore = useCodeStore()
 const problemStore = useProblemStore()
-const { code } = storeToRefs(codeStore)
 const { problem } = storeToRefs(problemStore)
 
 const { isMobile, isDesktop } = useBreakpoints()
@@ -58,15 +59,25 @@ const menu = computed<DropdownOption[]>(() => [
   { label: "重置代码", key: "reset" },
 ])
 
-const languageOptions: DropdownOption[] = problem.value!.languages.map(
+const flowchartAndLanguages = computed(() => [
+  ...(problem.value!.allow_flowchart ? ["Flowchart"] : []),
+  ...problem.value!.languages,
+])
+
+const Options = {
+  Flowchart: "流程图",
+  ...LANGUAGE_SHOW_VALUE,
+}
+
+const languageOptions: DropdownOption[] = flowchartAndLanguages.value.map(
   (it) => ({
     label: () =>
-      h("div", { style: "display: flex; align-items: center;" }, [
-        h("img", {
-          src: `/${it}.svg`,
-          style: { width: "16px", height: "16px", marginRight: "8px" },
+      h(NFlex, { align: "center" }, [
+        h(Icon, {
+          icon: ICON_SET[it as keyof typeof ICON_SET],
+          width: 16,
         }),
-        LANGUAGE_SHOW_VALUE[it],
+        Options[it as keyof typeof Options],
       ]),
     value: it,
   }),

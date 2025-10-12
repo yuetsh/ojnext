@@ -177,13 +177,24 @@ export const LANGUAGE_FORMAT_VALUE = {
 } as const
 
 export const LANGUAGE_SHOW_VALUE = {
-  C: "C",
+  C: "C语言",
   "C++": "C++",
   Java: "Java",
   Python2: "Python",
   Python3: "Python",
   JavaScript: "JS",
   Golang: "Go",
+} as const
+
+export const ICON_SET = {
+  Flowchart: "material-symbols:flowchart",
+  Python2: "devicon:python",
+  Python3: "devicon:python",
+  C: "devicon:c",
+  "C++": "devicon:cplusplus",
+  Java: "devicon:java",
+  JavaScript: "devicon:javascript",
+  Golang: "devicon:go",
 } as const
 
 const cTemplate = `//TEMPLATE BEGIN
