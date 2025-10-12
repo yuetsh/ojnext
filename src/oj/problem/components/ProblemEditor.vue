@@ -16,6 +16,7 @@ const FlowchartEditor = defineAsyncComponent(
 
 const route = useRoute()
 const formRef = useTemplateRef<InstanceType<typeof Form>>("formRef")
+const flowchartEditorRef = useTemplateRef("flowchartEditorRef")
 
 const codeStore = useCodeStore()
 const problemStore = useProblemStore()
@@ -78,6 +79,9 @@ const handleSyncStatusChange = (status: {
 }) => {
   syncStatus.setOtherUser(status.otherUser)
 }
+
+// 提供FlowchartEditor的ref给子组件
+provide('flowchartEditorRef', flowchartEditorRef)
 </script>
 
 <template>
@@ -89,7 +93,7 @@ const handleSyncStatusChange = (status: {
       @change-language="changeLanguage"
       @toggle-sync="toggleSync"
     />
-    <FlowchartEditor v-if="codeStore.code.language === 'Flowchart'" />
+    <FlowchartEditor v-if="codeStore.code.language === 'Flowchart'" ref="flowchartEditorRef" />
     <SyncCodeEditor
       v-else
       v-model:value="codeStore.code.value"
