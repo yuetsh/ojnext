@@ -20,7 +20,20 @@ interface Testcase {
 
 const message = useMessage()
 const configStore = useConfigStore()
+const userStore = useUserStore()
 const { updateConfig } = useConfigWebSocket()
+
+// 确保只有登录用户才能使用WebSocket
+watch(
+  () => userStore.isAuthed,
+  (isAuthed) => {
+    if (!isAuthed) {
+      // 如果用户未登录，禁用WebSocket功能
+      console.warn('用户未登录，WebSocket配置更新功能已禁用')
+    }
+  },
+  { immediate: true }
+)
 
 const testcaseColumns: DataTableColumn<Testcase>[] = [
   { title: "测试用例 ID", key: "id" },

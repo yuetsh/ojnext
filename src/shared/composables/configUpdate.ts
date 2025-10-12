@@ -1,4 +1,5 @@
 import { useConfigStore } from "shared/store/config"
+import { useUserStore } from "shared/store/user"
 import {
   useConfigWebSocket,
   type ConfigUpdate,
@@ -6,6 +7,7 @@ import {
 
 export function useConfigUpdate() {
   const configStore = useConfigStore()
+  const userStore = useUserStore()
 
   // 处理 WebSocket 配置更新
   const handleConfigUpdate = (data: ConfigUpdate) => {
@@ -17,12 +19,23 @@ export function useConfigUpdate() {
   }
 
   // 初始化 WebSocket - handler 会在 onMounted 时自动添加
-  const { connect } = useConfigWebSocket(handleConfigUpdate)
+  const { connect, disconnect } = useConfigWebSocket(handleConfigUpdate)
 
-  onMounted(() => {
-    connect()
-  })
+  // 监听登录状态变化
+  watch(
+    () => userStore.isAuthed,
+    (isAuthed) => {
+      if (isAuthed) {
+        connect()
+      } else {
+        disconnect()
+      }
+    },
+    { immediate: true }
+  )
+
   return {
     connect,
+    disconnect,
   }
 }

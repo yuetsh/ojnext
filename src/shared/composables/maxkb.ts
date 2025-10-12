@@ -1,4 +1,5 @@
 import { useConfigStore } from "shared/store/config"
+import { useUserStore } from "shared/store/user"
 import {
   useConfigWebSocket,
   type ConfigUpdate,
@@ -6,6 +7,7 @@ import {
 
 export function useMaxKB() {
   const configStore = useConfigStore()
+  const userStore = useUserStore()
   const isLoaded = ref(false)
 
   // 处理 WebSocket 配置更新 - 只处理 MaxKB 相关
@@ -20,7 +22,20 @@ export function useMaxKB() {
   }
 
   // 初始化 WebSocket
-  const { connect } = useConfigWebSocket(handleConfigUpdate)
+  const { connect, disconnect } = useConfigWebSocket(handleConfigUpdate)
+
+  // 监听登录状态变化
+  watch(
+    () => userStore.isAuthed,
+    (isAuthed) => {
+      if (isAuthed) {
+        connect()
+      } else {
+        disconnect()
+      }
+    },
+    { immediate: true }
+  )
 
   const loadMaxKBScript = () => {
     const { enable_maxkb } = configStore.config
