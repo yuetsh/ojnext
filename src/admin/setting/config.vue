@@ -12,6 +12,7 @@ import {
   listInvalidTestcases,
   pruneInvalidTestcases,
 } from "../api"
+import { useUserStore } from "shared/store/user"
 
 interface Testcase {
   id: string
