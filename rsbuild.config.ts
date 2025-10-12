@@ -135,7 +135,6 @@ export default defineConfig(({ envMode }) => {
         //   },
         // },
       },
-      // 移除 console.log（生产环境）
       removeConsole: ["log"],
     },
     resolve: {
