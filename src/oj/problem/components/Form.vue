@@ -59,7 +59,11 @@ const statisticPanel = ref(false)
 const isContestMode = computed(() => route.name === "contest problem")
 const buttonSize = computed(() => (isDesktop.value ? "medium" : "small"))
 const showSyncFeature = computed(
-  () => isDesktop.value && userStore.isAuthed && !isContestMode.value,
+  () =>
+    isDesktop.value &&
+    userStore.isAuthed &&
+    codeStore.code.language !== "Flowchart" &&
+    !isContestMode.value,
 )
 
 const menu = computed<DropdownOption[]>(() => [
@@ -182,9 +186,18 @@ onMounted(() => {
       {{ isDesktop ? "统计信息" : "统计" }}
     </n-button>
 
-    <n-button v-if="isDesktop" @click="goTestCat">自测猫</n-button>
+    <n-button
+      v-if="isDesktop && codeStore.code.language !== 'Flowchart'"
+      @click="goTestCat"
+      >自测猫</n-button
+    >
 
-    <n-dropdown size="large" :options="menu" @select="handleMenuSelect">
+    <n-dropdown
+      v-if="codeStore.code.language !== 'Flowchart'"
+      size="large"
+      :options="menu"
+      @select="handleMenuSelect"
+    >
       <n-button :size="buttonSize">操作</n-button>
     </n-dropdown>
 
