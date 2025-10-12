@@ -26,17 +26,6 @@ const loadMermaid = async () => {
       startOnLoad: false,
       securityLevel: "loose",
       theme: "default",
-      flowchart: {
-        useMaxWidth: true,
-        htmlLabels: true,
-        curve: "basis",
-      },
-      sequence: {
-        useMaxWidth: true,
-      },
-      gantt: {
-        useMaxWidth: true,
-      },
     })
   }
   return mermaid
