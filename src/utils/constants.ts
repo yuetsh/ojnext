@@ -154,6 +154,7 @@ export const SOURCES = {
   Python2: "",
   JavaScript: "",
   Golang: "",
+  Flowchart: "",
 } as const
 
 export const LANGUAGE_ID = {
@@ -164,6 +165,7 @@ export const LANGUAGE_ID = {
   Python2: 0,
   JavaScript: 0,
   Golang: 0,
+  Flowchart: 0,
 } as const
 
 export const LANGUAGE_FORMAT_VALUE = {
@@ -174,9 +176,11 @@ export const LANGUAGE_FORMAT_VALUE = {
   Python3: "python",
   JavaScript: "javascript",
   Golang: "go",
+  Flowchart: "flowchart",
 } as const
 
 export const LANGUAGE_SHOW_VALUE = {
+  Flowchart: "流程图",
   C: "C语言",
   "C++": "C++",
   Java: "Java",
@@ -187,7 +191,7 @@ export const LANGUAGE_SHOW_VALUE = {
 } as const
 
 export const ICON_SET = {
-  Flowchart: "material-symbols:flowchart",
+  Flowchart: "streamline-freehand-color:programming-flowchart",
   Python2: "devicon:python",
   Python3: "devicon:python",
   C: "devicon:c",

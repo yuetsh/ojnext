@@ -34,7 +34,7 @@ export function useMaxKB() {
         disconnect()
       }
     },
-    { immediate: true }
+    { immediate: true },
   )
 
   const loadMaxKBScript = () => {

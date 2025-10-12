@@ -30,10 +30,10 @@ watch(
   (isAuthed) => {
     if (!isAuthed) {
       // 如果用户未登录，禁用WebSocket功能
-      console.warn('用户未登录，WebSocket配置更新功能已禁用')
+      console.warn("用户未登录，WebSocket配置更新功能已禁用")
     }
   },
-  { immediate: true }
+  { immediate: true },
 )
 
 const testcaseColumns: DataTableColumn<Testcase>[] = [

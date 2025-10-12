@@ -23,7 +23,9 @@ function filterClass() {
 </script>
 <template>
   <n-flex align="center">
-    <n-button text type="info" @click="$emit('click')"><slot></slot></n-button>
+    <n-button text type="info" @click="$emit('click')">
+      <slot></slot>
+    </n-button>
     <n-tooltip>
       <template #trigger>
         <n-button text @click="$emit('search')">

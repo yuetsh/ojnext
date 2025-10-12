@@ -59,6 +59,7 @@ export type LANGUAGE =
   | "Java"
   | "JavaScript"
   | "Golang"
+  | "Flowchart"
 
 export type LANGUAGE_SHOW_LABEL =
   (typeof LANGUAGE_SHOW_VALUE)[keyof typeof LANGUAGE_SHOW_VALUE]

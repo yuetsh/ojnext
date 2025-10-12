@@ -31,7 +31,7 @@ export function useConfigUpdate() {
         disconnect()
       }
     },
-    { immediate: true }
+    { immediate: true },
   )
 
   return {

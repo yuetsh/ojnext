@@ -5,16 +5,25 @@ import { useCodeStore } from "oj/store/code"
 import { useProblemStore } from "oj/store/problem"
 import { injectSyncStatus } from "oj/composables/syncStatus"
 import { SYNC_MESSAGES } from "shared/composables/sync"
-import { ICON_SET, LANGUAGE_SHOW_VALUE, SOURCES, STORAGE_KEY } from "utils/constants"
+import {
+  ICON_SET,
+  LANGUAGE_SHOW_VALUE,
+  SOURCES,
+  STORAGE_KEY,
+} from "utils/constants"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { useUserStore } from "shared/store/user"
 import storage from "utils/storage"
 import { LANGUAGE } from "utils/types"
-import Submit from "./Submit.vue"
 import StatisticsPanel from "shared/components/StatisticsPanel.vue"
 import IconButton from "shared/components/IconButton.vue"
 import { Icon } from "@iconify/vue"
 import { NFlex } from "naive-ui"
+import SubmitCode from "./SubmitCode.vue"
+
+const SubmitFlowchart = defineAsyncComponent(
+  () => import("./SubmitFlowchart.vue"),
+)
 
 interface Props {
   storageKey: string
@@ -59,25 +68,23 @@ const menu = computed<DropdownOption[]>(() => [
   { label: "重置代码", key: "reset" },
 ])
 
-const flowchartAndLanguages = computed(() => [
-  ...(problem.value!.allow_flowchart ? ["Flowchart"] : []),
-  ...problem.value!.languages,
-])
-
-const Options = {
-  Flowchart: "流程图",
-  ...LANGUAGE_SHOW_VALUE,
-}
+const flowchartAndLanguages = computed(
+  () =>
+    [
+      ...(problem.value!.allow_flowchart ? ["Flowchart"] : []),
+      ...problem.value!.languages,
+    ] as LANGUAGE[],
+)
 
 const languageOptions: DropdownOption[] = flowchartAndLanguages.value.map(
   (it) => ({
     label: () =>
-      h(NFlex, { align: "center" }, [
+      h(NFlex, { align: "center" }, () => [
         h(Icon, {
-          icon: ICON_SET[it as keyof typeof ICON_SET],
+          icon: ICON_SET[it],
           width: 16,
         }),
-        Options[it as keyof typeof Options],
+        LANGUAGE_SHOW_VALUE[it],
       ]),
     value: it,
   }),
@@ -137,6 +144,12 @@ defineExpose({
     syncEnabled.value = false
   },
 })
+
+onMounted(() => {
+  if (!problem.value!.languages.includes(codeStore.code.language)) {
+    codeStore.code.language = "Python3"
+  }
+})
 </script>
 
 <template>
@@ -149,7 +162,9 @@ defineExpose({
       @update:value="changeLanguage"
     />
 
-    <Submit />
+    <SubmitFlowchart v-if="codeStore.code.language === 'Flowchart'" />
+
+    <SubmitCode v-else />
 
     <n-button
       v-if="!userStore.isSuperAdmin && userStore.showSubmissions"
