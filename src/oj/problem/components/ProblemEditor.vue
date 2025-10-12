@@ -10,6 +10,10 @@ import storage from "utils/storage"
 import { LANGUAGE } from "utils/types"
 import Form from "./Form.vue"
 
+const FlowchartEditor = defineAsyncComponent(
+  () => import("shared/components/FlowchartEditor/index.vue"),
+)
+
 const route = useRoute()
 const formRef = useTemplateRef<InstanceType<typeof Form>>("formRef")
 
@@ -85,7 +89,9 @@ const handleSyncStatusChange = (status: {
       @change-language="changeLanguage"
       @toggle-sync="toggleSync"
     />
+    <FlowchartEditor v-if="codeStore.code.language === 'Flowchart'" />
     <SyncCodeEditor
+      v-else
       v-model:value="codeStore.code.value"
       :sync="sync"
       :problem="problem!._id"

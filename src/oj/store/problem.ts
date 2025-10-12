@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import { Problem } from "utils/types"
+import { LANGUAGE, Problem } from "utils/types"
 
 /**
  * 题目状态管理 Store
@@ -10,17 +10,12 @@ export const useProblemStore = defineStore("problem", () => {
   const problem = ref<Problem | null>(null)
 
   // ==================== 计算属性 ====================
-  const hasProblem = computed(() => problem.value !== null)
-
-  const problemId = computed(() => problem.value?._id ?? null)
-
-  const problemTitle = computed(() => problem.value?.title ?? "")
-
-  const difficulty = computed(() => problem.value?.difficulty ?? "")
-
-  const languages = computed(() => problem.value?.languages ?? [])
-
-  const isACed = computed(() => problem.value?.my_status === 0)
+  const languages = computed<LANGUAGE[]>(() => {
+    if (problem.value?.allow_flowchart) {
+      return ["Flowchart", ...problem.value?.languages]
+    }
+    return problem.value?.languages ?? []
+  })
 
   // ==================== 操作 ====================
   /**
@@ -51,12 +46,7 @@ export const useProblemStore = defineStore("problem", () => {
     problem,
 
     // 计算属性
-    hasProblem,
-    problemId,
-    problemTitle,
-    difficulty,
     languages,
-    isACed,
 
     // 操作
     setProblem,

@@ -48,7 +48,7 @@ const router = useRouter()
 const userStore = useUserStore()
 const codeStore = useCodeStore()
 const problemStore = useProblemStore()
-const { problem } = storeToRefs(problemStore)
+const { problem, languages } = storeToRefs(problemStore)
 
 const { isMobile, isDesktop } = useBreakpoints()
 
@@ -72,15 +72,7 @@ const menu = computed<DropdownOption[]>(() => [
   { label: "重置代码", key: "reset" },
 ])
 
-const flowchartAndLanguages = computed(
-  () =>
-    [
-      ...(problem.value!.allow_flowchart ? ["Flowchart"] : []),
-      ...problem.value!.languages,
-    ] as LANGUAGE[],
-)
-
-const languageOptions: DropdownOption[] = flowchartAndLanguages.value.map(
+const languageOptions: DropdownOption[] = languages.value.map(
   (it) => ({
     label: () =>
       h(NFlex, { align: "center" }, () => [
@@ -150,7 +142,7 @@ defineExpose({
 })
 
 onMounted(() => {
-  if (!problem.value!.languages.includes(codeStore.code.language)) {
+  if (!languages.value.includes(codeStore.code.language)) {
     codeStore.code.language = "Python3"
   }
 })
