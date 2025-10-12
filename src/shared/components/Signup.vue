@@ -120,7 +120,7 @@ watch(signupModalOpen, (v) => {
           clearable
           type="password"
           name="password"
-          id="signup-password"  
+          id="signup-password"
           autocomplete="new-password"
         />
       </n-form-item>

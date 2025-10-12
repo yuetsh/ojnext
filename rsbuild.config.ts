@@ -118,6 +118,12 @@ export default defineConfig(({ envMode }) => {
               name: "vendor-charts",
               priority: 60,
             },
+            // Mermaid - 流程图库（按需加载）
+            mermaid: {
+              test: /[\\/]node_modules[\\/]mermaid[\\/]/,
+              name: "vendor-mermaid",
+              priority: 55,
+            },
             // ===== 通用层 (10) =====
             // 其他常用库 - 兜底分组
             common: {

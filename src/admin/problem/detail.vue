@@ -8,7 +8,7 @@ import {
 } from "utils/constants"
 import download from "utils/download"
 import { unique } from "utils/functions"
-import { BlankProblem, LANGUAGE, Tag } from "utils/types"
+import { BlankProblem, LANGUAGE, Tag, Testcase } from "utils/types"
 import {
   createContestProblem,
   createProblem,
@@ -20,6 +20,10 @@ import {
 
 const CodeEditor = defineAsyncComponent(
   () => import("shared/components/CodeEditor.vue"),
+)
+
+const MermaidEditor = defineAsyncComponent(
+  () => import("shared/components/MermaidEditor.vue"),
 )
 
 interface Props {
@@ -50,29 +54,35 @@ const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
   output_description: "",
   time_limit: 1000,
   memory_limit: 64,
-  difficulty: "Low",
+  difficulty: "Low" as "Low" | "Mid" | "High",
   visible: false,
   share_submission: false,
   tags: [],
-  languages: ["C", "Python3"],
-  template: {},
+  languages: ["Python3", "C"] as LANGUAGE[],
+  template: {} as { [key in LANGUAGE]?: string },
   samples: [
     { input: "", output: "" },
     { input: "", output: "" },
     { input: "", output: "" },
   ],
   test_case_id: "",
-  test_case_score: [],
+  test_case_score: [] as Testcase[],
   rule_type: "ACM",
   hint: "",
   source: "",
   prompt: "",
-  answers: [],
+  answers: [] as { language: LANGUAGE; code: string }[],
   io_mode: {
     io_mode: "Standard IO",
     input: "input.txt",
     output: "output.txt",
   },
+  contest_id: "",
+  allow_flowchart: false,
+  mermaid_code: "",
+  flowchart_data: {},
+  flowchart_hint: "",
+  show_flowchart: false,
 })
 
 // 从服务器来的tag列表
@@ -96,6 +106,9 @@ const currentActiveAnswer = ref<LANGUAGE>("Python3")
 
 // 给 TextEditor 用
 const [ready, toggleReady] = useToggle(false)
+
+// Mermaid 渲染状态
+const mermaidRenderSuccess = ref(false)
 
 const difficultyOptions: SelectOption[] = [
   { label: "简单", value: "Low" },
@@ -144,6 +157,12 @@ async function getProblemDetail() {
     problem.value.hint = data.hint
     problem.value.source = data.source
     problem.value.prompt = data.prompt
+    // 流程图相关字段
+    problem.value.allow_flowchart = data.allow_flowchart
+    problem.value.show_flowchart = data.show_flowchart
+    problem.value.mermaid_code = data.mermaid_code ?? ""
+    problem.value.flowchart_hint = data.flowchart_hint ?? ""
+    problem.value.flowchart_data = data.flowchart_data
     if (data.answers && data.answers.length) {
       problem.value.answers = data.answers
     } else {
@@ -229,18 +248,23 @@ function downloadTestcases() {
   download("test_case?problem_id=" + problem.value.id)
 }
 
+// Mermaid 渲染事件处理
+function onMermaidRenderSuccess() {
+  mermaidRenderSuccess.value = true
+}
+
 // 题目是否有漏写的
-function detectProblemCompletion() {
-  let flag = false
+async function validateProblem() {
+  let hasErrors = false
   // 标题
   if (!problem.value._id || !problem.value.title) {
     message.error("编号或标题没有填写")
-    flag = true
+    hasErrors = true
   }
   // 标签
   else if (tags.value.upload.length === 0 && tags.value.select.length === 0) {
     message.error("标签没有填写")
-    flag = true
+    hasErrors = true
   }
   // 题目
   else if (
@@ -249,12 +273,12 @@ function detectProblemCompletion() {
     !problem.value.output_description
   ) {
     message.error("题目或输入或输出没有填写")
-    flag = true
+    hasErrors = true
   }
   // 样例
   else if (problem.value.samples.length == 0) {
     message.error("样例没有填写")
-    flag = true
+    hasErrors = true
   }
   // 样例是空的
   else if (
@@ -263,21 +287,34 @@ function detectProblemCompletion() {
     )
   ) {
     message.error("空样例没有删干净")
-    flag = true
+    hasErrors = true
   }
   // 测试用例
   else if (problem.value.test_case_score.length === 0) {
     message.error("测试用例没有上传")
-    flag = true
+    hasErrors = true
   } else if (problem.value.languages.length === 0) {
     message.error("编程语言没有选择")
-    flag = true
+    hasErrors = true
+  }
+  // 流程图验证
+  else if (problem.value.show_flowchart || problem.value.allow_flowchart) {
+    if (
+      !problem.value.mermaid_code ||
+      problem.value.mermaid_code.trim() === ""
+    ) {
+      message.error("启用了流程图功能，但流程图代码为空")
+      hasErrors = true
+    } else if (!mermaidRenderSuccess.value) {
+      message.error("Mermaid 代码尚未成功渲染，请检查代码语法")
+      hasErrors = true
+    }
   }
   // 通过了
   else {
-    flag = false
+    hasErrors = false
   }
-  return flag
+  return hasErrors
 }
 
 function getTemplate() {
@@ -308,8 +345,8 @@ function filterAnswers() {
 }
 
 async function submit() {
-  const notCompleted = detectProblemCompletion()
-  if (notCompleted) return
+  const hasValidationErrors = await validateProblem()
+  if (hasValidationErrors) return
   filterHint()
   getTemplate()
   filterAnswers()
@@ -488,11 +525,47 @@ watch(
         placeholder="比如来自某道题的改编等，或者网上的资料"
       />
     </n-form-item>
-    <n-form-item label="本题的考察知识点（选填）">
+    <n-form-item label="本题的考察知识点（选填，用于 AI 分析）">
       <n-input
         v-model:value="problem.prompt"
-        placeholder="这里的内容是方便喂给 AI 进行辅助分析的"
+        placeholder="比如考察选择、循环、算法等知识点"
       />
+    </n-form-item>
+  </n-form>
+
+  <n-divider />
+
+  <h2 class="title">代码区域</h2>
+
+  <n-form inline label-placement="left">
+    <n-form-item label="编程语言">
+      <n-checkbox-group v-model:value="problem.languages">
+        <n-flex align="center">
+          <n-checkbox
+            v-for="(language, index) in languageOptions"
+            :key="index"
+            :value="language.value"
+            :label="language.label"
+          />
+        </n-flex>
+      </n-checkbox-group>
+    </n-form-item>
+    <n-form-item>
+      <n-checkbox
+        v-model:checked="needTemplate"
+        label="预制代码（显示在编辑器中，帮助快速上手）"
+      />
+    </n-form-item>
+    <n-form-item>
+      <n-button
+        v-if="needTemplate"
+        size="small"
+        tertiary
+        type="warning"
+        @click="resetTemplate(currentActiveTemplate)"
+      >
+        重置 {{ LANGUAGE_SHOW_VALUE[currentActiveTemplate] }} 的预制代码
+      </n-button>
     </n-form-item>
   </n-form>
 
@@ -514,7 +587,7 @@ watch(
                 v-model:value="answer.code"
                 :language="answer.language"
                 :font-size="16"
-                height="200px"
+                height="300px"
               />
             </n-tab-pane>
           </n-tabs>
@@ -523,7 +596,7 @@ watch(
     </n-gi>
     <n-gi>
       <n-form v-if="needTemplate">
-        <n-form-item label="编写代码模板">
+        <n-form-item label="编写预制代码">
           <n-tabs
             type="segment"
             default-value="Python3"
@@ -538,7 +611,7 @@ watch(
                 v-model:value="template[lang]"
                 :language="lang"
                 :font-size="16"
-                height="200px"
+                height="300px"
               />
             </n-tab-pane>
           </n-tabs>
@@ -546,6 +619,36 @@ watch(
       </n-form>
     </n-gi>
   </n-grid>
+
+  <n-divider />
+
+  <h2 class="title">流程图区域</h2>
+
+  <!-- 流程图相关设置 -->
+  <n-form inline label-placement="left">
+    <n-form-item label="允许提交流程图">
+      <n-switch v-model:value="problem.allow_flowchart" />
+    </n-form-item>
+    <n-form-item label="显示标准流程图">
+      <n-switch v-model:value="problem.show_flowchart" />
+    </n-form-item>
+  </n-form>
+
+  <n-form>
+    <n-form-item label="流程图">
+      <MermaidEditor
+        v-model="problem.mermaid_code"
+        @render-success="onMermaidRenderSuccess"
+      />
+    </n-form-item>
+    <n-form-item label="流程图提示信息（选填）">
+      <n-input
+        v-model:value="problem.flowchart_hint"
+        placeholder="请输入流程图相关的提示信息，帮助学生理解题目要求"
+      />
+    </n-form-item>
+  </n-form>
+  <n-divider />
   <n-alert
     class="box"
     v-if="problem.test_case_score.length"
@@ -571,57 +674,24 @@ watch(
       </n-flex>
     </template>
   </n-alert>
-  <n-space style="margin-bottom: 100px" justify="space-between">
-    <n-form inline label-placement="left" :show-feedback="false">
-      <n-form-item label="编程语言">
-        <n-checkbox-group v-model:value="problem.languages">
-          <n-flex align="center">
-            <n-checkbox
-              v-for="(language, index) in languageOptions"
-              :key="index"
-              :value="language.value"
-              :label="language.label"
-            />
-          </n-flex>
-        </n-checkbox-group>
-      </n-form-item>
-      <n-form-item>
-        <n-checkbox
-          v-model:checked="needTemplate"
-          label="代码模板（一般用不到）"
-        />
-      </n-form-item>
-      <n-form-item>
-        <n-button
-          v-if="needTemplate"
-          size="small"
-          tertiary
-          type="warning"
-          @click="resetTemplate(currentActiveTemplate)"
-        >
-          重置 {{ LANGUAGE_SHOW_VALUE[currentActiveTemplate] }} 代码模板
-        </n-button>
-      </n-form-item>
-    </n-form>
-    <n-flex align="center">
-      <n-tooltip placement="left">
-        <template #trigger>
-          <n-button text>温馨提醒</n-button>
-        </template>
-        【测试用例】最好要有10个，要考虑边界情况，且不要跟【测试样例】一模一样
-      </n-tooltip>
-      <div>
-        <n-upload
-          :show-file-list="false"
-          accept=".zip"
-          :custom-request="handleUploadTestcases"
-        >
-          <n-button type="info">上传测试用例</n-button>
-        </n-upload>
-      </div>
-      <n-button type="primary" @click="submit">提交</n-button>
-    </n-flex>
-  </n-space>
+  <n-flex style="margin-bottom: 120px" align="center" justify="end">
+    <n-tooltip placement="left">
+      <template #trigger>
+        <n-button text>温馨提醒</n-button>
+      </template>
+      【测试用例】最好要有10个，要考虑边界情况，且不要跟【测试样例】一模一样
+    </n-tooltip>
+    <div>
+      <n-upload
+        :show-file-list="false"
+        accept=".zip"
+        :custom-request="handleUploadTestcases"
+      >
+        <n-button type="info">上传测试用例</n-button>
+      </n-upload>
+    </div>
+    <n-button type="primary" @click="submit">提交</n-button>
+  </n-flex>
 </template>
 
 <style scoped>

@@ -264,3 +264,34 @@ export function getAIDurationData(end: string, duration: string) {
 export function getAIHeatmapData() {
   return http.get("ai/heatmap")
 }
+
+// ==================== 流程图相关API ====================
+
+export function submitFlowchart(data: {
+  problem_id: number
+  mermaid_code: string
+  flowchart_data?: any
+}) {
+  return http.post("flowchart/submission", data)
+}
+
+export function getFlowchartSubmission(id: string) {
+  return http.get("flowchart/submission", {
+    params: { id },
+  })
+}
+
+export function getFlowchartSubmissions(params: {
+  user_id?: number
+  problem_id?: number
+  offset?: number
+  limit?: number
+}) {
+  return http.get("flowchart/submissions", { params })
+}
+
+export function retryFlowchartSubmission(submissionId: string) {
+  return http.post("flowchart/submission/retry", {
+    submission_id: submissionId,
+  })
+}

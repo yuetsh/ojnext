@@ -127,6 +127,13 @@ export interface Problem {
   contest: number
   my_status: number
   visible: boolean
+
+  // 流程图相关字段
+  allow_flowchart: boolean
+  mermaid_code?: string
+  flowchart_data?: Record<string, any>
+  flowchart_hint?: string
+  show_flowchart?: boolean
 }
 
 export type AdminProblem = Problem & AlterProblem
@@ -183,6 +190,45 @@ export interface SubmitCodePayload {
   language: LANGUAGE
   code: string
   contest_id?: number
+}
+
+// ==================== 流程图相关类型 ====================
+
+export const FlowchartSubmissionStatus = {
+  PENDING: 0, // 等待AI评分
+  PROCESSING: 1, // AI评分中
+  COMPLETED: 2, // 评分完成
+  FAILED: 3, // 评分失败
+} as const
+
+export interface FlowchartSubmission {
+  id: string
+  user: number
+  problem: number
+  mermaid_code: string
+  flowchart_data: Record<string, any>
+  status: number
+  create_time: string
+  ai_score?: number
+  ai_grade?: string
+  ai_feedback?: string
+  ai_suggestions?: string
+  ai_criteria_details: Record<string, any>
+  ai_provider?: string
+  ai_model?: string
+  processing_time?: number
+  evaluation_time?: string
+}
+
+// 列表接口返回的字段（包含 username 和 problem_title）
+export interface FlowchartSubmissionListItem extends FlowchartSubmission {
+  username: string
+  problem_title: string
+}
+export interface SubmitFlowchartPayload {
+  problem_id: number
+  mermaid_code: string
+  flowchart_data?: Record<string, any>
 }
 
 interface Info {

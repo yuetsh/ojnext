@@ -26,6 +26,9 @@ const ProblemSubmission = defineAsyncComponent(
 const ProblemComment = defineAsyncComponent(
   () => import("./components/ProblemComment.vue"),
 )
+const ProblemFlowchart = defineAsyncComponent(
+  () => import("./components/ProblemFlowchart.vue"),
+)
 
 interface Props {
   problemID: string
@@ -49,6 +52,9 @@ const { isMobile, isDesktop } = useBreakpoints()
 
 const tabOptions = computed(() => {
   const options: string[] = ["content"]
+  if (problem.value?.show_flowchart) {
+    options.push("flowchart")
+  }
   if (isMobile.value) {
     options.push("editor")
   }
@@ -115,6 +121,13 @@ watch(isMobile, (value) => {
           <n-tab-pane name="content" tab="题目描述">
             <ProblemContent />
           </n-tab-pane>
+          <n-tab-pane
+            v-if="problem.show_flowchart"
+            name="flowchart"
+            tab="流程图表"
+          >
+            <ProblemFlowchart />
+          </n-tab-pane>
           <n-tab-pane name="info" tab="题目统计">
             <ProblemInfo />
           </n-tab-pane>
@@ -130,7 +143,10 @@ watch(isMobile, (value) => {
         <n-tab-pane name="content" tab="描述">
           <ProblemContent />
         </n-tab-pane>
-        <n-tab-pane name="editor" tab="编辑">
+        <n-tab-pane v-if="problem.show_flowchart" name="flowchart" tab="流程">
+          <ProblemFlowchart />
+        </n-tab-pane>
+        <n-tab-pane name="editor" tab="代码">
           <ProblemEditor v-if="shouldUseProblemEditor" />
           <ContestEditor v-else />
         </n-tab-pane>
