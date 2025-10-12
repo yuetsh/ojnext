@@ -77,7 +77,6 @@ export default defineConfig(({ envMode }) => {
       chunkSplit: {
         strategy: "split-by-module",
       },
-      removeConsole: ["log"],
     },
     resolve: {
       alias: {
