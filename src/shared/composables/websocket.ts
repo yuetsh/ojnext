@@ -411,6 +411,75 @@ export function createWebSocketComposable<T extends WebSocketMessage>(
 }
 
 /**
+ * 流程图评分更新消息类型
+ */
+export interface FlowchartEvaluationUpdate extends WebSocketMessage {
+  type: "flowchart_evaluation_completed" | "flowchart_evaluation_failed" | "flowchart_evaluation_update"
+  submission_id: string
+  score?: number
+  grade?: string
+  feedback?: string
+  error?: string
+}
+
+/**
+ * 流程图 WebSocket 连接管理类
+ */
+class FlowchartWebSocket extends BaseWebSocket<FlowchartEvaluationUpdate> {
+  constructor() {
+    super({
+      path: "flowchart", // 使用专门的 flowchart WebSocket 路径
+    })
+  }
+
+  /**
+   * 订阅特定流程图提交的更新
+   */
+  subscribe(submissionId: string) {
+    const success = this.send({
+      type: "subscribe",
+      submission_id: submissionId,
+    })
+    if (!success) {
+      console.error("[Flowchart WebSocket] 订阅失败: 连接未就绪")
+    }
+  }
+}
+
+/**
+ * 用于组件中使用流程图 WebSocket 的 Composable
+ */
+export function useFlowchartWebSocket(
+  handler?: MessageHandler<FlowchartEvaluationUpdate>,
+) {
+  const ws = new FlowchartWebSocket()
+
+  // 如果提供了处理器，添加到实例中
+  if (handler) {
+    ws.addHandler(handler)
+  }
+
+  // 组件卸载时清理资源
+  onUnmounted(() => {
+    if (handler) {
+      ws.removeHandler(handler)
+    }
+    ws.disconnect()
+  })
+
+  return {
+    connect: () => ws.connect(),
+    disconnect: () => ws.disconnect(),
+    subscribe: (submissionId: string) => ws.subscribe(submissionId),
+    scheduleDisconnect: (delay?: number) => ws.scheduleDisconnect(delay),
+    cancelScheduledDisconnect: () => ws.cancelScheduledDisconnect(),
+    status: ws.status,
+    addHandler: (h: MessageHandler<FlowchartEvaluationUpdate>) => ws.addHandler(h),
+    removeHandler: (h: MessageHandler<FlowchartEvaluationUpdate>) => ws.removeHandler(h),
+  }
+}
+
+/**
  * 配置更新消息类型
  */
 export interface ConfigUpdate extends WebSocketMessage {

@@ -17,40 +17,11 @@ export const useProblemStore = defineStore("problem", () => {
     return problem.value?.languages ?? []
   })
 
-  // ==================== 操作 ====================
-  /**
-   * 设置当前题目
-   */
-  function setProblem(newProblem: Problem | null) {
-    problem.value = newProblem
-  }
-
-  /**
-   * 清空当前题目
-   */
-  function clearProblem() {
-    problem.value = null
-  }
-
-  /**
-   * 更新题目的部分字段
-   */
-  function updateProblem(updates: Partial<Problem>) {
-    if (problem.value) {
-      problem.value = { ...problem.value, ...updates }
-    }
-  }
-
   return {
     // 状态
     problem,
 
     // 计算属性
     languages,
-
-    // 操作
-    setProblem,
-    clearProblem,
-    updateProblem,
   }
 })

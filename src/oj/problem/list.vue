@@ -14,6 +14,7 @@ import { useUserStore } from "shared/store/user"
 import { renderTableTitle } from "utils/renders"
 import ProblemStatus from "./components/ProblemStatus.vue"
 import AuthorSelect from "shared/components/AuthorSelect.vue"
+import ProblemListTitle from "./components/ProblemListTitle.vue"
 
 interface Tag {
   id: number
@@ -146,6 +147,7 @@ const baseColumns: DataTableColumn<ProblemFiltered>[] = [
     title: renderTableTitle("题目", "streamline-emojis:watermelon-2"),
     key: "title",
     minWidth: 200,
+    render: (row) => h(ProblemListTitle, { problem: row }),
   },
   {
     title: renderTableTitle("难度", "streamline-emojis:lady-beetle"),

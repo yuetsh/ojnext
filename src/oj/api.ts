@@ -19,6 +19,7 @@ function filterResult(result: Problem) {
     rate: getACRate(result.accepted_number, result.submission_number),
     status: "",
     author: result.created_by.username,
+    allow_flowchart: result.allow_flowchart,
   }
   if (result.my_status === null || result.my_status === undefined) {
     newResult.status = "not_test"
@@ -270,7 +271,7 @@ export function getAIHeatmapData() {
 export function submitFlowchart(data: {
   problem_id: number
   mermaid_code: string
-  flowchart_data?: any
+  flowchart_data: any // 这个是压缩之后的，元数据太长了
 }) {
   return http.post("flowchart/submission", data)
 }
@@ -293,5 +294,11 @@ export function getFlowchartSubmissions(params: {
 export function retryFlowchartSubmission(submissionId: string) {
   return http.post("flowchart/submission/retry", {
     submission_id: submissionId,
+  })
+}
+
+export function getCurrentProblemFlowchartSubmission(problemId: number) {
+  return http.get("flowchart/submission/current", {
+    params: { problem_id: problemId },
   })
 }
