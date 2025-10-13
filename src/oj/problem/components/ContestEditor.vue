@@ -5,6 +5,7 @@ import { useProblemStore } from "oj/store/problem"
 import { SOURCES } from "utils/constants"
 import CodeEditor from "shared/components/CodeEditor.vue"
 import { useBreakpoints } from "shared/composables/breakpoints"
+import { provideSyncStatus } from "oj/composables/syncStatus"
 import storage from "utils/storage"
 import { LANGUAGE } from "utils/types"
 import Form from "./Form.vue"
@@ -16,6 +17,10 @@ const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 
 const { isDesktop } = useBreakpoints()
+
+// 提供空的同步状态，避免 Form 组件注入错误
+// 在竞赛模式下，同步功能会被 showSyncFeature 自动禁用
+provideSyncStatus()
 
 const contestID = route.params.contestID || null
 const storageKey = computed(
