@@ -122,6 +122,28 @@ onUnmounted(() => {
   document.removeEventListener('keydown', handleKeyDown)
 })
 
+// 加载外部数据到编辑器
+const setFlowchartData = (data: { nodes: Node[], edges: Edge[] }) => {
+  if (data && data.nodes && data.edges) {
+    // 确保节点数据包含必要的位置信息
+    const processedNodes = data.nodes.map(node => ({
+      ...node,
+      position: node.position || { x: 0, y: 0 }
+    }))
+    
+    // 确保边数据包含必要的 handle 信息
+    const processedEdges = data.edges.map(edge => ({
+      ...edge,
+      sourceHandle: edge.sourceHandle || null,
+      targetHandle: edge.targetHandle || null
+    }))
+    
+    nodes.value = processedNodes
+    edges.value = processedEdges
+    saveState(nodes.value, edges.value)
+  }
+}
+
 // 暴露节点和边数据给父组件
 defineExpose({
   nodes,
@@ -129,7 +151,8 @@ defineExpose({
   getFlowchartData: () => ({
     nodes: nodes.value,
     edges: edges.value
-  })
+  }),
+  setFlowchartData
 })
 </script>
 

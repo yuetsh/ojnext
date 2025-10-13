@@ -3,6 +3,7 @@
   <template v-if="nodeType === 'start'">
     <Handle
       type="source"
+      id="output"
       :position="Position.Bottom"
       :style="getHandleStyle('#10b981', { bottom: '-10px' })"
     />
@@ -12,6 +13,7 @@
   <template v-else-if="nodeType === 'end'">
     <Handle
       type="target"
+      id="input"
       :position="Position.Top"
       :style="getHandleStyle('#ef4444', { top: '-10px' })"
     />
@@ -21,6 +23,7 @@
   <template v-else-if="nodeType === 'decision'">
     <Handle
       type="target"
+      id="input"
       :position="Position.Top"
       :style="getHandleStyle('#f59e0b', { top: '-16px' })"
     />
@@ -122,11 +125,13 @@
   <template v-else>
     <Handle
       type="target"
+      id="input"
       :position="Position.Top"
       :style="getHandleStyle(nodeConfig.color, { top: '-10px' })"
     />
     <Handle
       type="source"
+      id="output"
       :position="Position.Bottom"
       :style="getHandleStyle(nodeConfig.color, { bottom: '-10px' })"
     />
