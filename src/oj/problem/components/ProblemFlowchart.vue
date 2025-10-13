@@ -1,54 +1,24 @@
 <script setup lang="ts">
 import { useProblemStore } from "oj/store/problem"
-import { nanoid } from "nanoid"
+import { useMermaid } from "shared/composables/useMermaid"
 
 const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 const mermaidContainer = useTemplateRef<HTMLElement>("mermaidContainer")
 
-// 渲染状态
-const renderError = ref<string | null>(null)
-
-// 动态导入 mermaid
-let mermaid: any = null
-
-// 动态加载 Mermaid
-const loadMermaid = async () => {
-  if (!mermaid) {
-    const mermaidModule = await import("mermaid")
-    mermaid = mermaidModule.default
-    mermaid.initialize({
-      startOnLoad: false,
-      securityLevel: "loose",
-      theme: "default",
-    })
-  }
-  return mermaid
-}
+// 使用 mermaid composable
+const { renderError, renderFlowchart } = useMermaid()
 
 // 渲染流程图的函数
-const renderFlowchart = async () => {
-  try {
-    renderError.value = null
-
-    // 确保 mermaid 已加载
-    await loadMermaid()
-
-    // 渲染流程图
-    if (mermaidContainer.value && problem.value?.mermaid_code) {
-      const id = `mermaid-${nanoid()}`
-      const { svg } = await mermaid.render(id, problem.value.mermaid_code)
-      mermaidContainer.value.innerHTML = svg
-    }
-  } catch (error) {
-    renderError.value =
-      error instanceof Error ? error.message : "流程图渲染失败，请检查代码格式"
+const renderProblemFlowchart = async () => {
+  if (problem.value?.mermaid_code) {
+    await renderFlowchart(mermaidContainer.value, problem.value.mermaid_code)
   }
 }
 
 // 初始化Mermaid并渲染
 onMounted(() => {
-  renderFlowchart()
+  renderProblemFlowchart()
 })
 </script>
 

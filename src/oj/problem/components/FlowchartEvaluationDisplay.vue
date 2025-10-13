@@ -1,6 +1,6 @@
 <script lang="ts" setup>
-import FlowchartEditor from "shared/components/FlowchartEditor/index.vue"
 import { atou } from "utils/functions"
+import { useMermaid } from "shared/composables/useMermaid"
 
 interface EvaluationResult {
   score?: number
@@ -13,6 +13,7 @@ interface EvaluationResult {
 interface Props {
   evaluationResult: EvaluationResult | null
   myFlowchartZippedStr: string
+  myMermaidCode: string
 }
 
 const props = defineProps<Props>()
@@ -24,9 +25,11 @@ const emit = defineEmits<{
 
 const showDetailModal = ref(false)
 
-const readonlyFlowchartEditorRef = useTemplateRef<any>(
-  "readonlyFlowchartEditorRef",
-)
+// mermaid 渲染相关
+const mermaidContainer = useTemplateRef<HTMLElement>("mermaidContainer")
+
+// 使用 mermaid composable
+const { renderError, renderFlowchart } = useMermaid()
 
 // 根据分数获取标签类型
 const getScoreType = (score: number) => {
@@ -39,12 +42,7 @@ const getScoreType = (score: number) => {
 async function openDetailModal() {
   showDetailModal.value = true
   await nextTick()
-  const str = atou(props.myFlowchartZippedStr)
-  const json = JSON.parse(str)
-  readonlyFlowchartEditorRef.value.setFlowchartData({
-    nodes: json.nodes || [],
-    edges: json.edges || [],
-  })
+  await renderFlowchart(mermaidContainer.value, props.myMermaidCode)
 }
 
 function closeModal() {
@@ -87,14 +85,13 @@ function loadToEditor() {
     >
       <n-grid :cols="5" :x-gap="16">
         <n-gi :span="3">
-          <n-card title="大致缩略图（有错位问题，建议加载到流程图编辑器查看）">
-            <div class="flowchart">
-              <FlowchartEditor
-                ref="readonlyFlowchartEditorRef"
-                readonly
-                height="400px"
-              />
-            </div>
+          <n-card title="流程图预览">
+            <n-alert v-if="renderError" type="error" title="流程图渲染失败">
+              <template #default>
+                {{ renderError }}
+              </template>
+            </n-alert>
+            <div v-else ref="mermaidContainer" class="flowchart"></div>
           </n-card>
           <n-flex style="margin-top: 16px" justify="center">
             <n-button @click="loadToEditor" type="primary">
@@ -160,9 +157,14 @@ function loadToEditor() {
 
 <style scoped>
 .flowchart {
-  height: 400px;
+  height: 500px;
   width: 100%;
-  border-radius: 4px;
-  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+:deep(.flowchart > svg) {
+  height: 100%;
 }
 </style>

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { useBreakpoints } from "shared/composables/breakpoints"
-import { useFlowchartSubmit } from "../composables/useFlowchartSubmit"
+import { useFlowchartSubmission } from "../composables/useFlowchartSubmission"
 import FlowchartEvaluationDisplay from "./FlowchartEvaluationDisplay.vue"
 
 const { isDesktop } = useBreakpoints()
@@ -14,11 +14,12 @@ const {
   loading,
   submissionCount,
   myFlowchartZippedStr,
+  myMermaidCode,
   connect,
   disconnect,
   checkCurrentSubmissionStatus,
   submitFlowchartData,
-} = useFlowchartSubmit()
+} = useFlowchartSubmission()
 
 // 组件挂载时连接 WebSocket 并检查状态
 onMounted(() => {
@@ -65,6 +66,7 @@ function handleLoadToEditor(data: any) {
     <FlowchartEvaluationDisplay
       :evaluation-result="evaluationResult"
       :my-flowchart-zipped-str="myFlowchartZippedStr"
+      :my-mermaid-code="myMermaidCode"
       @close="() => {}"
       @load-to-editor="handleLoadToEditor"
     />

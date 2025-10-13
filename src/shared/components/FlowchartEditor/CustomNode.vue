@@ -1,18 +1,14 @@
 <template>
   <div
     class="custom-node"
-    :class="{
-      'is-hovered': isHovered,
-      'is-editing': isEditing,
-      readonly: readonly,
-    }"
+    :class="{ 'is-hovered': isHovered, 'is-editing': isEditing }"
     :data-node-type="nodeType"
-    :draggable="!isEditing && !readonly"
-    @mouseenter="!readonly ? (isHovered = true) : undefined"
-    @mouseleave="!readonly ? handleMouseLeave : undefined"
-    @dblclick="!readonly ? handleDoubleClick : undefined"
-    @dragstart="!readonly ? handleDragStart : undefined"
-    @mousedown="!readonly ? handleMouseDown : undefined"
+    :draggable="!isEditing"
+    @mouseenter="isHovered = true"
+    @mouseleave="handleMouseLeave"
+    @dblclick="handleDoubleClick"
+    @dragstart="handleDragStart"
+    @mousedown="handleMouseDown"
   >
     <!-- 连线点 - 根据节点类型动态显示 -->
     <NodeHandles :node-type="nodeType" :node-config="nodeConfig" />
@@ -43,7 +39,7 @@
 
     <!-- 悬停时显示的操作按钮 -->
     <NodeActions
-      v-if="isHovered && !readonly"
+      v-if="isHovered"
       @delete="handleDelete"
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
@@ -62,7 +58,6 @@ interface Props {
   id: string
   type: string
   data: any
-  readonly?: boolean
 }
 
 interface Emits {
@@ -71,9 +66,7 @@ interface Emits {
 }
 
 // Props 和 Emits
-const props = withDefaults(defineProps<Props>(), {
-  readonly: false,
-})
+const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
 
 // 响应式状态
@@ -222,14 +215,6 @@ onUnmounted(() => {
   filter: brightness(1.1);
 }
 
-.custom-node.readonly {
-  cursor: default;
-  pointer-events: none;
-}
-
-.custom-node.readonly .node-content {
-  pointer-events: auto;
-}
 
 /* 节点内容区域 */
 .node-content {

@@ -22,12 +22,10 @@ import CustomNode from "./CustomNode.vue"
 import { useProblemStore } from "oj/store/problem"
 
 interface Props {
-  readonly?: boolean
   height?: string
 }
 
 withDefaults(defineProps<Props>(), {
-  readonly: false,
   height: "calc(100vh - 133px)",
 })
 
@@ -183,12 +181,11 @@ defineExpose({
     <VueFlow
       v-model:nodes="nodes"
       v-model:edges="edges"
-      :readonly="readonly"
-      @dragover="!readonly ? handleDragOver : undefined"
-      @dragleave="!readonly ? handleDragLeave : undefined"
-      @drop="!readonly ? handleDrop : undefined"
-      @connect="!readonly ? handleConnect : undefined"
-      @edge-click="!readonly ? handleEdgeClick : undefined"
+      @dragover="handleDragOver"
+      @dragleave="handleDragLeave"
+      @drop="handleDrop"
+      @connect="handleConnect"
+      @edge-click="handleEdgeClick"
       :default-edge-options="{
         type: 'step',
         style: {
@@ -211,7 +208,7 @@ defineExpose({
         markerEnd: 'url(#connection-arrow)',
         filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
       }"
-      :fit-view-on-init="readonly"
+      :fit-view-on-init="false"
       :connect-on-click="false"
       :multi-selection-key-code="null"
       :delete-key-code="null"
@@ -240,17 +237,14 @@ defineExpose({
           :id="id"
           :type="type"
           :data="data"
-          :readonly="readonly"
           @delete="handleNodeDelete"
           @update="handleNodeUpdate"
         />
       </template>
 
       <Background variant="lines" :gap="20" :size="1" />
-      <Controls v-if="!readonly" />
+      <Controls />
       <Toolbar
-        v-if="!readonly"
-        r
         :can-undo="canUndo"
         :can-redo="canRedo"
         :is-saving="isSaving"
