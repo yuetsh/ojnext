@@ -46,12 +46,18 @@ const { renderError, renderFlowchart } = useMermaid()
 
 // 状态管理
 const loading = ref(false)
-const rating = ref<Rating | null>(null)
+const rating = ref<Rating>({ score: 0, grade: "" })
 const submissionCount = ref(0)
 const myFlowchartZippedStr = ref("")
 const myMermaidCode = ref("")
 const showDetailModal = ref(false)
-const evaluation = ref<Evaluation | null>(null)
+const evaluation = ref<Evaluation>({
+  score: 0,
+  grade: "",
+  feedback: "",
+  suggestions: "",
+  criteria_details: {},
+})
 
 // ==================== WebSocket 相关函数 ====================
 // 处理 WebSocket 消息
@@ -225,7 +231,7 @@ onUnmounted(() => {
     <!-- 评分结果按钮 -->
     <n-button
       secondary
-      v-if="rating"
+      v-if="rating.score > 0"
       @click="openDetailModal"
       :type="getScoreType(rating.score)"
     >
@@ -264,17 +270,17 @@ onUnmounted(() => {
         <n-gi :span="2">
           <!-- AI反馈 -->
           <n-card
-            v-if="evaluation?.feedback"
+            v-if="evaluation.feedback"
             size="small"
             title="AI反馈"
             style="margin-bottom: 16px"
           >
-            <n-text>{{ evaluation.feedback }}</n-text>
-          </n-card>score
+            <n-text>{{ evaluation.feedback }}</n-text> </n-card
+          >score
 
           <!-- 改进建议 -->
           <n-card
-            v-if="evaluation?.suggestions"
+            v-if="evaluation.suggestions"
             size="small"
             title="改进建议"
             style="margin-bottom: 16px"
@@ -284,7 +290,7 @@ onUnmounted(() => {
 
           <!-- 详细评分 -->
           <n-card
-            v-if="evaluation?.criteria_details"
+            v-if="evaluation.criteria_details"
             size="small"
             title="详细评分"
           >
