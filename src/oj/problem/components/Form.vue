@@ -72,6 +72,13 @@ const menu = computed<DropdownOption[]>(() => [
   { label: "重置代码", key: "reset" },
 ])
 
+const showGoSubmissionButton = computed(() => {
+  if (isContestMode.value) return true
+  else if (userStore.isAdminRole) return true
+  else if (userStore.showSubmissions) return true
+  else return false
+})
+
 const languageOptions: DropdownOption[] = languages.value.map((it) => ({
   label: () =>
     h(NFlex, { align: "center" }, () => [
@@ -161,11 +168,7 @@ onMounted(() => {
     <SubmitCode v-else />
 
     <n-button
-      v-if="
-        !userStore.isSuperAdmin &&
-        userStore.showSubmissions &&
-        !isContestMode
-      "
+      v-if="showGoSubmissionButton"
       :size="buttonSize"
       @click="goSubmissions"
     >
