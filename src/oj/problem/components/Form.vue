@@ -161,7 +161,11 @@ onMounted(() => {
     <SubmitCode v-else />
 
     <n-button
-      v-if="!userStore.isSuperAdmin && userStore.showSubmissions"
+      v-if="
+        !userStore.isSuperAdmin &&
+        userStore.showSubmissions &&
+        !isContestMode
+      "
       :size="buttonSize"
       @click="goSubmissions"
     >
@@ -179,8 +183,9 @@ onMounted(() => {
     <n-button
       v-if="isDesktop && codeStore.code.language !== 'Flowchart'"
       @click="goTestCat"
-      >自测猫</n-button
     >
+      自测猫
+    </n-button>
 
     <n-dropdown
       v-if="codeStore.code.language !== 'Flowchart'"
