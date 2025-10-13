@@ -122,7 +122,7 @@ watch(isMobile, (value) => {
             <ProblemContent />
           </n-tab-pane>
           <n-tab-pane
-            v-if="problem.show_flowchart"
+            v-if="problem.show_flowchart && problem.mermaid_code"
             name="flowchart"
             tab="流程图表"
           >
