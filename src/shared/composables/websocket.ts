@@ -422,6 +422,8 @@ export interface FlowchartEvaluationUpdate extends WebSocketMessage {
   score?: number
   grade?: string
   feedback?: string
+  suggestions?: string
+  criteriaDetails?: any
   error?: string
 }
 

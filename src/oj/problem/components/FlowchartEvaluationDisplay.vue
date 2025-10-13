@@ -1,17 +1,10 @@
 <script lang="ts" setup>
 import { atou } from "utils/functions"
 import { useMermaid } from "shared/composables/useMermaid"
-
-interface EvaluationResult {
-  score?: number
-  grade?: string
-  feedback?: string
-  suggestions?: string
-  criteriaDetails?: any
-}
+import { Evaluation } from "../composables/useFlowchart"
 
 interface Props {
-  evaluationResult: EvaluationResult | null
+  evaluation: Evaluation | null
   myFlowchartZippedStr: string
   myMermaidCode: string
 }
@@ -19,7 +12,6 @@ interface Props {
 const props = defineProps<Props>()
 
 const emit = defineEmits<{
-  close: []
   loadToEditor: [data: any]
 }>()
 
@@ -47,7 +39,6 @@ async function openDetailModal() {
 
 function closeModal() {
   showDetailModal.value = false
-  emit("close")
 }
 
 function loadToEditor() {
@@ -69,11 +60,11 @@ function loadToEditor() {
     <!-- 评分结果显示 -->
     <n-button
       secondary
-      v-if="evaluationResult"
+      v-if="evaluation"
       @click="openDetailModal"
-      :type="getScoreType(evaluationResult.score!)"
+      :type="getScoreType(evaluation.score)"
     >
-      {{ evaluationResult.score }}分 {{ evaluationResult.grade }}级
+      {{ evaluation.score }}分 {{ evaluation.grade }}级
     </n-button>
 
     <!-- 详情弹框 -->
@@ -101,32 +92,32 @@ function loadToEditor() {
         </n-gi>
         <n-gi :span="2">
           <n-card
-            v-if="evaluationResult?.feedback"
+            v-if="evaluation?.feedback"
             size="small"
             title="AI反馈"
             style="margin-bottom: 16px"
           >
-            <n-text>{{ evaluationResult.feedback }}</n-text>
+            <n-text>{{ evaluation.feedback }}</n-text>
           </n-card>
 
           <!-- 建议部分 -->
           <n-card
-            v-if="evaluationResult?.suggestions"
+            v-if="evaluation?.suggestions"
             size="small"
             title="改进建议"
             style="margin-bottom: 16px"
           >
-            <n-text>{{ evaluationResult.suggestions }}</n-text>
+            <n-text>{{ evaluation.suggestions }}</n-text>
           </n-card>
 
           <!-- 详细评分部分 -->
           <n-card
-            v-if="evaluationResult?.criteriaDetails"
+            v-if="evaluation?.criteria_details"
             size="small"
             title="详细评分"
           >
             <div
-              v-for="(detail, key) in evaluationResult.criteriaDetails"
+              v-for="(detail, key) in evaluation.criteria_details"
               :key="key"
               style="margin-bottom: 12px"
             >
