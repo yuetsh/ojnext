@@ -72,19 +72,17 @@ const menu = computed<DropdownOption[]>(() => [
   { label: "重置代码", key: "reset" },
 ])
 
-const languageOptions: DropdownOption[] = languages.value.map(
-  (it) => ({
-    label: () =>
-      h(NFlex, { align: "center" }, () => [
-        h(Icon, {
-          icon: ICON_SET[it],
-          width: 16,
-        }),
-        LANGUAGE_SHOW_VALUE[it],
-      ]),
-    value: it,
-  }),
-)
+const languageOptions: DropdownOption[] = languages.value.map((it) => ({
+  label: () =>
+    h(NFlex, { align: "center" }, () => [
+      h(Icon, {
+        icon: ICON_SET[it],
+        width: 16,
+      }),
+      LANGUAGE_SHOW_VALUE[it],
+    ]),
+  value: it,
+}))
 
 const copy = async () => {
   const success = await copyToClipboard(codeStore.code.value)

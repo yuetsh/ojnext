@@ -55,7 +55,7 @@ function handleLoadToEditor(data: any) {
     >
       {{ loading ? "评分中..." : "提交流程图" }}
     </n-button>
-    
+
     <!-- 显示提交次数 -->
     <n-button secondary v-if="submissionCount > 0" type="info">
       {{ submissionCount }} 次

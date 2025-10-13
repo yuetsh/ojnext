@@ -65,7 +65,8 @@ export function useMermaidConverter() {
     mermaid += "\n"
     mermaid +=
       "    classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:2px\n"
-    mermaid += "    classDef input fill:#e3f2fd,stroke:#1976d2,stroke-width:2px\n"
+    mermaid +=
+      "    classDef input fill:#e3f2fd,stroke:#1976d2,stroke-width:2px\n"
     mermaid +=
       "    classDef output fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px\n"
     mermaid +=

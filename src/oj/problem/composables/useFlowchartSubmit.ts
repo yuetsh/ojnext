@@ -1,16 +1,16 @@
-import { ref } from 'vue'
-import { useMessage } from 'naive-ui'
-import { submitFlowchart, getCurrentProblemFlowchartSubmission } from 'oj/api'
-import { useProblemStore } from 'oj/store/problem'
-import { atou, utoa } from 'utils/functions'
-import { useMermaidConverter } from './useMermaidConverter'
-import { useFlowchartSubmission } from './useFlowchartSubmission'
+import { ref } from "vue"
+import { useMessage } from "naive-ui"
+import { submitFlowchart, getCurrentProblemFlowchartSubmission } from "oj/api"
+import { useProblemStore } from "oj/store/problem"
+import { atou, utoa } from "utils/functions"
+import { useMermaidConverter } from "./useMermaidConverter"
+import { useFlowchartSubmission } from "./useFlowchartSubmission"
 
 export function useFlowchartSubmit() {
   const message = useMessage()
   const problemStore = useProblemStore()
   const { problem } = toRefs(problemStore)
-  
+
   const { convertToMermaid } = useMermaidConverter()
   const {
     evaluationResult,
@@ -26,7 +26,7 @@ export function useFlowchartSubmit() {
 
   // 提交次数
   const submissionCount = ref(0)
-  
+
   // 存储流程图数据
   const myFlowchartZippedStr = ref("")
 
@@ -34,7 +34,9 @@ export function useFlowchartSubmit() {
   const checkCurrentSubmissionStatus = async () => {
     if (!problem.value?.id) return
 
-    const { data } = await getCurrentProblemFlowchartSubmission(problem.value.id)
+    const { data } = await getCurrentProblemFlowchartSubmission(
+      problem.value.id,
+    )
     const submission = data.submission
     submissionCount.value = data.count
     if (submission && submission.status === 2) {
@@ -52,7 +54,7 @@ export function useFlowchartSubmit() {
   // 提交流程图
   const submitFlowchartData = async (flowchartEditorRef: any) => {
     if (!flowchartEditorRef?.value) return
-    
+
     // 获取流程图的JSON数据
     const flowchartData = flowchartEditorRef.value.getFlowchartData()
 
@@ -60,7 +62,7 @@ export function useFlowchartSubmit() {
       message.error("流程图节点或边不能为空")
       return
     }
-    
+
     const mermaidCode = convertToMermaid(flowchartData)
     const compressed = utoa(JSON.stringify(flowchartData))
 

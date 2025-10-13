@@ -1,5 +1,5 @@
 <template>
-  <div 
+  <div
     class="custom-node"
     :class="{ 'is-hovered': isHovered, 'is-editing': isEditing }"
     :data-node-type="nodeType"
@@ -11,18 +11,15 @@
     @mousedown="handleMouseDown"
   >
     <!-- 连线点 - 根据节点类型动态显示 -->
-    <NodeHandles 
-      :node-type="nodeType"
-      :node-config="nodeConfig"
-    />
-    
+    <NodeHandles :node-type="nodeType" :node-config="nodeConfig" />
+
     <!-- 节点内容 -->
     <div class="node-content">
       <!-- 显示模式 -->
       <span v-if="!isEditing" class="node-label">{{ displayLabel }}</span>
-      
+
       <!-- 编辑模式 -->
-      <input 
+      <input
         v-if="isEditing"
         ref="editInput"
         v-model="editText"
@@ -33,13 +30,15 @@
         @click.stop
         @focusout="handleSaveEdit"
       />
-      
+
       <!-- 隐藏的文字用于保持尺寸 -->
-      <span v-if="isEditing" class="node-label-hidden" aria-hidden="true">{{ displayLabel }}</span>
+      <span v-if="isEditing" class="node-label-hidden" aria-hidden="true">{{
+        displayLabel
+      }}</span>
     </div>
-    
+
     <!-- 悬停时显示的操作按钮 -->
-    <NodeActions 
+    <NodeActions
       v-if="isHovered"
       @delete="handleDelete"
       @mouseenter="handleMouseEnter"
@@ -49,10 +48,10 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, onUnmounted, nextTick, computed, watch } from 'vue'
-import { getNodeTypeConfig } from './useNodeStyles'
-import NodeHandles from './NodeHandles.vue'
-import NodeActions from './NodeActions.vue'
+import { ref, onUnmounted, nextTick, computed, watch } from "vue"
+import { getNodeTypeConfig } from "./useNodeStyles"
+import NodeHandles from "./NodeHandles.vue"
+import NodeActions from "./NodeActions.vue"
 
 // 类型定义
 interface Props {
@@ -73,7 +72,7 @@ const emit = defineEmits<Emits>()
 // 响应式状态
 const isHovered = ref(false)
 const isEditing = ref(false)
-const editText = ref('')
+const editText = ref("")
 const editInput = ref<HTMLInputElement>()
 
 // 定时器和事件处理器
@@ -83,16 +82,17 @@ let globalClickHandler: ((event: MouseEvent) => void) | null = null
 // 计算属性
 const nodeType = computed(() => props.data.originalType || props.type)
 const nodeConfig = computed(() => getNodeTypeConfig(nodeType.value))
-const displayLabel = computed(() => props.data.customLabel || nodeConfig.value.label)
-
+const displayLabel = computed(
+  () => props.data.customLabel || nodeConfig.value.label,
+)
 
 // 事件处理器
-const handleDelete = () => emit('delete', props.id)
+const handleDelete = () => emit("delete", props.id)
 
 const handleMouseDown = (event: MouseEvent) => {
   // 检查是否点击在连线点区域
   const target = event.target as HTMLElement
-  if (target.closest('.vue-flow__handle')) {
+  if (target.closest(".vue-flow__handle")) {
     // 如果在连线点区域，禁用节点拖拽
     event.preventDefault()
     return false
@@ -103,16 +103,16 @@ const handleDragStart = (event: DragEvent) => {
   if (isEditing.value) {
     return
   }
-  
+
   // 检查是否在连线点区域开始拖拽
   const target = event.target as HTMLElement
-  if (target.closest('.vue-flow__handle')) {
+  if (target.closest(".vue-flow__handle")) {
     event.preventDefault()
     return false
   }
-  
+
   if (event.dataTransfer) {
-    event.dataTransfer.effectAllowed = 'move'
+    event.dataTransfer.effectAllowed = "move"
   }
 }
 
@@ -133,7 +133,7 @@ const handleSaveEdit = () => {
   if (isEditing.value) {
     // 保存编辑的文本
     if (editText.value.trim()) {
-      emit('update', props.id, editText.value.trim())
+      emit("update", props.id, editText.value.trim())
     }
     isEditing.value = false
     removeGlobalClickHandler()
@@ -142,7 +142,7 @@ const handleSaveEdit = () => {
 
 const handleCancelEdit = () => {
   isEditing.value = false
-  editText.value = ''
+  editText.value = ""
   removeGlobalClickHandler()
 }
 
@@ -165,22 +165,24 @@ const handleMouseLeave = () => {
 // 全局点击处理器
 const addGlobalClickHandler = () => {
   if (globalClickHandler) return
-  
+
   globalClickHandler = (event: MouseEvent) => {
-    if (isEditing.value && !(event.target as Element)?.closest('.custom-node')) {
+    if (
+      isEditing.value &&
+      !(event.target as Element)?.closest(".custom-node")
+    ) {
       handleSaveEdit()
     }
   }
-  document.addEventListener('click', globalClickHandler, { capture: true })
+  document.addEventListener("click", globalClickHandler, { capture: true })
 }
 
 const removeGlobalClickHandler = () => {
   if (globalClickHandler) {
-    document.removeEventListener('click', globalClickHandler, { capture: true })
+    document.removeEventListener("click", globalClickHandler, { capture: true })
     globalClickHandler = null
   }
 }
-
 
 // 清理函数
 onUnmounted(() => {

@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { computed } from 'vue'
-import { getNodeTypeConfig } from './useNodeStyles'
+import { computed } from "vue"
+import { getNodeTypeConfig } from "./useNodeStyles"
 
 // 拖拽开始处理
 const onDragStart = (event: DragEvent, type: string) => {
   if (!event.dataTransfer || !type) return
-  
+
   event.dataTransfer.setData("application/vueflow", type)
   event.dataTransfer.effectAllowed = "move"
 }
@@ -30,36 +30,30 @@ const emit = defineEmits<{
 // 工具栏状态
 
 // 节点类型定义 - 优化性能
-const nodeTypes = computed(() => [
-  'start',
-  'input', 
-  'default',
-  'decision',
-  'loop',
-  'output',
-  'end'
-].map(type => {
-  const config = getNodeTypeConfig(type)
-  return {
-    type,
-    ...config
-  }
-}))
+const nodeTypes = computed(() =>
+  ["start", "input", "default", "decision", "loop", "output", "end"].map(
+    (type) => {
+      const config = getNodeTypeConfig(type)
+      return {
+        type,
+        ...config,
+      }
+    },
+  ),
+)
 
 // 获取保存状态标题
 const getSaveStatusTitle = () => {
   if (props.isSaving) {
-    return '正在保存...'
+    return "正在保存..."
   } else if (props.hasUnsavedChanges) {
-    return '有未保存的更改'
+    return "有未保存的更改"
   } else if (props.lastSaved) {
     return `已保存 - ${new Date(props.lastSaved).toLocaleTimeString()}`
   } else {
-    return '已保存'
+    return "已保存"
   }
 }
-
-
 </script>
 <template>
   <div class="toolbar">
@@ -67,11 +61,15 @@ const getSaveStatusTitle = () => {
     <div class="toolbar-header">
       <div class="header-content">
         <h3>节点库</h3>
-        <div class="save-status-indicator" :class="{ 
-          'saving': props.isSaving, 
-          'unsaved': props.hasUnsavedChanges && !props.isSaving,
-          'saved': !props.hasUnsavedChanges && !props.isSaving 
-        }" :title="getSaveStatusTitle()">
+        <div
+          class="save-status-indicator"
+          :class="{
+            saving: props.isSaving,
+            unsaved: props.hasUnsavedChanges && !props.isSaving,
+            saved: !props.hasUnsavedChanges && !props.isSaving,
+          }"
+          :title="getSaveStatusTitle()"
+        >
           <span v-if="props.isSaving" class="spinner">⏳</span>
           <span v-else-if="props.hasUnsavedChanges">●</span>
           <span v-else>✔</span>
@@ -79,7 +77,6 @@ const getSaveStatusTitle = () => {
       </div>
       <p class="description">拖拽节点到画布中</p>
     </div>
-
 
     <!-- 节点列表 -->
     <div class="nodes">
@@ -105,8 +102,8 @@ const getSaveStatusTitle = () => {
     <!-- 工具栏操作 -->
     <div class="toolbar-actions">
       <div class="history-controls">
-        <button 
-          class="action-btn history-btn" 
+        <button
+          class="action-btn history-btn"
           :disabled="!canUndo"
           @click="$emit('undo')"
           title="撤销 (Ctrl+Z)"
@@ -114,8 +111,8 @@ const getSaveStatusTitle = () => {
           <span class="btn-icon">↶</span>
           <span class="btn-text">撤销</span>
         </button>
-        <button 
-          class="action-btn history-btn" 
+        <button
+          class="action-btn history-btn"
           :disabled="!canRedo"
           @click="$emit('redo')"
           title="重做 (Ctrl+Y)"
@@ -124,12 +121,15 @@ const getSaveStatusTitle = () => {
           <span class="btn-text">重做</span>
         </button>
       </div>
-      <button class="action-btn clear-btn" @click="$emit('clear')" title="清空画布">
+      <button
+        class="action-btn clear-btn"
+        @click="$emit('clear')"
+        title="清空画布"
+      >
         <span class="btn-icon">🗑️</span>
         <span class="btn-text">清空画布</span>
       </button>
     </div>
-
   </div>
 </template>
 
@@ -149,7 +149,6 @@ const getSaveStatusTitle = () => {
   overflow-y: auto;
   transition: all 0.3s ease;
 }
-
 
 .toolbar-header {
   margin-bottom: 16px;
@@ -207,22 +206,29 @@ const getSaveStatusTitle = () => {
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
-
 
 .description {
   margin: 0;
   font-size: 12px;
   color: #6b7280;
 }
-
 
 /* 节点列表样式 */
 .nodes {
@@ -284,7 +290,6 @@ const getSaveStatusTitle = () => {
   color: #6b7280;
   line-height: 1.3;
 }
-
 
 /* 工具栏操作按钮样式 */
 .toolbar-actions {
@@ -366,7 +371,6 @@ const getSaveStatusTitle = () => {
   font-size: 12px;
 }
 
-
 /* 滚动条样式 */
 .toolbar::-webkit-scrollbar {
   width: 6px;
@@ -385,7 +389,6 @@ const getSaveStatusTitle = () => {
 .toolbar::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
 }
-
 
 /* 响应式设计 */
 @media (max-width: 768px) {

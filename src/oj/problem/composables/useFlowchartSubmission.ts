@@ -1,9 +1,9 @@
-import { ref, watch } from 'vue'
-import { useMessage } from 'naive-ui'
+import { ref, watch } from "vue"
+import { useMessage } from "naive-ui"
 import {
   useFlowchartWebSocket,
   type FlowchartEvaluationUpdate,
-} from 'shared/composables/websocket'
+} from "shared/composables/websocket"
 
 export interface EvaluationResult {
   score?: number
@@ -21,7 +21,7 @@ export interface SubmissionStatus {
 
 export function useFlowchartSubmission() {
   const message = useMessage()
-  
+
   const evaluationResult = ref<EvaluationResult | null>(null)
   const submissionStatus = ref<SubmissionStatus | null>(null)
   const loading = ref(false)
@@ -67,7 +67,7 @@ export function useFlowchartSubmission() {
   const subscribeToSubmission = (submissionId: string) => {
     console.log("开始订阅WebSocket更新")
     subscribe(submissionId)
-    
+
     // 设置评分状态显示
     submissionStatus.value = {
       status: "processing",

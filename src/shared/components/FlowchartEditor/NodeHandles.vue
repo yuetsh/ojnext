@@ -39,7 +39,7 @@
         zIndex: 10,
         left: '-10px',
         top: '50%',
-        transform: 'translateY(-50%)'
+        transform: 'translateY(-50%)',
       }"
     />
     <Handle
@@ -54,10 +54,10 @@
         zIndex: 10,
         right: '-10px',
         top: '50%',
-        transform: 'translateY(-50%)'
+        transform: 'translateY(-50%)',
       }"
     />
-    
+
     <!-- 是/否标签 -->
     <div class="decision-labels">
       <span class="decision-label decision-label-yes">是</span>
@@ -111,7 +111,7 @@
         })
       "
     />
-    
+
     <!-- 标签 -->
     <div class="loop-labels">
       <span class="loop-label loop-label-enter">进入</span>

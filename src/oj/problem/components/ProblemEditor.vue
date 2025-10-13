@@ -81,7 +81,7 @@ const handleSyncStatusChange = (status: {
 }
 
 // 提供FlowchartEditor的ref给子组件
-provide('flowchartEditorRef', flowchartEditorRef)
+provide("flowchartEditorRef", flowchartEditorRef)
 </script>
 
 <template>
@@ -93,7 +93,10 @@ provide('flowchartEditorRef', flowchartEditorRef)
       @change-language="changeLanguage"
       @toggle-sync="toggleSync"
     />
-    <FlowchartEditor v-if="codeStore.code.language === 'Flowchart'" ref="flowchartEditorRef" />
+    <FlowchartEditor
+      v-if="codeStore.code.language === 'Flowchart'"
+      ref="flowchartEditorRef"
+    />
     <SyncCodeEditor
       v-else
       v-model:value="codeStore.code.value"

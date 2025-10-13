@@ -96,6 +96,10 @@ export const ojs: RouteRecordRaw = {
       component: () => import("oj/ai/analysis.vue"),
       meta: { requiresAuth: true },
     },
+    {
+      path: "flowchart",
+      component: () => import("oj/flowchart/index.vue"),
+    },
   ],
 }
 

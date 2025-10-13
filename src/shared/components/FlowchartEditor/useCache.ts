@@ -1,6 +1,6 @@
-import { ref, watch } from 'vue'
-import { useStorage, useDebounceFn } from '@vueuse/core'
-import type { Node, Edge } from '@vue-flow/core'
+import { ref, watch } from "vue"
+import { useStorage, useDebounceFn } from "@vueuse/core"
+import type { Node, Edge } from "@vue-flow/core"
 
 /**
  * 缓存管理 - 使用 @vueuse 的 useStorage
@@ -8,7 +8,7 @@ import type { Node, Edge } from '@vue-flow/core'
 export function useCache(
   nodes: any,
   edges: any,
-  storageKey: string = 'flowchart-editor-data'
+  storageKey: string = "flowchart-editor-data",
 ) {
   const isSaving = ref(false)
   const lastSaved = ref<Date | null>(null)
@@ -22,7 +22,7 @@ export function useCache(
   }>(storageKey, {
     nodes: [],
     edges: [],
-    timestamp: ''
+    timestamp: "",
   })
 
   // 防抖保存
@@ -52,7 +52,9 @@ export function useCache(
     if (storedData.value.nodes?.length || storedData.value.edges?.length) {
       nodes.value = storedData.value.nodes
       edges.value = storedData.value.edges
-      lastSaved.value = storedData.value.timestamp ? new Date(storedData.value.timestamp) : null
+      lastSaved.value = storedData.value.timestamp
+        ? new Date(storedData.value.timestamp)
+        : null
       hasUnsavedChanges.value = false
       return true
     }
@@ -61,16 +63,20 @@ export function useCache(
 
   // 清除缓存数据
   const clearCache = () => {
-    storedData.value = { nodes: [], edges: [], timestamp: '' }
+    storedData.value = { nodes: [], edges: [], timestamp: "" }
     lastSaved.value = null
     hasUnsavedChanges.value = false
   }
 
   // 监听节点和边的变化
-  watch([nodes, edges], () => {
-    hasUnsavedChanges.value = true
-    debouncedSave()
-  }, { deep: true })
+  watch(
+    [nodes, edges],
+    () => {
+      hasUnsavedChanges.value = true
+      debouncedSave()
+    },
+    { deep: true },
+  )
 
   return {
     isSaving,
@@ -78,6 +84,6 @@ export function useCache(
     hasUnsavedChanges,
     saveToCache,
     loadFromCache,
-    clearCache
+    clearCache,
   }
 }

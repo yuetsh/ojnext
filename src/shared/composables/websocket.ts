@@ -414,7 +414,10 @@ export function createWebSocketComposable<T extends WebSocketMessage>(
  * 流程图评分更新消息类型
  */
 export interface FlowchartEvaluationUpdate extends WebSocketMessage {
-  type: "flowchart_evaluation_completed" | "flowchart_evaluation_failed" | "flowchart_evaluation_update"
+  type:
+    | "flowchart_evaluation_completed"
+    | "flowchart_evaluation_failed"
+    | "flowchart_evaluation_update"
   submission_id: string
   score?: number
   grade?: string
@@ -474,8 +477,10 @@ export function useFlowchartWebSocket(
     scheduleDisconnect: (delay?: number) => ws.scheduleDisconnect(delay),
     cancelScheduledDisconnect: () => ws.cancelScheduledDisconnect(),
     status: ws.status,
-    addHandler: (h: MessageHandler<FlowchartEvaluationUpdate>) => ws.addHandler(h),
-    removeHandler: (h: MessageHandler<FlowchartEvaluationUpdate>) => ws.removeHandler(h),
+    addHandler: (h: MessageHandler<FlowchartEvaluationUpdate>) =>
+      ws.addHandler(h),
+    removeHandler: (h: MessageHandler<FlowchartEvaluationUpdate>) =>
+      ws.removeHandler(h),
   }
 }
 
