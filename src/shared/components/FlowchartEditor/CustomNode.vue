@@ -1,14 +1,18 @@
 <template>
   <div
     class="custom-node"
-    :class="{ 'is-hovered': isHovered, 'is-editing': isEditing }"
+    :class="{
+      'is-hovered': isHovered,
+      'is-editing': isEditing,
+      readonly: readonly,
+    }"
     :data-node-type="nodeType"
-    :draggable="!isEditing"
-    @mouseenter="isHovered = true"
-    @mouseleave="handleMouseLeave"
-    @dblclick="handleDoubleClick"
-    @dragstart="handleDragStart"
-    @mousedown="handleMouseDown"
+    :draggable="!isEditing && !readonly"
+    @mouseenter="!readonly ? (isHovered = true) : undefined"
+    @mouseleave="!readonly ? handleMouseLeave : undefined"
+    @dblclick="!readonly ? handleDoubleClick : undefined"
+    @dragstart="!readonly ? handleDragStart : undefined"
+    @mousedown="!readonly ? handleMouseDown : undefined"
   >
     <!-- 连线点 - 根据节点类型动态显示 -->
     <NodeHandles :node-type="nodeType" :node-config="nodeConfig" />
@@ -32,14 +36,14 @@
       />
 
       <!-- 隐藏的文字用于保持尺寸 -->
-      <span v-if="isEditing" class="node-label-hidden" aria-hidden="true">{{
-        displayLabel
-      }}</span>
+      <span v-if="isEditing" class="node-label-hidden" aria-hidden="true">
+        {{ displayLabel }}
+      </span>
     </div>
 
     <!-- 悬停时显示的操作按钮 -->
     <NodeActions
-      v-if="isHovered"
+      v-if="isHovered && !readonly"
       @delete="handleDelete"
       @mouseenter="handleMouseEnter"
       @mouseleave="handleMouseLeave"
@@ -58,6 +62,7 @@ interface Props {
   id: string
   type: string
   data: any
+  readonly?: boolean
 }
 
 interface Emits {
@@ -66,7 +71,9 @@ interface Emits {
 }
 
 // Props 和 Emits
-const props = defineProps<Props>()
+const props = withDefaults(defineProps<Props>(), {
+  readonly: false,
+})
 const emit = defineEmits<Emits>()
 
 // 响应式状态
@@ -213,6 +220,15 @@ onUnmounted(() => {
 
 .custom-node.is-hovered .node-content {
   filter: brightness(1.1);
+}
+
+.custom-node.readonly {
+  cursor: default;
+  pointer-events: none;
+}
+
+.custom-node.readonly .node-content {
+  pointer-events: auto;
 }
 
 /* 节点内容区域 */

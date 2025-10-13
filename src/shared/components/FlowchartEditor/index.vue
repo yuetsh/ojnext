@@ -23,10 +23,12 @@ import { useProblemStore } from "oj/store/problem"
 
 interface Props {
   readonly?: boolean
+  height?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
+withDefaults(defineProps<Props>(), {
   readonly: false,
+  height: "calc(100vh - 133px)",
 })
 
 // Vue Flow 实例
@@ -177,16 +179,16 @@ defineExpose({
 </script>
 
 <template>
-  <div class="container">
+  <div class="container" :style="{ height }">
     <VueFlow
       v-model:nodes="nodes"
       v-model:edges="edges"
-      @dragover="handleDragOver"
-      @dragleave="handleDragLeave"
-      @drop="handleDrop"
-      @connect="handleConnect"
-      @edge-click="handleEdgeClick"
       :readonly="readonly"
+      @dragover="!readonly ? handleDragOver : undefined"
+      @dragleave="!readonly ? handleDragLeave : undefined"
+      @drop="!readonly ? handleDrop : undefined"
+      @connect="!readonly ? handleConnect : undefined"
+      @edge-click="!readonly ? handleEdgeClick : undefined"
       :default-edge-options="{
         type: 'step',
         style: {
@@ -209,7 +211,7 @@ defineExpose({
         markerEnd: 'url(#connection-arrow)',
         filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.1))',
       }"
-      :fit-view-on-init="false"
+      :fit-view-on-init="readonly"
       :connect-on-click="false"
       :multi-selection-key-code="null"
       :delete-key-code="null"
@@ -238,13 +240,14 @@ defineExpose({
           :id="id"
           :type="type"
           :data="data"
+          :readonly="readonly"
           @delete="handleNodeDelete"
           @update="handleNodeUpdate"
         />
       </template>
 
       <Background variant="lines" :gap="20" :size="1" />
-      <Controls />
+      <Controls v-if="!readonly" />
       <Toolbar
         v-if="!readonly"
         r
@@ -265,7 +268,7 @@ defineExpose({
 <style scoped>
 .container {
   width: 100%;
-  height: calc(100vh - 133px);
+  height: 100%;
   position: relative;
 }
 </style>

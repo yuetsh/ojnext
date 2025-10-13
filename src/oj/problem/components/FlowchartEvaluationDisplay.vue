@@ -1,8 +1,6 @@
 <script lang="ts" setup>
-import { VueFlow } from "@vue-flow/core"
+import FlowchartEditor from "shared/components/FlowchartEditor/index.vue"
 import { atou } from "utils/functions"
-import "@vue-flow/core/dist/style.css"
-import "@vue-flow/core/dist/theme-default.css"
 
 interface EvaluationResult {
   score?: number
@@ -25,8 +23,10 @@ const emit = defineEmits<{
 }>()
 
 const showDetailModal = ref(false)
-const nodes = ref<any[]>([])
-const edges = ref<any[]>([])
+
+const readonlyFlowchartEditorRef = useTemplateRef<any>(
+  "readonlyFlowchartEditorRef",
+)
 
 // 根据分数获取标签类型
 const getScoreType = (score: number) => {
@@ -36,17 +36,15 @@ const getScoreType = (score: number) => {
   return "error"
 }
 
-function openDetailModal() {
+async function openDetailModal() {
   showDetailModal.value = true
-  if (props.myFlowchartZippedStr) {
-    const str = atou(props.myFlowchartZippedStr)
-    const json = JSON.parse(str)
-    nodes.value = json.nodes.map((node: any) => ({
-      ...node,
-      position: node.position || { x: 0, y: 0 },
-    }))
-    edges.value = json.edges
-  }
+  await nextTick()
+  const str = atou(props.myFlowchartZippedStr)
+  const json = JSON.parse(str)
+  readonlyFlowchartEditorRef.value.setFlowchartData({
+    nodes: json.nodes || [],
+    edges: json.edges || [],
+  })
 }
 
 function closeModal() {
@@ -89,21 +87,12 @@ function loadToEditor() {
     >
       <n-grid :cols="5" :x-gap="16">
         <n-gi :span="3">
-          <n-card title="大致缩略图">
+          <n-card title="大致缩略图（有错位问题，建议加载到流程图编辑器查看）">
             <div class="flowchart">
-              <VueFlow
-                :nodes="nodes"
-                :edges="edges"
-                :fit-view-on-init="true"
-                :nodes-draggable="false"
-                :nodes-connectable="false"
-                :elements-selectable="false"
-                :zoom-on-scroll="false"
-                :pan-on-scroll="false"
-                :pan-on-drag="false"
-                :select-nodes-on-drag="false"
-                :delete-key-code="null"
-                :multi-selection-key-code="null"
+              <FlowchartEditor
+                ref="readonlyFlowchartEditorRef"
+                readonly
+                height="400px"
               />
             </div>
           </n-card>
