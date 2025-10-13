@@ -220,7 +220,7 @@ onUnmounted(() => {
       :disabled="loading"
       @click="submit"
     >
-      {{ loading ? "评分中..." : "提交流程图" }}
+      {{ loading ? "AI 点评中..." : "提交流程图" }}
     </n-button>
 
     <!-- 提交次数显示 -->
