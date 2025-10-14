@@ -45,6 +45,7 @@ const { convertToMermaid } = useMermaidConverter()
 const { renderError, renderFlowchart } = useMermaid()
 
 // 状态管理
+const rendering = ref(false)
 const loading = ref(false)
 const rating = ref<Rating>({ score: 0, grade: "" })
 const submissionCount = ref(0)
@@ -165,9 +166,11 @@ async function getSubmission() {
 
 // ==================== 模态框相关函数 ====================
 async function openDetailModal() {
+  rendering.value = true
   showDetailModal.value = true
   await getSubmission()
-  renderFlowchart(mermaidContainer.value, myMermaidCode.value)
+  await renderFlowchart(mermaidContainer.value, myMermaidCode.value)
+  rendering.value = false
 }
 
 function closeModal() {
@@ -190,10 +193,17 @@ function loadToEditor() {
 }
 
 // ==================== 工具函数 ====================
-const getScoreType = (score: number) => {
-  if (score >= 90) return "success"
-  if (score >= 80) return "info"
-  if (score >= 70) return "warning"
+const getGradeType = (grade: string) => {
+  if (grade === "S") return "primary"
+  if (grade === "A") return "info"
+  if (grade === "B") return "warning"
+  return "error"
+}
+
+const getPercentType = (percent: number) => {
+  if (percent >= 0.8) return "primary"
+  else if (percent >= 0.6) return "info"
+  else if (percent >= 0.4) return "warning"
   return "error"
 }
 
@@ -232,9 +242,9 @@ onUnmounted(() => {
     <!-- 评分结果按钮 -->
     <n-button
       secondary
-      v-if="rating.score > 0"
+      v-if="rating.grade"
       @click="openDetailModal"
-      :type="getScoreType(rating.score)"
+      :type="getGradeType(rating.grade)"
     >
       {{ rating.score }}分 {{ rating.grade }}级
     </n-button>
@@ -250,6 +260,7 @@ onUnmounted(() => {
         <!-- 左侧：流程图预览区域 -->
         <n-gi :span="3">
           <n-card title="流程图预览">
+            <n-spin style="width: 100%" v-if="rendering" />
             <!-- 错误提示 -->
             <n-alert v-if="renderError" type="error" title="流程图渲染失败">
               <template #default>
@@ -276,8 +287,8 @@ onUnmounted(() => {
             title="AI反馈"
             style="margin-bottom: 16px"
           >
-            <n-text>{{ evaluation.feedback }}</n-text> </n-card
-          >score
+            <n-text>{{ evaluation.feedback }}</n-text>
+          </n-card>
 
           <!-- 改进建议 -->
           <n-card
@@ -308,7 +319,7 @@ onUnmounted(() => {
               >
                 <n-text strong>{{ key }}</n-text>
                 <n-tag
-                  :type="getScoreType(detail.score || 0)"
+                  :type="getPercentType(detail.score / detail.max)"
                   size="small"
                   round
                 >
