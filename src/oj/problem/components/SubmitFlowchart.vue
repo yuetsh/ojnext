@@ -144,6 +144,7 @@ function submit() {
 async function getSubmission() {
   if (!problem.value?.id) return
   const { data } = await getCurrentProblemFlowchartSubmission(problem.value.id)
+  submissionCount.value = data.count
   const submission = data.submission
   myMermaidCode.value = submission.mermaid_code
   myFlowchartZippedStr.value = submission.flowchart_data.data
