@@ -260,15 +260,17 @@ onUnmounted(() => {
         <!-- 左侧：流程图预览区域 -->
         <n-gi :span="3">
           <n-card title="流程图预览">
-            <n-spin style="width: 100%" v-if="rendering" />
-            <!-- 错误提示 -->
-            <n-alert v-if="renderError" type="error" title="流程图渲染失败">
-              <template #default>
-                {{ renderError }}
-              </template>
-            </n-alert>
-            <!-- 流程图容器 -->
-            <div v-else ref="mermaidContainer" class="flowchart"></div>
+            <div class="flowchart">
+              <n-spin v-if="rendering" />
+              <!-- 错误提示 -->
+              <n-alert v-if="renderError" type="error" title="流程图渲染失败">
+                <template #default>
+                  {{ renderError }}
+                </template>
+              </n-alert>
+              <!-- 流程图容器 -->
+              <div class="flowchart" v-else ref="mermaidContainer"></div>
+            </div>
           </n-card>
           <!-- 加载到编辑器按钮 -->
           <n-flex style="margin-top: 16px" justify="center">
@@ -341,7 +343,6 @@ onUnmounted(() => {
 /* ==================== 流程图样式 ==================== */
 .flowchart {
   height: 500px;
-  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
