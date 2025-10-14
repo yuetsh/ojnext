@@ -27,6 +27,7 @@ interface ProblemQuery {
   difficulty: string
   tag: string
   author: string
+  sort: string
 }
 
 const difficultyOptions = [
@@ -34,6 +35,15 @@ const difficultyOptions = [
   { label: "简单", value: "Low" },
   { label: "中等", value: "Mid" },
   { label: "困难", value: "High" },
+]
+
+const sortOptions = [
+  { label: "最新创建", value: "" },
+  { label: "最早创建", value: "create_time" },
+  { label: "最多提交", value: "-submission_number" },
+  { label: "最少提交", value: "submission_number" },
+  { label: "最多通过", value: "-accepted_number" },
+  { label: "最少通过", value: "accepted_number" },
 ]
 
 const router = useRouter()
@@ -53,6 +63,7 @@ const { query, clearQuery } = usePagination<ProblemQuery>({
   difficulty: useRouteQuery("difficulty", "").value,
   tag: useRouteQuery("tag", "").value,
   author: useRouteQuery("author", "").value,
+  sort: useRouteQuery("sort", "").value,
 })
 
 async function listProblems() {
@@ -63,6 +74,7 @@ async function listProblems() {
     tag: query.tag,
     difficulty: query.difficulty,
     author: query.author,
+    sort: query.sort,
   })
   total.value = res.total
   problems.value = res.results
@@ -101,7 +113,14 @@ watchDebounced(() => query.keyword, listProblems, {
 
 // 监听其他查询条件变化
 watch(
-  () => [query.tag, query.difficulty, query.limit, query.page, query.author],
+  () => [
+    query.tag,
+    query.difficulty,
+    query.limit,
+    query.page,
+    query.author,
+    query.sort,
+  ],
   listProblems,
 )
 
@@ -215,6 +234,13 @@ function rowProps(row: ProblemFiltered) {
           </n-form-item>
         </n-form>
         <n-form :show-feedback="false" inline label-placement="left">
+          <n-form-item label="排序">
+            <n-select
+              style="width: 120px"
+              v-model:value="query.sort"
+              :options="sortOptions"
+            />
+          </n-form-item>
           <n-form-item>
             <n-input
               clearable
@@ -223,6 +249,8 @@ function rowProps(row: ProblemFiltered) {
               placeholder="编号或者标题"
             />
           </n-form-item>
+        </n-form>
+        <n-form :show-feedback="false" inline label-placement="left">
           <n-form-item>
             <n-button @click="clearQuery" quaternary>重置</n-button>
           </n-form-item>
