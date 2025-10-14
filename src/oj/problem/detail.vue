@@ -68,7 +68,7 @@ const tabOptions = computed(() => {
 
 const currentTab = ref("content")
 
-const shouldUseProblemEditor = computed(() => route.name === "problem")
+const inProblem = computed(() => route.name === "problem")
 
 watch(
   [() => route.query.tab, () => tabOptions.value],
@@ -114,8 +114,8 @@ watch(isMobile, (value) => {
 </script>
 
 <template>
-  <n-grid v-if="problem" x-gap="16" :cols="screenModeStore.isBothMode ? 2 : 1">
-    <n-gi :span="isDesktop ? 1 : 2" v-if="shouldShowProblem">
+  <n-grid v-if="problem" x-gap="16" :cols="screenModeStore.isBothMode ? 7 : 1">
+    <n-gi :span="isDesktop ? 3 : 7" v-if="shouldShowProblem">
       <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
         <n-tabs v-model:value="currentTab" type="segment">
           <n-tab-pane name="content" tab="题目描述">
@@ -147,8 +147,7 @@ watch(isMobile, (value) => {
           <ProblemFlowchart />
         </n-tab-pane>
         <n-tab-pane name="editor" tab="代码">
-          <ProblemEditor v-if="shouldUseProblemEditor" />
-          <ContestEditor v-else />
+          <component :is="inProblem ? ProblemEditor : ContestEditor" />
         </n-tab-pane>
         <n-tab-pane name="info" tab="统计">
           <ProblemInfo />
@@ -161,9 +160,8 @@ watch(isMobile, (value) => {
         </n-tab-pane>
       </n-tabs>
     </n-gi>
-    <n-gi v-if="isDesktop && screenModeStore.isBothMode">
-      <ProblemEditor v-if="shouldUseProblemEditor" />
-      <ContestEditor v-else />
+    <n-gi :span="4" v-if="isDesktop && screenModeStore.isBothMode">
+      <component :is="inProblem ? ProblemEditor : ContestEditor" />
     </n-gi>
     <n-gi v-if="isDesktop && screenModeStore.isCodeOnlyMode">
       <EditorForTest />
