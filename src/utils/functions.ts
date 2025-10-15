@@ -229,8 +229,9 @@ export async function copyToClipboard(text: string): Promise<boolean> {
 }
 
 export function getRandomId() {
-  return customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz")
-}
+  const nanoid = customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz")
+  return nanoid()
+} 
 
 // function getChromeVersion() {
 //   var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)
