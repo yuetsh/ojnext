@@ -1,11 +1,11 @@
 import { ref } from "vue"
 import { useVueFlow } from "@vue-flow/core"
-import { nanoid } from "nanoid"
 import {
   getNodeTypeConfig,
   createNodeStyle,
   getNodeDimensions,
 } from "./useNodeStyles"
+import { getRandomId } from "utils/functions"
 
 /**
  * 简化的拖拽处理
@@ -48,7 +48,7 @@ export function useDnD() {
       y: position.y - dimensions.height / 2,
     }
 
-    const nodeId = `node-${nanoid()}`
+    const nodeId = `node-${getRandomId()}`
     const config = getNodeTypeConfig(type)
     const newNode = {
       id: nodeId,

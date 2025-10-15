@@ -1,6 +1,6 @@
-import { nanoid } from "nanoid"
 import type { Ref } from "vue"
 import type { Node, Edge } from "@vue-flow/core"
+import { getRandomId } from "utils/functions"
 
 export function useFlowOperations(
   nodes: Ref<Node[]>,
@@ -66,7 +66,7 @@ export function useFlowOperations(
     )
 
     const newEdge: Edge = {
-      id: `edge-${nanoid()}`,
+      id: `edge-${getRandomId()}`,
       source: params.source,
       target: params.target,
       sourceHandle: params.sourceHandle,

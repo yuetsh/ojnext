@@ -1,6 +1,5 @@
 <script setup lang="ts">
-import { nanoid } from "nanoid"
-import { copyToClipboard } from "utils/functions"
+import { copyToClipboard, getRandomId } from "utils/functions"
 
 // 动态导入 mermaid
 let mermaid: any = null
@@ -63,7 +62,7 @@ const renderMermaid = async () => {
   try {
     // 确保 mermaid 已加载
     const mermaidInstance = await loadMermaid()
-    const id = `mermaid-${nanoid()}`
+    const id = `mermaid-${getRandomId()}`
     const { svg } = await mermaidInstance.render(id, modelValue.value)
     mermaidContainer.value.innerHTML = svg
 

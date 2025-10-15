@@ -3,6 +3,7 @@ import { User } from "./types"
 import { USER_TYPE } from "./constants"
 import { strFromU8, strToU8, unzlibSync, zlibSync } from "fflate"
 import copyTextFallback from "copy-text-to-clipboard"
+import { customAlphabet } from "nanoid"
 
 function calculateACRate(acCount: number, totalCount: number): string {
   if (totalCount === 0) return "0.00"
@@ -225,6 +226,10 @@ export async function copyToClipboard(text: string): Promise<boolean> {
     console.error("复制失败:", error)
     return false
   }
+}
+
+export function getRandomId() {
+  return customAlphabet("0123456789abcdefghijklmnopqrstuvwxyz")
 }
 
 // function getChromeVersion() {

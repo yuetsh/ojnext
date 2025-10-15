@@ -1,4 +1,4 @@
-import { nanoid } from "nanoid"
+import { getRandomId } from "utils/functions"
 
 export function useMermaid() {
   // 渲染状态
@@ -31,7 +31,7 @@ export function useMermaid() {
 
       // 渲染流程图
       if (container && mermaidCode) {
-        const id = `mermaid-${nanoid()}`
+        const id = `mermaid-${getRandomId()}`
         const { svg } = await mermaid.render(id, mermaidCode)
         container.innerHTML = svg
       }
