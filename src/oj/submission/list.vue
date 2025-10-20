@@ -1,9 +1,18 @@
 <script setup lang="ts">
 import { NButton, NH2, NText } from "naive-ui"
 import { useRouteQuery } from "@vueuse/router"
-import { adminRejudge, getSubmissions, getTodaySubmissionCount } from "oj/api"
+import {
+  adminRejudge,
+  getFlowchartSubmissions,
+  getSubmissions,
+  getTodaySubmissionCount,
+} from "oj/api"
 import { parseTime } from "utils/functions"
-import { LANGUAGE, SubmissionListItem } from "utils/types"
+import {
+  FlowchartSubmissionListItem,
+  LANGUAGE,
+  SubmissionListItem,
+} from "utils/types"
 import Pagination from "shared/components/Pagination.vue"
 import SubmissionResultTag from "shared/components/SubmissionResultTag.vue"
 import { useBreakpoints } from "shared/composables/breakpoints"
@@ -16,6 +25,8 @@ import StatisticsPanel from "shared/components/StatisticsPanel.vue"
 import SubmissionLink from "./components/SubmissionLink.vue"
 import SubmissionDetail from "./detail.vue"
 import IconButton from "shared/components/IconButton.vue"
+import Grade from "./components/Grade.vue"
+import FlowchartLink from "./components/FlowchartLink.vue"
 
 interface SubmissionQuery {
   username: string
@@ -33,6 +44,7 @@ const message = useMessage()
 const { isMobile, isDesktop } = useBreakpoints()
 
 const submissions = ref<SubmissionListItem[]>([])
+const flowcharts = ref<FlowchartSubmissionListItem[]>([])
 const total = ref(0)
 const todayCount = ref(0)
 
@@ -58,7 +70,8 @@ const resultOptions: SelectOption[] = [
 ]
 
 const languageOptions: SelectOption[] = [
-  { label: "全部", value: "" },
+  { label: "流程图", value: "Flowchart" },
+  { label: "全部语言", value: "" },
   { label: "Python", value: "Python3" },
   { label: "C语言", value: "C" },
   { label: "C++", value: "C++" },
@@ -66,15 +79,27 @@ const languageOptions: SelectOption[] = [
 async function listSubmissions() {
   if (query.page < 1) query.page = 1
   const offset = query.limit * (query.page - 1)
-  const res = await getSubmissions({
-    ...query,
-    offset,
-    problem_id: query.problem,
-    contest_id: <string>route.params.contestID ?? "",
-    language: query.language,
-  })
-  submissions.value = res.data.results
-  total.value = res.data.total
+  if (query.language === "Flowchart") {
+    const res = await getFlowchartSubmissions({
+      username: query.username,
+      problem_id: query.problem,
+      myself: query.myself,
+      offset,
+      limit: query.limit,
+    })
+    total.value = res.data.total
+    flowcharts.value = res.data.results
+  } else {
+    const res = await getSubmissions({
+      ...query,
+      offset,
+      problem_id: query.problem,
+      contest_id: <string>route.params.contestID ?? "",
+      language: query.language,
+    })
+    submissions.value = res.data.results
+    total.value = res.data.total
+  }
 }
 
 async function getTodayCount() {
@@ -104,7 +129,7 @@ async function rejudge(submissionID: string) {
   listSubmissions()
 }
 
-function problemClicked(row: SubmissionListItem) {
+function problemClicked(row: SubmissionListItem | FlowchartSubmissionListItem) {
   if (route.name === "contest submissions") {
     const path = router.resolve({
       name: "contest problem",
@@ -136,27 +161,18 @@ watch(
   listSubmissions,
 )
 
-watch(
-  () =>
-    (route.name === "submissions" || route.name === "contest submissions") &&
-    route.query,
-  (newVal) => {
-    if (newVal) listSubmissions()
-  },
-)
-
 const columns = computed(() => {
   const res: DataTableColumn<SubmissionListItem>[] = [
     {
       title: renderTableTitle("提交时间", "noto:seven-oclock"),
       key: "create_time",
-      width: 200,
+      minWidth: 200,
       render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
     },
     {
       title: renderTableTitle("提交编号", "fluent-emoji-flat:input-numbers"),
       key: "id",
-      minWidth: 180,
+      minWidth: 200,
       render: (row) =>
         h(SubmissionLink, {
           submission: row,
@@ -166,13 +182,13 @@ const columns = computed(() => {
     {
       title: renderTableTitle("状态", "streamline-emojis:panda-face"),
       key: "status",
-      width: 140,
+      minWidth: 140,
       render: (row) => h(SubmissionResultTag, { result: row.result }),
     },
     {
       title: renderTableTitle("题目", "streamline-emojis:blossom"),
       key: "problem",
-      width: 160,
+      minWidth: 300,
       render: (row) =>
         h(
           ButtonWithSearch,
@@ -181,7 +197,7 @@ const columns = computed(() => {
             onClick: () => problemClicked(row),
             onSearch: () => (query.problem = row.problem),
           },
-          () => row.problem,
+          () => `${row.problem} ${row.problem_title}`,
         ),
     },
     {
@@ -190,7 +206,7 @@ const columns = computed(() => {
         "streamline-emojis:globe-showing-europe-africa",
       ),
       key: "language",
-      width: 120,
+      minWidth: 120,
       render: (row) => LANGUAGE_SHOW_VALUE[row.language],
     },
     {
@@ -233,6 +249,58 @@ const columns = computed(() => {
   }
   return res
 })
+
+const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
+  {
+    title: renderTableTitle("提交时间", "noto:seven-oclock"),
+    key: "create_time",
+    render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
+  },
+  {
+    title: renderTableTitle("提交编号", "fluent-emoji-flat:input-numbers"),
+    key: "id",
+    render: (row) => h(FlowchartLink, { flowchart: row }),
+  },
+  {
+    title: renderTableTitle("题目", "streamline-emojis:blossom"),
+    key: "problem_title",
+    render: (row) =>
+      h(
+        ButtonWithSearch,
+        {
+          type: "题目",
+          onClick: () => problemClicked(row),
+          onSearch: () => (query.problem = row.problem),
+        },
+        () => `${row.problem} ${row.problem_title}`,
+      ),
+  },
+  {
+    title: renderTableTitle("评分", "streamline-emojis:bar-chart"),
+    key: "ai_score",
+    render: (row) => h(Grade, { score: row.ai_score, grade: row.ai_grade }),
+  },
+  {
+    title: renderTableTitle(
+      "用户",
+      "streamline-emojis:smiling-face-with-sunglasses",
+    ),
+    key: "username",
+    minWidth: 200,
+    render: (row) =>
+      h(
+        ButtonWithSearch,
+        {
+          type: "用户",
+          username: row.username,
+          onClick: () => window.open("/user?name=" + row.username, "_blank"),
+          onSearch: () => (query.username = row.username),
+          onFilterClass: (classname: string) => (query.username = classname),
+        },
+        () => row.username,
+      ),
+  },
+]
 </script>
 <template>
   <n-flex vertical size="large">
@@ -245,13 +313,6 @@ const columns = computed(() => {
             unchecked-value="0"
           />
         </n-form-item>
-        <n-form-item label="状态">
-          <n-select
-            class="select"
-            v-model:value="query.result"
-            :options="resultOptions"
-          />
-        </n-form-item>
         <n-form-item label="语言" v-if="route.name !== 'contest submissions'">
           <n-select
             class="select"
@@ -259,10 +320,19 @@ const columns = computed(() => {
             :options="languageOptions"
           />
         </n-form-item>
+        <n-form-item label="状态">
+          <n-select
+            :disabled="query.language === 'Flowchart'"
+            class="select"
+            v-model:value="query.result"
+            :options="resultOptions"
+          />
+        </n-form-item>
       </n-form>
       <n-form :show-feedback="false" inline label-placement="left">
         <n-form-item>
           <n-input
+            :disabled="query.myself === '1'"
             class="input"
             clearable
             v-model:value="query.username"
@@ -317,7 +387,18 @@ const columns = computed(() => {
         </n-form-item>
       </n-form>
     </n-space>
-    <n-data-table :bordered="false" :columns="columns" :data="submissions" />
+    <n-data-table
+      v-if="query.language === 'Flowchart'"
+      :bordered="false"
+      :columns="flowchartColumns"
+      :data="flowcharts"
+    />
+    <n-data-table
+      v-else
+      :bordered="false"
+      :columns="columns"
+      :data="submissions"
+    />
   </n-flex>
   <Pagination
     :total="total"

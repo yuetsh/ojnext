@@ -235,6 +235,7 @@ export const CODE_TEMPLATES = {
   Java: blankTemplate,
   JavaScript: blankTemplate,
   Golang: blankTemplate,
+  Flowchart: blankTemplate,
 } as const
 
 export enum ScreenMode {

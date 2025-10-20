@@ -223,9 +223,20 @@ export interface FlowchartSubmission {
 }
 
 // 列表接口返回的字段（包含 username 和 problem_title）
-export interface FlowchartSubmissionListItem extends FlowchartSubmission {
+export interface FlowchartSubmissionListItem {
+  id: string
+  create_time: string
+  evaluation_time: string
+  ai_score: number
+  ai_grade: Grade
+  ai_model: string
+  ai_provider: string
+  processing_time: number
+  status: number
   username: string
   problem_title: string
+  problem: string
+  show_link: boolean
 }
 export interface SubmitFlowchartPayload {
   problem_id: number
@@ -275,6 +286,7 @@ export interface Submission {
 export interface SubmissionListItem {
   id: string
   problem: string
+  problem_title: string
   show_link: boolean
   create_time: string
   user_id: number
@@ -479,6 +491,16 @@ export interface SolvedProblem {
   difficulty: string
 }
 
+export interface FlowchartSummary {
+  problem__id: string
+  problem_title: string
+  submission_count: number
+  best_score: number
+  best_grade: string
+  latest_submission_time: string
+  avg_score: number
+}
+
 export interface DetailsData {
   start: string
   end: string
@@ -488,6 +510,7 @@ export interface DetailsData {
   difficulty: { [key: string]: number }
   contest_count: number
   solved: SolvedProblem[]
+  flowcharts: FlowchartSummary[]
 }
 
 export type Grade = "S" | "A" | "B" | "C"

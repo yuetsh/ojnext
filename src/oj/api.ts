@@ -283,8 +283,9 @@ export function getFlowchartSubmission(id: string) {
 }
 
 export function getFlowchartSubmissions(params: {
-  user_id?: number
-  problem_id?: number
+  username?: string
+  problem_id?: string
+  myself?: string
   offset?: number
   limit?: number
 }) {

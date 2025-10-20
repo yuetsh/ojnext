@@ -15,6 +15,7 @@ export const useAIStore = defineStore("ai", () => {
     difficulty: {},
     contest_count: 0,
     solved: [],
+    flowcharts: [],
   })
   const heatmapData = ref<{ timestamp: number; value: number }[]>([])
 
@@ -36,6 +37,7 @@ export const useAIStore = defineStore("ai", () => {
     detailsData.tags = res.data.tags
     detailsData.difficulty = res.data.difficulty
     detailsData.contest_count = res.data.contest_count
+    detailsData.flowcharts = res.data.flowcharts
   }
 
   async function fetchDurationData(end: string, duration: string) {

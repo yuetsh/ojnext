@@ -47,7 +47,7 @@ async function getList() {
     query.limit,
     query.keyword,
     "",
-    "ACM",
+    "",
   )
   total.value = res.total
   problems.value = res.results
