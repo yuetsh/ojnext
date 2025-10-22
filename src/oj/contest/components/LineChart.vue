@@ -1,9 +1,7 @@
 <template>
-  <n-card title="前10名题目通过时间" v-if="hasData">
-    <div class="chart">
-      <Line :data="chartData" :options="chartOptions" />
-    </div>
-  </n-card>
+  <div class="chart" v-if="showChart">
+    <Line :data="chartData" :options="chartOptions" />
+  </div>
 </template>
 <script setup lang="ts">
 import { Line } from "vue-chartjs"
@@ -31,14 +29,15 @@ ChartJS.register(
 
 interface Props {
   ranks: ContestRank[]
-  problems?: Array<{ id: number; title: string }>
+  problems: Array<{ id: number; title: string }>
 }
 
 const props = defineProps<Props>()
 
-// 判断是否有数据
-const hasData = computed(() => {
-  return props.ranks && props.ranks.length > 0
+const showChart = computed(() => {
+  const hasRanks = props.ranks.length > 0
+  const hasProblems = props.problems.length >= 3
+  return hasProblems && hasRanks
 })
 
 // 预定义的颜色方案 - 更现代和可访问的颜色
@@ -227,5 +226,6 @@ const chartOptions = computed(() => ({
 .chart {
   height: 500px;
   width: 100%;
+  margin-bottom: 24px;
 }
 </style>
