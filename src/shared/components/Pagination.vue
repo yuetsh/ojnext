@@ -46,6 +46,8 @@ watch(page, () => emit("update:page", page))
   margin: 20px 0;
 }
 .right {
-  float: right;
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
 }
 </style>
