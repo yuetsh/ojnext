@@ -162,7 +162,7 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
       },
       tooltip: {
         callbacks: {
-          label: (ctx: TooltipItem<"bar">) => {
+          label: (ctx: TooltipItem<"bar" | "line">) => {
             const dsLabel = ctx.dataset.label || ""
             if ((ctx.dataset as any).yAxisID === "y1") {
               const idx = Number(ctx.parsed.y)
@@ -170,7 +170,7 @@ const options = computed<ChartOptions<"bar" | "line">>(() => {
             }
             return `${dsLabel}: ${ctx.formattedValue}`
           },
-          footer: (items: TooltipItem<"bar">[]) => {
+          footer: (items: TooltipItem<"bar" | "line">[]) => {
             const barItems = items.filter(
               (item) => (item.dataset as any).yAxisID === "y",
             )

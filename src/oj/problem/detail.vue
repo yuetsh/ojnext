@@ -33,15 +33,20 @@ const ProblemFlowchart = defineAsyncComponent(
 interface Props {
   problemID: string
   contestID?: string
+  problemSetId?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   contestID: "",
+  problemSetId: "",
 })
 
 const errMsg = ref("无数据")
 const route = useRoute()
 const router = useRouter()
+
+// 从路由参数中获取题单ID
+const problemsetID = computed(() => props.problemSetId || route.params.problemSetId as string)
 
 const problemStore = useProblemStore()
 const screenModeStore = useScreenModeStore()

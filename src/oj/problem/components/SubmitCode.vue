@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
 import { storeToRefs } from "pinia"
-import { getComment, submitCode } from "oj/api"
+import { getComment, submitCode, updateProblemSetProgress } from "oj/api"
 import { useCodeStore } from "oj/store/code"
 import { useProblemStore } from "oj/store/problem"
 import { useFireworks } from "oj/problem/composables/useFireworks"
@@ -24,6 +24,7 @@ const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 const route = useRoute()
 const contestID = <string>route.params.contestID ?? ""
+const problemsetID = computed(() => route.params.problemSetId as string || "")
 const [commentPanel] = useToggle()
 
 const { isDesktop } = useBreakpoints()
@@ -112,16 +113,31 @@ async function submit() {
 // ==================== AC庆祝效果 ====================
 watch(
   () => submission.value?.result,
-  (result) => {
+  async (result) => {
     if (result !== SubmissionStatus.accepted) return
 
     // 1. 刷新题目状态
     problem.value!.my_status = 0
 
-    // 2. 放烟花（随机效果）
+    // 2. 更新题单进度（如果来自题单）
+    if (problemsetID.value) {
+      try {
+        await updateProblemSetProgress(Number(problemsetID.value), {
+          problem_id: problem.value!.id,
+          status: "completed",
+          score: 100, // 通过得满分
+          submit_time: new Date().toISOString(),
+        })
+        console.log(`[ProblemSet] 题单进度已更新: problemset=${problemsetID.value}, problem=${problem.value!.id}`)
+      } catch (error) {
+        console.error("更新题单进度失败:", error)
+      }
+    }
+
+    // 3. 放烟花（随机效果）
     celebrate()
 
-    // 3. 显示评价框（非比赛模式）
+    // 4. 显示评价框（非比赛模式）
     if (!contestID) {
       showCommentPanelDelayed()
     }

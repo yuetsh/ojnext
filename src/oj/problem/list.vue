@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
-import { NSpace, NTag } from "naive-ui"
+import { NFlex, NTag } from "naive-ui"
 import { useRouteQuery } from "@vueuse/router"
 import { getProblemList, getRandomProblemID } from "oj/api"
 import { getTagColor } from "utils/functions"
@@ -180,7 +180,7 @@ const baseColumns: DataTableColumn<ProblemFiltered>[] = [
     key: "tags",
     width: 260,
     render: (row) =>
-      h(NSpace, () => row.tags.map((t) => h(NTag, { key: t }, () => t))),
+      h(NFlex, () => row.tags.map((t) => h(NTag, { key: t }, () => t))),
   },
   {
     title: renderTableTitle("出题者", "streamline-emojis:man-raising-hand-2"),

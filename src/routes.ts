@@ -100,6 +100,24 @@ export const ojs: RouteRecordRaw = {
       path: "flowchart",
       component: () => import("oj/flowchart/index.vue"),
     },
+    {
+      path: "problemset",
+      component: () => import("oj/problemset/list.vue"),
+      name: "problemsets",
+    },
+    {
+      path: "problemset/:problemSetId",
+      component: () => import("oj/problemset/detail.vue"),
+      props: true,
+      name: "problemset",
+    },
+    {
+      path: "problemset/:problemSetId/problem/:problemID",
+      component: () => import("oj/problem/detail.vue"),
+      props: true,
+      name: "problemset problem",
+      meta: { requiresAuth: true },
+    },
   ],
 }
 

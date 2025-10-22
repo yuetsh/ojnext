@@ -125,12 +125,12 @@ const data = computed<ChartData<"line">>(() => {
 })
 
 // 图表配置
-const options = computed<ChartOptions<"line">>(() => {
+const options = computed(() => {
   return {
     responsive: true,
     maintainAspectRatio: false,
     interaction: {
-      mode: "index",
+      mode: "index" as const,
       intersect: false,
     },
     scales: {
@@ -142,8 +142,8 @@ const options = computed<ChartOptions<"line">>(() => {
         },
       },
       y: {
-        type: "linear",
-        position: "left",
+        type: "linear" as const,
+        position: "left" as const,
         title: {
           display: true,
           text: "平均提交次数（次/题）",
@@ -159,8 +159,8 @@ const options = computed<ChartOptions<"line">>(() => {
         },
       },
       y1: {
-        type: "linear",
-        position: "right",
+        type: "linear" as const,
+        position: "right" as const,
         min: 0,
         max: 100,
         title: {

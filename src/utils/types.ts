@@ -194,6 +194,13 @@ export interface ProblemSet {
   visible: boolean
   problems_count: number
   completed_count: number
+  user_progress: {
+    is_joined: boolean
+    progress_percentage: number
+    completed_count: number
+    total_count: number
+    is_completed: boolean
+  }
 }
 
 export interface ProblemSetList {
@@ -213,6 +220,7 @@ export interface ProblemSetList {
     total_count: number
     is_completed: boolean
   }
+  badges: ProblemSetBadge[]
 }
 
 export interface ProblemSetProblem {
@@ -594,3 +602,42 @@ export interface DetailsData {
 }
 
 export type Grade = "S" | "A" | "B" | "C"
+
+// 题单提交记录相关类型
+export interface ProblemSetSubmission {
+  id: number
+  problem: number
+  problem_id: number
+  problem_title: string
+  submission: string
+  result: number
+  result_text: string
+  score: number
+  language: string
+  code_length: number
+  execution_time: number
+  memory_usage: number
+  submit_time: string
+}
+
+export interface ProblemSetStatistics {
+  total_submissions: number
+  accepted_submissions: number
+  acceptance_rate: number
+  problem_stats: {
+    [problemId: string]: {
+      problem_title: string
+      total_submissions: number
+      accepted_submissions: number
+      is_completed: boolean
+    }
+  }
+  language_stats: { [language: string]: number }
+  result_stats: { [result: number]: number }
+  progress: {
+    completed_problems_count: number
+    total_problems_count: number
+    progress_percentage: number
+    total_score: number
+  }
+}

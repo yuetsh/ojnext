@@ -95,6 +95,11 @@ const menus = computed<MenuOption[]>(() => [
     icon: renderIcon("streamline-emojis:blossom"),
   },
   {
+    label: () => h(RouterLink, { to: "/problemset" }, { default: () => "题单" }),
+    key: "problemset",
+    icon: renderIcon("streamline-emojis:green-book"),
+  },
+  {
     label: () =>
       h(RouterLink, { to: "/submission" }, { default: () => "提交" }),
     key: "submission",

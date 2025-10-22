@@ -303,3 +303,71 @@ export function getCurrentProblemFlowchartSubmission(problemId: number) {
     params: { problem_id: problemId },
   })
 }
+
+// ==================== 题单相关API ====================
+
+export function getProblemSetList(
+  offset = 0,
+  limit = 10,
+  keyword = "",
+  difficulty = "",
+  status = "",
+) {
+  return http.get("problemset", {
+    params: {
+      offset,
+      limit,
+      keyword,
+      difficulty,
+      status,
+    },
+  })
+}
+
+export function getProblemSetDetail(id: number) {
+  return http.get(`problemset/${id}`)
+}
+
+export function getProblemSetProblems(problemSetId: number) {
+  return http.get(`problemset/${problemSetId}/problems`)
+}
+
+export function joinProblemSet(problemSetId: number) {
+  return http.post("problemset/progress", {
+    problemset_id: problemSetId,
+  })
+}
+
+export function getProblemSetSubmissions(
+  problemSetId: number,
+  params: {
+    problem_id?: string
+    result?: string
+    language?: string
+    offset?: number
+    limit?: number
+  } = {}
+) {
+  return http.get(`problemset/${problemSetId}/submissions`, {
+    params,
+  })
+}
+
+export function getProblemSetStatistics(problemSetId: number) {
+  return http.get(`problemset/${problemSetId}/statistics`)
+}
+
+export function updateProblemSetProgress(
+  problemSetId: number,
+  data: {
+    problem_id: number
+    status: string
+    score?: number
+    submit_time?: string
+  }
+) {
+  return http.put("problemset/progress", {
+    problemset_id: problemSetId,
+    ...data,
+  })
+}
