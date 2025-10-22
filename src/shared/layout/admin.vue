@@ -60,6 +60,15 @@ const options = computed<MenuOption[]>(() => {
       },
       {
         label: () =>
+          h(
+            RouterLink,
+            { to: "/admin/problemset/list" },
+            { default: () => "题单" },
+          ),
+        key: "admin problemset list",
+      },
+      {
+        label: () =>
           h(RouterLink, { to: "/admin/user/list" }, { default: () => "用户" }),
         key: "admin user list",
       },

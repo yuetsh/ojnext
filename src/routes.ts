@@ -249,5 +249,32 @@ export const admins: RouteRecordRaw = {
       props: true,
       meta: { requiresSuperAdmin: true },
     },
+    // 题单管理路由
+    {
+      path: "problemset/list",
+      name: "admin problemset list",
+      component: () => import("admin/problemset/list.vue"),
+      meta: { requiresSuperAdmin: true },
+    },
+    {
+      path: "problemset/create",
+      name: "admin problemset create",
+      component: () => import("admin/problemset/edit.vue"),
+      meta: { requiresSuperAdmin: true },
+    },
+    {
+      path: "problemset/edit/:problemSetId",
+      name: "admin problemset edit",
+      component: () => import("admin/problemset/edit.vue"),
+      props: true,
+      meta: { requiresSuperAdmin: true },
+    },
+    {
+      path: "problemset/:problemSetId",
+      name: "admin problemset detail",
+      component: () => import("admin/problemset/detail.vue"),
+      props: true,
+      meta: { requiresSuperAdmin: true },
+    },
   ],
 }

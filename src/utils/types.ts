@@ -182,6 +182,90 @@ export interface AdminProblemFiltered {
   create_time: string
 }
 
+// 题单相关类型
+export interface ProblemSet {
+  id: number
+  title: string
+  description: string
+  created_by: SampleUser
+  create_time: Date
+  difficulty: "Easy" | "Medium" | "Hard"
+  status: "active" | "archived" | "draft"
+  is_public: boolean
+  visible: boolean
+  problems_count: number
+  completed_count: number
+}
+
+export interface ProblemSetList {
+  id: number
+  title: string
+  description: string
+  created_by: SampleUser
+  create_time: Date
+  difficulty: "Easy" | "Medium" | "Hard"
+  status: "active" | "archived" | "draft"
+  problems_count: number
+  visible: boolean
+  user_progress: {
+    is_joined: boolean
+    progress_percentage: number
+    completed_count: number
+    total_count: number
+    is_completed: boolean
+  }
+}
+
+export interface ProblemSetProblem {
+  id: number
+  problemset: number
+  problem: Problem
+  order: number
+  is_required: boolean
+  score: number
+  hint: string
+}
+
+export interface ProblemSetBadge {
+  id: number
+  problemset: number
+  name: string
+  description: string
+  icon: string
+  condition_type: "all_problems" | "problem_count" | "score"
+  condition_value: number
+  level: number
+}
+
+export interface ProblemSetProgress {
+  id: number
+  problemset: ProblemSetList
+  user: SampleUser
+  join_time: Date
+  completed_problems_count: number
+  total_problems_count: number
+  progress_percentage: number
+  is_completed: boolean
+}
+
+export interface CreateProblemSetData {
+  title: string
+  description: string
+  difficulty: "Easy" | "Medium" | "Hard"
+  is_public: boolean
+  status: "active" | "archived" | "draft"
+}
+
+export interface EditProblemSetData {
+  id: number
+  title?: string
+  description?: string
+  difficulty?: "Easy" | "Medium" | "Hard"
+  is_public?: boolean
+  status?: "active" | "archived" | "draft"
+  visible?: boolean
+}
+
 export interface Code {
   language: LANGUAGE
   value: string

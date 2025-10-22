@@ -285,3 +285,109 @@ export function updateACMHelperChecked(
     checked,
   })
 }
+
+// 题单管理 API
+export function getProblemSetList(
+  offset = 0,
+  limit = 10,
+  keyword = "",
+  difficulty = "",
+  status = "",
+) {
+  return http.get("admin/problemset/", {
+    params: {
+      paging: true,
+      offset,
+      limit,
+      keyword,
+      difficulty,
+      status,
+    },
+  })
+}
+
+export function getProblemSetDetail(id: number) {
+  return http.get(`admin/problemset/${id}/`)
+}
+
+export function createProblemSet(data: {
+  title: string
+  description: string
+  difficulty: string
+  is_public: boolean
+  status: string
+}) {
+  return http.post("admin/problemset/", data)
+}
+
+export function editProblemSet(data: {
+  id: number
+  title?: string
+  description?: string
+  difficulty?: string
+  is_public?: boolean
+  status?: string
+  visible?: boolean
+}) {
+  return http.put("admin/problemset/", data)
+}
+
+export function deleteProblemSet(id: number) {
+  return http.delete("admin/problemset/", { params: { id } })
+}
+
+export function toggleProblemSetVisible(id: number) {
+  return http.put("admin/problemset/visible/", { id })
+}
+
+export function updateProblemSetStatus(id: number, status: string) {
+  return http.put("admin/problemset/status/", { id, status })
+}
+
+// 题单题目管理 API
+export function getProblemSetProblems(problemSetId: number) {
+  return http.get(`admin/problemset/${problemSetId}/problems/`)
+}
+
+export function addProblemToSet(problemSetId: number, data: {
+  problem_id: number
+  order?: number
+  is_required?: boolean
+  score?: number
+  hint?: string
+}) {
+  return http.post(`admin/problemset/${problemSetId}/problems/`, data)
+}
+
+export function removeProblemFromSet(problemSetId: number, problemId: number) {
+  return http.delete(`admin/problemset/${problemSetId}/problems/${problemId}/`)
+}
+
+// 题单奖章管理 API
+export function getProblemSetBadges(problemSetId: number) {
+  return http.get(`admin/problemset/${problemSetId}/badges/`)
+}
+
+export function createProblemSetBadge(problemSetId: number, data: {
+  name: string
+  description: string
+  icon: string
+  condition_type: string
+  condition_value: number
+  level?: number
+}) {
+  return http.post(`admin/problemset/${problemSetId}/badges/`, data)
+}
+
+export function deleteProblemSetBadge(problemSetId: number, badgeId: number) {
+  return http.delete(`admin/problemset/${problemSetId}/badges/${badgeId}/`)
+}
+
+// 题单进度管理 API
+export function getProblemSetProgress(problemSetId: number) {
+  return http.get(`admin/problemset/${problemSetId}/progress/`)
+}
+
+export function removeUserFromProblemSet(problemSetId: number, userId: number) {
+  return http.delete(`admin/problemset/${problemSetId}/progress/${userId}/`)
+}
