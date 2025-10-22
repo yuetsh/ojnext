@@ -111,6 +111,7 @@ const active = computed(() => {
   if (path === "/") return "return to OJ"
   if (path === "/admin") return "admin home"
   if (path.startsWith("/admin/config")) return "admin config"
+  if (path.startsWith("/admin/problemset")) return "admin problemset list"
   if (path.startsWith("/admin/problem")) return "admin problem list"
   if (path.startsWith("/admin/contest")) return "admin contest list"
   if (path.startsWith("/admin/user")) return "admin user list"

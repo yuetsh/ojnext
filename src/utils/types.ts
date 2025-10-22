@@ -191,7 +191,6 @@ export interface ProblemSet {
   create_time: Date
   difficulty: "Easy" | "Medium" | "Hard"
   status: "active" | "archived" | "draft"
-  is_public: boolean
   visible: boolean
   problems_count: number
   completed_count: number
@@ -234,7 +233,6 @@ export interface ProblemSetBadge {
   icon: string
   condition_type: "all_problems" | "problem_count" | "score"
   condition_value: number
-  level: number
 }
 
 export interface ProblemSetProgress {
@@ -252,7 +250,6 @@ export interface CreateProblemSetData {
   title: string
   description: string
   difficulty: "Easy" | "Medium" | "Hard"
-  is_public: boolean
   status: "active" | "archived" | "draft"
 }
 
@@ -261,7 +258,6 @@ export interface EditProblemSetData {
   title?: string
   description?: string
   difficulty?: "Easy" | "Medium" | "Hard"
-  is_public?: boolean
   status?: "active" | "archived" | "draft"
   visible?: boolean
 }

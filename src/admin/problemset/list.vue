@@ -106,7 +106,7 @@ const columns: DataTableColumn<ProblemSetList>[] = [
   {
     title: "选项",
     key: "actions",
-    width: 200,
+    width: 300,
     render: (row) =>
       h(Actions, {
         problemSetId: row.id,
@@ -162,7 +162,7 @@ watch(() => [query.page, query.limit, query.difficulty, query.status], listProbl
         新建题单
       </n-button>
     </n-flex>
-    <n-flex align="center" gap="medium">
+    <n-flex align="center">
       <n-flex align="center">
         <span>难度：</span>
         <n-select

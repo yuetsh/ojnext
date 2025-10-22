@@ -314,7 +314,6 @@ export function createProblemSet(data: {
   title: string
   description: string
   difficulty: string
-  is_public: boolean
   status: string
 }) {
   return http.post("admin/problemset/", data)
@@ -325,7 +324,6 @@ export function editProblemSet(data: {
   title?: string
   description?: string
   difficulty?: string
-  is_public?: boolean
   status?: string
   visible?: boolean
 }) {
@@ -350,7 +348,7 @@ export function getProblemSetProblems(problemSetId: number) {
 }
 
 export function addProblemToSet(problemSetId: number, data: {
-  problem_id: number
+  problem_id: string
   order?: number
   is_required?: boolean
   score?: number
@@ -359,8 +357,17 @@ export function addProblemToSet(problemSetId: number, data: {
   return http.post(`admin/problemset/${problemSetId}/problems/`, data)
 }
 
-export function removeProblemFromSet(problemSetId: number, problemId: number) {
-  return http.delete(`admin/problemset/${problemSetId}/problems/${problemId}/`)
+export function editProblemInSet(problemSetId: number, problemSetProblemId: number, data: {
+  order?: number
+  is_required?: boolean
+  score?: number
+  hint?: string
+}) {
+  return http.put(`admin/problemset/${problemSetId}/problems/${problemSetProblemId}/`, data)
+}
+
+export function removeProblemFromSet(problemSetId: number, problemSetProblemId: number) {
+  return http.delete(`admin/problemset/${problemSetId}/problems/${problemSetProblemId}/`)
 }
 
 // 题单奖章管理 API
@@ -377,6 +384,17 @@ export function createProblemSetBadge(problemSetId: number, data: {
   level?: number
 }) {
   return http.post(`admin/problemset/${problemSetId}/badges/`, data)
+}
+
+export function editProblemSetBadge(problemSetId: number, badgeId: number, data: {
+  name?: string
+  description?: string
+  icon?: string
+  condition_type?: string
+  condition_value?: number
+  level?: number
+}) {
+  return http.put(`admin/problemset/${problemSetId}/badges/${badgeId}/`, data)
 }
 
 export function deleteProblemSetBadge(problemSetId: number, badgeId: number) {
