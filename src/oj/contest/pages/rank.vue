@@ -9,6 +9,7 @@ import { ContestStatus } from "utils/constants"
 import { renderTableTitle } from "utils/renders"
 import { ContestRank, ProblemFiltered } from "utils/types"
 import AcAndSubmission from "../components/AcAndSubmission.vue"
+import LineChart from "../components/LineChart.vue"
 
 interface Props {
   contestID: string
@@ -82,13 +83,13 @@ const columns = ref<DataTableColumn<ContestRank>[]>([
     align: "center",
     render: (row) => h(AcAndSubmission, { rank: row }),
   },
-  // {
-  //   title: "总时间",
-  //   key: "total_time",
-  //   width: 120,
-  //   align: "center",
-  //   render: (row) => secondsToDuration(row.total_time),
-  // },
+  {
+    title: "总时间",
+    key: "total_time",
+    width: 120,
+    align: "center",
+    render: (row) => secondsToDuration(row.total_time),
+  },
 ])
 
 async function listRanks() {
@@ -207,6 +208,10 @@ onMounted(() => {
 </script>
 
 <template>
+  <!-- 排名变化图表 -->
+  <LineChart :ranks="chart" :problems="problems" v-if="chart.length > 0" />
+
+  <!-- 排名表格 -->
   <n-data-table
     striped
     :single-line="false"
