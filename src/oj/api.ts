@@ -341,9 +341,21 @@ export function joinProblemSet(problemSetId: number) {
 export function updateProblemSetProgress(
   problemSetId: number,
   problemId: number,
+  submissionId: string,
 ) {
   return http.put("problemset/progress", {
     problemset_id: problemSetId,
     problem_id: problemId,
+    submission_id: submissionId,
   })
+}
+
+// 获取用户徽章列表
+export function getUserBadges() {
+  return http.get("user/badges")
+}
+
+// 获取题单徽章列表
+export function getProblemSetBadges(problemSetId: number) {
+  return http.get(`problemset/${problemSetId}/badges`)
 }

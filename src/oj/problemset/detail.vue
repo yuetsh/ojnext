@@ -4,12 +4,13 @@ import {
   getProblemSetDetail,
   getProblemSetProblems,
   joinProblemSet,
+  getUserBadges,
 } from "../api"
 import { getTagColor, getACRate } from "utils/functions"
-import { ProblemSet, ProblemSetProblem } from "utils/types"
-import ProblemStatus from "../problem/components/ProblemStatus.vue"
+import { ProblemSet, ProblemSetProblem, UserBadge as UserBadgeType } from "utils/types"
 import { DIFFICULTY } from "utils/constants"
 import { useBreakpoints } from "shared/composables/breakpoints"
+import UserBadge from "shared/components/UserBadge.vue"
 
 const route = useRoute()
 const router = useRouter()
@@ -23,6 +24,8 @@ const problemSet = ref<ProblemSet | null>(null)
 const problems = ref<ProblemSetProblem[]>([])
 const isJoined = ref(false)
 const isJoining = ref(false)
+const userBadges = ref<UserBadgeType[]>([])
+const isLoadingBadges = ref(false)
 
 // 刷新题单详情的函数
 async function refreshProblemSetDetail() {
@@ -50,20 +53,7 @@ function getDifficultyTag(difficulty: string) {
 }
 
 function goToProblem(problemId: string) {
-  // 使用新的路由结构：/problemset/{id}/problem/{problem_id}
   router.push(`/problemset/${problemSetId.value}/problem/${problemId}`)
-}
-
-function getProblemStatus(
-  myStatus: number | null | undefined,
-): "not_test" | "passed" | "failed" {
-  if (myStatus === null || myStatus === undefined) {
-    return "not_test"
-  } else if (myStatus === 0) {
-    return "passed"
-  } else {
-    return "failed"
-  }
 }
 
 function getProgressPercentage() {
@@ -93,6 +83,23 @@ async function loadProblems() {
   }
 }
 
+async function loadUserBadges() {
+  if (!isJoined.value) return
+  
+  isLoadingBadges.value = true
+  try {
+    const res = await getUserBadges()
+    // 只显示当前题单的徽章
+    userBadges.value = res.data.filter((badge: UserBadgeType) => 
+      badge.badge.problemset === problemSetId.value
+    )
+  } catch (err: any) {
+    console.error("加载用户徽章失败:", err)
+  } finally {
+    isLoadingBadges.value = false
+  }
+}
+
 async function handleJoinProblemSet() {
   if (isJoining.value) return
 
@@ -101,8 +108,8 @@ async function handleJoinProblemSet() {
     await joinProblemSet(problemSetId.value)
     isJoined.value = true
     message.success("成功加入题单！")
-    // 不需要重新加载详情，因为我们已经更新了本地状态
-    // await loadProblemSetDetail()
+    // 加入题单后加载用户徽章
+    await loadUserBadges()
   } catch (err: any) {
     message.error("加入题单失败：" + (err.data || "未知错误"))
   } finally {
@@ -112,6 +119,10 @@ async function handleJoinProblemSet() {
 
 onMounted(async () => {
   await Promise.all([loadProblemSetDetail(), loadProblems()])
+  // 如果已加入题单，加载用户徽章
+  if (isJoined.value) {
+    await loadUserBadges()
+  }
 })
 
 // 监听路由变化，当从题单题目页面返回时刷新题单详情
@@ -125,6 +136,8 @@ watch(
       isJoined.value
     ) {
       refreshProblemSetDetail()
+      // 刷新用户徽章
+      loadUserBadges()
     }
   },
 )
@@ -152,13 +165,15 @@ watch(
         </n-flex>
 
         <n-flex align="center">
-          <n-flex align="center">
+          <!-- 完成进度 - 只在已加入时显示 -->
+          <n-flex align="center" v-if="isJoined">
             <n-text strong>完成进度</n-text>
             <n-text>
               {{ problemSet.completed_count }} / {{ problemSet.problems_count }}
             </n-text>
           </n-flex>
           <n-progress
+            v-if="isJoined"
             :percentage="getProgressPercentage()"
             :height="8"
             :border-radius="4"
@@ -183,6 +198,24 @@ watch(
       </n-flex>
     </n-card>
 
+    <!-- 用户徽章显示区域 -->
+    <n-card v-if="isJoined && userBadges.length > 0" style="margin-bottom: 24px">
+      <template #header>
+        <n-flex align="center">
+          <Icon icon="material-symbols:emoji-events" width="20" />
+          <n-text strong>我的徽章</n-text>
+          <n-spin v-if="isLoadingBadges" size="small" />
+        </n-flex>
+      </template>
+      <n-flex :wrap="true" :gap="12">
+        <UserBadge 
+          v-for="badge in userBadges" 
+          :key="badge.id" 
+          :badge="badge" 
+        />
+      </n-flex>
+    </n-card>
+
     <!-- 题目列表 -->
     <n-grid :cols="isDesktop ? 4 : 1" :x-gap="16" :y-gap="16">
       <n-grid-item
@@ -194,50 +227,37 @@ watch(
           @click="goToProblem(problemSetProblem.problem._id)"
           style="cursor: pointer"
         >
-          <n-flex>
-            <n-flex align="center">
-              <n-h2 style="margin: 0 20px 0 0">#{{ index + 1 }}. </n-h2>
+          <n-flex align="center">
+            <Icon
+            style="margin-right: 12px;"
+              width="50"
+              icon="noto:check-mark-button"
+              v-if="problemSetProblem.is_completed"
+            />
 
-              <n-flex vertical style="flex: 1">
-                <n-flex align="center">
-                  <n-tag
-                    :type="getTagColor(problemSetProblem.problem.difficulty)"
-                    size="small"
-                  >
-                    {{ DIFFICULTY[problemSetProblem.problem.difficulty] }}
-                  </n-tag>
-                  <n-h4 style="margin: 0">
-                    {{ problemSetProblem.problem.title }}
-                  </n-h4>
-                </n-flex>
-
-                <n-flex align="center" size="small">
-                  <n-text type="info">
-                    分数：{{ problemSetProblem.score }}
-                  </n-text>
-                  <n-text v-if="!problemSetProblem.is_required"
-                    >（选做）</n-text
-                  >
-                  <n-text depth="3" style="font-size: 12px">
-                    通过率
-                    {{
-                      getACRate(
-                        problemSetProblem.problem.accepted_number,
-                        problemSetProblem.problem.submission_number,
-                      )
-                    }}
-                  </n-text>
-                </n-flex>
+            <n-flex vertical style="flex: 1">
+              <n-flex align="center">
+                <n-h4 style="margin: 0;">#{{ index + 1 }}</n-h4>
+                
+                <n-h4 style="margin: 0">
+                  {{ problemSetProblem.problem.title }}
+                </n-h4>
               </n-flex>
-            </n-flex>
 
-            <n-flex align="center">
-              <ProblemStatus
-                :status="getProblemStatus(problemSetProblem.problem.my_status)"
-              />
-              <n-icon>
-                <Icon icon="streamline-emojis:right-arrow" />
-              </n-icon>
+              <n-flex align="center" size="small">
+                <n-tag
+                  :type="getTagColor(problemSetProblem.problem.difficulty)"
+                  size="small"
+                >
+                  {{ DIFFICULTY[problemSetProblem.problem.difficulty] }}
+                </n-tag>
+                <n-text type="info">
+                  分数：{{ problemSetProblem.score }}
+                </n-text>
+                <n-text v-if="!problemSetProblem.is_required">
+                  （选做）
+                </n-text>
+              </n-flex>
             </n-flex>
           </n-flex>
         </n-card>

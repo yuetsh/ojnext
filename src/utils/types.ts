@@ -231,6 +231,7 @@ export interface ProblemSetProblem {
   is_required: boolean
   score: number
   hint: string
+  is_completed: boolean
 }
 
 export interface ProblemSetBadge {
@@ -241,6 +242,13 @@ export interface ProblemSetBadge {
   icon: string
   condition_type: "all_problems" | "problem_count" | "score"
   condition_value: number
+}
+
+export interface UserBadge {
+  id: number
+  user: number
+  badge: ProblemSetBadge
+  earned_time: Date
 }
 
 export interface ProblemSetProgress {
@@ -280,7 +288,6 @@ export interface SubmitCodePayload {
   language: LANGUAGE
   code: string
   contest_id?: number
-  problemset_id?: number
 }
 
 // ==================== 流程图相关类型 ====================

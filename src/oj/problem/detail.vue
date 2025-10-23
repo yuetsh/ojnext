@@ -33,12 +33,12 @@ const ProblemFlowchart = defineAsyncComponent(
 interface Props {
   problemID: string
   contestID?: string
-  problemSetID?: string
+  problemSetId?: string
 }
 
 const props = withDefaults(defineProps<Props>(), {
   contestID: "",
-  problemSetID: "",
+  problemSetId: "",
 })
 
 const errMsg = ref("无数据")
