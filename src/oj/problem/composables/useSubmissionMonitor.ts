@@ -104,7 +104,7 @@ export function useSubmissionMonitor() {
   // ==================== 启动监控 ====================
   const startMonitoring = (id: string) => {
     submissionId.value = id
-    submission.value = { result: 9 } as Submission // 9 = submitting
+    submission.value = { id, result: 9 } as Submission // 9 = submitting
 
     // 取消之前的断开计划
     cancelScheduledDisconnect()
@@ -116,13 +116,16 @@ export function useSubmissionMonitor() {
     }
 
     // 等待WebSocket连接并订阅
-    const unwatch = watch(
+    let unwatch: (() => void) | null = null
+    unwatch = watch(
       wsStatus,
       (status) => {
         if (status === "connected") {
           console.log("[SubmissionMonitor] WebSocket已连接，订阅提交:", id)
           subscribe(id)
-          unwatch() // 订阅成功后停止监听
+          if (unwatch) {
+            unwatch() // 订阅成功后停止监听
+          }
         }
       },
       { immediate: true },

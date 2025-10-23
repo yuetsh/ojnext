@@ -1,26 +1,30 @@
 <template>
-  <n-tooltip trigger="hover" :show-arrow="false">
+  <n-popover trigger="hover" placement="top">
     <template #trigger>
       <div class="badge-container">
-        <img 
-          :src="badge.badge.icon" 
+        <img
+          :src="badge.badge.icon"
           :alt="badge.badge.name"
           class="badge-icon"
           @error="handleImageError"
         />
       </div>
     </template>
-    <div class="badge-tooltip">
-      <div class="badge-name">{{ badge.badge.name }}</div>
-      <div class="badge-description">{{ badge.badge.description }}</div>
-      <div class="badge-time">获得时间：{{ formatTime(badge.earned_time) }}</div>
-    </div>
-  </n-tooltip>
+    <n-card size="small" class="badge-popover">
+      <n-flex vertical>
+        <n-text strong>{{ badge.badge.name }}</n-text>
+        <n-tag type="info"> 获得条件：{{ getConditionText() }} </n-tag>
+        <n-text depth="3">
+          获得时间：{{ parseTime(badge.earned_time, "YYYY-MM-DD HH:mm:ss") }}
+        </n-text>
+      </n-flex>
+    </n-card>
+  </n-popover>
 </template>
 
 <script setup lang="ts">
 import { UserBadge } from "utils/types"
-
+import { parseTime } from "utils/functions"
 interface Props {
   badge: UserBadge
 }
@@ -30,17 +34,22 @@ const props = defineProps<Props>()
 function handleImageError(event: Event) {
   const img = event.target as HTMLImageElement
   // 如果图片加载失败，显示默认图标
-  img.src = '/badge-1.png' // 使用默认徽章图标
+  img.src = "/badge-1.png" // 使用默认徽章图标
 }
 
-function formatTime(date: Date) {
-  return new Date(date).toLocaleString('zh-CN', {
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-    hour: '2-digit',
-    minute: '2-digit'
-  })
+function getConditionText() {
+  const { condition_type, condition_value } = props.badge.badge
+
+  switch (condition_type) {
+    case "all_problems":
+      return "完成所有题目"
+    case "problem_count":
+      return `完成 ${condition_value} 道题目`
+    case "score":
+      return `获得 ${condition_value} 分`
+    default:
+      return "未知条件"
+  }
 }
 </script>
 
@@ -49,6 +58,8 @@ function formatTime(date: Date) {
   position: relative;
   display: inline-block;
   cursor: pointer;
+  width: 50px;
+  height: 50px;
 }
 
 .badge-icon {
@@ -66,27 +77,11 @@ function formatTime(date: Date) {
   box-shadow: 0 4px 12px rgba(24, 144, 255, 0.3);
 }
 
-
-.badge-tooltip {
-  max-width: 250px;
+.badge-popover {
+  max-width: 280px;
 }
 
-.badge-name {
-  font-weight: bold;
-  font-size: 14px;
-  margin-bottom: 4px;
-  color: #1890ff;
-}
-
-.badge-description {
-  font-size: 12px;
-  color: #666;
-  margin-bottom: 4px;
-  line-height: 1.4;
-}
-
-.badge-time {
-  font-size: 11px;
-  color: #999;
+.badge-popover .n-space {
+  gap: 6px;
 }
 </style>

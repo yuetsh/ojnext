@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { NModal, NForm, NFormItem, NInput, NInputNumber, NSelect, NButton, NFlex, NImage } from "naive-ui"
+import {
+  NModal,
+  NForm,
+  NFormItem,
+  NInput,
+  NInputNumber,
+  NSelect,
+  NButton,
+  NFlex,
+  NImage,
+} from "naive-ui"
 
 interface Props {
   show: boolean
@@ -7,13 +17,16 @@ interface Props {
 
 interface Emits {
   (e: "update:show", value: boolean): void
-  (e: "confirm", data: {
-    name: string
-    description: string
-    icon: string
-    condition_type: "all_problems" | "problem_count" | "score"
-    condition_value?: number
-  }): void
+  (
+    e: "confirm",
+    data: {
+      name: string
+      description: string
+      icon: string
+      condition_type: "all_problems" | "problem_count" | "score"
+      condition_value?: number
+    },
+  ): void
 }
 
 const props = defineProps<Props>()
@@ -22,7 +35,9 @@ const emit = defineEmits<Emits>()
 const newBadgeName = ref("")
 const newBadgeDescription = ref("")
 const newBadgeIcon = ref("")
-const newBadgeConditionType = ref<"all_problems" | "problem_count" | "score">("all_problems")
+const newBadgeConditionType = ref<"all_problems" | "problem_count" | "score">(
+  "all_problems",
+)
 const newBadgeConditionValue = ref(1)
 
 // 预设奖章图标选项
@@ -61,15 +76,18 @@ function handleCancel() {
 }
 
 // 重置表单
-watch(() => props.show, (newVal) => {
-  if (newVal) {
-    newBadgeName.value = ""
-    newBadgeDescription.value = ""
-    newBadgeIcon.value = ""
-    newBadgeConditionType.value = "all_problems"
-    newBadgeConditionValue.value = 1
-  }
-})
+watch(
+  () => props.show,
+  (newVal) => {
+    if (newVal) {
+      newBadgeName.value = ""
+      newBadgeDescription.value = ""
+      newBadgeIcon.value = ""
+      newBadgeConditionType.value = "all_problems"
+      newBadgeConditionValue.value = 1
+    }
+  },
+)
 </script>
 
 <template>

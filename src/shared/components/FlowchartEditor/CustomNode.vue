@@ -215,7 +215,6 @@ onUnmounted(() => {
   filter: brightness(1.1);
 }
 
-
 /* 节点内容区域 */
 .node-content {
   position: relative;

@@ -23,6 +23,7 @@ const props = defineProps<{
   hideList?: boolean
 }>()
 
+const route = useRoute()
 const router = useRouter()
 const message = useMessage()
 
@@ -76,14 +77,23 @@ async function copyToProblem() {
     message.error("代码复制失败")
   }
 
-  // 判断是否是竞赛题目
   const contestID = submission.value!.contest
+  const problemSetId = <string>route.params.problemSetId ?? ""
   if (contestID) {
     // 竞赛题目
     router.push({
       name: "contest problem",
       params: {
         contestID: String(contestID),
+        problemID: props.problemID,
+      },
+    })
+  } else if (problemSetId) {
+    // 题单题目
+    router.push({
+      name: "problemset problem",
+      params: {
+        problemSetId: problemSetId,
         problemID: props.problemID,
       },
     })

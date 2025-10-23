@@ -19,11 +19,7 @@ defineEmits<Emits>()
 
 <template>
   <div>
-    <n-flex
-      justify="space-between"
-      align="center"
-      style="margin-bottom: 16px"
-    >
+    <n-flex justify="space-between" align="center" style="margin-bottom: 16px">
       <h3>题目列表</h3>
       <n-button type="primary" @click="$emit('add-problem')">
         添加题目

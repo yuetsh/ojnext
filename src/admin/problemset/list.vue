@@ -148,7 +148,10 @@ watchDebounced(() => query.keyword, listProblemSets, {
 })
 
 // 监听其他查询条件变化
-watch(() => [query.page, query.limit, query.difficulty, query.status], listProblemSets)
+watch(
+  () => [query.page, query.limit, query.difficulty, query.status],
+  listProblemSets,
+)
 </script>
 
 <template>

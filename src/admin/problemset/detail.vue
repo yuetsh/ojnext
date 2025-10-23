@@ -242,18 +242,15 @@ onMounted(() => {
       v-model:show="showAddProblemModal"
       @confirm="handleAddProblem"
     />
-    
+
     <EditProblemModal
       v-model:show="showEditProblemModal"
       :problem="editingProblem"
       @confirm="handleEditProblem"
     />
-    
-    <AddBadgeModal
-      v-model:show="showAddBadgeModal"
-      @confirm="handleAddBadge"
-    />
-    
+
+    <AddBadgeModal v-model:show="showAddBadgeModal" @confirm="handleAddBadge" />
+
     <EditBadgeModal
       v-model:show="showEditBadgeModal"
       :badge="editingBadge"

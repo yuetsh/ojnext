@@ -6,17 +6,23 @@ import {
   joinProblemSet,
   getUserBadges,
 } from "../api"
-import { getTagColor, getACRate } from "utils/functions"
-import { ProblemSet, ProblemSetProblem, UserBadge as UserBadgeType } from "utils/types"
+import { getTagColor } from "utils/functions"
+import {
+  ProblemSet,
+  ProblemSetProblem,
+  UserBadge as UserBadgeType,
+} from "utils/types"
 import { DIFFICULTY } from "utils/constants"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import UserBadge from "shared/components/UserBadge.vue"
+import { useFireworks } from "../problem/composables/useFireworks"
 
 const route = useRoute()
 const router = useRouter()
 const message = useMessage()
 
 const { isDesktop } = useBreakpoints()
+const { celebrate } = useFireworks()
 
 const problemSetId = computed(() => Number(route.params.problemSetId))
 
@@ -25,20 +31,6 @@ const problems = ref<ProblemSetProblem[]>([])
 const isJoined = ref(false)
 const isJoining = ref(false)
 const userBadges = ref<UserBadgeType[]>([])
-const isLoadingBadges = ref(false)
-
-// 刷新题单详情的函数
-async function refreshProblemSetDetail() {
-  try {
-    const res = await getProblemSetDetail(problemSetId.value)
-    problemSet.value = res.data
-    // 更新加入状态
-    isJoined.value = res.data.user_progress?.is_joined || false
-    console.log(`[ProblemSet] 题单详情已刷新: ${problemSet.value?.title}`)
-  } catch (err: any) {
-    console.error("刷新题单详情失败:", err)
-  }
-}
 
 function getDifficultyTag(difficulty: string) {
   const difficultyMap: Record<
@@ -64,40 +56,47 @@ function getProgressPercentage() {
 }
 
 async function loadProblemSetDetail() {
-  try {
-    const res = await getProblemSetDetail(problemSetId.value)
-    problemSet.value = res.data
-    // 更新加入状态
-    isJoined.value = res.data.user_progress?.is_joined || false
-  } catch (err: any) {
-    message.error("加载题单详情失败：" + (err.data || "未知错误"))
-  }
+  const res = await getProblemSetDetail(problemSetId.value)
+  problemSet.value = res.data
+  isJoined.value = res.data.user_progress?.is_joined || false
 }
 
 async function loadProblems() {
-  try {
-    const res = await getProblemSetProblems(problemSetId.value)
-    problems.value = res.data
-  } catch (err: any) {
-    message.error("加载题目列表失败：" + (err.data || "未知错误"))
-  }
+  const res = await getProblemSetProblems(problemSetId.value)
+  problems.value = res.data
 }
 
 async function loadUserBadges() {
   if (!isJoined.value) return
-  
-  isLoadingBadges.value = true
-  try {
-    const res = await getUserBadges()
-    // 只显示当前题单的徽章
-    userBadges.value = res.data.filter((badge: UserBadgeType) => 
-      badge.badge.problemset === problemSetId.value
-    )
-  } catch (err: any) {
-    console.error("加载用户徽章失败:", err)
-  } finally {
-    isLoadingBadges.value = false
+
+  const res = await getUserBadges()
+  userBadges.value = res.data.filter(
+    (badge: UserBadgeType) => badge.badge.problemset === problemSetId.value,
+  )
+}
+
+async function init() {
+  await Promise.all([loadProblemSetDetail(), loadProblems()])
+  if (isJoined.value) {
+    if (problemSet.value?.user_progress?.is_completed) {
+      celebrate()
+    }
+    loadUserBadges()
   }
+}
+
+async function handleProblemClick(problemId: string) {
+  if (!isJoined.value) {
+    message.warning("请先点击【加入题单】按钮！")
+    return
+  }
+  router.push({
+    name: "problemset problem",
+    params: {
+      problemSetId: problemSetId.value,
+      problemID: problemId,
+    },
+  })
 }
 
 async function handleJoinProblemSet() {
@@ -117,30 +116,7 @@ async function handleJoinProblemSet() {
   }
 }
 
-onMounted(async () => {
-  await Promise.all([loadProblemSetDetail(), loadProblems()])
-  // 如果已加入题单，加载用户徽章
-  if (isJoined.value) {
-    await loadUserBadges()
-  }
-})
-
-// 监听路由变化，当从题单题目页面返回时刷新题单详情
-watch(
-  () => route.path,
-  (newPath, oldPath) => {
-    // 如果从题单题目页面返回到题单详情页面，刷新题单详情
-    if (
-      oldPath?.includes("/problem/") &&
-      newPath === `/problemset/${problemSetId.value}` &&
-      isJoined.value
-    ) {
-      refreshProblemSetDetail()
-      // 刷新用户徽章
-      loadUserBadges()
-    }
-  },
-)
+onMounted(init)
 </script>
 
 <template>
@@ -165,6 +141,16 @@ watch(
         </n-flex>
 
         <n-flex align="center">
+          <!-- 用户徽章显示区域 - 只在已加入且有徽章时显示 -->
+          <n-flex v-if="isJoined && userBadges.length > 0" align="center">
+            <n-text>已获徽章</n-text>
+            <UserBadge
+              v-for="badge in userBadges"
+              :key="badge.id"
+              :badge="badge"
+            />
+          </n-flex>
+
           <!-- 完成进度 - 只在已加入时显示 -->
           <n-flex align="center" v-if="isJoined">
             <n-text strong>完成进度</n-text>
@@ -198,24 +184,6 @@ watch(
       </n-flex>
     </n-card>
 
-    <!-- 用户徽章显示区域 -->
-    <n-card v-if="isJoined && userBadges.length > 0" style="margin-bottom: 24px">
-      <template #header>
-        <n-flex align="center">
-          <Icon icon="material-symbols:emoji-events" width="20" />
-          <n-text strong>我的徽章</n-text>
-          <n-spin v-if="isLoadingBadges" size="small" />
-        </n-flex>
-      </template>
-      <n-flex :wrap="true" :gap="12">
-        <UserBadge 
-          v-for="badge in userBadges" 
-          :key="badge.id" 
-          :badge="badge" 
-        />
-      </n-flex>
-    </n-card>
-
     <!-- 题目列表 -->
     <n-grid :cols="isDesktop ? 4 : 1" :x-gap="16" :y-gap="16">
       <n-grid-item
@@ -224,12 +192,12 @@ watch(
       >
         <n-card
           hoverable
-          @click="goToProblem(problemSetProblem.problem._id)"
+          @click="handleProblemClick(problemSetProblem.problem._id)"
           style="cursor: pointer"
         >
           <n-flex align="center">
             <Icon
-            style="margin-right: 12px;"
+              style="margin-right: 12px"
               width="50"
               icon="noto:check-mark-button"
               v-if="problemSetProblem.is_completed"
@@ -237,8 +205,8 @@ watch(
 
             <n-flex vertical style="flex: 1">
               <n-flex align="center">
-                <n-h4 style="margin: 0;">#{{ index + 1 }}</n-h4>
-                
+                <n-h4 style="margin: 0">#{{ index + 1 }}</n-h4>
+
                 <n-h4 style="margin: 0">
                   {{ problemSetProblem.problem.title }}
                 </n-h4>

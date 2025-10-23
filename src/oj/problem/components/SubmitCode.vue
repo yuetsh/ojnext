@@ -25,7 +25,8 @@ const { problem } = storeToRefs(problemStore)
 const route = useRoute()
 const contestID = <string>route.params.contestID ?? ""
 const problemSetId = <string>route.params.problemSetId ?? ""
-console.log(problemSetId, "problemSetId")
+
+const router = useRouter()
 const [commentPanel] = useToggle()
 
 const { isDesktop } = useBreakpoints()
@@ -56,6 +57,19 @@ const { start: showCommentPanelDelayed } = useTimeoutFn(
     if (!res.data) {
       commentPanel.value = true
     }
+  },
+  1500,
+  { immediate: false },
+)
+
+const { start: goToProblemSetDelayed } = useTimeoutFn(
+  () => {
+    router.push({
+      name: "problemset",
+      params: {
+        problemSetId: problemSetId,
+      },
+    })
   },
   1500,
   { immediate: false },
@@ -121,15 +135,11 @@ watch(
 
     // 2. 创建ProblemSetSubmission记录，更新题单进度
     if (problemSetId) {
-      try {
-        await updateProblemSetProgress(
-          Number(problemSetId),
-          problem.value!.id,
-          submission.value!.id,
-        )
-      } catch (error) {
-        console.error("更新题单进度失败:", error)
-      }
+      await updateProblemSetProgress(
+        Number(problemSetId),
+        problem.value!.id,
+        submission.value!.id,
+      )
     }
 
     // 3. 放烟花
@@ -138,6 +148,11 @@ watch(
     // 4. 显示评价框
     if (!contestID && !problemSetId) {
       showCommentPanelDelayed()
+    }
+
+    if (problemSetId) {
+      // 延迟回到题单页面
+      goToProblemSetDelayed()
     }
   },
 )

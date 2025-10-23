@@ -610,5 +610,3 @@ export interface DetailsData {
 }
 
 export type Grade = "S" | "A" | "B" | "C"
-
-

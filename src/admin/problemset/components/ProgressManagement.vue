@@ -60,11 +60,7 @@ const progressColumns = [
 
 <template>
   <div>
-    <n-flex
-      justify="space-between"
-      align="center"
-      style="margin-bottom: 16px"
-    >
+    <n-flex justify="space-between" align="center" style="margin-bottom: 16px">
       <h3>用户进度</h3>
     </n-flex>
     <n-data-table :columns="progressColumns" :data="progress" />

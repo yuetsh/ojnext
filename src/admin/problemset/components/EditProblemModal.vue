@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { NModal, NForm, NFormItem, NInput, NInputNumber, NSwitch, NButton, NFlex } from "naive-ui"
+import {
+  NModal,
+  NForm,
+  NFormItem,
+  NInput,
+  NInputNumber,
+  NSwitch,
+  NButton,
+  NFlex,
+} from "naive-ui"
 import { ProblemSetProblem } from "utils/types"
 
 interface Props {
@@ -9,12 +18,15 @@ interface Props {
 
 interface Emits {
   (e: "update:show", value: boolean): void
-  (e: "confirm", data: {
-    order: number
-    is_required: boolean
-    score: number
-    hint: string
-  }): void
+  (
+    e: "confirm",
+    data: {
+      order: number
+      is_required: boolean
+      score: number
+      hint: string
+    },
+  ): void
 }
 
 const props = defineProps<Props>()
@@ -30,7 +42,7 @@ function handleConfirm() {
     order: editProblemOrder.value,
     is_required: editProblemRequired.value,
     score: editProblemScore.value,
-    hint: editProblemHint.value,
+    hint: editProblemHint.value || "",
   })
 }
 
@@ -39,14 +51,18 @@ function handleCancel() {
 }
 
 // 当问题数据变化时，更新表单数据
-watch(() => props.problem, (newProblem) => {
-  if (newProblem) {
-    editProblemOrder.value = newProblem.order
-    editProblemRequired.value = newProblem.is_required
-    editProblemScore.value = newProblem.score
-    editProblemHint.value = newProblem.hint
-  }
-}, { immediate: true })
+watch(
+  () => props.problem,
+  (newProblem) => {
+    if (newProblem) {
+      editProblemOrder.value = newProblem.order
+      editProblemRequired.value = newProblem.is_required
+      editProblemScore.value = newProblem.score
+      editProblemHint.value = newProblem.hint || ""
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>

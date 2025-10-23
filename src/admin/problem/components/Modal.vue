@@ -42,13 +42,7 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
 
 async function getList() {
   const offset = (query.page - 1) * query.limit
-  const res = await getProblemList(
-    offset,
-    query.limit,
-    query.keyword,
-    "",
-    "",
-  )
+  const res = await getProblemList(offset, query.limit, query.keyword, "", "")
   total.value = res.total
   problems.value = res.results
 }

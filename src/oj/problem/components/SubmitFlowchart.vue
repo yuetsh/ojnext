@@ -14,7 +14,11 @@ import {
 } from "shared/composables/websocket"
 
 // API 和状态管理
-import { getCurrentProblemFlowchartSubmission, submitFlowchart, updateProblemSetProgress } from "oj/api"
+import {
+  getCurrentProblemFlowchartSubmission,
+  submitFlowchart,
+  updateProblemSetProgress,
+} from "oj/api"
 import { useProblemStore } from "oj/store/problem"
 
 // ==================== 类型定义 ====================

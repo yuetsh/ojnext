@@ -162,7 +162,11 @@ watch(
                   <n-tag type="warning" v-if="problemSet.status === 'archived'">
                     已归档
                   </n-tag>
-                  <n-tag v-if="problemSet.user_progress?.is_joined" type="success" size="small">
+                  <n-tag
+                    v-if="problemSet.user_progress?.is_joined"
+                    type="success"
+                    size="small"
+                  >
                     <template #icon>
                       <Icon icon="material-symbols:check-circle" width="12" />
                     </template>
@@ -173,17 +177,28 @@ watch(
 
               <!-- 用户进度显示 -->
               <div v-if="problemSet.user_progress?.is_joined">
-                <n-flex align="center" justify="space-between" style="margin-bottom: 8px">
+                <n-flex
+                  align="center"
+                  justify="space-between"
+                  style="margin-bottom: 8px"
+                >
                   <n-text depth="3" style="font-size: 12px">
-                    我的进度: {{ problemSet.user_progress.completed_count }} / {{ problemSet.user_progress.total_count }}
+                    我的进度: {{ problemSet.user_progress.completed_count }} /
+                    {{ problemSet.user_progress.total_count }}
                   </n-text>
                   <n-progress
                     type="line"
-                    :percentage="Math.round(problemSet.user_progress.progress_percentage)"
+                    :percentage="
+                      Math.round(problemSet.user_progress.progress_percentage)
+                    "
                     :height="4"
                     :border-radius="2"
                     style="width: 100px"
-                    :color="getProgressColor(problemSet.user_progress.progress_percentage)"
+                    :color="
+                      getProgressColor(
+                        problemSet.user_progress.progress_percentage,
+                      )
+                    "
                   />
                 </n-flex>
               </div>

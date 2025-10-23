@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { NModal, NForm, NFormItem, NInput, NInputNumber, NSwitch, NButton, NFlex } from "naive-ui"
+import {
+  NModal,
+  NForm,
+  NFormItem,
+  NInput,
+  NInputNumber,
+  NSwitch,
+  NButton,
+  NFlex,
+} from "naive-ui"
 
 interface Props {
   show: boolean
@@ -7,13 +16,16 @@ interface Props {
 
 interface Emits {
   (e: "update:show", value: boolean): void
-  (e: "confirm", data: {
-    problem_id: string
-    order: number
-    is_required: boolean
-    score: number
-    hint: string
-  }): void
+  (
+    e: "confirm",
+    data: {
+      problem_id: string
+      order: number
+      is_required: boolean
+      score: number
+      hint: string
+    },
+  ): void
 }
 
 const props = defineProps<Props>()
@@ -40,15 +52,18 @@ function handleCancel() {
 }
 
 // 重置表单
-watch(() => props.show, (newVal) => {
-  if (newVal) {
-    newProblemId.value = ""
-    newProblemOrder.value = 0
-    newProblemRequired.value = true
-    newProblemScore.value = 0
-    newProblemHint.value = ""
-  }
-})
+watch(
+  () => props.show,
+  (newVal) => {
+    if (newVal) {
+      newProblemId.value = ""
+      newProblemOrder.value = 0
+      newProblemRequired.value = true
+      newProblemScore.value = 0
+      newProblemHint.value = ""
+    }
+  },
+)
 </script>
 
 <template>

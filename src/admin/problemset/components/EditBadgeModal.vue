@@ -1,5 +1,15 @@
 <script setup lang="ts">
-import { NModal, NForm, NFormItem, NInput, NInputNumber, NSelect, NButton, NFlex, NImage } from "naive-ui"
+import {
+  NModal,
+  NForm,
+  NFormItem,
+  NInput,
+  NInputNumber,
+  NSelect,
+  NButton,
+  NFlex,
+  NImage,
+} from "naive-ui"
 import { ProblemSetBadge } from "utils/types"
 
 interface Props {
@@ -9,13 +19,16 @@ interface Props {
 
 interface Emits {
   (e: "update:show", value: boolean): void
-  (e: "confirm", data: {
-    name: string
-    description: string
-    icon: string
-    condition_type: "all_problems" | "problem_count" | "score"
-    condition_value?: number
-  }): void
+  (
+    e: "confirm",
+    data: {
+      name: string
+      description: string
+      icon: string
+      condition_type: "all_problems" | "problem_count" | "score"
+      condition_value?: number
+    },
+  ): void
 }
 
 const props = defineProps<Props>()
@@ -24,7 +37,9 @@ const emit = defineEmits<Emits>()
 const editBadgeName = ref("")
 const editBadgeDescription = ref("")
 const editBadgeIcon = ref("")
-const editBadgeConditionType = ref<"all_problems" | "problem_count" | "score">("all_problems")
+const editBadgeConditionType = ref<"all_problems" | "problem_count" | "score">(
+  "all_problems",
+)
 const editBadgeConditionValue = ref(1)
 
 // 预设奖章图标选项
@@ -63,15 +78,19 @@ function handleCancel() {
 }
 
 // 当奖章数据变化时，更新表单数据
-watch(() => props.badge, (newBadge) => {
-  if (newBadge) {
-    editBadgeName.value = newBadge.name
-    editBadgeDescription.value = newBadge.description
-    editBadgeIcon.value = newBadge.icon
-    editBadgeConditionType.value = newBadge.condition_type
-    editBadgeConditionValue.value = newBadge.condition_value
-  }
-}, { immediate: true })
+watch(
+  () => props.badge,
+  (newBadge) => {
+    if (newBadge) {
+      editBadgeName.value = newBadge.name
+      editBadgeDescription.value = newBadge.description
+      editBadgeIcon.value = newBadge.icon
+      editBadgeConditionType.value = newBadge.condition_type
+      editBadgeConditionValue.value = newBadge.condition_value
+    }
+  },
+  { immediate: true },
+)
 </script>
 
 <template>

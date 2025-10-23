@@ -3,7 +3,7 @@ import { getRandomId } from "utils/functions"
 export function useMermaid() {
   // 渲染状态
   const renderError = ref<string | null>(null)
-  
+
   // 动态导入 mermaid
   let mermaid: any = null
 
@@ -22,7 +22,10 @@ export function useMermaid() {
   }
 
   // 渲染流程图的函数
-  const renderFlowchart = async (container: HTMLElement | null, mermaidCode: string) => {
+  const renderFlowchart = async (
+    container: HTMLElement | null,
+    mermaidCode: string,
+  ) => {
     try {
       renderError.value = null
 
@@ -37,7 +40,9 @@ export function useMermaid() {
       }
     } catch (error) {
       renderError.value =
-        error instanceof Error ? error.message : "流程图渲染失败，请检查代码格式"
+        error instanceof Error
+          ? error.message
+          : "流程图渲染失败，请检查代码格式"
     }
   }
 
