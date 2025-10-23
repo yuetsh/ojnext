@@ -346,7 +346,7 @@ export function getProblemSetSubmissions(
     language?: string
     offset?: number
     limit?: number
-  } = {}
+  } = {},
 ) {
   return http.get(`problemset/${problemSetId}/submissions`, {
     params,
@@ -359,15 +359,10 @@ export function getProblemSetStatistics(problemSetId: number) {
 
 export function updateProblemSetProgress(
   problemSetId: number,
-  data: {
-    problem_id: number
-    status: string
-    score?: number
-    submit_time?: string
-  }
+  problemId: number,
 ) {
   return http.put("problemset/progress", {
     problemset_id: problemSetId,
-    ...data,
+    problem_id: problemId,
   })
 }

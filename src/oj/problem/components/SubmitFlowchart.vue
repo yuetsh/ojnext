@@ -45,9 +45,6 @@ const { convertToMermaid } = useMermaidConverter()
 const { renderError, renderFlowchart } = useMermaid()
 const route = useRoute()
 
-// 获取题单ID
-const problemsetID = computed(() => route.params.problemSetId as string || "")
-
 // 状态管理
 const rendering = ref(false)
 const loading = ref(false)
@@ -66,7 +63,7 @@ const evaluation = ref<Evaluation>({
 
 // ==================== WebSocket 相关函数 ====================
 // 处理 WebSocket 消息
-const handleWebSocketMessage = async (data: FlowchartEvaluationUpdate) => {
+const handleWebSocketMessage = (data: FlowchartEvaluationUpdate) => {
   console.log("收到流程图评分更新:", data)
 
   if (data.type === "flowchart_evaluation_completed") {
@@ -76,21 +73,6 @@ const handleWebSocketMessage = async (data: FlowchartEvaluationUpdate) => {
       grade: data.grade || "",
     }
     message.success(`流程图评分完成！得分: ${data.score}分 (${data.grade}级)`)
-
-    // 更新题单进度（如果来自题单）
-    if (problemsetID.value) {
-      try {
-        await updateProblemSetProgress(Number(problemsetID.value), {
-          problem_id: problem.value!.id,
-          status: "completed",
-          score: data.score || 0,
-          submit_time: new Date().toISOString(),
-        })
-        console.log(`[ProblemSet] 题单进度已更新: problemset=${problemsetID.value}, problem=${problem.value!.id}, score=${data.score}`)
-      } catch (error) {
-        console.error("更新题单进度失败:", error)
-      }
-    }
   } else if (data.type === "flowchart_evaluation_failed") {
     console.log("处理评分失败消息")
     loading.value = false

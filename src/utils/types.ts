@@ -280,6 +280,7 @@ export interface SubmitCodePayload {
   language: LANGUAGE
   code: string
   contest_id?: number
+  problemset_id?: number
 }
 
 // ==================== 流程图相关类型 ====================
