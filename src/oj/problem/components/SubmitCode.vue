@@ -24,7 +24,8 @@ const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 const route = useRoute()
 const contestID = <string>route.params.contestID ?? ""
-const problemSetID = computed(() => route.params.problemSetID as string || "")
+const problemSetId = <string>route.params.problemSetId ?? ""
+console.log(problemSetId, "problemSetId")
 const [commentPanel] = useToggle()
 
 const { isDesktop } = useBreakpoints()
@@ -100,8 +101,8 @@ async function submit() {
   if (contestID) {
     data.contest_id = parseInt(contestID)
   }
-  if (problemSetID.value) {
-    data.problemset_id = parseInt(problemSetID.value)
+  if (problemSetId) {
+    data.problemset_id = parseInt(problemSetId)
   }
 
   // 2. 提交代码到后端
@@ -123,19 +124,20 @@ watch(
     problem.value!.my_status = 0
 
     // 2. 更新题单进度
-    if (problemSetID.value) {
+    if (problemSetId) {
+      console.log(problemSetId, "problemSetId")
       try {
-        await updateProblemSetProgress(Number(problemSetID.value), problem.value!.id)
+        await updateProblemSetProgress(Number(problemSetId), problem.value!.id)
       } catch (error) {
         console.error("更新题单进度失败:", error)
       }
     }
 
-    // 3. 放烟花（随机效果）
+    // 3. 放烟花
     celebrate()
 
-    // 4. 显示评价框（非比赛模式）
-    if (!contestID) {
+    // 4. 显示评价框
+    if (!contestID && !problemSetId) {
       showCommentPanelDelayed()
     }
   },

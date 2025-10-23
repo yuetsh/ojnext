@@ -338,25 +338,6 @@ export function joinProblemSet(problemSetId: number) {
   })
 }
 
-export function getProblemSetSubmissions(
-  problemSetId: number,
-  params: {
-    problem_id?: string
-    result?: string
-    language?: string
-    offset?: number
-    limit?: number
-  } = {},
-) {
-  return http.get(`problemset/${problemSetId}/submissions`, {
-    params,
-  })
-}
-
-export function getProblemSetStatistics(problemSetId: number) {
-  return http.get(`problemset/${problemSetId}/statistics`)
-}
-
 export function updateProblemSetProgress(
   problemSetId: number,
   problemId: number,

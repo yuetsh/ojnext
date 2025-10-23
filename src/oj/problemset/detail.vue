@@ -5,11 +5,9 @@ import {
   getProblemSetProblems,
   joinProblemSet,
 } from "../api"
-import { parseTime, getTagColor, getACRate } from "utils/functions"
+import { getTagColor, getACRate } from "utils/functions"
 import { ProblemSet, ProblemSetProblem } from "utils/types"
 import ProblemStatus from "../problem/components/ProblemStatus.vue"
-import ProblemSetSubmissions from "./components/ProblemSetSubmissions.vue"
-import ProblemSetStatistics from "./components/ProblemSetStatistics.vue"
 import { DIFFICULTY } from "utils/constants"
 import { useBreakpoints } from "shared/composables/breakpoints"
 
@@ -38,23 +36,6 @@ async function refreshProblemSetDetail() {
     console.error("刷新题单详情失败:", err)
   }
 }
-
-// 标签页状态
-const activeTab = ref("problems")
-const tabOptions = computed(() => {
-  const options = [
-    { label: "题目列表", value: "problems" }
-  ]
-  
-  if (isJoined.value) {
-    options.push(
-      { label: "提交记录", value: "submissions" },
-      { label: "统计信息", value: "statistics" }
-    )
-  }
-  
-  return options
-})
 
 function getDifficultyTag(difficulty: string) {
   const difficultyMap: Record<
@@ -138,10 +119,14 @@ watch(
   () => route.path,
   (newPath, oldPath) => {
     // 如果从题单题目页面返回到题单详情页面，刷新题单详情
-    if (oldPath?.includes('/problem/') && newPath === `/problemset/${problemSetId.value}` && isJoined.value) {
+    if (
+      oldPath?.includes("/problem/") &&
+      newPath === `/problemset/${problemSetId.value}` &&
+      isJoined.value
+    ) {
       refreshProblemSetDetail()
     }
-  }
+  },
 )
 </script>
 
@@ -198,76 +183,66 @@ watch(
       </n-flex>
     </n-card>
 
-    <!-- 标签页 -->
-    <n-tabs v-model:value="activeTab" type="segment">
-      <n-tab-pane name="problems" tab="题目列表">
-        <n-grid :cols="isDesktop ? 4 : 1" :x-gap="16" :y-gap="16">
-          <n-grid-item
-            v-for="(problemSetProblem, index) in problems"
-            :key="problemSetProblem.id"
-          >
-            <n-card
-              hoverable
-              @click="goToProblem(problemSetProblem.problem._id)"
-              style="cursor: pointer"
-            >
-              <n-flex>
+    <!-- 题目列表 -->
+    <n-grid :cols="isDesktop ? 4 : 1" :x-gap="16" :y-gap="16">
+      <n-grid-item
+        v-for="(problemSetProblem, index) in problems"
+        :key="problemSetProblem.id"
+      >
+        <n-card
+          hoverable
+          @click="goToProblem(problemSetProblem.problem._id)"
+          style="cursor: pointer"
+        >
+          <n-flex>
+            <n-flex align="center">
+              <n-h2 style="margin: 0 20px 0 0">#{{ index + 1 }}. </n-h2>
+
+              <n-flex vertical style="flex: 1">
                 <n-flex align="center">
-                  <n-h2 style="margin: 0 20px 0 0">#{{ index + 1 }}. </n-h2>
-
-                  <n-flex vertical style="flex: 1">
-                    <n-flex align="center">
-                      <n-tag
-                        :type="getTagColor(problemSetProblem.problem.difficulty)"
-                        size="small"
-                      >
-                        {{ DIFFICULTY[problemSetProblem.problem.difficulty] }}
-                      </n-tag>
-                      <n-h4 style="margin: 0">
-                        {{ problemSetProblem.problem.title }}
-                      </n-h4>
-                    </n-flex>
-
-                    <n-flex align="center" size="small">
-                      <n-text type="info">
-                        分数：{{ problemSetProblem.score }}
-                      </n-text>
-                      <n-text v-if="!problemSetProblem.is_required">（选做）</n-text>
-                      <n-text depth="3" style="font-size: 12px">
-                        通过率
-                        {{
-                          getACRate(
-                            problemSetProblem.problem.accepted_number,
-                            problemSetProblem.problem.submission_number,
-                          )
-                        }}
-                      </n-text>
-                    </n-flex>
-                  </n-flex>
+                  <n-tag
+                    :type="getTagColor(problemSetProblem.problem.difficulty)"
+                    size="small"
+                  >
+                    {{ DIFFICULTY[problemSetProblem.problem.difficulty] }}
+                  </n-tag>
+                  <n-h4 style="margin: 0">
+                    {{ problemSetProblem.problem.title }}
+                  </n-h4>
                 </n-flex>
 
-                <n-flex align="center">
-                  <ProblemStatus
-                    :status="getProblemStatus(problemSetProblem.problem.my_status)"
-                  />
-                  <n-icon>
-                    <Icon icon="streamline-emojis:right-arrow" />
-                  </n-icon>
+                <n-flex align="center" size="small">
+                  <n-text type="info">
+                    分数：{{ problemSetProblem.score }}
+                  </n-text>
+                  <n-text v-if="!problemSetProblem.is_required"
+                    >（选做）</n-text
+                  >
+                  <n-text depth="3" style="font-size: 12px">
+                    通过率
+                    {{
+                      getACRate(
+                        problemSetProblem.problem.accepted_number,
+                        problemSetProblem.problem.submission_number,
+                      )
+                    }}
+                  </n-text>
                 </n-flex>
               </n-flex>
-            </n-card>
-          </n-grid-item>
-        </n-grid>
-      </n-tab-pane>
+            </n-flex>
 
-      <n-tab-pane v-if="isJoined" name="submissions" tab="提交记录">
-        <ProblemSetSubmissions :problemSetId="problemSetId" />
-      </n-tab-pane>
-
-      <n-tab-pane v-if="isJoined" name="statistics" tab="统计信息">
-        <ProblemSetStatistics :problemSetId="problemSetId" />
-      </n-tab-pane>
-    </n-tabs>
+            <n-flex align="center">
+              <ProblemStatus
+                :status="getProblemStatus(problemSetProblem.problem.my_status)"
+              />
+              <n-icon>
+                <Icon icon="streamline-emojis:right-arrow" />
+              </n-icon>
+            </n-flex>
+          </n-flex>
+        </n-card>
+      </n-grid-item>
+    </n-grid>
   </div>
 </template>
 
