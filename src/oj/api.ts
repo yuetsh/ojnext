@@ -359,3 +359,8 @@ export function getUserBadges() {
 export function getProblemSetBadges(problemSetId: number) {
   return http.get(`problemset/${problemSetId}/badges`)
 }
+
+// 获取题单用户进度列表
+export function getProblemSetUserProgress(problemSetId: number) {
+  return http.get(`problemset/${problemSetId}/users_progress`)
+}

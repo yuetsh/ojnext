@@ -1,15 +1,4 @@
 <script setup lang="ts">
-import {
-  NModal,
-  NForm,
-  NFormItem,
-  NInput,
-  NInputNumber,
-  NSwitch,
-  NButton,
-  NFlex,
-} from "naive-ui"
-
 interface Props {
   show: boolean
 }

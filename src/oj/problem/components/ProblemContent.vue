@@ -18,9 +18,12 @@ type Sample = Problem["samples"][number] & {
 const theme = useThemeVars()
 const style = computed(() => "color: " + theme.value.primaryColor)
 
+const route = useRoute()
 const codeStore = useCodeStore()
 const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
+
+const problemSetId = computed(() => route.params.problemSetId)
 
 // 判断用户是否尝试过但未通过
 // my_status === 0: 已通过
@@ -106,24 +109,27 @@ function type(status: ProblemStatus) {
 
 <template>
   <div v-if="problem" class="problemContent">
-    <!-- 已通过 -->
-    <n-alert
-      class="status-alert"
-      v-if="problem.my_status === 0"
-      type="success"
-      title="🎉 本 题 已 经 被 你 解 决 啦"
-    >
-    </n-alert>
+    <template v-if="!problemSetId">
+      <!-- 已通过 -->
+      <n-alert
+        class="status-alert"
+        v-if="problem.my_status === 0"
+        type="success"
+        title="🎉 本 题 已 经 被 你 解 决 啦"
+      >
+      </n-alert>
 
-    <!-- 尝试过但未通过 -->
-    <n-alert
-      class="status-alert"
-      v-else-if="hasTriedButNotPassed"
-      type="warning"
-      title="💪 你已经尝试过这道题，但还没有通过"
-    >
-      不要放弃！仔细检查代码逻辑，或者寻求 AI 的帮助获取灵感。
-    </n-alert>
+      <!-- 尝试过但未通过 -->
+      <n-alert
+        class="status-alert"
+        v-else-if="hasTriedButNotPassed"
+        type="warning"
+        title="💪 你已经尝试过这道题，但还没有通过"
+      >
+        不要放弃！仔细检查代码逻辑，或者寻求 AI 的帮助获取灵感。
+      </n-alert>
+    </template>
+
     <n-flex align="center">
       <n-tag>{{ problem._id }}</n-tag>
       <h2 class="problemTitle">{{ problem.title }}</h2>

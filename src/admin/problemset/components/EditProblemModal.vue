@@ -1,14 +1,4 @@
 <script setup lang="ts">
-import {
-  NModal,
-  NForm,
-  NFormItem,
-  NInput,
-  NInputNumber,
-  NSwitch,
-  NButton,
-  NFlex,
-} from "naive-ui"
 import { ProblemSetProblem } from "utils/types"
 
 interface Props {

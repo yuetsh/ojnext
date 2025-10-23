@@ -104,157 +104,154 @@ watch(
 </script>
 
 <template>
-  <div>
-    <n-flex vertical size="large">
-      <n-space>
-        <n-space align="center">
-          <n-text>难度：</n-text>
-          <n-select
-            v-model:value="query.difficulty"
-            :options="difficultyOptions"
-            placeholder="选择难度"
-            style="width: 120px"
-            clearable
-          />
-        </n-space>
-        <n-space align="center">
-          <n-text>状态：</n-text>
-          <n-select
-            v-model:value="query.status"
-            :options="statusOptions"
-            placeholder="选择状态"
-            style="width: 120px"
-            clearable
-          />
-        </n-space>
-        <n-input
-          v-model:value="query.keyword"
-          placeholder="搜索题单..."
+  <n-flex v-if="problemSets.length > 0" vertical size="large">
+    <n-space>
+      <n-space align="center">
+        <n-text>难度：</n-text>
+        <n-select
+          v-model:value="query.difficulty"
+          :options="difficultyOptions"
+          placeholder="选择难度"
+          style="width: 120px"
           clearable
-          @clear="clearQuery"
-          style="width: 200px"
         />
       </n-space>
+      <n-space align="center">
+        <n-text>状态：</n-text>
+        <n-select
+          v-model:value="query.status"
+          :options="statusOptions"
+          placeholder="选择状态"
+          style="width: 120px"
+          clearable
+        />
+      </n-space>
+      <n-input
+        v-model:value="query.keyword"
+        placeholder="搜索题单..."
+        clearable
+        @clear="clearQuery"
+        style="width: 200px"
+      />
+    </n-space>
 
-      <n-grid :cols="isDesktop ? 4 : 1" :x-gap="16" :y-gap="16">
-        <n-grid-item v-for="problemSet in problemSets" :key="problemSet.id">
-          <n-card
-            hoverable
-            @click="goToProblemSet(problemSet.id)"
-            style="cursor: pointer"
-          >
-            <template #header>
-              <n-flex justify="space-between" align="center">
-                <n-text strong>{{ problemSet.title }}</n-text>
-                <n-tag :type="getDifficultyTag(problemSet.difficulty).type">
-                  {{ getDifficultyTag(problemSet.difficulty).text }}
+    <n-grid :cols="isDesktop ? 3 : 1" :x-gap="16" :y-gap="16">
+      <n-grid-item v-for="problemSet in problemSets" :key="problemSet.id">
+        <n-card
+          hoverable
+          @click="goToProblemSet(problemSet.id)"
+          style="cursor: pointer"
+        >
+          <template #header>
+            <n-flex justify="space-between" align="center">
+              <n-text strong>{{ problemSet.title }}</n-text>
+              <n-tag :type="getDifficultyTag(problemSet.difficulty).type">
+                {{ getDifficultyTag(problemSet.difficulty).text }}
+              </n-tag>
+            </n-flex>
+          </template>
+          <n-flex vertical size="large">
+            <n-flex justify="space-between" align="center">
+              <n-flex>
+                <Icon width="20" icon="streamline-emojis:blossom" />
+                <n-text>{{ problemSet.problems_count }} 道题目</n-text>
+              </n-flex>
+
+              <n-flex align="center" style="height: 28px">
+                <!-- 用户进度显示 -->
+                <n-progress
+                  v-if="
+                    problemSet.user_progress?.is_joined &&
+                    !problemSet.user_progress?.is_completed
+                  "
+                  type="line"
+                  :percentage="
+                    Math.round(problemSet.user_progress.progress_percentage)
+                  "
+                  :height="4"
+                  :border-radius="2"
+                  style="width: 100px"
+                  :color="
+                    getProgressColor(
+                      problemSet.user_progress.progress_percentage,
+                    )
+                  "
+                />
+                <n-tag type="warning" v-if="problemSet.status === 'archived'">
+                  已归档
+                </n-tag>
+                <n-tag
+                  v-if="
+                    problemSet.user_progress?.is_joined &&
+                    !problemSet.user_progress?.is_completed
+                  "
+                  type="warning"
+                >
+                  已加入
+                </n-tag>
+                <n-tag
+                  v-if="problemSet.user_progress?.is_completed"
+                  type="error"
+                >
+                  已完成
                 </n-tag>
               </n-flex>
-            </template>
-            <n-flex vertical size="large">
-              <n-flex justify="space-between" align="center">
-                <n-flex>
-                  <Icon width="20" icon="streamline-emojis:blossom" />
-                  <n-text>{{ problemSet.problems_count }} 道题目</n-text>
-                </n-flex>
-
-                <n-flex align="center" size="small">
-                  <n-tag type="warning" v-if="problemSet.status === 'archived'">
-                    已归档
-                  </n-tag>
-                  <n-tag
-                    v-if="problemSet.user_progress?.is_joined"
-                    type="success"
-                    size="small"
-                  >
-                    <template #icon>
-                      <Icon icon="material-symbols:check-circle" width="12" />
-                    </template>
-                    已加入
-                  </n-tag>
-                </n-flex>
-              </n-flex>
-
-              <!-- 用户进度显示 -->
-              <div v-if="problemSet.user_progress?.is_joined">
-                <n-flex
-                  align="center"
-                  justify="space-between"
-                  style="margin-bottom: 8px"
-                >
-                  <n-text depth="3" style="font-size: 12px">
-                    我的进度: {{ problemSet.user_progress.completed_count }} /
-                    {{ problemSet.user_progress.total_count }}
-                  </n-text>
-                  <n-progress
-                    type="line"
-                    :percentage="
-                      Math.round(problemSet.user_progress.progress_percentage)
-                    "
-                    :height="4"
-                    :border-radius="2"
-                    style="width: 100px"
-                    :color="
-                      getProgressColor(
-                        problemSet.user_progress.progress_percentage,
-                      )
-                    "
-                  />
-                </n-flex>
-              </div>
-
-              <!-- 奖章显示 -->
-              <div v-if="problemSet.badges && problemSet.badges.length > 0">
-                <n-flex align="center" justify="space-between">
-                  <n-text depth="3">
-                    创建于
-                    {{ parseTime(problemSet.create_time, "YYYY-MM-DD") }}
-                  </n-text>
-                  <n-flex>
-                    <n-tooltip
-                      v-for="badge in problemSet.badges"
-                      :key="badge.id"
-                      trigger="hover"
-                    >
-                      <template #trigger>
-                        <n-image
-                          :src="badge.icon"
-                          :alt="badge.name"
-                          width="24"
-                          height="24"
-                          object-fit="cover"
-                        />
-                      </template>
-                      <n-flex vertical size="small">
-                        <span style="font-weight: bold"
-                          >徽章: {{ badge.name }}</span
-                        >
-                        <span>
-                          获取条件:
-                          {{
-                            getConditionText(
-                              badge.condition_type,
-                              badge.condition_value,
-                            )
-                          }}
-                        </span>
-                      </n-flex>
-                    </n-tooltip>
-                  </n-flex>
-                </n-flex>
-              </div>
             </n-flex>
-          </n-card>
-        </n-grid-item>
-      </n-grid>
 
-      <Pagination
-        :total="total"
-        v-model:limit="query.limit"
-        v-model:page="query.page"
-      />
-    </n-flex>
-  </div>
+            <!-- 奖章显示 -->
+            <n-flex
+              v-if="problemSet.badges && problemSet.badges.length > 0"
+              align="center"
+              justify="space-between"
+            >
+              <n-text depth="3">
+                创建于
+                {{ parseTime(problemSet.create_time, "YYYY-MM-DD") }}
+              </n-text>
+              <n-flex>
+                <n-tooltip
+                  v-for="badge in problemSet.badges"
+                  :key="badge.id"
+                  trigger="hover"
+                >
+                  <template #trigger>
+                    <n-image
+                      :src="badge.icon"
+                      :alt="badge.name"
+                      width="24"
+                      height="24"
+                      object-fit="cover"
+                    />
+                  </template>
+                  <n-flex vertical size="small">
+                    <span style="font-weight: bold">
+                      徽章: {{ badge.name }}
+                    </span>
+                    <span>
+                      获取条件:
+                      {{
+                        getConditionText(
+                          badge.condition_type,
+                          badge.condition_value,
+                        )
+                      }}
+                    </span>
+                  </n-flex>
+                </n-tooltip>
+              </n-flex>
+            </n-flex>
+          </n-flex>
+        </n-card>
+      </n-grid-item>
+    </n-grid>
+
+    <Pagination
+      :total="total"
+      v-model:limit="query.limit"
+      v-model:page="query.page"
+    />
+  </n-flex>
+  <n-empty v-else></n-empty>
 </template>
 
 <style scoped></style>

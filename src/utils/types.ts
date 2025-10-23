@@ -251,6 +251,12 @@ export interface UserBadge {
   earned_time: Date
 }
 
+export interface CompletedProblem {
+  id: number
+  _id: string
+  title: string
+}
+
 export interface ProblemSetProgress {
   id: number
   problemset: ProblemSetList
@@ -260,6 +266,7 @@ export interface ProblemSetProgress {
   total_problems_count: number
   progress_percentage: number
   is_completed: boolean
+  completed_problems: CompletedProblem[]
 }
 
 export interface CreateProblemSetData {

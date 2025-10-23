@@ -130,13 +130,26 @@ watch(isMobile, (value) => {
           >
             <ProblemFlowchart />
           </n-tab-pane>
-          <n-tab-pane name="info" tab="题目统计">
+          <n-tab-pane
+            name="info"
+            tab="题目统计"
+            :disabled="!!props.problemSetId"
+          >
             <ProblemInfo />
           </n-tab-pane>
-          <n-tab-pane v-if="!props.contestID" name="comment" tab="题目点评">
+          <n-tab-pane
+            v-if="!props.contestID"
+            name="comment"
+            tab="题目点评"
+            :disabled="!!props.problemSetId"
+          >
             <ProblemComment />
           </n-tab-pane>
-          <n-tab-pane name="submission" tab="我的提交">
+          <n-tab-pane
+            name="submission"
+            tab="我的提交"
+            :disabled="!!props.problemSetId"
+          >
             <ProblemSubmission />
           </n-tab-pane>
         </n-tabs>
@@ -151,13 +164,22 @@ watch(isMobile, (value) => {
         <n-tab-pane name="editor" tab="代码">
           <component :is="inProblem ? ProblemEditor : ContestEditor" />
         </n-tab-pane>
-        <n-tab-pane name="info" tab="统计">
+        <n-tab-pane name="info" tab="统计" :disabled="!!props.problemSetId">
           <ProblemInfo />
         </n-tab-pane>
-        <n-tab-pane v-if="!props.contestID" name="comment" tab="点评">
+        <n-tab-pane
+          v-if="!props.contestID"
+          name="comment"
+          tab="点评"
+          :disabled="!!props.problemSetId"
+        >
           <ProblemComment />
         </n-tab-pane>
-        <n-tab-pane name="submission" tab="提交">
+        <n-tab-pane
+          name="submission"
+          tab="提交"
+          :disabled="!!props.problemSetId"
+        >
           <ProblemSubmission />
         </n-tab-pane>
       </n-tabs>

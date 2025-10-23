@@ -58,8 +58,8 @@ function getConditionText() {
   position: relative;
   display: inline-block;
   cursor: pointer;
-  width: 50px;
-  height: 50px;
+  width: 44px;
+  height: 44px;
 }
 
 .badge-icon {

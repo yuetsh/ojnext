@@ -1,16 +1,11 @@
 <script setup lang="ts">
-import { NSwitch, NSelect, NTag } from "naive-ui"
 import Pagination from "shared/components/Pagination.vue"
 import { usePagination } from "shared/composables/pagination"
 import { parseTime } from "utils/functions"
 import { ProblemSetList } from "utils/types"
-import {
-  getProblemSetList,
-  toggleProblemSetVisible,
-  updateProblemSetStatus,
-  deleteProblemSet,
-} from "../api"
+import { getProblemSetList, toggleProblemSetVisible } from "../api"
 import Actions from "./components/Actions.vue"
+import { NTag, NSwitch } from "naive-ui"
 
 const total = ref(0)
 const problemSets = ref<ProblemSetList[]>([])
