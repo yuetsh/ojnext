@@ -150,7 +150,7 @@ watch(() => [query.page, query.limit, query.author], listProblems)
         type="primary"
         @click="selectProblems"
       >
-        从题库中选择
+        从题目中选择
       </n-button>
       <n-flex align="center" v-if="!props.contestID">
         <span>出题人</span>

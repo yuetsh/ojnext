@@ -90,7 +90,7 @@ const menus = computed<MenuOption[]>(() => [
     icon: renderIcon("streamline-emojis:snake"),
   },
   {
-    label: () => h(RouterLink, { to: "/" }, { default: () => "题库" }),
+    label: () => h(RouterLink, { to: "/" }, { default: () => "题目" }),
     key: "problem",
     icon: renderIcon("streamline-emojis:blossom"),
   },
