@@ -20,7 +20,12 @@ async function receive() {
 onMounted(receive)
 </script>
 <template>
-  <div class="hitokoto" @click="receive" v-if="hitokoto.sentence">
+  <div
+    class="hitokoto"
+    :title="hitokoto.sentence"
+    @click="receive"
+    v-if="hitokoto.sentence"
+  >
     <div class="sentence">{{ hitokoto.sentence }}</div>
     <div class="from">{{ "来自 " + hitokoto.from }}</div>
   </div>
