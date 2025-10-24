@@ -11,17 +11,14 @@ defineProps<Props>()
 
 <template>
   <n-card title="题单信息" style="margin-bottom: 16px">
-    <n-flex vertical gap="medium">
-      <n-flex>
-        <span style="width: 100px; font-weight: bold">描述：</span>
-        <span>{{ problemSet.description }}</span>
-      </n-flex>
-      <n-flex>
-        <span style="width: 100px; font-weight: bold">创建者：</span>
-        <span>{{ problemSet.created_by.username }}</span>
-      </n-flex>
-      <n-flex>
-        <span style="width: 100px; font-weight: bold">难度：</span>
+    <n-descriptions :column="4" bordered>
+      <n-descriptions-item label="描述">
+        {{ problemSet.description }}
+      </n-descriptions-item>
+      <n-descriptions-item label="创建者">
+        {{ problemSet.created_by.username }}
+      </n-descriptions-item>
+      <n-descriptions-item label="难度">
         <n-tag
           :type="
             problemSet.difficulty === 'Easy'
@@ -39,9 +36,8 @@ defineProps<Props>()
                 : "困难"
           }}
         </n-tag>
-      </n-flex>
-      <n-flex>
-        <span style="width: 100px; font-weight: bold">状态：</span>
+      </n-descriptions-item>
+      <n-descriptions-item label="状态">
         <n-tag
           :type="
             problemSet.status === 'active'
@@ -59,21 +55,18 @@ defineProps<Props>()
                 : "草稿"
           }}
         </n-tag>
-      </n-flex>
-      <n-flex>
-        <span style="width: 100px; font-weight: bold">可见：</span>
-        <span>{{ problemSet.visible ? "是" : "否" }}</span>
-      </n-flex>
-      <n-flex>
-        <span style="width: 100px; font-weight: bold">题目数量：</span>
-        <span>{{ problemSet.problems_count }}</span>
-      </n-flex>
-      <n-flex>
-        <span style="width: 100px; font-weight: bold">创建时间：</span>
-        <span>{{
+      </n-descriptions-item>
+      <n-descriptions-item label="可见">
+        {{ problemSet.visible ? "是" : "否" }}
+      </n-descriptions-item>
+      <n-descriptions-item label="题目数量">
+        {{ problemSet.problems_count }}
+      </n-descriptions-item>
+      <n-descriptions-item label="创建时间">
+        {{
           parseTime(problemSet.create_time, "YYYY-MM-DD HH:mm:ss")
-        }}</span>
-      </n-flex>
-    </n-flex>
+        }}
+      </n-descriptions-item>
+    </n-descriptions>
   </n-card>
 </template>

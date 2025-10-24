@@ -28,14 +28,15 @@ const newBadgeConditionType = ref<"all_problems" | "problem_count" | "score">(
 )
 const newBadgeConditionValue = ref(1)
 
-// 预设奖章图标选项
-const badgeIconOptions = [
-  { label: "奖章1", value: "/badge-1.png", icon: "/badge-1.png" },
-  { label: "奖章2", value: "/badge-2.png", icon: "/badge-2.png" },
-  { label: "奖章3", value: "/badge-3.png", icon: "/badge-3.png" },
-  { label: "奖章4", value: "/badge-4.png", icon: "/badge-4.png" },
-  { label: "奖章5", value: "/badge-5.png", icon: "/badge-5.png" },
-]
+const BADGE_LEN = 6
+const badgeIconOptions = []
+for (let i = 1; i <= BADGE_LEN; i++) {
+  badgeIconOptions.push({
+    label: `奖章${i}`,
+    value: `/badge-${i}.png`,
+    icon: `/badge-${i}.png`,
+  })
+}
 
 const conditionTypeOptions = [
   { label: "完成所有题目", value: "all_problems" },
