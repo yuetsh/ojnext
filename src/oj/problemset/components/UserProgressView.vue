@@ -1,43 +1,49 @@
 <script setup lang="ts">
-import { h, computed, ref, onMounted } from "vue"
-import { Icon } from "@iconify/vue"
+import { h, computed, ref, onMounted, watch } from "vue"
 import { parseTime } from "utils/functions"
 import { ProblemSetProgress } from "utils/types"
 import { getProblemSetUserProgress } from "../../api"
-import { NP, NProgress, NTag, useMessage } from "naive-ui"
-
-const message = useMessage()
+import { NTag } from "naive-ui"
+import { usePagination } from "shared/composables/pagination"
+import Pagination from "shared/components/Pagination.vue"
 
 const route = useRoute()
 const problemSetId = computed(() => Number(route.params.problemSetId))
 const progress = ref<ProblemSetProgress[]>([])
 const loading = ref(false)
+const total = ref(0)
+
+// 使用分页 composable
+const { query } = usePagination({}, { defaultLimit: 10 })
 
 // 加载用户进度数据
 async function loadUserProgress() {
   loading.value = true
-  try {
-    const res = await getProblemSetUserProgress(problemSetId.value)
-    progress.value = res.data
-  } catch (err: any) {
-    message.error("加载用户进度失败：" + (err.data || "未知错误"))
-  } finally {
-    loading.value = false
-  }
+  const offset = (query.page - 1) * query.limit
+  const res = await getProblemSetUserProgress(problemSetId.value, {
+    limit: query.limit,
+    offset,
+  })
+
+  progress.value = res.data.results
+  total.value = res.data.total
+  loading.value = false
 }
+
+// 监听分页参数变化
+watch([() => query.page, () => query.limit], loadUserProgress)
 
 // 计算统计数据
 const stats = computed(() => {
-  const total = progress.value.length
   const completed = progress.value.filter((p) => p.is_completed).length
   const avgProgress =
-    total > 0
+    progress.value.length > 0
       ? progress.value.reduce((sum, p) => sum + p.progress_percentage, 0) /
-        total
+        progress.value.length
       : 0
 
   return {
-    total,
+    total: total.value,
     completed,
     avgProgress: Math.round(avgProgress),
   }
@@ -51,7 +57,11 @@ const progressColumns = [
     title: "排名",
     key: "rank",
     width: 80,
-    render: (row: ProblemSetProgress, index: number) => index + 1,
+    render: (row: ProblemSetProgress, index: number) => {
+      // 计算全局排名：当前页偏移 + 当前行索引 + 1
+      const globalRank = (query.page - 1) * query.limit + index + 1
+      return globalRank
+    },
   },
   {
     title: "用户",
@@ -116,16 +126,10 @@ const progressColumns = [
     },
   },
 ]
-
 </script>
 
 <template>
   <div>
-    <n-flex justify="space-between" align="center" style="margin-bottom: 16px">
-      <n-h3 style="margin: 0">用户进度</n-h3>
-      <n-text depth="3">共 {{ stats.total }} 人参与</n-text>
-    </n-flex>
-
     <!-- 统计信息卡片 -->
     <n-grid :cols="3" :x-gap="16" style="margin-bottom: 16px">
       <n-grid-item>
@@ -140,18 +144,29 @@ const progressColumns = [
       </n-grid-item>
       <n-grid-item>
         <n-card size="small">
-          <n-statistic label="平均进度" :value="stats.avgProgress.toFixed(0) + '%'" />
+          <n-statistic
+            label="平均进度"
+            :value="stats.avgProgress.toFixed(0) + '%'"
+          />
         </n-card>
       </n-grid-item>
     </n-grid>
 
     <n-data-table
+      :loading="loading"
       :columns="progressColumns"
       :data="progress"
-      :loading="loading"
       :pagination="false"
       :bordered="false"
       :single-line="false"
+    />
+
+    <Pagination
+      :total="total"
+      :limit="query.limit"
+      :page="query.page"
+      @update:limit="(limit: number) => (query.limit = limit)"
+      @update:page="(page: number) => (query.page = page)"
     />
   </div>
 </template>
