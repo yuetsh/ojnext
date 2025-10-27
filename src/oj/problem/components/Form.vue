@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import { storeToRefs } from "pinia"
-import { copyToClipboard } from "utils/functions"
+import { copyToClipboard, utoa } from "utils/functions"
 import { useCodeStore } from "oj/store/code"
 import { useProblemStore } from "oj/store/problem"
 import { injectSyncStatus } from "oj/composables/syncStatus"
 import { SYNC_MESSAGES } from "shared/composables/sync"
 import {
   ICON_SET,
+  LANGUAGE_FORMAT_VALUE,
   LANGUAGE_SHOW_VALUE,
   SOURCES,
   STORAGE_KEY,
@@ -111,7 +112,15 @@ const changeLanguage = (v: LANGUAGE) => {
 }
 
 const goTestCat = () => {
-  window.open(import.meta.env.PUBLIC_CODE_URL, "_blank")
+  const lang = LANGUAGE_FORMAT_VALUE[codeStore.code.language]
+  const data = {
+    lang,
+    code: codeStore.code.value,
+    input: problemStore.problem?.samples[0].input,
+  }
+  const base64 = utoa(JSON.stringify(data))
+  const url = `${import.meta.env.PUBLIC_CODE_URL}?share=${encodeURIComponent(base64)}`
+  window.open(url, "_blank")
 }
 
 const goSubmissions = () => {
