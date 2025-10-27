@@ -4,8 +4,9 @@ import { NH2, NH3 } from "naive-ui"
 import { getProfile } from "shared/api"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { durationToDays, parseTime } from "utils/functions"
-import { Profile } from "utils/types"
-import { getMetrics } from "../api"
+import { Profile, UserBadge as UserBadgeType } from "utils/types"
+import { getMetrics, getUserBadges } from "../api"
+import GroupedUserBadge from "shared/components/GroupedUserBadge.vue"
 
 const route = useRoute()
 const router = useRouter()
@@ -15,10 +16,45 @@ const firstSubmissionAt = ref("")
 const latestSubmissionAt = ref("")
 const toLatestAt = ref("")
 const learnDuration = ref("")
+const userBadges = ref<GroupedBadge[]>([])
 const [loading, toggle] = useToggle()
 const [show, toggleShow] = useToggle(false)
 
 const { isDesktop } = useBreakpoints()
+
+// 分组徽章接口
+interface GroupedBadge {
+  icon: string
+  count: number
+  badges: UserBadgeType[]
+  latestEarnedTime: Date
+}
+
+// 按图标分组徽章
+function groupBadgesByIcon(badges: UserBadgeType[]): GroupedBadge[] {
+  const grouped = new Map<string, UserBadgeType[]>()
+
+  // 按图标分组
+  badges.forEach((badge) => {
+    const icon = badge.badge.icon
+    if (!grouped.has(icon)) {
+      grouped.set(icon, [])
+    }
+    grouped.get(icon)!.push(badge)
+  })
+
+  // 转换为数组并排序
+  return Array.from(grouped.entries())
+    .map(([icon, badgeList]) => ({
+      icon,
+      count: badgeList.length,
+      badges: badgeList,
+      latestEarnedTime: new Date(
+        Math.max(...badgeList.map((b) => new Date(b.earned_time).getTime())),
+      ),
+    }))
+    .sort((a, b) => a.icon.localeCompare(b.icon))
+}
 
 async function init() {
   toggle(true)
@@ -50,6 +86,9 @@ async function init() {
         metricsRes.data.latest,
       )
     }
+    // 获取用户徽章
+    const badgesRes = await getUserBadges()
+    userBadges.value = groupBadgesByIcon(badgesRes.data)
   } finally {
     toggle(false)
   }
@@ -132,6 +171,24 @@ onMounted(init)
       </n-card>
     </n-gi>
   </n-grid>
+
+  <!-- 徽章展示卡片 -->
+  <n-card
+    v-if="!loading && profile && userBadges.length > 0"
+    class="wrapper"
+    hoverable
+  >
+    <template #header>
+      <n-h4 style="margin: 0">获得的徽章</n-h4>
+    </template>
+    <n-flex wrap>
+      <GroupedUserBadge
+        v-for="groupedBadge in userBadges"
+        :key="groupedBadge.icon"
+        :grouped-badge="groupedBadge"
+      />
+    </n-flex>
+  </n-card>
 
   <n-descriptions v-if="!loading && profile" class="wrapper" bordered>
     <n-descriptions-item v-if="!!problems.length">
