@@ -104,10 +104,10 @@ watch(
 </script>
 
 <template>
-  <n-flex v-if="problemSets.length > 0" vertical size="large">
+  <n-flex vertical size="large">
     <n-space>
       <n-space align="center">
-        <n-text>难度：</n-text>
+        <n-text>难度</n-text>
         <n-select
           v-model:value="query.difficulty"
           :options="difficultyOptions"
@@ -117,7 +117,7 @@ watch(
         />
       </n-space>
       <n-space align="center">
-        <n-text>状态：</n-text>
+        <n-text>状态</n-text>
         <n-select
           v-model:value="query.status"
           :options="statusOptions"
@@ -135,7 +135,12 @@ watch(
       />
     </n-space>
 
-    <n-grid :cols="isDesktop ? 3 : 1" :x-gap="16" :y-gap="16">
+    <n-grid
+      v-if="problemSets.length > 0"
+      :cols="isDesktop ? 3 : 1"
+      :x-gap="16"
+      :y-gap="16"
+    >
       <n-grid-item v-for="problemSet in problemSets" :key="problemSet.id">
         <n-card
           hoverable
@@ -246,12 +251,13 @@ watch(
     </n-grid>
 
     <Pagination
+      v-if="problemSets.length > 0"
       :total="total"
       v-model:limit="query.limit"
       v-model:page="query.page"
     />
   </n-flex>
-  <n-empty v-else></n-empty>
+  <n-empty v-if="problemSets.length === 0"></n-empty>
 </template>
 
 <style scoped></style>
