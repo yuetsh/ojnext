@@ -73,8 +73,23 @@ async function init() {
     }
     ac.sort()
     problems.value = ac
+    const promises: Promise<{ data: any }>[] = []
+    
     if (profile.value.submission_number > 0) {
-      const metricsRes = await getMetrics(profile.value.user.id)
+      promises.push(getMetrics(profile.value.user.id))
+    }
+    
+    if (route.query.name) {   
+      promises.push(getUserBadges(<string>route.query.name))
+    } else {
+      promises.push(getUserBadges())
+    }
+    
+    const results = await Promise.all(promises)
+    
+    // 处理 metrics 结果
+    if (profile.value.submission_number > 0) {
+      const metricsRes = results[0]
       firstSubmissionAt.value = parseTime(metricsRes.data.first)
       latestSubmissionAt.value = parseTime(metricsRes.data.latest)
       toLatestAt.value = durationToDays(
@@ -86,9 +101,9 @@ async function init() {
         metricsRes.data.latest,
       )
     }
-    // 获取用户徽章
-    const badgesRes = await getUserBadges()
-    userBadges.value = groupBadgesByIcon(badgesRes.data)
+    
+    // 处理 badges 结果
+    userBadges.value = groupBadgesByIcon(results[1].data)
   } finally {
     toggle(false)
   }

@@ -351,8 +351,8 @@ export function updateProblemSetProgress(
 }
 
 // 获取用户徽章列表
-export function getUserBadges() {
-  return http.get("user/badges")
+export function getUserBadges(username?: string) {
+  return http.get("user/badges", { params: username ? { username } : {} })
 }
 
 // 获取题单徽章列表
