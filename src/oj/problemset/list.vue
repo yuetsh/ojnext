@@ -226,6 +226,7 @@ watch(
                       width="24"
                       height="24"
                       object-fit="cover"
+                      :class="{ 'earned-badge': badge.is_earned }"
                     />
                   </template>
                   <n-flex vertical size="small">
@@ -241,6 +242,9 @@ watch(
                         )
                       }}
                     </span>
+                    <n-text type="primary" v-if="badge.is_earned">
+                      ✓ 已获得
+                    </n-text>
                   </n-flex>
                 </n-tooltip>
               </n-flex>
@@ -260,4 +264,10 @@ watch(
   <n-empty v-if="problemSets.length === 0"></n-empty>
 </template>
 
-<style scoped></style>
+<style scoped>
+.earned-badge {
+  border: 2px solid #ffd700;
+  border-radius: 50%;
+  box-shadow: 0 0 8px rgba(255, 215, 0, 0.4);
+}
+</style>

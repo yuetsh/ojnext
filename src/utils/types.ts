@@ -242,6 +242,7 @@ export interface ProblemSetBadge {
   icon: string
   condition_type: "all_problems" | "problem_count" | "score"
   condition_value: number
+  is_earned?: boolean
 }
 
 export interface UserBadge {
