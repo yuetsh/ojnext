@@ -96,6 +96,7 @@ watch(
           v-model:value="newBadgeDescription"
           type="textarea"
           placeholder="奖章描述"
+          required
         />
       </n-form-item>
       <n-form-item label="图标" required>
