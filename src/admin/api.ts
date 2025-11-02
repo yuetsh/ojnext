@@ -296,7 +296,6 @@ export function getProblemSetList(
 ) {
   return http.get("admin/problemset", {
     params: {
-      paging: true,
       offset,
       limit,
       keyword,
