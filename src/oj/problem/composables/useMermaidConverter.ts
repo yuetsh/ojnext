@@ -20,31 +20,31 @@ export function useMermaidConverter() {
       // 根据节点原始类型确定Mermaid语法
       switch (originalType) {
         case "start":
-          mermaid += `    ${nodeId}((${label}))\n`
+          mermaid += `    ${nodeId}(("${label}"))\n`
           break
         case "end":
-          mermaid += `    ${nodeId}((${label}))\n`
+          mermaid += `    ${nodeId}(("${label}"))\n`
           break
         case "input":
           // 输入框使用平行四边形
-          mermaid += `    ${nodeId}[/${label}/]\n`
+          mermaid += `    ${nodeId}[/"${label}"/]\n`
           break
         case "output":
           // 输出框使用平行四边形
-          mermaid += `    ${nodeId}[/${label}/]\n`
+          mermaid += `    ${nodeId}[/"${label}"/]\n`
           break
         case "default":
-          mermaid += `    ${nodeId}[${label}]\n`
+          mermaid += `    ${nodeId}["${label}"]\n`
           break
         case "decision":
-          mermaid += `    ${nodeId}{${label}}\n`
+          mermaid += `    ${nodeId}{"${label}"}\n`
           break
         case "loop":
           // 循环使用菱形
-          mermaid += `    ${nodeId}{${label}}\n`
+          mermaid += `    ${nodeId}{"${label}"}\n`
           break
         default:
-          mermaid += `    ${nodeId}[${label}]\n`
+          mermaid += `    ${nodeId}["${label}"]\n`
       }
     })
 
@@ -55,7 +55,7 @@ export function useMermaidConverter() {
       const label = edge.label ?? ""
 
       if (label && label.trim() !== "") {
-        mermaid += `    ${source} -->|${label}| ${target}\n`
+        mermaid += `    ${source} -->|"${label}"| ${target}\n`
       } else {
         mermaid += `    ${source} --> ${target}\n`
       }
