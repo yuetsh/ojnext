@@ -12,6 +12,11 @@ const problemSetId = computed(() => Number(route.params.problemSetId))
 const progress = ref<ProblemSetProgress[]>([])
 const loading = ref(false)
 const total = ref(0)
+const statistics = ref<{
+  total: number
+  completed: number
+  avg_progress: number
+} | null>(null)
 
 // 使用分页 composable
 const { query } = usePagination({}, { defaultLimit: 10 })
@@ -27,25 +32,30 @@ async function loadUserProgress() {
 
   progress.value = res.data.results
   total.value = res.data.total
+  // 使用后端返回的统计数据（基于所有数据）
+  if (res.data.statistics) {
+    statistics.value = res.data.statistics
+  }
   loading.value = false
 }
 
 // 监听分页参数变化
 watch([() => query.page, () => query.limit], loadUserProgress)
 
-// 计算统计数据
+// 使用后端返回的统计数据
 const stats = computed(() => {
-  const completed = progress.value.filter((p) => p.is_completed).length
-  const avgProgress =
-    progress.value.length > 0
-      ? progress.value.reduce((sum, p) => sum + p.progress_percentage, 0) /
-        progress.value.length
-      : 0
-
+  if (statistics.value) {
+    return {
+      total: statistics.value.total,
+      completed: statistics.value.completed,
+      avgProgress: Math.round(statistics.value.avg_progress),
+    }
+  }
+  // 如果后端还没有返回统计数据，使用默认值
   return {
     total: total.value,
-    completed,
-    avgProgress: Math.round(avgProgress),
+    completed: 0,
+    avgProgress: 0,
   }
 })
 
