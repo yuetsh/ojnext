@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { h, computed, ref, onMounted, watch } from "vue"
+import { watchDebounced } from "@vueuse/core"
 import { parseTime } from "utils/functions"
 import { ProblemSetProgress } from "utils/types"
 import { getProblemSetUserProgress } from "../../api"
@@ -17,6 +18,7 @@ const statistics = ref<{
   completed: number
   avg_progress: number
 } | null>(null)
+const classFilter = ref<string>("")
 
 // 使用分页 composable
 const { query } = usePagination({}, { defaultLimit: 10 })
@@ -25,10 +27,14 @@ const { query } = usePagination({}, { defaultLimit: 10 })
 async function loadUserProgress() {
   loading.value = true
   const offset = (query.page - 1) * query.limit
-  const res = await getProblemSetUserProgress(problemSetId.value, {
+  const params: { limit?: number; offset?: number; class_name?: string } = {
     limit: query.limit,
     offset,
-  })
+  }
+  if (classFilter.value.trim()) {
+    params.class_name = classFilter.value.trim()
+  }
+  const res = await getProblemSetUserProgress(problemSetId.value, params)
 
   progress.value = res.data.results
   total.value = res.data.total
@@ -41,6 +47,11 @@ async function loadUserProgress() {
 
 // 监听分页参数变化
 watch([() => query.page, () => query.limit], loadUserProgress)
+// 监听班级过滤变化（防抖）
+watchDebounced(classFilter, () => {
+  query.page = 1 // 重置到第一页
+  loadUserProgress()
+}, { debounce: 500 })
 
 // 使用后端返回的统计数据
 const stats = computed(() => {
@@ -140,6 +151,17 @@ const progressColumns = [
 
 <template>
   <div>
+    <!-- 过滤条件 -->
+    <n-space style="margin-bottom: 16px" align="center">
+      <n-text>班级筛选：</n-text>
+      <n-input
+        v-model:value="classFilter"
+        placeholder="输入班级名称"
+        style="width: 200px"
+        clearable
+      />
+    </n-space>
+
     <!-- 统计信息卡片 -->
     <n-grid :cols="3" :x-gap="16" style="margin-bottom: 16px">
       <n-grid-item>

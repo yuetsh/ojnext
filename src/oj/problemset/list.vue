@@ -204,11 +204,7 @@ watch(
             </n-flex>
 
             <!-- 奖章显示 -->
-            <n-flex
-              v-if="problemSet.badges && problemSet.badges.length > 0"
-              align="center"
-              justify="space-between"
-            >
+            <n-flex align="center" justify="space-between">
               <n-text depth="3">
                 创建于
                 {{ parseTime(problemSet.create_time, "YYYY-MM-DD") }}
