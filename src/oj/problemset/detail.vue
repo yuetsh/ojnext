@@ -63,6 +63,10 @@ async function init() {
 }
 
 async function handleProblemClick(problemId: string) {
+  if (!userStore.isAuthed) {
+    message.warning("请先登录！")
+    return
+  }
   if (!isJoined.value) {
     message.warning("请先点击【加入题单】按钮！")
     return

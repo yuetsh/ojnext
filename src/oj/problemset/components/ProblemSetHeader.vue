@@ -2,6 +2,7 @@
 import { Icon } from "@iconify/vue"
 import { ProblemSet, UserBadge as UserBadgeType } from "utils/types"
 import UserBadge from "shared/components/UserBadge.vue"
+import { useUserStore } from "shared/store/user"
 
 interface Props {
   problemSet: ProblemSet
@@ -16,6 +17,8 @@ interface Emits {
 
 const props = defineProps<Props>()
 const emit = defineEmits<Emits>()
+
+const userStore = useUserStore()
 
 function getDifficultyTag(difficulty: string) {
   const difficultyMap: Record<
@@ -60,7 +63,7 @@ function handleJoin() {
         </n-tooltip>
       </n-flex>
 
-      <n-flex align="center">
+      <n-flex align="center" v-if="userStore.isAuthed">
         <!-- 用户徽章显示区域 - 只在已加入且有徽章时显示 -->
         <n-flex v-if="isJoined && userBadges.length > 0" align="center">
           <n-text>已获徽章</n-text>
