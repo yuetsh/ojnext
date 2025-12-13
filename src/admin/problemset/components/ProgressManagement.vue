@@ -31,7 +31,8 @@ const progressColumns = [
     title: "进度",
     key: "progress_percentage",
     width: 100,
-    render: (row: ProblemSetProgress) => `${row.progress_percentage.toFixed(0)}%`,
+    render: (row: ProblemSetProgress) =>
+      `${row.progress_percentage.toFixed(0)}%`,
   },
   {
     title: "是否完成",

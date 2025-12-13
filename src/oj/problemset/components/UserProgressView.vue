@@ -48,10 +48,14 @@ async function loadUserProgress() {
 // 监听分页参数变化
 watch([() => query.page, () => query.limit], loadUserProgress)
 // 监听班级过滤变化（防抖）
-watchDebounced(classFilter, () => {
-  query.page = 1 // 重置到第一页
-  loadUserProgress()
-}, { debounce: 500 })
+watchDebounced(
+  classFilter,
+  () => {
+    query.page = 1 // 重置到第一页
+    loadUserProgress()
+  },
+  { debounce: 500 },
+)
 
 // 使用后端返回的统计数据
 const stats = computed(() => {

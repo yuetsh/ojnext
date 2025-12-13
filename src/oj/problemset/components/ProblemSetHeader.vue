@@ -12,7 +12,7 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'join'): void
+  (e: "join"): void
 }
 
 const props = defineProps<Props>()
@@ -40,12 +40,12 @@ function getProgressPercentage() {
 }
 
 function handleJoin() {
-  emit('join')
+  emit("join")
 }
 </script>
 
 <template>
-  <n-card style="margin-bottom: 24px;">
+  <n-card style="margin-bottom: 24px">
     <n-flex justify="space-between" align="center">
       <n-flex align="center">
         <n-tag type="warning" v-if="problemSet.status === 'archived'">

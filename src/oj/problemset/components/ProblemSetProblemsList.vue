@@ -11,7 +11,7 @@ interface Props {
 }
 
 interface Emits {
-  (e: 'problem-click', problemId: string): void
+  (e: "problem-click", problemId: string): void
 }
 
 const props = defineProps<Props>()
@@ -20,7 +20,7 @@ const emit = defineEmits<Emits>()
 const { isDesktop } = useBreakpoints()
 
 function handleProblemClick(problemId: string) {
-  emit('problem-click', problemId)
+  emit("problem-click", problemId)
 }
 </script>
 

@@ -63,9 +63,7 @@ defineProps<Props>()
         {{ problemSet.problems_count }}
       </n-descriptions-item>
       <n-descriptions-item label="创建时间">
-        {{
-          parseTime(problemSet.create_time, "YYYY-MM-DD HH:mm:ss")
-        }}
+        {{ parseTime(problemSet.create_time, "YYYY-MM-DD HH:mm:ss") }}
       </n-descriptions-item>
     </n-descriptions>
   </n-card>

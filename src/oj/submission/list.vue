@@ -59,6 +59,8 @@ const { query, clearQuery } = usePagination<SubmissionQuery>({
 const submissionID = ref("")
 const problemDisplayID = ref("")
 const [statisticPanel, toggleStatisticPanel] = useToggle(false)
+const [flowchartStatisticPanel, toggleFlowchartStatisticPanel] =
+  useToggle(false)
 const [codePanel, toggleCodePanel] = useToggle(false)
 
 const resultOptions: SelectOption[] = [
@@ -370,6 +372,13 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
           <IconButton
             icon="streamline-emojis:bar-chart"
             tip="数据统计"
+            v-if="query.language === 'Flowchart'"
+            @click="toggleFlowchartStatisticPanel(true)"
+          />
+          <IconButton
+            icon="streamline-emojis:bar-chart"
+            tip="数据统计"
+            v-else
             @click="toggleStatisticPanel(true)"
           />
         </n-form-item>
@@ -416,6 +425,28 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
     <StatisticsPanel :problem="query.problem" :username="query.username" />
   </n-modal>
   <n-modal
+    v-if="query.language === 'Flowchart'"
+    v-model:show="flowchartStatisticPanel"
+    preset="card"
+    :style="{
+      width: isDesktop ? '90vw' : '100vw',
+      height: '90vh',
+      maxWidth: 'none',
+    }"
+    :content-style="{
+      height: 'calc(90vh - 100px)',
+      padding: '0',
+      overflow: 'hidden',
+    }"
+    title="流程图数据的统计"
+  >
+    <iframe
+      src="/flowchart-data.html"
+      frameborder="0"
+      class="flowchart-iframe"
+    ></iframe>
+  </n-modal>
+  <n-modal
     v-model:show="codePanel"
     preset="card"
     :style="{ maxWidth: isDesktop && '70vw', maxHeight: '80vh' }"
@@ -445,5 +476,12 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
 
 .todayCount {
   margin: 0;
+}
+
+.flowchart-iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
 }
 </style>

@@ -74,19 +74,19 @@ async function init() {
     ac.sort()
     problems.value = ac
     const promises: Promise<{ data: any }>[] = []
-    
+
     if (profile.value.submission_number > 0) {
       promises.push(getMetrics(profile.value.user.id))
     }
-    
-    if (route.query.name) {   
+
+    if (route.query.name) {
       promises.push(getUserBadges(<string>route.query.name))
     } else {
       promises.push(getUserBadges())
     }
-    
+
     const results = await Promise.all(promises)
-    
+
     // 处理 metrics 结果
     if (profile.value.submission_number > 0) {
       const metricsRes = results[0]
@@ -101,7 +101,7 @@ async function init() {
         metricsRes.data.latest,
       )
     }
-    
+
     // 处理 badges 结果
     userBadges.value = groupBadgesByIcon(results[1].data)
   } finally {
