@@ -24,7 +24,6 @@ import ButtonWithSearch from "./components/ButtonWithSearch.vue"
 import StatisticsPanel from "shared/components/StatisticsPanel.vue"
 import SubmissionLink from "./components/SubmissionLink.vue"
 import SubmissionDetail from "./detail.vue"
-import IconButton from "shared/components/IconButton.vue"
 import Grade from "./components/Grade.vue"
 import FlowchartLink from "./components/FlowchartLink.vue"
 
@@ -369,18 +368,7 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
         <n-form-item
           v-if="userStore.isSuperAdmin && route.name === 'submissions'"
         >
-          <IconButton
-            icon="streamline-emojis:bar-chart"
-            tip="数据统计"
-            v-if="query.language === 'Flowchart'"
-            @click="toggleFlowchartStatisticPanel(true)"
-          />
-          <IconButton
-            icon="streamline-emojis:bar-chart"
-            tip="数据统计"
-            v-else
-            @click="toggleStatisticPanel(true)"
-          />
+          <n-button @click="toggleStatisticPanel(true)">数据统计</n-button>
         </n-form-item>
       </n-form>
       <n-form
@@ -423,28 +411,6 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
     title="提交记录的统计"
   >
     <StatisticsPanel :problem="query.problem" :username="query.username" />
-  </n-modal>
-  <n-modal
-    v-if="query.language === 'Flowchart'"
-    v-model:show="flowchartStatisticPanel"
-    preset="card"
-    :style="{
-      width: isDesktop ? '90vw' : '100vw',
-      height: '90vh',
-      maxWidth: 'none',
-    }"
-    :content-style="{
-      height: 'calc(90vh - 100px)',
-      padding: '0',
-      overflow: 'hidden',
-    }"
-    title="流程图数据的统计"
-  >
-    <iframe
-      src="/flowchart-data.html"
-      frameborder="0"
-      class="flowchart-iframe"
-    ></iframe>
   </n-modal>
   <n-modal
     v-model:show="codePanel"
