@@ -19,6 +19,7 @@ const statistics = ref<{
   avg_progress: number
 } | null>(null)
 const classFilter = ref<string>("")
+const allProblems = ref<Array<{ id: number; _id: string; title: string }>>([])
 
 // 使用分页 composable
 const { query } = usePagination({}, { defaultLimit: 10 })
@@ -41,6 +42,10 @@ async function loadUserProgress() {
   // 使用后端返回的统计数据（基于所有数据）
   if (res.data.statistics) {
     statistics.value = res.data.statistics
+  }
+  // 保存所有题目信息
+  if (res.data.problems) {
+    allProblems.value = res.data.problems
   }
   loading.value = false
 }
@@ -107,10 +112,34 @@ const progressColumns = [
     width: 100,
   },
   {
-    title: "已完成题目",
+    title: "已/未完成题目",
     key: "completed_problems",
     width: 300,
     render: (row: ProblemSetProgress) => {
+      if (row.progress_percentage === 100) {
+        return ""
+      }
+      if (row.progress_percentage > 50 && row.progress_percentage < 100) {
+        const completedProblemIds = new Set(
+          row.completed_problems.map((p: any) => p.id),
+        )
+        const incompleteProblems = allProblems.value.filter(
+          (p) => !completedProblemIds.has(p.id),
+        )
+        return h("div", { style: "max-height: 120px; overflow-y: auto" }, [
+          h(
+            "div",
+            { style: "display: flex; flex-wrap: wrap; gap: 4px" },
+            incompleteProblems.map((problem) =>
+              h(
+                NTag,
+                { type: "warning", size: "small", style: "margin: 2px" },
+                `${problem._id}: ${problem.title}`,
+              ),
+            ),
+          ),
+        ])
+      }
       return h("div", { style: "max-height: 120px; overflow-y: auto" }, [
         h(
           "div",
