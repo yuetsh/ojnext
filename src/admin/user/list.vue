@@ -45,7 +45,6 @@ const adminOptions = [
 const sortOptions = [
   { label: "默认排序", value: "" },
   { label: "最近登录", value: "-last_login" },
-  { label: "最早登录", value: "last_login" },
 ]
 const [create, toggleCreate] = useToggle(false)
 const password = ref("")
