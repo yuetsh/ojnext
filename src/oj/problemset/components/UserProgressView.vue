@@ -117,7 +117,7 @@ const progressColumns = [
     width: 300,
     render: (row: ProblemSetProgress) => {
       if (row.progress_percentage === 100) {
-        return ""
+        return "全部题目已完成"
       }
       if (row.progress_percentage > 50 && row.progress_percentage < 100) {
         const completedProblemIds = new Set(
