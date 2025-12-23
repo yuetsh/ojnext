@@ -19,7 +19,16 @@ const statistics = ref<{
   avg_progress: number
 } | null>(null)
 const classFilter = ref<string>("")
+const completionFilter = ref<"" | "completed" | "in_progress" | "not_started">("")
 const allProblems = ref<Array<{ id: number; _id: string; title: string }>>([])
+
+// 完成度筛选选项
+const completionOptions = [
+  { label: "全部", value: "" },
+  { label: "未开始", value: "not_started"},
+  { label: "已完成", value: "completed" },
+  { label: "进行中", value: "in_progress" },
+]
 
 // 使用分页 composable
 const { query } = usePagination({}, { defaultLimit: 10 })
@@ -28,12 +37,20 @@ const { query } = usePagination({}, { defaultLimit: 10 })
 async function loadUserProgress() {
   loading.value = true
   const offset = (query.page - 1) * query.limit
-  const params: { limit?: number; offset?: number; class_name?: string } = {
+  const params: {
+    limit?: number
+    offset?: number
+    class_name?: string
+    completion_status?: "" | "completed" | "in_progress" | "not_started"
+  } = {
     limit: query.limit,
     offset,
   }
   if (classFilter.value.trim()) {
     params.class_name = classFilter.value.trim()
+  }
+  if (completionFilter.value) {
+    params.completion_status = completionFilter.value
   }
   const res = await getProblemSetUserProgress(problemSetId.value, params)
 
@@ -61,6 +78,11 @@ watchDebounced(
   },
   { debounce: 500 },
 )
+// 监听完成度筛选变化
+watch(completionFilter, () => {
+  query.page = 1 // 重置到第一页
+  loadUserProgress()
+})
 
 // 使用后端返回的统计数据
 const stats = computed(() => {
@@ -185,15 +207,26 @@ const progressColumns = [
 <template>
   <div>
     <!-- 过滤条件 -->
-    <n-space style="margin-bottom: 16px" align="center">
-      <n-text>班级筛选：</n-text>
-      <n-input
-        v-model:value="classFilter"
-        placeholder="输入班级名称"
-        style="width: 200px"
-        clearable
-      />
-    </n-space>
+    <n-form label-placement="left" inline>
+      <n-form-item label="班级">
+        <n-input
+          v-model:value="classFilter"
+          placeholder="输入班级名称"
+          style="width: 200px"
+          clearable
+        />
+      </n-form-item>
+
+      <n-form-item label="完成度：">
+        <n-select
+          v-model:value="completionFilter"
+          :options="completionOptions"
+          placeholder="完成度"
+          style="width: 160px"
+          clearable
+        />
+      </n-form-item>
+    </n-form>
 
     <!-- 统计信息卡片 -->
     <n-grid :cols="3" :x-gap="16" style="margin-bottom: 16px">

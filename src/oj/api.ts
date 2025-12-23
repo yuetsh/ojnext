@@ -363,7 +363,12 @@ export function getProblemSetBadges(problemSetId: number) {
 // 获取题单用户进度列表
 export function getProblemSetUserProgress(
   problemSetId: number,
-  params?: { limit?: number; offset?: number; class_name?: string },
+  params?: {
+    limit?: number
+    offset?: number
+    class_name?: string
+    completion_status?: "" | "completed" | "in_progress" | "not_started"
+  },
 ) {
   return http.get(`problemset/${problemSetId}/users_progress`, { params })
 }
