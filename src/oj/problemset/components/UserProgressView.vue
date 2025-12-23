@@ -26,8 +26,8 @@ const allProblems = ref<Array<{ id: number; _id: string; title: string }>>([])
 const completionOptions = [
   { label: "全部", value: "" },
   { label: "未开始", value: "not_started"},
-  { label: "已完成", value: "completed" },
   { label: "进行中", value: "in_progress" },
+  { label: "已完成", value: "completed" },
 ]
 
 // 使用分页 composable
