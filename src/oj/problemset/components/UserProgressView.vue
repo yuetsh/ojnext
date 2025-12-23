@@ -4,7 +4,7 @@ import { watchDebounced } from "@vueuse/core"
 import { parseTime } from "utils/functions"
 import { ProblemSetProgress } from "utils/types"
 import { getProblemSetUserProgress } from "../../api"
-import { NTag } from "naive-ui"
+import { NFlex, NTag } from "naive-ui"
 import { usePagination } from "shared/composables/pagination"
 import Pagination from "shared/components/Pagination.vue"
 
@@ -150,33 +150,33 @@ const progressColumns = [
         )
         return h("div", { style: "max-height: 120px; overflow-y: auto" }, [
           h(
-            "div",
-            { style: "display: flex; flex-wrap: wrap; gap: 4px" },
-            incompleteProblems.map((problem) =>
-              h(
-                NTag,
-                { type: "warning", size: "small", style: "margin: 2px" },
-                `${problem._id}: ${problem.title}`,
+            NFlex,
+            {},
+            () => incompleteProblems.map((problem) =>
+                h(
+                  NTag,
+                  { type: "warning", size: "small", style: "margin: 2px" },
+                  () => `${problem._id}: ${problem.title}`,
+                ),
               ),
-            ),
           ),
         ])
       }
       return h("div", { style: "max-height: 120px; overflow-y: auto" }, [
         h(
-          "div",
-          { style: "display: flex; flex-wrap: wrap; gap: 4px" },
-          row.completed_problems.map((problem: any) =>
-            h(
-              NTag,
-              {
-                type: "success",
-                size: "small",
-                style: "margin: 2px",
-              },
-              `${problem._id}: ${problem.title}`,
+          NFlex,
+          {},
+          () => row.completed_problems.map((problem: any) =>
+              h(
+                NTag,
+                {
+                  type: "success",
+                  size: "small",
+                  style: "margin: 2px",
+                },
+                () => `${problem._id}: ${problem.title}`,
+              ),
             ),
-          ),
         ),
       ])
     },
@@ -195,9 +195,9 @@ const progressColumns = [
     width: 100,
     render: (row: ProblemSetProgress) => {
       if (row.is_completed) {
-        return h(NTag, { type: "success" }, "已完成")
+        return h(NTag, { type: "success" }, () => "已完成")
       } else {
-        return h(NTag, { type: "warning" }, "进行中")
+        return h(NTag, { type: "warning" }, () => "进行中")
       }
     },
   },
