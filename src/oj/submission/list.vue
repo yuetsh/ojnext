@@ -368,7 +368,9 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
         <n-form-item
           v-if="userStore.isSuperAdmin && route.name === 'submissions'"
         >
-          <n-button @click="toggleStatisticPanel(true)">数据统计</n-button>
+          <n-button text type="primary" @click="toggleStatisticPanel(true)">
+            数据统计
+          </n-button>
         </n-form-item>
       </n-form>
       <n-form
@@ -378,9 +380,11 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
         v-if="todayCount > 0"
       >
         <n-form-item>
-          <component :is="isDesktop ? NH2 : NText" class="todayCount">
-            <n-gradient-text>今日提交数：{{ todayCount }}</n-gradient-text>
-          </component>
+          <n-button text>
+            <component :is="isDesktop ? NH2 : NText" class="today-count">
+              <n-gradient-text>今日提交数：{{ todayCount }}</n-gradient-text>
+            </component>
+          </n-button>
         </n-form-item>
       </n-form>
     </n-space>
@@ -440,7 +444,7 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
   overflow: auto;
 }
 
-.todayCount {
+.today-count {
   margin: 0;
 }
 
