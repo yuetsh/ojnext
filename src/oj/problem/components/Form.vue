@@ -251,7 +251,7 @@ onMounted(() => {
     v-model:show="statisticPanel"
     preset="card"
     title="提交记录的统计"
-    :style="{ maxWidth: isDesktop && '70vw', maxHeight: '80vh' }"
+    :style="{ maxWidth: isDesktop && '800px', maxHeight: '80vh' }"
     :content-style="{ overflow: 'auto' }"
   >
     <StatisticsPanel :problem="problem!._id" username="" />

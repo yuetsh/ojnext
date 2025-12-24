@@ -406,7 +406,7 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
     v-if="userStore.isSuperAdmin"
     v-model:show="statisticPanel"
     preset="card"
-    :style="{ maxWidth: isDesktop && '70vw', maxHeight: '80vh' }"
+    :style="{ maxWidth: isDesktop && '800px', maxHeight: '80vh' }"
     :content-style="{ overflow: 'auto' }"
     title="提交记录的统计"
   >

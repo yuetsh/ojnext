@@ -43,20 +43,18 @@
     <n-gradient-text font-size="24" v-if="person.count > 0" type="success">
       班级完成度：{{ person.rate }}
     </n-gradient-text>
-    <n-flex v-if="listUnaccepted.length > 0">
-      <n-button type="warning" @click="toggleUnaccepted(!unaccepted)">
-        {{ unaccepted ? "隐藏没有完成的" : "显示没有完成的" }}
-      </n-button>
-    </n-flex>
   </n-flex>
-  <n-gradient-text
-    font-size="24"
-    style="margin-top: 20px"
-    v-if="count.total === 0"
-    type="primary"
-  >
-    暂无数据统计
-  </n-gradient-text>
+  <n-flex style="margin: 20px 0" v-if="count.total > 0">
+    <n-button type="warning" @click="toggleUnaccepted(!unaccepted)">
+      {{ unaccepted ? "隐藏没有完成的" : "显示没有完成的" }}
+    </n-button>
+  </n-flex>
+  <n-flex style="margin-top: 20px">
+    <n-gradient-text font-size="24" v-if="count.total === 0" type="primary">
+      暂无数据统计
+    </n-gradient-text>
+  </n-flex>
+
   <n-flex style="margin-bottom: 20px" v-if="unaccepted" size="large">
     <span style="font-size: 24px">
       这 {{ listUnaccepted.length }} 位没有完成：
@@ -65,12 +63,44 @@
       {{ name }}
     </span>
   </n-flex>
-  <n-data-table v-if="list.length" striped :columns="columns" :data="list" />
+
+  <n-tabs animated v-if="count.total > 0">
+    <n-tab-pane name="charts" tab="数据图表">
+      <n-grid :cols="2" :x-gap="20" :y-gap="20" style="margin-top: 20px">
+        <n-gi>
+          <n-card title="提交正确率">
+            <Doughnut :data="pieChartData" :options="pieChartOptions" />
+          </n-card>
+        </n-gi>
+        <n-gi v-if="person.count > 0">
+          <n-card title="班级完成度">
+            <Doughnut
+              :data="completionChartData"
+              :options="completionChartOptions"
+            />
+          </n-card>
+        </n-gi>
+      </n-grid>
+    </n-tab-pane>
+    <n-tab-pane name="submissions" tab="提交记录">
+      <n-data-table
+        v-if="list.length"
+        striped
+        :columns="columns"
+        :data="list"
+      />
+    </n-tab-pane>
+  </n-tabs>
 </template>
 <script setup lang="ts">
 import { formatISO, sub, type Duration } from "date-fns"
 import { getSubmissionStatistics } from "oj/api"
 import { DURATION_OPTIONS } from "utils/constants"
+import { Doughnut } from "vue-chartjs"
+import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend } from "chart.js"
+
+// 注册 Chart.js 组件
+ChartJS.register(ArcElement, Title, Tooltip, Legend)
 
 interface Props {
   problem: string
@@ -110,9 +140,99 @@ const person = reactive({
 const route = useRoute()
 const router = useRouter()
 
-const list = ref([])
-const listUnaccepted = ref([])
+interface UserStatistic {
+  username: string
+  submission_count: number
+  accepted_count: number
+  correct_rate: string
+}
+
+const list = ref<UserStatistic[]>([])
+const listUnaccepted = ref<string[]>([])
 const [unaccepted, toggleUnaccepted] = useToggle()
+
+// 饼图数据 - 提交正确率分布
+const pieChartData = computed(() => {
+  const wrongCount = count.total - count.accepted
+  return {
+    labels: ["正确提交", "错误提交"],
+    datasets: [
+      {
+        label: "提交数",
+        data: [count.accepted, wrongCount],
+        backgroundColor: ["rgba(75, 192, 192, 0.6)", "rgba(255, 99, 132, 0.6)"],
+        borderColor: ["rgba(75, 192, 192, 1)", "rgba(255, 99, 132, 1)"],
+        borderWidth: 2,
+      },
+    ],
+  }
+})
+
+const pieChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: "bottom" as const,
+    },
+    tooltip: {
+      callbacks: {
+        label: function (context: any) {
+          const label = context.label || ""
+          const value = context.parsed || 0
+          const total = context.dataset.data.reduce(
+            (a: number, b: number) => a + b,
+            0,
+          )
+          const percentage = ((value / total) * 100).toFixed(1)
+          return `${label}: ${value} (${percentage}%)`
+        },
+      },
+    },
+  },
+}
+
+// 环形图数据 - 班级完成度
+const completionChartData = computed(() => {
+  const completedCount = list.value.length
+  const uncompletedCount = person.count - completedCount
+  return {
+    labels: ["已完成", "未完成"],
+    datasets: [
+      {
+        label: "人数",
+        data: [completedCount, uncompletedCount],
+        backgroundColor: ["rgba(106, 176, 76, 0.6)", "rgba(255, 159, 64, 0.6)"],
+        borderColor: ["rgba(106, 176, 76, 1)", "rgba(255, 159, 64, 1)"],
+        borderWidth: 2,
+      },
+    ],
+  }
+})
+
+const completionChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: "bottom" as const,
+    },
+    tooltip: {
+      callbacks: {
+        label: function (context: any) {
+          const label = context.label || ""
+          const value = context.parsed || 0
+          const total = context.dataset.data.reduce(
+            (a: number, b: number) => a + b,
+            0,
+          )
+          const percentage = ((value / total) * 100).toFixed(1)
+          return `${label}: ${value} (${percentage}%)`
+        },
+      },
+    },
+  },
+}
 
 const subOptions = computed<Duration>(() => {
   let dur = options.find((it) => it.value === query.duration) ?? options[0]
@@ -151,3 +271,4 @@ async function handleStatistics() {
   toggleUnaccepted(false)
 }
 </script>
+<style scoped></style>
