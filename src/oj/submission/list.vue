@@ -432,7 +432,7 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
 }
 
 .input {
-  width: 180px;
+  width: 120px;
 }
 
 .code {
