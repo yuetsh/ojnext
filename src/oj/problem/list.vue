@@ -244,9 +244,9 @@ function rowProps(row: ProblemFiltered) {
           <n-form-item>
             <n-input
               clearable
-              style="width: 200px"
+              style="width: 160px"
               v-model:value="query.keyword"
-              placeholder="编号或者标题"
+              placeholder="题号或标题"
             />
           </n-form-item>
         </n-form>
