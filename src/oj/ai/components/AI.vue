@@ -6,9 +6,21 @@
       </div>
     </template>
     <n-spin :show="aiStore.loading.ai" :delay="50">
-      <div class="container">
-        <MdPreview :model-value="aiStore.mdContent" />
-      </div>
+      <n-flex align="center" justify="center" class="container">
+        <n-button
+          v-if="!aiStore.mdContent && !aiStore.loading.ai"
+          type="primary"
+          size="large"
+          :loading="aiStore.loading.fetching"
+          @click="handleAnalyze"
+        >
+          <template #icon>
+            <Icon icon="mingcute:ai-line" />
+          </template>
+          开始分析
+        </n-button>
+        <MdPreview v-else :model-value="aiStore.mdContent" />
+      </n-flex>
     </n-spin>
   </n-card>
 </template>
@@ -16,17 +28,16 @@
 import { useAIStore } from "oj/store/ai"
 import { MdPreview } from "md-editor-v3"
 import "md-editor-v3/lib/preview.css"
+import { Icon } from "@iconify/vue"
 
 const aiStore = useAIStore()
-watch(
-  () => aiStore.loading.fetching,
-  (isLoading) => {
-    if (!isLoading) {
-      aiStore.fetchAIAnalysis()
-    }
-  },
-  { immediate: true },
-)
+
+async function handleAnalyze() {
+  if (aiStore.loading.fetching || aiStore.loading.ai) {
+    return
+  }
+  await aiStore.fetchAIAnalysis()
+}
 </script>
 <style scoped>
 .cool-title {
@@ -63,6 +74,7 @@ watch(
 .container {
   min-height: 200px;
 }
+
 :deep(.md-editor-preview h1) {
   margin-top: 0;
 }

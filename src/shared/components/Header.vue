@@ -173,7 +173,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "智能分析",
     key: "ai-analysis",
-    icon: renderIcon("meteor-icons:openai"),
+    icon: renderIcon("vscode-icons:file-type-gemini"),
     props: {
       onClick: () => router.push("/ai-analysis"),
     },
