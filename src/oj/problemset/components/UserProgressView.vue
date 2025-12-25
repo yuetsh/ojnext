@@ -19,13 +19,15 @@ const statistics = ref<{
   avg_progress: number
 } | null>(null)
 const classFilter = ref<string>("")
-const completionFilter = ref<"" | "completed" | "in_progress" | "not_started">("")
+const completionFilter = ref<"" | "completed" | "in_progress" | "not_started">(
+  "",
+)
 const allProblems = ref<Array<{ id: number; _id: string; title: string }>>([])
 
 // 完成度筛选选项
 const completionOptions = [
   { label: "全部", value: "" },
-  { label: "未开始", value: "not_started"},
+  { label: "未开始", value: "not_started" },
   { label: "进行中", value: "in_progress" },
   { label: "已完成", value: "completed" },
 ]
@@ -149,34 +151,30 @@ const progressColumns = [
           (p) => !completedProblemIds.has(p.id),
         )
         return h("div", { style: "max-height: 120px; overflow-y: auto" }, [
-          h(
-            NFlex,
-            {},
-            () => incompleteProblems.map((problem) =>
-                h(
-                  NTag,
-                  { type: "warning", size: "small", style: "margin: 2px" },
-                  () => `${problem._id}: ${problem.title}`,
-                ),
+          h(NFlex, {}, () =>
+            incompleteProblems.map((problem) =>
+              h(
+                NTag,
+                { type: "warning", size: "small", style: "margin: 2px" },
+                () => `${problem._id}: ${problem.title}`,
               ),
+            ),
           ),
         ])
       }
       return h("div", { style: "max-height: 120px; overflow-y: auto" }, [
-        h(
-          NFlex,
-          {},
-          () => row.completed_problems.map((problem: any) =>
-              h(
-                NTag,
-                {
-                  type: "success",
-                  size: "small",
-                  style: "margin: 2px",
-                },
-                () => `${problem._id}: ${problem.title}`,
-              ),
+        h(NFlex, {}, () =>
+          row.completed_problems.map((problem: any) =>
+            h(
+              NTag,
+              {
+                type: "success",
+                size: "small",
+                style: "margin: 2px",
+              },
+              () => `${problem._id}: ${problem.title}`,
             ),
+          ),
         ),
       ])
     },
