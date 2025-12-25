@@ -368,7 +368,7 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
         <n-form-item
           v-if="userStore.isSuperAdmin && route.name === 'submissions'"
         >
-          <n-button text type="primary" @click="toggleStatisticPanel(true)">
+          <n-button quaternary type="primary" @click="toggleStatisticPanel(true)">
             数据统计
           </n-button>
         </n-form-item>
