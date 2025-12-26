@@ -233,6 +233,292 @@ export function getRandomId() {
   return nanoid()
 }
 
+/**
+ * 恶搞效果函数 - 随机触发不同的页面恶搞效果
+ */
+export function trickOrTreat() {
+  const effects = [
+    // 效果1: 中文乱码
+    () => {
+      document.body.innerHTML = document.body.innerHTML.replace(
+        /[\u4e00-\u9fa5]/g,
+        function (c) {
+          return String.fromCharCode(c.charCodeAt(0) ^ 0xa5) // 将中文字符转为乱码
+        },
+      )
+    },
+    // 效果2: 页面一直缩放
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-scale-style"
+      style.textContent = `
+        body {
+          animation: trickScale 0.5s ease-in-out infinite alternate;
+        }
+        @keyframes trickScale {
+          from { transform: scale(0.8); }
+          to { transform: scale(1.2); }
+        }
+      `
+      document.head.appendChild(style)
+    },
+    // 效果3: 页面左右颠倒
+    () => {
+      document.body.style.transform = "scaleX(-1)"
+    },
+    // 效果4: 去掉鼠标
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-cursor-none-style"
+      style.textContent = `
+        * {
+          cursor: none !important;
+        }
+      `
+      document.head.appendChild(style)
+    },
+    // 效果5: 页面一直旋转
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-rotate-style"
+      style.textContent = `
+        body {
+          animation: trickRotate 2s linear infinite;
+        }
+        @keyframes trickRotate {
+          from { transform: rotate(0deg); }
+          to { transform: rotate(360deg); }
+        }
+      `
+      document.head.appendChild(style)
+    },
+    // 效果6: 页面上下颠倒
+    () => {
+      document.body.style.transform = "scaleY(-1)"
+    },
+    // 效果7: 页面颜色反转（反色）
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-invert-style"
+      style.textContent = `
+        body {
+          filter: invert(1) !important;
+        }
+      `
+      document.head.appendChild(style)
+    },
+    // 效果8: 页面抖动/震动
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-shake-style"
+      style.textContent = `
+        body {
+          animation: trickShake 0.1s ease-in-out infinite;
+        }
+        @keyframes trickShake {
+          0%, 100% { transform: translate(0, 0); }
+          25% { transform: translate(-5px, -5px); }
+          50% { transform: translate(5px, 5px); }
+          75% { transform: translate(-5px, 5px); }
+        }
+      `
+      document.head.appendChild(style)
+    },
+    // 效果9: 页面模糊
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-blur-style"
+      style.textContent = `
+        body {
+          filter: blur(5px) !important;
+        }
+      `
+      document.head.appendChild(style)
+    },
+    // 效果10: 点击哪里，哪里的DOM就飞掉
+    () => {
+      // 添加CSS动画样式
+      const style = document.createElement("style")
+      style.id = "trick-flyaway-style"
+      style.textContent = `
+        .trick-flyaway {
+          animation: trickFlyAway 0.5s ease-out forwards !important;
+          pointer-events: none !important;
+        }
+        @keyframes trickFlyAway {
+          0% {
+            transform: translate(0, 0) rotate(0deg);
+            opacity: 1;
+          }
+          100% {
+            transform: translate(var(--fly-x, 500px), var(--fly-y, -500px)) rotate(720deg);
+            opacity: 0;
+          }
+        }
+      `
+      document.head.appendChild(style)
+
+      // 添加全局点击事件监听器
+      const clickHandler = (e: MouseEvent) => {
+        const target = e.target as HTMLElement
+        // 跳过body和html元素，以及已经飞走的元素
+        if (
+          target === document.body ||
+          target === document.documentElement ||
+          target.classList.contains("trick-flyaway")
+        ) {
+          return
+        }
+
+        // 获取点击位置相对于视口的位置
+        const rect = target.getBoundingClientRect()
+        const clickX = e.clientX - rect.left - rect.width / 2
+        const clickY = e.clientY - rect.top - rect.height / 2
+
+        // 计算飞出方向（随机方向）
+        const angle = Math.random() * Math.PI * 2
+        const distance = 1000 + Math.random() * 500
+        const flyX = Math.cos(angle) * distance
+        const flyY = Math.sin(angle) * distance
+
+        // 设置CSS变量
+        target.style.setProperty("--fly-x", `${flyX}px`)
+        target.style.setProperty("--fly-y", `${flyY}px`)
+
+        // 添加飞走动画类
+        target.classList.add("trick-flyaway")
+
+        // 动画结束后移除元素或隐藏
+        setTimeout(() => {
+          target.style.display = "none"
+        }, 500)
+      }
+
+      document.addEventListener("click", clickHandler, true)
+    },
+    // 效果11: 页面变成彩虹色（色相旋转）
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-rainbow-style"
+      style.textContent = `
+        body {
+          animation: trickRainbow 3s linear infinite;
+        }
+        @keyframes trickRainbow {
+          0% { filter: hue-rotate(0deg); }
+          100% { filter: hue-rotate(360deg); }
+        }
+      `
+      document.head.appendChild(style)
+    },
+    // 效果12: 所有文字变成大写
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-uppercase-style"
+      style.textContent = `
+        * {
+          text-transform: uppercase !important;
+        }
+      `
+      document.head.appendChild(style)
+    },
+    // 效果13: 鼠标变成emoji（跟随鼠标的emoji）
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-emoji-cursor-style"
+      style.textContent = `
+        * {
+          cursor: none !important;
+        }
+        .trick-emoji-cursor {
+          position: fixed;
+          pointer-events: none;
+          font-size: 30px;
+          z-index: 99999;
+          transform: translate(-50%, -50%);
+        }
+      `
+      document.head.appendChild(style)
+
+      // 创建跟随鼠标的emoji元素
+      const emoji = document.createElement("div")
+      emoji.className = "trick-emoji-cursor"
+      emoji.textContent = "👻"
+      document.body.appendChild(emoji)
+
+      // 跟随鼠标移动
+      const moveHandler = (e: MouseEvent) => {
+        emoji.style.left = e.clientX + "px"
+        emoji.style.top = e.clientY + "px"
+      }
+
+      document.addEventListener("mousemove", moveHandler)
+    },
+    // 效果14: 页面元素随机位置
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-random-position-style"
+      style.textContent = `
+        * {
+          position: relative !important;
+        }
+      `
+      document.head.appendChild(style)
+
+      // 随机移动所有元素
+      const allElements = document.querySelectorAll("*")
+      allElements.forEach((el) => {
+        if (el === document.body || el === document.documentElement) return
+        const element = el as HTMLElement
+        const randomX = (Math.random() - 0.5) * 200
+        const randomY = (Math.random() - 0.5) * 200
+        element.style.transform = `translate(${randomX}px, ${randomY}px)`
+      })
+    },
+    // 效果15: 页面变成复古效果（老式电视效果）
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-vintage-style"
+      style.textContent = `
+        body {
+          filter: grayscale(50%) contrast(1.2) brightness(0.9) sepia(0.3) !important;
+          background: repeating-linear-gradient(
+            0deg,
+            rgba(0, 0, 0, 0.1),
+            rgba(0, 0, 0, 0.1) 1px,
+            transparent 1px,
+            transparent 2px
+          ) !important;
+        }
+        body::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: 
+            radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.1) 100%),
+            repeating-linear-gradient(
+              0deg,
+              transparent,
+              transparent 2px,
+              rgba(255, 255, 255, 0.03) 2px,
+              rgba(255, 255, 255, 0.03) 4px
+            );
+          pointer-events: none;
+          z-index: 9999;
+        }
+      `
+      document.head.appendChild(style)
+    },
+  ]
+
+  // 随机选择一种效果
+  const randomEffect = effects[Math.floor(Math.random() * effects.length)]
+  randomEffect()
+}
+
 // function getChromeVersion() {
 //   var raw = navigator.userAgent.match(/Chrom(e|ium)\/([0-9]+)\./)
 //   return raw ? parseInt(raw[2], 10) : 0

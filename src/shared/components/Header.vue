@@ -7,6 +7,7 @@ import { useScreenModeStore } from "shared/store/screenMode"
 import { logout } from "../api"
 import { useConfigStore } from "../store/config"
 import { useUserStore } from "../store/user"
+import { trickOrTreat } from "utils/functions"
 
 const userStore = useUserStore()
 const configStore = useConfigStore()
@@ -124,6 +125,11 @@ const menus = computed<MenuOption[]>(() => [
     icon: renderIcon("streamline-emojis:palm-tree"),
   },
   {
+    label: () => "别点",
+    key: "dont-click",
+    icon: renderIcon("streamline-emojis:ghost"),
+  },
+  {
     label: () =>
       h(
         RouterLink,
@@ -132,7 +138,7 @@ const menus = computed<MenuOption[]>(() => [
       ),
     show: userStore.isAdminRole,
     key: "admin",
-    icon: renderIcon("streamline-emojis:ghost"),
+    icon: renderIcon("streamline-emojis:panda-face"),
   },
 ])
 
@@ -190,6 +196,12 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
 function goHome() {
   router.push("/")
 }
+
+function handleMenuSelect(key: string) {
+  if (key === "dont-click") {
+    trickOrTreat()
+  }
+}
 </script>
 
 <template>
@@ -206,11 +218,17 @@ function goHome() {
           mode="horizontal"
           :options="menus"
           :value="active"
+          @update:value="handleMenuSelect"
         />
       </div>
     </n-flex>
     <n-flex align="center">
-      <n-dropdown v-if="isMobile" :options="menus" size="large">
+      <n-dropdown
+        v-if="isMobile"
+        :options="menus"
+        size="large"
+        @select="handleMenuSelect"
+      >
         <n-button>
           <Icon icon="twemoji:artist-palette" height="20"></Icon>
           <span style="padding-left: 8px">菜单</span>
