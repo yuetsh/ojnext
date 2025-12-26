@@ -396,39 +396,7 @@ export function trickOrTreat() {
 
       document.addEventListener("click", clickHandler, true)
     },
-    // 效果11: 鼠标变成emoji（跟随鼠标的emoji）
-    () => {
-      const style = document.createElement("style")
-      style.id = "trick-emoji-cursor-style"
-      style.textContent = `
-        * {
-          cursor: none !important;
-        }
-        .trick-emoji-cursor {
-          position: fixed;
-          pointer-events: none;
-          font-size: 30px;
-          z-index: 99999;
-          transform: translate(-50%, -50%);
-        }
-      `
-      document.head.appendChild(style)
-
-      // 创建跟随鼠标的emoji元素
-      const emoji = document.createElement("div")
-      emoji.className = "trick-emoji-cursor"
-      emoji.textContent = "👻"
-      document.body.appendChild(emoji)
-
-      // 跟随鼠标移动
-      const moveHandler = (e: MouseEvent) => {
-        emoji.style.left = e.clientX + "px"
-        emoji.style.top = e.clientY + "px"
-      }
-
-      document.addEventListener("mousemove", moveHandler)
-    },
-    // 效果12: 页面元素随机位置
+    // 效果11: 页面元素随机位置
     () => {
       const style = document.createElement("style")
       style.id = "trick-random-position-style"
@@ -449,7 +417,7 @@ export function trickOrTreat() {
         element.style.transform = `translate(${randomX}px, ${randomY}px)`
       })
     },
-    // 效果13: 页面变成3D倾斜效果
+    // 效果12: 页面变成3D倾斜效果
     () => {
       const style = document.createElement("style")
       style.id = "trick-3d-tilt-style"
@@ -479,7 +447,7 @@ export function trickOrTreat() {
       `
       document.head.appendChild(style)
     },
-    // 效果14: 页面所有链接失效
+    // 效果13: 页面所有链接失效
     () => {
       const clickHandler = (e: MouseEvent) => {
         const target = e.target as HTMLElement
@@ -497,7 +465,7 @@ export function trickOrTreat() {
       }
       document.addEventListener("click", clickHandler, true)
     },
-    // 效果15: 页面变成波浪效果
+    // 效果14: 页面变成波浪效果
     () => {
       const style = document.createElement("style")
       style.id = "trick-wave-style"
@@ -518,6 +486,69 @@ export function trickOrTreat() {
           75% {
             transform: translateY(10px) scaleY(0.98);
           }
+        }
+      `
+      document.head.appendChild(style)
+    },
+    // 效果15: 页面变成故障效果（Glitch）
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-glitch-style"
+      style.textContent = `
+        body {
+          animation: trickGlitch 0.3s infinite;
+        }
+        @keyframes trickGlitch {
+          0% {
+            transform: translate(0);
+            filter: hue-rotate(0deg);
+          }
+          20% {
+            transform: translate(-2px, 2px);
+            filter: hue-rotate(90deg);
+          }
+          40% {
+            transform: translate(-2px, -2px);
+            filter: hue-rotate(180deg);
+          }
+          60% {
+            transform: translate(2px, 2px);
+            filter: hue-rotate(270deg);
+          }
+          80% {
+            transform: translate(2px, -2px);
+            filter: hue-rotate(360deg);
+          }
+          100% {
+            transform: translate(0);
+            filter: hue-rotate(0deg);
+          }
+        }
+        body::before {
+          content: '';
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background: 
+            repeating-linear-gradient(
+              0deg,
+              transparent,
+              transparent 2px,
+              rgba(255, 0, 0, 0.03) 2px,
+              rgba(255, 0, 0, 0.03) 4px
+            ),
+            repeating-linear-gradient(
+              90deg,
+              transparent,
+              transparent 2px,
+              rgba(0, 255, 255, 0.03) 2px,
+              rgba(0, 255, 255, 0.03) 4px
+            );
+          pointer-events: none;
+          z-index: 9999;
+          mix-blend-mode: difference;
         }
       `
       document.head.appendChild(style)
