@@ -20,10 +20,7 @@ const { isDesktop } = useBreakpoints()
 
 const limit = ref(props.limit)
 const page = ref(props.page)
-const sizes = computed(() => {
-  if (route.name === "contest rank") return [10, 30, 50]
-  return [10, 20, 30]
-})
+const sizes = [10, 30, 50]
 
 watch(limit, () => emit("update:limit", limit))
 watch(page, () => emit("update:page", page))

@@ -33,7 +33,7 @@ const completionOptions = [
 ]
 
 // 使用分页 composable
-const { query } = usePagination({}, { defaultLimit: 10 })
+const { query } = usePagination({}, { defaultLimit: 50 })
 
 // 加载用户进度数据
 async function loadUserProgress() {

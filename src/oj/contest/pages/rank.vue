@@ -5,6 +5,7 @@ import { getContestProblems, getContestRank } from "oj/api"
 import { secondsToDuration } from "utils/functions"
 import { useContestStore } from "oj/store/contest"
 import Pagination from "shared/components/Pagination.vue"
+import { usePagination } from "shared/composables/pagination"
 import { ContestStatus } from "utils/constants"
 import { renderTableTitle } from "utils/renders"
 import { ContestRank, ProblemFiltered } from "utils/types"
@@ -39,10 +40,8 @@ const { resume, pause } = useIntervalFn(
   },
 )
 
-const query = reactive({
-  limit: 50,
-  page: 1,
-})
+// 使用分页 composable
+const { query } = usePagination({}, { defaultLimit: 50 })
 
 const columns = ref<DataTableColumn<ContestRank>[]>([
   {
@@ -191,14 +190,8 @@ async function addColumns() {
   }
 }
 
-watch(() => query.page, listRanks)
-watch(
-  () => query.limit,
-  () => {
-    query.page = 1
-    listRanks()
-  },
-)
+// 监听分页参数变化
+watch([() => query.page, () => query.limit], listRanks)
 watch(autoRefresh, (checked) => (checked ? resume() : pause()))
 
 onMounted(() => {
@@ -232,8 +225,10 @@ onMounted(() => {
     </n-form>
     <Pagination
       :total="total"
-      v-model:page="query.page"
-      v-model:limit="query.limit"
+      :limit="query.limit"
+      :page="query.page"
+      @update:limit="(limit: number) => (query.limit = limit)"
+      @update:page="(page: number) => (query.page = page)"
     />
   </n-space>
 </template>
