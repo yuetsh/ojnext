@@ -396,33 +396,7 @@ export function trickOrTreat() {
 
       document.addEventListener("click", clickHandler, true)
     },
-    // 效果11: 页面变成彩虹色（色相旋转）
-    () => {
-      const style = document.createElement("style")
-      style.id = "trick-rainbow-style"
-      style.textContent = `
-        body {
-          animation: trickRainbow 3s linear infinite;
-        }
-        @keyframes trickRainbow {
-          0% { filter: hue-rotate(0deg); }
-          100% { filter: hue-rotate(360deg); }
-        }
-      `
-      document.head.appendChild(style)
-    },
-    // 效果12: 所有文字变成大写
-    () => {
-      const style = document.createElement("style")
-      style.id = "trick-uppercase-style"
-      style.textContent = `
-        * {
-          text-transform: uppercase !important;
-        }
-      `
-      document.head.appendChild(style)
-    },
-    // 效果13: 鼠标变成emoji（跟随鼠标的emoji）
+    // 效果11: 鼠标变成emoji（跟随鼠标的emoji）
     () => {
       const style = document.createElement("style")
       style.id = "trick-emoji-cursor-style"
@@ -454,7 +428,7 @@ export function trickOrTreat() {
 
       document.addEventListener("mousemove", moveHandler)
     },
-    // 效果14: 页面元素随机位置
+    // 效果12: 页面元素随机位置
     () => {
       const style = document.createElement("style")
       style.id = "trick-random-position-style"
@@ -475,39 +449,75 @@ export function trickOrTreat() {
         element.style.transform = `translate(${randomX}px, ${randomY}px)`
       })
     },
-    // 效果15: 页面变成复古效果（老式电视效果）
+    // 效果13: 页面变成3D倾斜效果
     () => {
       const style = document.createElement("style")
-      style.id = "trick-vintage-style"
+      style.id = "trick-3d-tilt-style"
       style.textContent = `
         body {
-          filter: grayscale(50%) contrast(1.2) brightness(0.9) sepia(0.3) !important;
-          background: repeating-linear-gradient(
-            0deg,
-            rgba(0, 0, 0, 0.1),
-            rgba(0, 0, 0, 0.1) 1px,
-            transparent 1px,
-            transparent 2px
-          ) !important;
+          perspective: 1000px;
+          transform-style: preserve-3d;
+          animation: trick3DTilt 3s ease-in-out infinite alternate;
         }
-        body::before {
-          content: '';
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background: 
-            radial-gradient(circle at 50% 50%, transparent 0%, rgba(0, 0, 0, 0.1) 100%),
-            repeating-linear-gradient(
-              0deg,
-              transparent,
-              transparent 2px,
-              rgba(255, 255, 255, 0.03) 2px,
-              rgba(255, 255, 255, 0.03) 4px
-            );
-          pointer-events: none;
-          z-index: 9999;
+        @keyframes trick3DTilt {
+          0% {
+            transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+          }
+          25% {
+            transform: perspective(1000px) rotateX(15deg) rotateY(-15deg);
+          }
+          50% {
+            transform: perspective(1000px) rotateX(-15deg) rotateY(15deg);
+          }
+          75% {
+            transform: perspective(1000px) rotateX(15deg) rotateY(15deg);
+          }
+          100% {
+            transform: perspective(1000px) rotateX(-15deg) rotateY(-15deg);
+          }
+        }
+      `
+      document.head.appendChild(style)
+    },
+    // 效果14: 页面所有链接失效
+    () => {
+      const clickHandler = (e: MouseEvent) => {
+        const target = e.target as HTMLElement
+        // 检查是否是链接或按钮
+        if (
+          target.tagName === "A" ||
+          target.closest("a") ||
+          (target.tagName === "BUTTON" && !target.closest("n-button"))
+        ) {
+          e.preventDefault()
+          e.stopPropagation()
+          e.stopImmediatePropagation()
+          return false
+        }
+      }
+      document.addEventListener("click", clickHandler, true)
+    },
+    // 效果15: 页面变成波浪效果
+    () => {
+      const style = document.createElement("style")
+      style.id = "trick-wave-style"
+      style.textContent = `
+        body {
+          animation: trickWave 2s ease-in-out infinite;
+        }
+        @keyframes trickWave {
+          0%, 100% {
+            transform: translateY(0) scaleY(1);
+          }
+          25% {
+            transform: translateY(-10px) scaleY(1.02);
+          }
+          50% {
+            transform: translateY(0) scaleY(1);
+          }
+          75% {
+            transform: translateY(10px) scaleY(0.98);
+          }
         }
       `
       document.head.appendChild(style)
