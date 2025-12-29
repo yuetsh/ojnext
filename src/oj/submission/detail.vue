@@ -30,12 +30,15 @@ const message = useMessage()
 const { isMobile, isDesktop } = useBreakpoints()
 
 const submission = ref<Submission>()
+const loading = ref(false)
 
 async function init() {
   submission.value = props.submission
   if (submission.value) return
+  loading.value = true
   const res = await getSubmission(props.submissionID)
   submission.value = res.data
+  loading.value = false
 }
 
 const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
@@ -144,11 +147,19 @@ onMounted(init)
       :data="submission.info.data"
     />
   </n-flex>
+  <n-spin v-else :show="loading" class="loading-container">
+  </n-spin>
 </template>
 
 <style scoped>
 .code {
   font-size: 20px;
   overflow: auto;
+}
+.loading-container {
+  min-height: 200px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

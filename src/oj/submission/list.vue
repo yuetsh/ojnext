@@ -26,6 +26,7 @@ import SubmissionLink from "./components/SubmissionLink.vue"
 import SubmissionDetail from "./detail.vue"
 import Grade from "./components/Grade.vue"
 import FlowchartLink from "./components/FlowchartLink.vue"
+import FlowchartScoreDetail from "./components/FlowchartScoreDetail.vue"
 
 interface SubmissionQuery {
   username: string
@@ -61,6 +62,11 @@ const [statisticPanel, toggleStatisticPanel] = useToggle(false)
 const [flowchartStatisticPanel, toggleFlowchartStatisticPanel] =
   useToggle(false)
 const [codePanel, toggleCodePanel] = useToggle(false)
+const [scoreDetailPanel, toggleScoreDetailPanel] = useToggle(false)
+const selectedFlowchartId = ref("")
+const selectedFlowchart = computed(() => {
+  return flowcharts.value.find((f) => f.id === selectedFlowchartId.value)
+})
 
 const resultOptions: SelectOption[] = [
   { label: "全部", value: "" },
@@ -148,6 +154,28 @@ function showCodePanel(id: string, problem: string) {
   toggleCodePanel(true)
   submissionID.value = id
   problemDisplayID.value = problem
+}
+
+function showScoreDetail(id: string) {
+  selectedFlowchartId.value = id
+  toggleScoreDetailPanel(true)
+}
+
+function getGradeType(grade?: string) {
+  if (!grade) return "default"
+  if (grade === "S") return "primary"
+  if (grade === "A") return "info"
+  if (grade === "B") return "warning"
+  return "error"
+}
+
+function flowchartRowProps(row: FlowchartSubmissionListItem) {
+  return {
+    style: "cursor: pointer",
+    onClick() {
+      showScoreDetail(row.id)
+    },
+  }
 }
 
 // 监听用户名和题号变化（防抖）
@@ -260,7 +288,11 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
   {
     title: renderTableTitle("提交编号", "fluent-emoji-flat:input-numbers"),
     key: "id",
-    render: (row) => h(FlowchartLink, { flowchart: row }),
+    render: (row) =>
+      h(FlowchartLink, {
+        flowchart: row,
+        onShowDetail: (id: string) => showScoreDetail(id),
+      }),
   },
   {
     title: renderTableTitle("题目", "streamline-emojis:blossom"),
@@ -397,6 +429,7 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
       :bordered="false"
       :columns="flowchartColumns"
       :data="flowcharts"
+      :row-props="flowchartRowProps"
     />
     <n-data-table
       v-else
@@ -432,6 +465,25 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
       :submissionID="submissionID"
       hideList
     />
+  </n-modal>
+  <n-modal
+    v-model:show="scoreDetailPanel"
+    preset="card"
+    :style="{ maxWidth: isDesktop && '1000px', maxHeight: '80vh' }"
+    :content-style="{ overflow: 'auto' }"
+  >
+    <template #header>
+      <n-flex align="center">
+        <n-text>流程图评分详情</n-text>
+        <n-text
+          v-if="selectedFlowchart"
+          :type="getGradeType(selectedFlowchart.ai_grade)"
+        >
+          {{ selectedFlowchart.ai_score }}分 {{ selectedFlowchart.ai_grade }}级
+        </n-text>
+      </n-flex>
+    </template>
+    <FlowchartScoreDetail :submissionId="selectedFlowchartId" />
   </n-modal>
 </template>
 <style scoped>
