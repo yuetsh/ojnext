@@ -304,6 +304,12 @@ export function getCurrentProblemFlowchartSubmission(problemId: number) {
   })
 }
 
+export function getFlowchartSubmissionDetail(problemId: number, page = 0) {
+  return http.get("flowchart/submission/detail", {
+    params: { problem_id: problemId, page },
+  })
+}
+
 // ==================== 题单相关API ====================
 
 export function getProblemSetList(

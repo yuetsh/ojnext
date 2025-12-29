@@ -16,8 +16,8 @@ import {
 // API 和状态管理
 import {
   getCurrentProblemFlowchartSubmission,
+  getFlowchartSubmissionDetail,
   submitFlowchart,
-  updateProblemSetProgress,
 } from "oj/api"
 import { useProblemStore } from "oj/store/problem"
 
@@ -47,7 +47,6 @@ const { problem } = toRefs(problemStore)
 const { isDesktop } = useBreakpoints()
 const { convertToMermaid } = useMermaidConverter()
 const { renderError, renderFlowchart } = useMermaid()
-const route = useRoute()
 
 // 状态管理
 const rendering = ref(false)
@@ -64,6 +63,7 @@ const evaluation = ref<Evaluation>({
   suggestions: "",
   criteria_details: {},
 })
+const page = ref(1)
 
 // ==================== WebSocket 相关函数 ====================
 // 处理 WebSocket 消息
@@ -147,33 +147,56 @@ function submit() {
 }
 
 // ==================== 数据获取和处理函数 ====================
-async function getSubmission() {
+
+async function getCurrentSubmission() {
   if (!problem.value?.id) return
   const { data } = await getCurrentProblemFlowchartSubmission(problem.value.id)
   submissionCount.value = data.count
-  const submission = data.submission
-  myMermaidCode.value = submission.mermaid_code
-  myFlowchartZippedStr.value = submission.flowchart_data.data
-  if (submission && submission.status === 2) {
-    rating.value = {
-      score: submission.ai_score,
-      grade: submission.ai_grade,
-    }
-    evaluation.value = {
-      score: submission.ai_score,
-      grade: submission.ai_grade,
-      feedback: submission.ai_feedback,
-      suggestions: submission.ai_suggestions,
-      criteria_details: submission.ai_criteria_details,
-    }
+  rating.value = {
+    score: data.score,
+    grade: data.grade,
   }
+}
+
+async function getSubmission(submissionPage = 0) {
+  if (!problem.value?.id) return
+  const { data } = await getFlowchartSubmissionDetail(
+    problem.value.id,
+    submissionPage,
+  )
+  const submission = data.submission
+  myFlowchartZippedStr.value = submission.flowchart_data.data
+  myMermaidCode.value = submission.mermaid_code || ""
+  rating.value = {
+    score: submission.ai_score,
+    grade: submission.ai_grade,
+  }
+  evaluation.value = {
+    score: submission.ai_score,
+    grade: submission.ai_grade,
+    feedback: submission.ai_feedback,
+    suggestions: submission.ai_suggestions,
+    criteria_details: submission.ai_criteria_details,
+  }
+}
+
+async function updatePage(val: number) {
+  page.value = val
+  rendering.value = true
+  await getSubmission(val)
+  // 等待 DOM 更新
+  await nextTick()
+  await renderFlowchart(mermaidContainer.value, myMermaidCode.value)
+  rendering.value = false
 }
 
 // ==================== 模态框相关函数 ====================
 async function openDetailModal() {
-  rendering.value = true
   showDetailModal.value = true
+  rendering.value = true
   await getSubmission()
+  // 等待 DOM 更新，确保弹框已经渲染
+  await nextTick()
   await renderFlowchart(mermaidContainer.value, myMermaidCode.value)
   rendering.value = false
 }
@@ -214,9 +237,10 @@ const getPercentType = (percent: number) => {
 
 // ==================== 生命周期钩子 ====================
 // 组件挂载时连接 WebSocket 并检查状态
-onMounted(() => {
+onMounted(async () => {
   connect()
-  getSubmission()
+  await getCurrentSubmission()
+  page.value = submissionCount.value
 })
 
 // 组件卸载时断开连接
@@ -239,11 +263,6 @@ onUnmounted(() => {
       {{ loading ? "AI 点评中..." : "提交流程图" }}
     </n-button>
 
-    <!-- 提交次数显示 -->
-    <n-button secondary v-if="submissionCount > 0" type="info">
-      {{ submissionCount }} 次
-    </n-button>
-
     <!-- 评分结果按钮 -->
     <n-button
       secondary
@@ -254,11 +273,11 @@ onUnmounted(() => {
       {{ rating.score }}分 {{ rating.grade }}级
     </n-button>
 
-    <!-- 评分详情模态框 -->
+    <!-- 流程图评分详情模态框 -->
     <n-modal
       v-model:show="showDetailModal"
       preset="card"
-      title="评分详情"
+      title="流程图 AI 评分详情"
       style="width: 1000px"
     >
       <n-grid :cols="5" :x-gap="16">
@@ -266,15 +285,12 @@ onUnmounted(() => {
         <n-gi :span="3">
           <n-card title="流程图预览">
             <div class="flowchart">
-              <n-spin v-if="rendering" />
-              <!-- 错误提示 -->
-              <n-alert v-if="renderError" type="error" title="流程图渲染失败">
-                <template #default>
+              <n-spin :show="rendering">
+                <n-alert v-if="renderError" type="error" title="流程图渲染失败">
                   {{ renderError }}
-                </template>
-              </n-alert>
-              <!-- 流程图容器 -->
-              <div class="flowchart" v-else ref="mermaidContainer"></div>
+                </n-alert>
+                <div class="flowchart" v-else ref="mermaidContainer"></div>
+              </n-spin>
             </div>
           </n-card>
           <!-- 加载到编辑器按钮 -->
@@ -341,6 +357,19 @@ onUnmounted(() => {
           </n-card>
         </n-gi>
       </n-grid>
+
+      <!-- 分页组件 -->
+      <n-flex
+        justify="center"
+        style="margin-top: 24px"
+        v-if="submissionCount > 1"
+      >
+        <n-pagination
+          v-model:page="page"
+          :page-count="submissionCount"
+          @update-page="updatePage"
+        />
+      </n-flex>
     </n-modal>
   </n-flex>
 </template>

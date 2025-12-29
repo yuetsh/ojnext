@@ -6,7 +6,6 @@ let mermaid: any = null
 
 const modelValue = defineModel<string>({ default: "" })
 const mermaidContainer = useTemplateRef<HTMLElement>("mermaidContainer")
-const codeEditor = useTemplateRef<HTMLTextAreaElement>("codeEditor")
 
 // 渲染状态
 const renderSuccess = ref(false)
