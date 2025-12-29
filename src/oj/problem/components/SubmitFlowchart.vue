@@ -167,10 +167,6 @@ async function getSubmission(submissionPage = 0) {
   const submission = data.submission
   myFlowchartZippedStr.value = submission.flowchart_data.data
   myMermaidCode.value = submission.mermaid_code || ""
-  rating.value = {
-    score: submission.ai_score,
-    grade: submission.ai_grade,
-  }
   evaluation.value = {
     score: submission.ai_score,
     grade: submission.ai_grade,
