@@ -51,7 +51,8 @@ const { renderError, renderFlowchart } = useMermaid()
 // 状态管理
 const rendering = ref(false)
 const loading = ref(false)
-const rating = ref<Rating>({ score: 0, grade: "" })
+const latestRating = ref<Rating>({ score: 0, grade: "" })
+const modalRating = ref<Rating>({ score: 0, grade: "" })
 const submissionCount = ref(0)
 const myFlowchartZippedStr = ref("")
 const myMermaidCode = ref("")
@@ -72,7 +73,7 @@ const handleWebSocketMessage = (data: FlowchartEvaluationUpdate) => {
 
   if (data.type === "flowchart_evaluation_completed") {
     loading.value = false
-    rating.value = {
+    latestRating.value = {
       score: data.score || 0,
       grade: data.grade || "",
     }
@@ -114,7 +115,7 @@ async function submitFlowchartData(flowchartEditorRef: any) {
   const compressed = utoa(JSON.stringify(flowchartData))
 
   loading.value = true
-  rating.value = { score: 0, grade: "" }
+  latestRating.value = { score: 0, grade: "" }
 
   try {
     const response = await submitFlowchart({
@@ -152,7 +153,7 @@ async function getCurrentSubmission() {
   if (!problem.value?.id) return
   const { data } = await getCurrentProblemFlowchartSubmission(problem.value.id)
   submissionCount.value = data.count
-  rating.value = {
+  latestRating.value = {
     score: data.score,
     grade: data.grade,
   }
@@ -167,6 +168,10 @@ async function getSubmission(submissionPage = 0) {
   const submission = data.submission
   myFlowchartZippedStr.value = submission.flowchart_data.data
   myMermaidCode.value = submission.mermaid_code || ""
+  modalRating.value = {
+    score: submission.ai_score,
+    grade: submission.ai_grade,
+  }
   evaluation.value = {
     score: submission.ai_score,
     grade: submission.ai_grade,
@@ -262,20 +267,25 @@ onUnmounted(() => {
     <!-- 评分结果按钮 -->
     <n-button
       secondary
-      v-if="rating.grade"
+      v-if="latestRating.grade"
       @click="openDetailModal"
-      :type="getGradeType(rating.grade)"
+      :type="getGradeType(latestRating.grade)"
     >
-      {{ rating.score }}分 {{ rating.grade }}级
+      {{ latestRating.score }}分 {{ latestRating.grade }}级
     </n-button>
 
     <!-- 流程图评分详情模态框 -->
     <n-modal
       v-model:show="showDetailModal"
       preset="card"
-      title="流程图 AI 评分详情"
       style="width: 1000px"
     >
+    <template #header>
+      <n-flex align="center">
+        <n-text>流程图评分详情</n-text>
+        <n-text :type="getGradeType(modalRating.grade)">{{ modalRating.score }}分 {{ modalRating.grade }}级</n-text>
+      </n-flex>
+    </template>
       <n-grid :cols="5" :x-gap="16">
         <!-- 左侧：流程图预览区域 -->
         <n-gi :span="3">
