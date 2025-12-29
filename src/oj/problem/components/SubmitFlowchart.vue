@@ -275,17 +275,15 @@ onUnmounted(() => {
     </n-button>
 
     <!-- 流程图评分详情模态框 -->
-    <n-modal
-      v-model:show="showDetailModal"
-      preset="card"
-      style="width: 1000px"
-    >
-    <template #header>
-      <n-flex align="center">
-        <n-text>流程图评分详情</n-text>
-        <n-text :type="getGradeType(modalRating.grade)">{{ modalRating.score }}分 {{ modalRating.grade }}级</n-text>
-      </n-flex>
-    </template>
+    <n-modal v-model:show="showDetailModal" preset="card" style="width: 1000px">
+      <template #header>
+        <n-flex align="center">
+          <n-text>流程图评分详情</n-text>
+          <n-text :type="getGradeType(modalRating.grade)">
+            {{ modalRating.score }}分 {{ modalRating.grade }}级
+          </n-text>
+        </n-flex>
+      </template>
       <n-grid :cols="5" :x-gap="16">
         <!-- 左侧：流程图预览区域 -->
         <n-gi :span="3">

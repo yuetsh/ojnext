@@ -9,6 +9,10 @@ defineProps<{
 <template>
   <n-flex align="center">
     <span>{{ problem.title }}</span>
-    <Icon v-if="problem.allow_flowchart" width="18" icon="vscode-icons:file-type-drawio" />
+    <Icon
+      v-if="problem.allow_flowchart"
+      width="18"
+      icon="vscode-icons:file-type-drawio"
+    />
   </n-flex>
 </template>
