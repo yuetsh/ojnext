@@ -36,5 +36,4 @@ function handleClick() {
 }
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

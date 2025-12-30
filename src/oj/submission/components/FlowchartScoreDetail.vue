@@ -1,8 +1,25 @@
 <template>
   <n-grid v-if="submission" :cols="5" :x-gap="16">
     <!-- 左侧：流程图预览区域 -->
-    <n-gi :span="3">
+    <n-gi :span="showLargeImage ? 5 : 3">
       <n-card title="流程图预览">
+        <template #header-extra>
+          <n-button
+            v-if="!renderError && submission?.mermaid_code"
+            quaternary
+            size="small"
+            @click="showLargeImage = !showLargeImage"
+          >
+            <template #icon>
+              <Icon
+                :icon="
+                  showLargeImage ? 'mdi:fullscreen-exit' : 'mdi:fullscreen'
+                "
+              />
+            </template>
+            {{ showLargeImage ? "退出大图" : "查看大图" }}
+          </n-button>
+        </template>
         <div class="flowchart">
           <n-alert v-if="renderError" type="error" title="流程图渲染失败">
             {{ renderError }}
@@ -13,7 +30,7 @@
     </n-gi>
 
     <!-- 右侧：评分详情区域 -->
-    <n-gi :span="2">
+    <n-gi v-if="!showLargeImage" :span="2">
       <!-- AI反馈 -->
       <n-card
         v-if="submission.ai_feedback"
@@ -71,11 +88,11 @@
       </n-card>
     </n-gi>
   </n-grid>
-  <n-spin v-else :show="loading" class="loading-container">
-  </n-spin>
+  <n-spin v-else :show="loading" class="loading-container"> </n-spin>
 </template>
 
 <script setup lang="ts">
+import { Icon } from "@iconify/vue"
 import { FlowchartSubmission } from "utils/types"
 import { useMermaid } from "shared/composables/useMermaid"
 
@@ -90,6 +107,7 @@ const { renderError, renderFlowchart } = useMermaid()
 const submission = ref<FlowchartSubmission | null>(null)
 const loading = ref(false)
 const rendering = ref(false)
+const showLargeImage = ref(false)
 
 function getPercentType(percent: number) {
   if (percent >= 0.8) return "primary"

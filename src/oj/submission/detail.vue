@@ -147,8 +147,7 @@ onMounted(init)
       :data="submission.info.data"
     />
   </n-flex>
-  <n-spin v-else :show="loading" class="loading-container">
-  </n-spin>
+  <n-spin v-else :show="loading" class="loading-container"> </n-spin>
 </template>
 
 <style scoped>
