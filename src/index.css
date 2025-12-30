@@ -1,3 +1,11 @@
 body {
   height: 100vh;
 }
+
+.md-editor-dark {
+  --md-bk-color: var(--n-body-color) !important;
+}
+
+.md-editor-dark div.vuepress-theme {
+  --md-theme-color: var(--n-text-color) !important;
+}
