@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { h } from "vue"
 import { formatISO, sub, type Duration } from "date-fns"
 import { getClassPK } from "oj/api"
 import { useConfigStore } from "shared/store/config"
@@ -543,7 +544,7 @@ const radarChartOptions = {
               <!-- AC核心指标 - 突出显示，便于横向对比 -->
               <n-grid :cols="5" :x-gap="8" responsive="screen">
                 <n-gi>
-                  <n-statistic label="总AC数" :value="classData.total_ac" size="large">
+                  <n-statistic label="总AC数" :value="classData.total_ac" size="large" class="stat-total-ac">
                     <template #suffix>
                       <Icon icon="streamline-emojis:raised-fist-1" width="20" />
                     </template>
@@ -554,6 +555,7 @@ const radarChartOptions = {
                     label="平均AC数"
                     :value="classData.avg_ac.toFixed(2)"
                     size="large"
+                    class="stat-avg-ac"
                   >
                     <template #suffix>
                       <Icon icon="streamline-emojis:chart" width="20" />
@@ -565,6 +567,7 @@ const radarChartOptions = {
                     label="中位数AC数"
                     :value="classData.median_ac.toFixed(2)"
                     size="large"
+                    class="stat-median-ac"
                   >
                     <template #suffix>
                       <Icon icon="streamline-emojis:target" width="20" />
@@ -576,6 +579,7 @@ const radarChartOptions = {
                     label="总提交数"
                     :value="classData.total_submission"
                     size="large"
+                    class="stat-total-submission"
                   >
                     <template #suffix>
                       <Icon icon="streamline-emojis:paper" width="20" />
@@ -587,6 +591,7 @@ const radarChartOptions = {
                     label="AC率"
                     :value="classData.ac_rate.toFixed(1) + '%'"
                     size="large"
+                    class="stat-ac-rate"
                   >
                     <template #suffix>
                       <Icon icon="streamline-emojis:check-mark" width="20" />
@@ -601,35 +606,35 @@ const radarChartOptions = {
               <n-descriptions bordered :column="2" size="small" label-placement="left">
                 <!-- 分位数统计 -->
                 <n-descriptions-item label="第一四分位数(Q1)">
-                  {{ classData.q1_ac.toFixed(2) }}
+                  <span style="color: #9254de; font-weight: 500">{{ classData.q1_ac.toFixed(2) }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="第三四分位数(Q3)">
-                  {{ classData.q3_ac.toFixed(2) }}
+                  <span style="color: #f759ab; font-weight: 500">{{ classData.q3_ac.toFixed(2) }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="四分位距(IQR)">
-                  {{ classData.iqr.toFixed(2) }}
+                  <span style="color: #13c2c2; font-weight: 500">{{ classData.iqr.toFixed(2) }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="标准差">
-                  {{ classData.std_dev.toFixed(2) }}
+                  <span style="color: #fa8c16; font-weight: 500">{{ classData.std_dev.toFixed(2) }}</span>
                 </n-descriptions-item>
 
                 <!-- 分层统计 -->
                 <n-descriptions-item label="前10名平均">
-                  {{ classData.top_10_avg.toFixed(2) }}
+                  <span style="color: #cf1322; font-weight: 600">{{ classData.top_10_avg.toFixed(2) }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="后10名平均">
-                  {{ classData.bottom_10_avg.toFixed(2) }}
+                  <span style="color: #096dd9; font-weight: 500">{{ classData.bottom_10_avg.toFixed(2) }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="前25%平均">
-                  {{ classData.top_25_avg.toFixed(2) }}
+                  <span style="color: #f5222d; font-weight: 600">{{ classData.top_25_avg.toFixed(2) }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="后25%平均">
-                  {{ classData.bottom_25_avg.toFixed(2) }}
+                  <span style="color: #531dab; font-weight: 500">{{ classData.bottom_25_avg.toFixed(2) }}</span>
                 </n-descriptions-item>
 
                 <!-- 人数 -->
                 <n-descriptions-item label="人数">
-                  {{ classData.user_count }}
+                  <span style="color: #1890ff; font-weight: 600">{{ classData.user_count }}</span>
                 </n-descriptions-item>
               </n-descriptions>
 
@@ -678,19 +683,19 @@ const radarChartOptions = {
                 <n-descriptions bordered :column="2" size="small" label-placement="left" style="margin-top: 12px">
 
                   <n-descriptions-item label="时间段总AC">
-                    {{ classData.recent_total_ac }}
+                    <span style="color: #ff7875; font-weight: 600">{{ classData.recent_total_ac }}</span>
                   </n-descriptions-item>
                   <n-descriptions-item label="时间段平均AC">
-                    {{ classData.recent_avg_ac?.toFixed(2) }}
+                    <span style="color: #73d13d; font-weight: 600">{{ classData.recent_avg_ac?.toFixed(2) }}</span>
                   </n-descriptions-item>
                   <n-descriptions-item label="时间段中位数AC">
-                    {{ classData.recent_median_ac?.toFixed(2) }}
+                    <span style="color: #ffc53d; font-weight: 600">{{ classData.recent_median_ac?.toFixed(2) }}</span>
                   </n-descriptions-item>
                   <n-descriptions-item label="时间段前10名平均">
-                    {{ classData.recent_top_10_avg?.toFixed(2) }}
+                    <span style="color: #ff4d4f; font-weight: 600">{{ classData.recent_top_10_avg?.toFixed(2) }}</span>
                   </n-descriptions-item>
                   <n-descriptions-item label="活跃学生数" :span="2">
-                    {{ classData.recent_active_count }}
+                    <span style="color: #1890ff; font-weight: 600">{{ classData.recent_active_count }}</span>
                   </n-descriptions-item>
                 </n-descriptions>
               </template>
@@ -833,42 +838,52 @@ const radarChartOptions = {
               width: 80,
             },
             { title: '班级', key: 'class_name', width: 150 },
-            { title: '人数', key: 'user_count', width: 80 },
-            { title: '总AC数', key: 'total_ac', width: 100 },
+            {
+              title: '人数',
+              key: 'user_count',
+              width: 80,
+              render: (row) => h('span', { style: { color: '#1890ff', fontWeight: '600' } }, row.user_count),
+            },
+            {
+              title: '总AC数',
+              key: 'total_ac',
+              width: 100,
+              render: (row) => h('span', { style: { color: '#ff4d4f', fontWeight: '600' } }, row.total_ac),
+            },
             {
               title: '平均AC',
               key: 'avg_ac',
-              render: (row) => row.avg_ac.toFixed(2),
+              render: (row) => h('span', { style: { color: '#52c41a', fontWeight: '600' } }, row.avg_ac.toFixed(2)),
             },
             {
               title: '中位数AC',
               key: 'median_ac',
-              render: (row) => row.median_ac.toFixed(2),
+              render: (row) => h('span', { style: { color: '#fa8c16', fontWeight: '600' } }, row.median_ac.toFixed(2)),
             },
             {
               title: '前10名平均',
               key: 'top_10_avg',
-              render: (row) => row.top_10_avg.toFixed(2),
+              render: (row) => h('span', { style: { color: '#cf1322', fontWeight: '600' } }, row.top_10_avg.toFixed(2)),
             },
             {
               title: '后10名平均',
               key: 'bottom_10_avg',
-              render: (row) => row.bottom_10_avg.toFixed(2),
+              render: (row) => h('span', { style: { color: '#096dd9', fontWeight: '500' } }, row.bottom_10_avg.toFixed(2)),
             },
             {
               title: '优秀率',
               key: 'excellent_rate',
-              render: (row) => row.excellent_rate.toFixed(1) + '%',
+              render: (row) => h('span', { style: { color: '#faad14', fontWeight: '600' } }, row.excellent_rate.toFixed(1) + '%'),
             },
             {
               title: '及格率',
               key: 'pass_rate',
-              render: (row) => row.pass_rate.toFixed(1) + '%',
+              render: (row) => h('span', { style: { color: '#52c41a', fontWeight: '600' } }, row.pass_rate.toFixed(1) + '%'),
             },
             {
               title: '参与度',
               key: 'active_rate',
-              render: (row) => row.active_rate.toFixed(1) + '%',
+              render: (row) => h('span', { style: { color: '#1890ff', fontWeight: '600' } }, row.active_rate.toFixed(1) + '%'),
             },
           ]"
         />
@@ -878,8 +893,57 @@ const radarChartOptions = {
 </template>
 
 <style scoped>
-.n-statistic {
-  margin-bottom: 8px;
+/* ==================== 统计数字颜色设置 ==================== */
+/* 覆盖 Naive UI n-statistic 组件的所有可能类名 */
+
+/* 总AC数 - 红色 */
+.stat-total-ac :deep(.n-statistic-value),
+.stat-total-ac :deep(.n-statistic-value__content),
+.stat-total-ac :deep(.n-number-animation),
+.stat-total-ac :deep(.n-statistic-value > *),
+.stat-total-ac :deep(.n-statistic-value span) {
+  color: #ff4d4f !important;
+  font-weight: 600;
+}
+
+/* 平均AC数 - 绿色 */
+.stat-avg-ac :deep(.n-statistic-value),
+.stat-avg-ac :deep(.n-statistic-value__content),
+.stat-avg-ac :deep(.n-number-animation),
+.stat-avg-ac :deep(.n-statistic-value > *),
+.stat-avg-ac :deep(.n-statistic-value span) {
+  color: #52c41a !important;
+  font-weight: 600;
+}
+
+/* 中位数AC数 - 橙色 */
+.stat-median-ac :deep(.n-statistic-value),
+.stat-median-ac :deep(.n-statistic-value__content),
+.stat-median-ac :deep(.n-number-animation),
+.stat-median-ac :deep(.n-statistic-value > *),
+.stat-median-ac :deep(.n-statistic-value span) {
+  color: #fa8c16 !important;
+  font-weight: 600;
+}
+
+/* 总提交数 - 紫色 */
+.stat-total-submission :deep(.n-statistic-value),
+.stat-total-submission :deep(.n-statistic-value__content),
+.stat-total-submission :deep(.n-number-animation),
+.stat-total-submission :deep(.n-statistic-value > *),
+.stat-total-submission :deep(.n-statistic-value span) {
+  color: #805ad5 !important;
+  font-weight: 600;
+}
+
+/* AC率 - 青色 */
+.stat-ac-rate :deep(.n-statistic-value),
+.stat-ac-rate :deep(.n-statistic-value__content),
+.stat-ac-rate :deep(.n-number-animation),
+.stat-ac-rate :deep(.n-statistic-value > *),
+.stat-ac-rate :deep(.n-statistic-value span) {
+  color: #00b894 !important;
+  font-weight: 600;
 }
 </style>
 
