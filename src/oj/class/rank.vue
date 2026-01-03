@@ -15,7 +15,7 @@ interface ClassRank {
 const data = ref<ClassRank[]>([])
 const total = ref(0)
 const query = reactive({
-  limit: 20,
+  limit: 10,
   page: 1,
   grade: null as number | null,
 })
