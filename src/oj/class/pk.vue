@@ -3,6 +3,36 @@ import { formatISO, sub, type Duration } from "date-fns"
 import { getClassPK } from "oj/api"
 import { useConfigStore } from "shared/store/config"
 import { Icon } from "@iconify/vue"
+import { Bar, Radar } from "vue-chartjs"
+import {
+  Chart as ChartJS,
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Colors,
+  Filler,
+} from "chart.js"
+
+// 注册Chart.js组件
+ChartJS.register(
+  CategoryScale,
+  LinearScale,
+  BarElement,
+  RadialLinearScale,
+  PointElement,
+  LineElement,
+  Title,
+  Tooltip,
+  Legend,
+  Colors,
+  Filler,
+)
 
 const configStore = useConfigStore()
 const message = useMessage()
@@ -37,7 +67,6 @@ const selectedClasses = ref<string[]>([])
 const comparisons = ref<ClassComparison[]>([])
 const duration = ref<string>("")
 const loading = ref(false)
-const showDetails = ref<Record<string, boolean>>({})
 const hasTimeRange = ref(false)
 
 // 时间段选项（与 rank/list.vue 保持一致）
@@ -106,20 +135,11 @@ async function compare() {
     const res = await getClassPK(selectedClasses.value, startTime, endTime)
     comparisons.value = res.data.comparisons
     hasTimeRange.value = res.data.has_time_range || false
-
-    // 初始化展开状态
-    comparisons.value.forEach((c) => {
-      showDetails.value[c.class_name] = false
-    })
   } catch (error) {
     message.error("获取数据失败")
   } finally {
     loading.value = false
   }
-}
-
-function toggleDetails(class_name: string) {
-  showDetails.value[class_name] = !showDetails.value[class_name]
 }
 
 // 计算排名颜色
@@ -129,14 +149,341 @@ function getRankColor(index: number) {
   if (index === 2) return { type: "warning" as const, text: "🥉" }
   return { type: "default" as const, text: `${index + 1}` }
 }
+
+// 获取班级颜色
+function getClassColor(index: number) {
+  const colors = [
+    { bg: "rgba(24, 160, 88, 0.2)", border: "rgba(24, 160, 88, 0.8)" }, // success
+    { bg: "rgba(32, 128, 240, 0.2)", border: "rgba(32, 128, 240, 0.8)" }, // info
+    { bg: "rgba(240, 160, 32, 0.2)", border: "rgba(240, 160, 32, 0.8)" }, // warning
+    { bg: "rgba(208, 48, 80, 0.2)", border: "rgba(208, 48, 80, 0.8)" }, // error
+    { bg: "rgba(128, 90, 213, 0.2)", border: "rgba(128, 90, 213, 0.8)" }, // purple
+    { bg: "rgba(0, 184, 148, 0.2)", border: "rgba(0, 184, 148, 0.8)" }, // teal
+  ]
+  return colors[index % colors.length]
+}
+
+// 总AC数对比图 - 每个班级用不同颜色
+const totalAcChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  const labels = comparisons.value.map((c) => c.class_name)
+  const datasets = [
+    {
+      label: "总AC数",
+      data: comparisons.value.map((c) => c.total_ac),
+      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
+      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
+      borderWidth: 2,
+    },
+  ]
+
+  return { labels, datasets }
+})
+
+// 平均AC数对比图
+const avgAcChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  const labels = comparisons.value.map((c) => c.class_name)
+  const datasets = [
+    {
+      label: "平均AC数",
+      data: comparisons.value.map((c) => c.avg_ac),
+      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
+      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
+      borderWidth: 2,
+    },
+  ]
+
+  return { labels, datasets }
+})
+
+// 中位数AC数对比图
+const medianAcChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  const labels = comparisons.value.map((c) => c.class_name)
+  const datasets = [
+    {
+      label: "中位数AC数",
+      data: comparisons.value.map((c) => c.median_ac),
+      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
+      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
+      borderWidth: 2,
+    },
+  ]
+
+  return { labels, datasets }
+})
+
+// 优秀率对比图
+const excellentRateChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  const labels = comparisons.value.map((c) => c.class_name)
+  const datasets = [
+    {
+      label: "优秀率",
+      data: comparisons.value.map((c) => c.excellent_rate),
+      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
+      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
+      borderWidth: 2,
+    },
+  ]
+
+  return { labels, datasets }
+})
+
+// 及格率对比图
+const passRateChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  const labels = comparisons.value.map((c) => c.class_name)
+  const datasets = [
+    {
+      label: "及格率",
+      data: comparisons.value.map((c) => c.pass_rate),
+      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
+      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
+      borderWidth: 2,
+    },
+  ]
+
+  return { labels, datasets }
+})
+
+// 参与度对比图
+const activeRateChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  const labels = comparisons.value.map((c) => c.class_name)
+  const datasets = [
+    {
+      label: "参与度",
+      data: comparisons.value.map((c) => c.active_rate),
+      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
+      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
+      borderWidth: 2,
+    },
+  ]
+
+  return { labels, datasets }
+})
+
+// 前10名平均对比图
+const top10AvgChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  const labels = comparisons.value.map((c) => c.class_name)
+  const datasets = [
+    {
+      label: "前10名平均",
+      data: comparisons.value.map((c) => c.top_10_avg),
+      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
+      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
+      borderWidth: 2,
+    },
+  ]
+
+  return { labels, datasets }
+})
+
+// 后10名平均对比图
+const bottom10AvgChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  const labels = comparisons.value.map((c) => c.class_name)
+  const datasets = [
+    {
+      label: "后10名平均",
+      data: comparisons.value.map((c) => c.bottom_10_avg),
+      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
+      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
+      borderWidth: 2,
+    },
+  ]
+
+  return { labels, datasets }
+})
+
+// 前25%平均对比图
+const top25AvgChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  const labels = comparisons.value.map((c) => c.class_name)
+  const datasets = [
+    {
+      label: "前25%平均",
+      data: comparisons.value.map((c) => c.top_25_avg),
+      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
+      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
+      borderWidth: 2,
+    },
+  ]
+
+  return { labels, datasets }
+})
+
+// 后25%平均对比图
+const bottom25AvgChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  const labels = comparisons.value.map((c) => c.class_name)
+  const datasets = [
+    {
+      label: "后25%平均",
+      data: comparisons.value.map((c) => c.bottom_25_avg),
+      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
+      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
+      borderWidth: 2,
+    },
+  ]
+
+  return { labels, datasets }
+})
+
+// 雷达图数据 - 多维度综合对比
+const radarChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  // 归一化数据到0-100范围
+  const normalize = (value: number, max: number, min: number) => {
+    if (max === min) return 50
+    return ((value - min) / (max - min)) * 100
+  }
+
+  const metrics = [
+    "总AC数",
+    "平均AC数",
+    "中位数AC数",
+    "优秀率",
+    "及格率",
+    "参与度",
+  ]
+
+  // 计算每个指标的最大最小值
+  const maxValues = [
+    Math.max(...comparisons.value.map((c) => c.total_ac)),
+    Math.max(...comparisons.value.map((c) => c.avg_ac)),
+    Math.max(...comparisons.value.map((c) => c.median_ac)),
+    100, // 优秀率最大值
+    100, // 及格率最大值
+    100, // 参与度最大值
+  ]
+
+  const minValues = [
+    Math.min(...comparisons.value.map((c) => c.total_ac)),
+    Math.min(...comparisons.value.map((c) => c.avg_ac)),
+    Math.min(...comparisons.value.map((c) => c.median_ac)),
+    0,
+    0,
+    0,
+  ]
+
+  const datasets = comparisons.value.map((c, index) => {
+    const color = getClassColor(index)
+    return {
+      label: c.class_name,
+      data: [
+        normalize(c.total_ac, maxValues[0], minValues[0]),
+        normalize(c.avg_ac, maxValues[1], minValues[1]),
+        normalize(c.median_ac, maxValues[2], minValues[2]),
+        c.excellent_rate,
+        c.pass_rate,
+        c.active_rate,
+      ],
+      backgroundColor: color.bg,
+      borderColor: color.border,
+      borderWidth: 2,
+      pointBackgroundColor: color.border,
+      pointBorderColor: "#fff",
+      pointHoverBackgroundColor: "#fff",
+      pointHoverBorderColor: color.border,
+    }
+  })
+
+  return {
+    labels: metrics,
+    datasets,
+  }
+})
+
+// 图表配置 - 优化对比效果
+const chartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: "bottom" as const,
+      display: true,
+      labels: {
+        boxWidth: 0,
+        padding: 10,
+      },
+    },
+    tooltip: {
+      mode: "index" as const,
+      intersect: false,
+      callbacks: {
+        label: function (context: any) {
+          let label = context.dataset.label || ""
+          if (label) {
+            label += ": "
+          }
+          if (context.parsed.y !== null) {
+            label += context.parsed.y.toFixed(2)
+          }
+          return label
+        },
+      },
+    },
+    datalabels: {
+      display: false,
+    },
+  },
+  scales: {
+    y: {
+      beginAtZero: true,
+      grid: {
+        display: true,
+        color: "rgba(0, 0, 0, 0.05)",
+      },
+    },
+    x: {
+      grid: {
+        display: false,
+      },
+    },
+  },
+}
+
+const radarChartOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      position: "bottom" as const,
+    },
+  },
+  scales: {
+    r: {
+      beginAtZero: true,
+      max: 100,
+      ticks: {
+        stepSize: 20,
+      },
+    },
+  },
+}
 </script>
 
 <template>
   <n-card>
     <n-flex vertical :size="20">
-      <n-h2>班级PK</n-h2>
+      <n-h2 style="margin-bottom: 0">班级PK</n-h2>
 
-      <n-flex :wrap="false" align="center" :size="16">
+      <n-flex :wrap="false" align="flex-start" :size="16">
         <n-form-item label="选择班级（至少2个）" style="width: 300px; margin-bottom: 0">
           <n-select
             v-model:value="selectedClasses"
@@ -156,7 +503,7 @@ function getRankColor(index: number) {
           />
         </n-form-item>
 
-        <n-button type="primary" @click="compare" :loading="loading">
+        <n-button type="primary" @click="compare" :loading="loading" style="margin-top: 26px">
           开始PK
         </n-button>
       </n-flex>
@@ -191,90 +538,104 @@ function getRankColor(index: number) {
               </n-tag>
             </template>
 
-            <!-- 基础统计 -->
+            <!-- 班级信息布局 - 优化为便于比较 -->
             <n-flex vertical :size="12">
-              <n-statistic label="总AC数" :value="classData.total_ac">
-                <template #suffix>
-                  <Icon icon="streamline-emojis:raised-fist-1" width="20" />
-                </template>
-              </n-statistic>
+              <!-- AC核心指标 - 突出显示，便于横向对比 -->
+              <n-grid :cols="5" :x-gap="8" responsive="screen">
+                <n-gi>
+                  <n-statistic label="总AC数" :value="classData.total_ac" size="large">
+                    <template #suffix>
+                      <Icon icon="streamline-emojis:raised-fist-1" width="20" />
+                    </template>
+                  </n-statistic>
+                </n-gi>
+                <n-gi>
+                  <n-statistic
+                    label="平均AC数"
+                    :value="classData.avg_ac.toFixed(2)"
+                    size="large"
+                  >
+                    <template #suffix>
+                      <Icon icon="streamline-emojis:chart" width="20" />
+                    </template>
+                  </n-statistic>
+                </n-gi>
+                <n-gi>
+                  <n-statistic
+                    label="中位数AC数"
+                    :value="classData.median_ac.toFixed(2)"
+                    size="large"
+                  >
+                    <template #suffix>
+                      <Icon icon="streamline-emojis:target" width="20" />
+                    </template>
+                  </n-statistic>
+                </n-gi>
+                <n-gi>
+                  <n-statistic
+                    label="总提交数"
+                    :value="classData.total_submission"
+                    size="large"
+                  >
+                    <template #suffix>
+                      <Icon icon="streamline-emojis:paper" width="20" />
+                    </template>
+                  </n-statistic>
+                </n-gi>
+                <n-gi>
+                  <n-statistic
+                    label="AC率"
+                    :value="classData.ac_rate.toFixed(1) + '%'"
+                    size="large"
+                  >
+                    <template #suffix>
+                      <Icon icon="streamline-emojis:check-mark" width="20" />
+                    </template>
+                  </n-statistic>
+                </n-gi>
+              </n-grid>
 
-              <n-statistic label="平均AC数" :value="classData.avg_ac.toFixed(2)">
-                <template #suffix>
-                  <Icon icon="streamline-emojis:chart" width="20" />
-                </template>
-              </n-statistic>
+              <n-divider style="margin: 12px 0" />
 
-              <n-statistic
-                label="中位数AC数"
-                :value="classData.median_ac.toFixed(2)"
-              >
-                <template #suffix>
-                  <Icon icon="streamline-emojis:target" width="20" />
-                </template>
-              </n-statistic>
-
-              <!-- 展开详细统计 -->
-              <n-button
-                text
-                @click="toggleDetails(classData.class_name)"
-                style="margin-top: 8px"
-              >
-                {{ showDetails[classData.class_name] ? "收起" : "展开" }}详细统计
-                <Icon
-                  :icon="
-                    showDetails[classData.class_name]
-                      ? 'mdi:chevron-up'
-                      : 'mdi:chevron-down'
-                  "
-                  width="16"
-                />
-              </n-button>
-
-              <!-- 详细统计面板 -->
-              <n-collapse-transition :show="showDetails[classData.class_name]">
-                <n-divider />
-
+              <!-- 详细统计 - 紧凑布局，统一格式 -->
+              <n-descriptions bordered :column="2" size="small" label-placement="left">
                 <!-- 分位数统计 -->
-                <n-descriptions bordered :column="2" size="small">
-                  <n-descriptions-item label="第一四分位数(Q1)">
-                    {{ classData.q1_ac.toFixed(2) }}
-                  </n-descriptions-item>
-                  <n-descriptions-item label="第三四分位数(Q3)">
-                    {{ classData.q3_ac.toFixed(2) }}
-                  </n-descriptions-item>
-                  <n-descriptions-item label="四分位距(IQR)">
-                    {{ classData.iqr.toFixed(2) }}
-                  </n-descriptions-item>
-                  <n-descriptions-item label="标准差">
-                    {{ classData.std_dev.toFixed(2) }}
-                  </n-descriptions-item>
-                </n-descriptions>
-
-                <n-divider />
+                <n-descriptions-item label="第一四分位数(Q1)">
+                  {{ classData.q1_ac.toFixed(2) }}
+                </n-descriptions-item>
+                <n-descriptions-item label="第三四分位数(Q3)">
+                  {{ classData.q3_ac.toFixed(2) }}
+                </n-descriptions-item>
+                <n-descriptions-item label="四分位距(IQR)">
+                  {{ classData.iqr.toFixed(2) }}
+                </n-descriptions-item>
+                <n-descriptions-item label="标准差">
+                  {{ classData.std_dev.toFixed(2) }}
+                </n-descriptions-item>
 
                 <!-- 分层统计 -->
-                <n-h4 style="margin: 12px 0 8px 0">分层统计</n-h4>
-                <n-descriptions bordered :column="2" size="small">
-                  <n-descriptions-item label="前10名平均">
-                    {{ classData.top_10_avg.toFixed(2) }}
-                  </n-descriptions-item>
-                  <n-descriptions-item label="后10名平均">
-                    {{ classData.bottom_10_avg.toFixed(2) }}
-                  </n-descriptions-item>
-                  <n-descriptions-item label="前25%平均">
-                    {{ classData.top_25_avg.toFixed(2) }}
-                  </n-descriptions-item>
-                  <n-descriptions-item label="后25%平均">
-                    {{ classData.bottom_25_avg.toFixed(2) }}
-                  </n-descriptions-item>
-                </n-descriptions>
+                <n-descriptions-item label="前10名平均">
+                  {{ classData.top_10_avg.toFixed(2) }}
+                </n-descriptions-item>
+                <n-descriptions-item label="后10名平均">
+                  {{ classData.bottom_10_avg.toFixed(2) }}
+                </n-descriptions-item>
+                <n-descriptions-item label="前25%平均">
+                  {{ classData.top_25_avg.toFixed(2) }}
+                </n-descriptions-item>
+                <n-descriptions-item label="后25%平均">
+                  {{ classData.bottom_25_avg.toFixed(2) }}
+                </n-descriptions-item>
 
-                <n-divider />
+                <!-- 人数 -->
+                <n-descriptions-item label="人数">
+                  {{ classData.user_count }}
+                </n-descriptions-item>
+              </n-descriptions>
 
-                <!-- 比率统计 -->
-                <n-h4 style="margin: 12px 0 8px 0">比率统计</n-h4>
-                <n-space vertical :size="8">
+              <!-- 比率统计 - 使用进度条图表 -->
+              <n-card size="small" title="比率统计" embedded style="margin-top: 12px">
+                <n-space vertical :size="10">
                   <n-progress
                     type="line"
                     :percentage="classData.excellent_rate"
@@ -308,36 +669,157 @@ function getRankColor(index: number) {
                     </template>
                   </n-progress>
                 </n-space>
+              </n-card>
 
-                <!-- 时间段统计（如果有） -->
-                <template
-                  v-if="hasTimeRange && classData.recent_total_ac !== undefined"
-                >
-                  <n-divider />
-                  <n-h4 style="margin: 12px 0 8px 0">时间段内表现</n-h4>
-                  <n-descriptions bordered :column="2" size="small">
-                    <n-descriptions-item label="时间段总AC">
-                      {{ classData.recent_total_ac }}
-                    </n-descriptions-item>
-                    <n-descriptions-item label="时间段平均AC">
-                      {{ classData.recent_avg_ac?.toFixed(2) }}
-                    </n-descriptions-item>
-                    <n-descriptions-item label="时间段中位数AC">
-                      {{ classData.recent_median_ac?.toFixed(2) }}
-                    </n-descriptions-item>
-                    <n-descriptions-item label="时间段前10名平均">
-                      {{ classData.recent_top_10_avg?.toFixed(2) }}
-                    </n-descriptions-item>
-                    <n-descriptions-item label="活跃学生数">
-                      {{ classData.recent_active_count }}
-                    </n-descriptions-item>
-                  </n-descriptions>
-                </template>
-              </n-collapse-transition>
+              <!-- 时间段统计（如果有） -->
+              <template
+                v-if="hasTimeRange && classData.recent_total_ac !== undefined"
+              >
+                <n-descriptions bordered :column="2" size="small" label-placement="left" style="margin-top: 12px">
+
+                  <n-descriptions-item label="时间段总AC">
+                    {{ classData.recent_total_ac }}
+                  </n-descriptions-item>
+                  <n-descriptions-item label="时间段平均AC">
+                    {{ classData.recent_avg_ac?.toFixed(2) }}
+                  </n-descriptions-item>
+                  <n-descriptions-item label="时间段中位数AC">
+                    {{ classData.recent_median_ac?.toFixed(2) }}
+                  </n-descriptions-item>
+                  <n-descriptions-item label="时间段前10名平均">
+                    {{ classData.recent_top_10_avg?.toFixed(2) }}
+                  </n-descriptions-item>
+                  <n-descriptions-item label="活跃学生数" :span="2">
+                    {{ classData.recent_active_count }}
+                  </n-descriptions-item>
+                </n-descriptions>
+              </template>
             </n-flex>
           </n-card>
         </n-gi>
       </n-grid>
+
+      <!-- 可视化图表 - 专注于对比 -->
+      <template v-if="comparisons.length > 0">
+        <!-- AC核心指标对比 - 三个独立图表并排显示 -->
+        <n-card title="AC核心指标对比" style="margin-top: 20px">
+          <n-grid :cols="3" :x-gap="16" :y-gap="16">
+            <n-gi>
+              <div style="height: 300px">
+                <Bar
+                  v-if="totalAcChartData"
+                  :data="totalAcChartData"
+                  :options="chartOptions"
+                />
+              </div>
+            </n-gi>
+            <n-gi>
+              <div style="height: 300px">
+                <Bar
+                  v-if="avgAcChartData"
+                  :data="avgAcChartData"
+                  :options="chartOptions"
+                />
+              </div>
+            </n-gi>
+            <n-gi>
+              <div style="height: 300px">
+                <Bar
+                  v-if="medianAcChartData"
+                  :data="medianAcChartData"
+                  :options="chartOptions"
+                />
+              </div>
+            </n-gi>
+          </n-grid>
+        </n-card>
+
+        <!-- 比率统计对比 - 三个独立图表并排显示 -->
+        <n-card title="比率统计对比" style="margin-top: 20px">
+          <n-grid :cols="3" :x-gap="16" :y-gap="16">
+            <n-gi>
+              <div style="height: 300px">
+                <Bar
+                  v-if="excellentRateChartData"
+                  :data="excellentRateChartData"
+                  :options="chartOptions"
+                />
+              </div>
+            </n-gi>
+            <n-gi>
+              <div style="height: 300px">
+                <Bar
+                  v-if="passRateChartData"
+                  :data="passRateChartData"
+                  :options="chartOptions"
+                />
+              </div>
+            </n-gi>
+            <n-gi>
+              <div style="height: 300px">
+                <Bar
+                  v-if="activeRateChartData"
+                  :data="activeRateChartData"
+                  :options="chartOptions"
+                />
+              </div>
+            </n-gi>
+          </n-grid>
+        </n-card>
+
+        <!-- 分层统计对比 - 四个独立图表并排显示 -->
+        <n-card title="分层统计对比" style="margin-top: 20px">
+          <n-grid :cols="2" :x-gap="16" :y-gap="16">
+            <n-gi>
+              <div style="height: 300px">
+                <Bar
+                  v-if="top10AvgChartData"
+                  :data="top10AvgChartData"
+                  :options="chartOptions"
+                />
+              </div>
+            </n-gi>
+            <n-gi>
+              <div style="height: 300px">
+                <Bar
+                  v-if="bottom10AvgChartData"
+                  :data="bottom10AvgChartData"
+                  :options="chartOptions"
+                />
+              </div>
+            </n-gi>
+            <n-gi>
+              <div style="height: 300px">
+                <Bar
+                  v-if="top25AvgChartData"
+                  :data="top25AvgChartData"
+                  :options="chartOptions"
+                />
+              </div>
+            </n-gi>
+            <n-gi>
+              <div style="height: 300px">
+                <Bar
+                  v-if="bottom25AvgChartData"
+                  :data="bottom25AvgChartData"
+                  :options="chartOptions"
+                />
+              </div>
+            </n-gi>
+          </n-grid>
+        </n-card>
+
+        <!-- 多维度雷达图 - 综合对比 -->
+        <n-card title="多维度综合对比" style="margin-top: 20px">
+          <div style="height: 500px">
+            <Radar
+              v-if="radarChartData"
+              :data="radarChartData"
+              :options="radarChartOptions"
+            />
+          </div>
+        </n-card>
+      </template>
 
       <!-- 对比表格 -->
       <n-card v-if="comparisons.length > 0" title="对比表格" style="margin-top: 20px">
