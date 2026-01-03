@@ -169,15 +169,6 @@ function getGradeType(grade?: string) {
   return "error"
 }
 
-function flowchartRowProps(row: FlowchartSubmissionListItem) {
-  return {
-    style: "cursor: pointer",
-    onClick() {
-      showScoreDetail(row.id)
-    },
-  }
-}
-
 // 监听用户名和题号变化（防抖）
 watchDebounced(() => [query.username, query.problem], listSubmissions, {
   debounce: 500,
@@ -429,7 +420,6 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
       :bordered="false"
       :columns="flowchartColumns"
       :data="flowcharts"
-      :row-props="flowchartRowProps"
     />
     <n-data-table
       v-else

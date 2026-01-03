@@ -3,7 +3,7 @@
   "version": "1.8.0",
   "type": "module",
   "scripts": {
-    "start": "rsbuild dev --env-mode=production",
+    "start": "rsbuild dev",
     "build": "rsbuild build",
     "build:staging": "rsbuild build --env-mode=staging",
     "build:test": "rsbuild build --env-mode=test",
