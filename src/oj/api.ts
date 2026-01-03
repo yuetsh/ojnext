@@ -143,6 +143,31 @@ export function getActivityRank(start: string) {
   })
 }
 
+export function getClassRank(offset: number, limit: number, grade?: number | null) {
+  return http.get("class_rank", {
+    params: { offset, limit, grade },
+  })
+}
+
+export function getUserClassRank(offset: number, limit: number) {
+  return http.get("user_class_rank", {
+    params: { offset, limit },
+  })
+}
+
+export function getClassPK(classNames: string[], startTime?: string, endTime?: string) {
+  const payload: any = {
+    class_name: classNames,
+  }
+  if (startTime) {
+    payload.start_time = startTime
+  }
+  if (endTime) {
+    payload.end_time = endTime
+  }
+  return http.post("class_pk", payload)
+}
+
 export function getContestList(query: {
   offset: number
   limit: number

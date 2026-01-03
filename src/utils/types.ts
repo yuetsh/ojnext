@@ -49,6 +49,7 @@ export interface User {
   is_disabled: boolean
   password?: string
   raw_password?: string
+  class_name?: string | null
 }
 
 export type LANGUAGE =
