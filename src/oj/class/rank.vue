@@ -126,7 +126,7 @@ onMounted(() => {
   <n-flex justify="center">
     <n-h2>班级排名</n-h2>
   </n-flex>
-  <n-flex justify="space-between" style="margin-bottom: 16px">
+  <n-flex justify="center" style="margin-bottom: 16px">
     <n-select
       v-model:value="query.grade"
       placeholder="选择年级"
