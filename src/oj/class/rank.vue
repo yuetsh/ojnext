@@ -34,8 +34,6 @@ const columns: DataTableColumn<ClassRank>[] = [
     title: renderTableTitle("排名", "streamline-emojis:flexed-biceps-1"),
     key: "rank",
     width: 100,
-    align: "center",
-    titleAlign: "center",
     render: (row) => {
       if (row.rank === 1) return "🥇"
       if (row.rank === 2) return "🥈"
@@ -47,44 +45,32 @@ const columns: DataTableColumn<ClassRank>[] = [
     title: renderTableTitle("班级", "streamline-emojis:trophy"),
     key: "class_name",
     width: 200,
-    align: "center",
-    titleAlign: "center",
   },
   {
     title: renderTableTitle("人数", "streamline-emojis:people"),
     key: "user_count",
     width: 100,
-    align: "center",
-    titleAlign: "center",
   },
   {
     title: renderTableTitle("总AC数", "streamline-emojis:raised-fist-1"),
     key: "total_ac",
     width: 120,
-    align: "center",
-    titleAlign: "center",
   },
   {
     title: renderTableTitle("总提交数", "streamline-emojis:rocket"),
     key: "total_submission",
     width: 120,
-    align: "center",
-    titleAlign: "center",
   },
   {
     title: renderTableTitle("平均AC数", "streamline-emojis:chart"),
     key: "avg_ac",
     width: 120,
-    align: "center",
-    titleAlign: "center",
   },
   {
     title: renderTableTitle("正确率", "streamline-emojis:wrapped-gift-1"),
     key: "ac_rate",
     width: 100,
-    align: "center",
     render: (row) => `${row.ac_rate}%`,
-    titleAlign: "center",
   },
 ]
 
