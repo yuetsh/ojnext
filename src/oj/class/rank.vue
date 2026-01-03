@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { getClassRank } from "oj/api"
 import Pagination from "shared/components/Pagination.vue"
-import { renderTableTitle } from "utils/renders"
 
 interface ClassRank {
   rank: number
@@ -31,9 +30,11 @@ const gradeOptions = [
 
 const columns: DataTableColumn<ClassRank>[] = [
   {
-    title: renderTableTitle("排名", "streamline-emojis:flexed-biceps-1"),
+    title: "排名",
     key: "rank",
     width: 100,
+    titleAlign: "center",
+    align: "center",
     render: (row) => {
       if (row.rank === 1) return "🥇"
       if (row.rank === 2) return "🥈"
@@ -42,34 +43,46 @@ const columns: DataTableColumn<ClassRank>[] = [
     },
   },
   {
-    title: renderTableTitle("班级", "streamline-emojis:trophy"),
+    title: "班级",
     key: "class_name",
     width: 200,
+    titleAlign: "center",
+    align: "center",
   },
   {
-    title: renderTableTitle("人数", "streamline-emojis:people"),
+    title: "人数",
     key: "user_count",
     width: 100,
+    titleAlign: "center",
+    align: "center",
   },
   {
-    title: renderTableTitle("总AC数", "streamline-emojis:raised-fist-1"),
+    title: "总AC数",
     key: "total_ac",
     width: 120,
+    titleAlign: "center",
+    align: "center",
   },
   {
-    title: renderTableTitle("总提交数", "streamline-emojis:rocket"),
+    title: "总提交数",
     key: "total_submission",
     width: 120,
+    titleAlign: "center",
+    align: "center",
   },
   {
-    title: renderTableTitle("平均AC数", "streamline-emojis:chart"),
+    title: "平均AC数",
     key: "avg_ac",
     width: 120,
+    titleAlign: "center",
+    align: "center",
   },
   {
-    title: renderTableTitle("正确率", "streamline-emojis:wrapped-gift-1"),
+    title: "正确率",
     key: "ac_rate",
     width: 100,
+    titleAlign: "center",
+    align: "center",
     render: (row) => `${row.ac_rate}%`,
   },
 ]
