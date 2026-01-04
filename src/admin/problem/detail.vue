@@ -405,6 +405,10 @@ function clear() {
   location.reload()
 }
 
+function generateMermaid() {
+  message.info("还在开发中，敬请期待！")
+}
+
 onMounted(() => {
   getTagList()
   getProblemDetail()
@@ -625,7 +629,17 @@ watch(
   <h2 class="title">流程图区域</h2>
 
   <!-- 流程图相关设置 -->
-  <n-form inline label-placement="left">
+  <n-form inline label-placement="left" :show-feedback="false">
+    <n-form-item label="根据上面的答案智能生成 Mermaid 代码">
+      <n-button
+        type="primary"
+        size="small"
+        :disabled="!problem.answers.filter((a) => a.code).length"
+        @click="generateMermaid"
+      >
+        AI 生成
+      </n-button>
+    </n-form-item>
     <n-form-item label="允许提交流程图">
       <n-switch v-model:value="problem.allow_flowchart" />
     </n-form-item>
@@ -635,7 +649,7 @@ watch(
   </n-form>
 
   <n-form>
-    <n-form-item label="流程图">
+    <n-form-item>
       <MermaidEditor
         v-model="problem.mermaid_code"
         @render-success="onMermaidRenderSuccess"

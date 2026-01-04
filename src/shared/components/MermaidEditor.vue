@@ -105,12 +105,12 @@ onBeforeUnmount(() => {
       <n-flex align="center">
         <span>Mermaid 代码</span>
         <n-flex align="center">
-          <n-button text @click="copyCode" size="small" type="primary"
-            >复制</n-button
-          >
-          <n-button text @click="clearCode" type="error" size="small"
-            >清空</n-button
-          >
+          <n-button text @click="copyCode" size="small" type="primary">
+            复制
+          </n-button>
+          <n-button text @click="clearCode" type="error" size="small">
+            清空
+          </n-button>
         </n-flex>
       </n-flex>
       <n-input
