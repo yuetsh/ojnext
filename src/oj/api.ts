@@ -153,10 +153,8 @@ export function getClassRank(
   })
 }
 
-export function getUserClassRank(offset: number, limit: number) {
-  return http.get("user_class_rank", {
-    params: { offset, limit },
-  })
+export function getUserClassRank() {
+  return http.get("user_class_rank")
 }
 
 export function getClassPK(
