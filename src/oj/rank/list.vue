@@ -27,7 +27,6 @@ const gradeOptions = [
 ]
 
 const router = useRouter()
-const themeVars = useThemeVars()
 const userStore = useUserStore()
 const { isDesktop } = useBreakpoints()
 const data = ref<Rank[]>([])
@@ -195,16 +194,11 @@ const classColumns: DataTableColumn<ClassRank>[] = [
     width: 100,
     titleAlign: "center",
     align: "center",
-    render: (row) => {
-      if (row.rank === 1) return "🥇"
-      if (row.rank === 2) return "🥈"
-      if (row.rank === 3) return "🥉"
-      return row.rank
-    },
   },
   {
     title: "班级",
     key: "class_name",
+    render: (row) => `${row.class_name.slice(0, 2)}计算机${row.class_name.slice(2)}班`,
     width: 200,
     titleAlign: "center",
     align: "center",

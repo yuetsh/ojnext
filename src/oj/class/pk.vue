@@ -5,6 +5,7 @@ import { getClassPK } from "oj/api"
 import { useConfigStore } from "shared/store/config"
 import { Icon } from "@iconify/vue"
 import { Bar, Radar } from "vue-chartjs"
+import { useBreakpoints } from "shared/composables/breakpoints"
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -37,6 +38,7 @@ ChartJS.register(
 
 const configStore = useConfigStore()
 const message = useMessage()
+const { isDesktop } = useBreakpoints()
 
 interface ClassComparison {
   class_name: string
@@ -145,9 +147,9 @@ async function compare() {
 
 // 计算排名颜色
 function getRankColor(index: number) {
-  if (index === 0) return { type: "success" as const, text: "🥇" }
-  if (index === 1) return { type: "info" as const, text: "🥈" }
-  if (index === 2) return { type: "warning" as const, text: "🥉" }
+  if (index === 0) return { type: "success" as const, text: "1" }
+  if (index === 1) return { type: "info" as const, text: "2" }
+  if (index === 2) return { type: "warning" as const, text: "3" }
   return { type: "default" as const, text: `${index + 1}` }
 }
 
@@ -160,6 +162,10 @@ function getClassColor(index: number) {
     { bg: "rgba(208, 48, 80, 0.2)", border: "rgba(208, 48, 80, 0.8)" }, // error
     { bg: "rgba(128, 90, 213, 0.2)", border: "rgba(128, 90, 213, 0.8)" }, // purple
     { bg: "rgba(0, 184, 148, 0.2)", border: "rgba(0, 184, 148, 0.8)" }, // teal
+    { bg: "rgba(63, 81, 181, 0.2)", border: "rgba(63, 81, 181, 0.8)" }, // indigo
+    { bg: "rgba(0, 172, 193, 0.2)", border: "rgba(0, 172, 193, 0.8)" }, // cyan
+    { bg: "rgba(124, 179, 66, 0.2)", border: "rgba(124, 179, 66, 0.8)" }, // lime
+    { bg: "rgba(233, 30, 99, 0.2)", border: "rgba(233, 30, 99, 0.8)" }, // pink
   ]
   return colors[index % colors.length]
 }
@@ -552,41 +558,29 @@ const radarChartOptions = {
       </n-flex>
 
       <!-- 班级对比卡片 -->
-      <n-grid
-        v-if="comparisons.length > 0"
-        :cols="comparisons.length > 2 ? 2 : comparisons.length"
-        :x-gap="16"
-        :y-gap="16"
-      >
+      <n-grid v-if="comparisons.length > 0" :cols="2" :x-gap="16" :y-gap="16">
         <n-gi
           v-for="(classData, index) in comparisons"
           :key="classData.class_name"
+          :span="isDesktop ? 1 : 2"
         >
           <n-card
-            :title="classData.class_name"
+            :title="`${classData.class_name.slice(0, 2)}计算机${classData.class_name.slice(2)}班`"
             :bordered="true"
             hoverable
             :style="{
-              borderTop: `4px solid ${
-                getRankColor(index).type === 'success'
-                  ? '#18a058'
-                  : getRankColor(index).type === 'info'
-                    ? '#2080f0'
-                    : getRankColor(index).type === 'warning'
-                      ? '#f0a020'
-                      : '#d03050'
-              }`,
+              borderTop: `4px solid ${getClassColor(index).border}`,
             }"
           >
             <template #header-extra>
               <n-tag :type="getRankColor(index).type" size="large">
-                {{ getRankColor(index).text }}
+                #{{ getRankColor(index).text }}
               </n-tag>
             </template>
 
-            <!-- 班级信息布局 - 优化为便于比较 -->
+            <!-- 班级信息布局 -->
             <n-flex vertical :size="12">
-              <!-- AC核心指标 - 突出显示，便于横向对比 -->
+              <!-- AC核心指标 -->
               <n-grid :cols="5" :x-gap="8" responsive="screen">
                 <n-gi>
                   <n-statistic
@@ -934,7 +928,13 @@ const radarChartOptions = {
               render: (_, index) => getRankColor(index).text,
               width: 80,
             },
-            { title: '班级', key: 'class_name', width: 150 },
+            {
+              title: '班级',
+              key: 'class_name',
+              render: (row) =>
+                `${row.class_name.slice(0, 2)}计算机${row.class_name.slice(2)}班`,
+              width: 160,
+            },
             {
               title: '人数',
               key: 'user_count',
@@ -960,6 +960,7 @@ const radarChartOptions = {
             {
               title: '平均AC',
               key: 'avg_ac',
+              width: 100,
               render: (row) =>
                 h(
                   'span',
@@ -970,6 +971,7 @@ const radarChartOptions = {
             {
               title: '中位数AC',
               key: 'median_ac',
+              width: 100,
               render: (row) =>
                 h(
                   'span',
@@ -980,6 +982,7 @@ const radarChartOptions = {
             {
               title: '前10名平均',
               key: 'top_10_avg',
+              width: 100,
               render: (row) =>
                 h(
                   'span',
@@ -990,6 +993,7 @@ const radarChartOptions = {
             {
               title: '后10名平均',
               key: 'bottom_10_avg',
+              width: 100,
               render: (row) =>
                 h(
                   'span',
@@ -1000,6 +1004,7 @@ const radarChartOptions = {
             {
               title: '优秀率',
               key: 'excellent_rate',
+              width: 100,
               render: (row) =>
                 h(
                   'span',
@@ -1010,6 +1015,7 @@ const radarChartOptions = {
             {
               title: '及格率',
               key: 'pass_rate',
+              width: 100,
               render: (row) =>
                 h(
                   'span',
@@ -1020,6 +1026,7 @@ const radarChartOptions = {
             {
               title: '参与度',
               key: 'active_rate',
+              width: 100,
               render: (row) =>
                 h(
                   'span',

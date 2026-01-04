@@ -393,7 +393,7 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
         >
           <n-button
             quaternary
-            type="primary"
+            type="warning"
             @click="toggleStatisticPanel(true)"
           >
             数据统计
