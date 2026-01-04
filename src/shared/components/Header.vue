@@ -88,35 +88,35 @@ const menus = computed<MenuOption[]>(() => [
   {
     label: () => h(RouterLink, { to: "/learn/01" }, { default: () => "自学" }),
     key: "learn",
-    icon: renderIcon("streamline-emojis:snake"),
+    icon: renderIcon("twemoji:books"),
   },
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "题目" }),
     key: "problem",
-    icon: renderIcon("streamline-emojis:blossom"),
+    icon: renderIcon("twemoji:memo"),
   },
   {
     label: () =>
       h(RouterLink, { to: "/problemset" }, { default: () => "题单" }),
     key: "problemset",
-    icon: renderIcon("streamline-emojis:green-book"),
+    icon: renderIcon("twemoji:clipboard"),
   },
   {
     label: () =>
       h(RouterLink, { to: "/submission" }, { default: () => "提交" }),
     key: "submission",
-    icon: renderIcon("streamline-emojis:bouquet"),
+    icon: renderIcon("twemoji:inbox-tray"),
     show: userStore.showSubmissions,
   },
   {
     label: () => h(RouterLink, { to: "/contest" }, { default: () => "比赛" }),
     key: "contest",
-    icon: renderIcon("streamline-emojis:cherries"),
+    icon: renderIcon("twemoji:chequered-flag"),
   },
   {
     label: () => h(RouterLink, { to: "/rank" }, { default: () => "排名" }),
     key: "rank",
-    icon: renderIcon("streamline-emojis:hibiscus"),
+    icon: renderIcon("twemoji:trophy"),
   },
   {
     label: () => h(RouterLink, { to: "/class/pk" }, { default: () => "班级" }),
@@ -128,12 +128,12 @@ const menus = computed<MenuOption[]>(() => [
     label: () =>
       h(RouterLink, { to: "/announcement" }, { default: () => "公告" }),
     key: "announcement",
-    icon: renderIcon("streamline-emojis:palm-tree"),
+    icon: renderIcon("twemoji:loudspeaker"),
   },
   {
     label: () => "别点",
     key: "dont-click",
-    icon: renderIcon("streamline-emojis:ghost"),
+    icon: renderIcon("twemoji:zany-face"),
   },
   {
     label: () =>
@@ -144,7 +144,7 @@ const menus = computed<MenuOption[]>(() => [
       ),
     show: userStore.isAdminRole,
     key: "admin",
-    icon: renderIcon("streamline-emojis:panda-face"),
+    icon: renderIcon("twemoji:gear"),
   },
 ])
 
