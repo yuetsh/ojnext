@@ -118,4 +118,3 @@ onMounted(init)
     />
   </n-flex>
 </template>
-

@@ -143,7 +143,11 @@ export function getActivityRank(start: string) {
   })
 }
 
-export function getClassRank(offset: number, limit: number, grade?: number | null) {
+export function getClassRank(
+  offset: number,
+  limit: number,
+  grade?: number | null,
+) {
   return http.get("class_rank", {
     params: { offset, limit, grade },
   })
@@ -155,7 +159,11 @@ export function getUserClassRank(offset: number, limit: number) {
   })
 }
 
-export function getClassPK(classNames: string[], startTime?: string, endTime?: string) {
+export function getClassPK(
+  classNames: string[],
+  startTime?: string,
+  endTime?: string,
+) {
   const payload: any = {
     class_name: classNames,
   }

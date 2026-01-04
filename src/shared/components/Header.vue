@@ -136,7 +136,11 @@ const menus = computed<MenuOption[]>(() => [
       },
       {
         label: () =>
-          h(RouterLink, { to: "/class/my-rank" }, { default: () => "我的排名" }),
+          h(
+            RouterLink,
+            { to: "/class/my-rank" },
+            { default: () => "我的排名" },
+          ),
         key: "my-rank",
         show: userStore.isAuthed,
       },

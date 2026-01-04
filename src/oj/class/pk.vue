@@ -384,6 +384,14 @@ const radarChartData = computed(() => {
 
   const datasets = comparisons.value.map((c, index) => {
     const color = getClassColor(index)
+    const rawData = [
+      c.total_ac,
+      c.avg_ac,
+      c.median_ac,
+      c.excellent_rate,
+      c.pass_rate,
+      c.active_rate,
+    ]
     return {
       label: c.class_name,
       data: [
@@ -394,6 +402,7 @@ const radarChartData = computed(() => {
         c.pass_rate,
         c.active_rate,
       ],
+      rawData,
       backgroundColor: color.bg,
       borderColor: color.border,
       borderWidth: 2,
@@ -466,6 +475,28 @@ const radarChartOptions = {
     legend: {
       position: "bottom" as const,
     },
+    tooltip: {
+      callbacks: {
+        label: function (context: any) {
+          const dataset = context.dataset as any
+          const rawValue = dataset?.rawData?.[context.dataIndex]
+          const metric = context.label || ""
+          const isRate = context.dataIndex >= 3
+          if (rawValue === undefined || rawValue === null) {
+            return `${dataset.label || ""}: ${context.parsed.r?.toFixed(2) ?? ""}`
+          }
+          const formatted = Number.isFinite(rawValue)
+            ? isRate
+              ? rawValue.toFixed(1)
+              : Number.isInteger(rawValue)
+                ? rawValue.toString()
+                : rawValue.toFixed(2)
+            : String(rawValue)
+          const suffix = isRate ? "%" : ""
+          return `${dataset.label || ""} - ${metric}: ${formatted}${suffix}`
+        },
+      },
+    },
   },
   scales: {
     r: {
@@ -485,7 +516,10 @@ const radarChartOptions = {
       <n-h2 style="margin-bottom: 0">班级PK</n-h2>
 
       <n-flex :wrap="false" align="flex-start" :size="16">
-        <n-form-item label="选择班级（至少2个）" style="width: 300px; margin-bottom: 0">
+        <n-form-item
+          label="选择班级（至少2个）"
+          style="width: 300px; margin-bottom: 0"
+        >
           <n-select
             v-model:value="selectedClasses"
             :options="classOptions"
@@ -494,7 +528,10 @@ const radarChartOptions = {
           />
         </n-form-item>
 
-        <n-form-item label="时间段（可选）" style="width: 200px; margin-bottom: 0">
+        <n-form-item
+          label="时间段（可选）"
+          style="width: 200px; margin-bottom: 0"
+        >
           <n-select
             v-model:value="duration"
             :options="timeRangeOptions"
@@ -504,7 +541,12 @@ const radarChartOptions = {
           />
         </n-form-item>
 
-        <n-button type="primary" @click="compare" :loading="loading" style="margin-top: 26px">
+        <n-button
+          type="primary"
+          @click="compare"
+          :loading="loading"
+          style="margin-top: 26px"
+        >
           开始PK
         </n-button>
       </n-flex>
@@ -516,7 +558,10 @@ const radarChartOptions = {
         :x-gap="16"
         :y-gap="16"
       >
-        <n-gi v-for="(classData, index) in comparisons" :key="classData.class_name">
+        <n-gi
+          v-for="(classData, index) in comparisons"
+          :key="classData.class_name"
+        >
           <n-card
             :title="classData.class_name"
             :bordered="true"
@@ -544,7 +589,12 @@ const radarChartOptions = {
               <!-- AC核心指标 - 突出显示，便于横向对比 -->
               <n-grid :cols="5" :x-gap="8" responsive="screen">
                 <n-gi>
-                  <n-statistic label="总AC数" :value="classData.total_ac" size="large" class="stat-total-ac">
+                  <n-statistic
+                    label="总AC数"
+                    :value="classData.total_ac"
+                    size="large"
+                    class="stat-total-ac"
+                  >
                     <template #suffix>
                       <Icon icon="streamline-emojis:raised-fist-1" width="20" />
                     </template>
@@ -603,43 +653,71 @@ const radarChartOptions = {
               <n-divider style="margin: 12px 0" />
 
               <!-- 详细统计 - 紧凑布局，统一格式 -->
-              <n-descriptions bordered :column="2" size="small" label-placement="left">
+              <n-descriptions
+                bordered
+                :column="2"
+                size="small"
+                label-placement="left"
+              >
                 <!-- 分位数统计 -->
                 <n-descriptions-item label="第一四分位数(Q1)">
-                  <span style="color: #9254de; font-weight: 500">{{ classData.q1_ac.toFixed(2) }}</span>
+                  <span style="color: #9254de; font-weight: 500">{{
+                    classData.q1_ac.toFixed(2)
+                  }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="第三四分位数(Q3)">
-                  <span style="color: #f759ab; font-weight: 500">{{ classData.q3_ac.toFixed(2) }}</span>
+                  <span style="color: #f759ab; font-weight: 500">{{
+                    classData.q3_ac.toFixed(2)
+                  }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="四分位距(IQR)">
-                  <span style="color: #13c2c2; font-weight: 500">{{ classData.iqr.toFixed(2) }}</span>
+                  <span style="color: #13c2c2; font-weight: 500">{{
+                    classData.iqr.toFixed(2)
+                  }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="标准差">
-                  <span style="color: #fa8c16; font-weight: 500">{{ classData.std_dev.toFixed(2) }}</span>
+                  <span style="color: #fa8c16; font-weight: 500">{{
+                    classData.std_dev.toFixed(2)
+                  }}</span>
                 </n-descriptions-item>
 
                 <!-- 分层统计 -->
                 <n-descriptions-item label="前10名平均">
-                  <span style="color: #cf1322; font-weight: 600">{{ classData.top_10_avg.toFixed(2) }}</span>
+                  <span style="color: #cf1322; font-weight: 600">{{
+                    classData.top_10_avg.toFixed(2)
+                  }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="后10名平均">
-                  <span style="color: #096dd9; font-weight: 500">{{ classData.bottom_10_avg.toFixed(2) }}</span>
+                  <span style="color: #096dd9; font-weight: 500">{{
+                    classData.bottom_10_avg.toFixed(2)
+                  }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="前25%平均">
-                  <span style="color: #f5222d; font-weight: 600">{{ classData.top_25_avg.toFixed(2) }}</span>
+                  <span style="color: #f5222d; font-weight: 600">{{
+                    classData.top_25_avg.toFixed(2)
+                  }}</span>
                 </n-descriptions-item>
                 <n-descriptions-item label="后25%平均">
-                  <span style="color: #531dab; font-weight: 500">{{ classData.bottom_25_avg.toFixed(2) }}</span>
+                  <span style="color: #531dab; font-weight: 500">{{
+                    classData.bottom_25_avg.toFixed(2)
+                  }}</span>
                 </n-descriptions-item>
 
                 <!-- 人数 -->
                 <n-descriptions-item label="人数">
-                  <span style="color: #1890ff; font-weight: 600">{{ classData.user_count }}</span>
+                  <span style="color: #1890ff; font-weight: 600">{{
+                    classData.user_count
+                  }}</span>
                 </n-descriptions-item>
               </n-descriptions>
 
               <!-- 比率统计 - 使用进度条图表 -->
-              <n-card size="small" title="比率统计" embedded style="margin-top: 12px">
+              <n-card
+                size="small"
+                title="比率统计"
+                embedded
+                style="margin-top: 12px"
+              >
                 <n-space vertical :size="10">
                   <n-progress
                     type="line"
@@ -680,22 +758,37 @@ const radarChartOptions = {
               <template
                 v-if="hasTimeRange && classData.recent_total_ac !== undefined"
               >
-                <n-descriptions bordered :column="2" size="small" label-placement="left" style="margin-top: 12px">
-
+                <n-descriptions
+                  bordered
+                  :column="2"
+                  size="small"
+                  label-placement="left"
+                  style="margin-top: 12px"
+                >
                   <n-descriptions-item label="时间段总AC">
-                    <span style="color: #ff7875; font-weight: 600">{{ classData.recent_total_ac }}</span>
+                    <span style="color: #ff7875; font-weight: 600">{{
+                      classData.recent_total_ac
+                    }}</span>
                   </n-descriptions-item>
                   <n-descriptions-item label="时间段平均AC">
-                    <span style="color: #73d13d; font-weight: 600">{{ classData.recent_avg_ac?.toFixed(2) }}</span>
+                    <span style="color: #73d13d; font-weight: 600">{{
+                      classData.recent_avg_ac?.toFixed(2)
+                    }}</span>
                   </n-descriptions-item>
                   <n-descriptions-item label="时间段中位数AC">
-                    <span style="color: #ffc53d; font-weight: 600">{{ classData.recent_median_ac?.toFixed(2) }}</span>
+                    <span style="color: #ffc53d; font-weight: 600">{{
+                      classData.recent_median_ac?.toFixed(2)
+                    }}</span>
                   </n-descriptions-item>
                   <n-descriptions-item label="时间段前10名平均">
-                    <span style="color: #ff4d4f; font-weight: 600">{{ classData.recent_top_10_avg?.toFixed(2) }}</span>
+                    <span style="color: #ff4d4f; font-weight: 600">{{
+                      classData.recent_top_10_avg?.toFixed(2)
+                    }}</span>
                   </n-descriptions-item>
                   <n-descriptions-item label="活跃学生数" :span="2">
-                    <span style="color: #1890ff; font-weight: 600">{{ classData.recent_active_count }}</span>
+                    <span style="color: #1890ff; font-weight: 600">{{
+                      classData.recent_active_count
+                    }}</span>
                   </n-descriptions-item>
                 </n-descriptions>
               </template>
@@ -827,7 +920,11 @@ const radarChartOptions = {
       </template>
 
       <!-- 对比表格 -->
-      <n-card v-if="comparisons.length > 0" title="对比表格" style="margin-top: 20px">
+      <n-card
+        v-if="comparisons.length > 0"
+        title="对比表格"
+        style="margin-top: 20px"
+      >
         <n-data-table
           :data="comparisons"
           :columns="[
@@ -842,48 +939,93 @@ const radarChartOptions = {
               title: '人数',
               key: 'user_count',
               width: 80,
-              render: (row) => h('span', { style: { color: '#1890ff', fontWeight: '600' } }, row.user_count),
+              render: (row) =>
+                h(
+                  'span',
+                  { style: { color: '#1890ff', fontWeight: '600' } },
+                  row.user_count,
+                ),
             },
             {
               title: '总AC数',
               key: 'total_ac',
               width: 100,
-              render: (row) => h('span', { style: { color: '#ff4d4f', fontWeight: '600' } }, row.total_ac),
+              render: (row) =>
+                h(
+                  'span',
+                  { style: { color: '#ff4d4f', fontWeight: '600' } },
+                  row.total_ac,
+                ),
             },
             {
               title: '平均AC',
               key: 'avg_ac',
-              render: (row) => h('span', { style: { color: '#52c41a', fontWeight: '600' } }, row.avg_ac.toFixed(2)),
+              render: (row) =>
+                h(
+                  'span',
+                  { style: { color: '#52c41a', fontWeight: '600' } },
+                  row.avg_ac.toFixed(2),
+                ),
             },
             {
               title: '中位数AC',
               key: 'median_ac',
-              render: (row) => h('span', { style: { color: '#fa8c16', fontWeight: '600' } }, row.median_ac.toFixed(2)),
+              render: (row) =>
+                h(
+                  'span',
+                  { style: { color: '#fa8c16', fontWeight: '600' } },
+                  row.median_ac.toFixed(2),
+                ),
             },
             {
               title: '前10名平均',
               key: 'top_10_avg',
-              render: (row) => h('span', { style: { color: '#cf1322', fontWeight: '600' } }, row.top_10_avg.toFixed(2)),
+              render: (row) =>
+                h(
+                  'span',
+                  { style: { color: '#cf1322', fontWeight: '600' } },
+                  row.top_10_avg.toFixed(2),
+                ),
             },
             {
               title: '后10名平均',
               key: 'bottom_10_avg',
-              render: (row) => h('span', { style: { color: '#096dd9', fontWeight: '500' } }, row.bottom_10_avg.toFixed(2)),
+              render: (row) =>
+                h(
+                  'span',
+                  { style: { color: '#096dd9', fontWeight: '500' } },
+                  row.bottom_10_avg.toFixed(2),
+                ),
             },
             {
               title: '优秀率',
               key: 'excellent_rate',
-              render: (row) => h('span', { style: { color: '#faad14', fontWeight: '600' } }, row.excellent_rate.toFixed(1) + '%'),
+              render: (row) =>
+                h(
+                  'span',
+                  { style: { color: '#faad14', fontWeight: '600' } },
+                  row.excellent_rate.toFixed(1) + '%',
+                ),
             },
             {
               title: '及格率',
               key: 'pass_rate',
-              render: (row) => h('span', { style: { color: '#52c41a', fontWeight: '600' } }, row.pass_rate.toFixed(1) + '%'),
+              render: (row) =>
+                h(
+                  'span',
+                  { style: { color: '#52c41a', fontWeight: '600' } },
+                  row.pass_rate.toFixed(1) + '%',
+                ),
             },
             {
               title: '参与度',
               key: 'active_rate',
-              render: (row) => h('span', { style: { color: '#1890ff', fontWeight: '600' } }, row.active_rate.toFixed(1) + '%'),
+              render: (row) =>
+                h(
+                  'span',
+                  { style: { color: '#1890ff', fontWeight: '600' } },
+                  row.active_rate.toFixed(1) + '%',
+                ),
             },
           ]"
         />
@@ -946,4 +1088,3 @@ const radarChartOptions = {
   font-weight: 600;
 }
 </style>
-
