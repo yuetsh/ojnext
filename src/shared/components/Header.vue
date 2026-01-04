@@ -119,32 +119,10 @@ const menus = computed<MenuOption[]>(() => [
     icon: renderIcon("streamline-emojis:hibiscus"),
   },
   {
-    label: () => "班级",
-    key: "class",
+    label: () => h(RouterLink, { to: "/class/pk" }, { default: () => "班级" }),
     show: false,
+    key: "class",
     icon: renderIcon("twemoji:crossed-swords"),
-    children: [
-      {
-        label: () =>
-          h(RouterLink, { to: "/class/rank" }, { default: () => "班级排名" }),
-        key: "class-rank",
-      },
-      {
-        label: () =>
-          h(RouterLink, { to: "/class/pk" }, { default: () => "班级PK" }),
-        key: "class-pk",
-      },
-      {
-        label: () =>
-          h(
-            RouterLink,
-            { to: "/class/my-rank" },
-            { default: () => "我的排名" },
-          ),
-        key: "my-rank",
-        show: userStore.isAuthed,
-      },
-    ],
   },
   {
     label: () =>

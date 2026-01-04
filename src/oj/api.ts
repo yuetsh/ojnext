@@ -143,18 +143,18 @@ export function getActivityRank(start: string) {
   })
 }
 
-export function getClassRank(
-  offset: number,
-  limit: number,
-  grade?: number | null,
-) {
+export function getClassRank(grade?: number | null) {
   return http.get("class_rank", {
-    params: { offset, limit, grade },
+    params: { grade },
   })
 }
 
-export function getUserClassRank() {
-  return http.get("user_class_rank")
+export function getUserClassRank(
+  scope?: "all" | "window",
+  offset?: number,
+  limit?: number,
+) {
+  return http.get("user_class_rank", { params: { scope, offset, limit } })
 }
 
 export function getClassPK(

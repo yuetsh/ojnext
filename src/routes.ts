@@ -68,21 +68,7 @@ export const ojs: RouteRecordRaw = {
     },
     {
       path: "class",
-      children: [
-        {
-          path: "rank",
-          component: () => import("oj/class/rank.vue"),
-        },
-        {
-          path: "pk",
-          component: () => import("oj/class/pk.vue"),
-        },
-        {
-          path: "my-rank",
-          component: () => import("oj/class/my-rank.vue"),
-          meta: { requiresAuth: true },
-        },
-      ],
+      component: () => import("oj/class/pk.vue"),
     },
     {
       path: "announcement",
