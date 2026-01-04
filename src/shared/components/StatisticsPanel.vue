@@ -88,16 +88,24 @@
         striped
         :columns="columns"
         :data="list"
+        :row-key="rowKey"
+        :expanded-row-keys="expandedRowKeys"
+        @update:expanded-row-keys="updateExpandedRowKeys"
+        :row-props="rowProps"
       />
     </n-tab-pane>
   </n-tabs>
 </template>
 <script setup lang="ts">
+import { h } from "vue"
 import { formatISO, sub, type Duration } from "date-fns"
 import { getSubmissionStatistics } from "oj/api"
 import { DURATION_OPTIONS } from "utils/constants"
 import { Doughnut } from "vue-chartjs"
 import { Chart as ChartJS, ArcElement, Title, Tooltip, Legend } from "chart.js"
+import { NButton, NFlex, NText, type DataTableRowKey } from "naive-ui"
+import { JUDGE_STATUS } from "utils/constants"
+import type { SUBMISSION_RESULT } from "utils/types"
 
 // 注册 Chart.js 组件
 ChartJS.register(ArcElement, Title, Tooltip, Legend)
@@ -115,7 +123,34 @@ const options: SelectOption[] = [
   { label: "30分钟内", value: "minutes:30" },
 ].concat(DURATION_OPTIONS)
 
-const columns: DataTableColumn[] = [
+function openSubmission(id: string) {
+  window.open(`/submission/${id}`, "_blank", "noopener")
+}
+
+const columns: DataTableColumn<UserStatistic>[] = [
+  {
+    type: "expand",
+    renderExpand: (row) => {
+      return h(NFlex, { size: "small", wrap: true }, () =>
+        row.submission_items.map((item) =>
+          h(
+            NButton,
+            {
+              size: "small",
+              tertiary: true,
+              type: JUDGE_STATUS[item.result]?.type ?? "default",
+              style: "width: 120px",
+              onClick: (event: MouseEvent) => {
+                event.stopPropagation()
+                openSubmission(item.id)
+              },
+            },
+            () => item.id.toString().slice(0, 12),
+          ),
+        ),
+      )
+    },
+  },
   { title: "用户", key: "username" },
   { title: "提交数", key: "submission_count" },
   { title: "已解决", key: "accepted_count" },
@@ -145,11 +180,16 @@ interface UserStatistic {
   submission_count: number
   accepted_count: number
   correct_rate: string
+  submission_items: Array<{
+    id: string
+    result: SUBMISSION_RESULT
+  }>
 }
 
 const list = ref<UserStatistic[]>([])
 const listUnaccepted = ref<string[]>([])
 const [unaccepted, toggleUnaccepted] = useToggle()
+const expandedRowKeys = ref<DataTableRowKey[]>([])
 
 // 饼图数据 - 提交正确率分布
 const pieChartData = computed(() => {
@@ -269,6 +309,25 @@ async function handleStatistics() {
   person.rate = res.data.person_rate
 
   toggleUnaccepted(false)
+}
+
+function rowKey(row: UserStatistic): DataTableRowKey {
+  return row.username
+}
+
+function updateExpandedRowKeys(keys: DataTableRowKey[]) {
+  expandedRowKeys.value = keys.slice(-1)
+}
+
+function rowProps(row: UserStatistic) {
+  return {
+    style: "cursor: pointer;",
+    onClick: () => {
+      const key = rowKey(row)
+      const isExpanded = expandedRowKeys.value.includes(key)
+      expandedRowKeys.value = isExpanded ? [] : [key]
+    },
+  }
 }
 </script>
 <style scoped></style>
