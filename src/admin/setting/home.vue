@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { h, onMounted, reactive, ref, watch } from "vue"
+import { useRouter } from "vue-router"
 import { NButton } from "naive-ui"
 import { getRank } from "oj/api"
 import Pagination from "shared/components/Pagination.vue"
@@ -12,9 +14,13 @@ const submissionCount = ref(0)
 const contestCount = ref(0)
 const userStore = useUserStore()
 const router = useRouter()
-const message = useMessage()
 const showModal = ref(false)
 const luckyGuy = ref("")
+const isRolling = ref(false)
+const rollingNames = ref<string[]>([])
+const pulseKey = ref(0)
+let rollingTimer: ReturnType<typeof setInterval> | null = null
+let rollingStopper: ReturnType<typeof setTimeout> | null = null
 const data = ref<Rank[]>([])
 const total = ref(0)
 const query = reactive({
@@ -71,19 +77,50 @@ async function listRanks() {
   total.value = res.data.total
 }
 
+function stopRolling() {
+  if (rollingTimer) {
+    clearInterval(rollingTimer)
+    rollingTimer = null
+  }
+  if (rollingStopper) {
+    clearTimeout(rollingStopper)
+    rollingStopper = null
+  }
+  isRolling.value = false
+}
+
+function startRolling(finalName: string) {
+  stopRolling()
+  if (!rollingNames.value.length) return
+  isRolling.value = true
+  const interval = 80
+  const duration = 2000
+  let index = 0
+  rollingTimer = setInterval(() => {
+    luckyGuy.value = rollingNames.value[index % rollingNames.value.length]
+    index += 1
+  }, interval)
+  rollingStopper = setTimeout(() => {
+    stopRolling()
+    luckyGuy.value = finalName
+    pulseKey.value += 1
+  }, duration)
+}
+
 async function getRandom() {
   const res = await randomUser10(query.classroom)
-  const name = res.data[res.data.length - 1]
-  luckyGuy.value = name.split(query.classroom)[1]
+  const names = (res.data as string[]).map(
+    (name) => name.split(query.classroom)[1],
+  )
+  rollingNames.value = names
+  const finalName = names[names.length - 1]
+  startRolling(finalName)
 }
 
 async function getRandomModal() {
-  try {
-    await getRandom()
-    showModal.value = true
-  } catch (error) {
-    message.error("没有学生")
-  }
+  showModal.value = true
+  stopRolling()
+  luckyGuy.value = ""
 }
 
 watch(() => query.page, listRanks)
@@ -107,7 +144,10 @@ watch(
 )
 
 watch(showModal, (v) => {
-  if (!v) luckyGuy.value = ""
+  if (!v) {
+    stopRolling()
+    luckyGuy.value = ""
+  }
 })
 </script>
 
@@ -160,8 +200,10 @@ watch(showModal, (v) => {
     style="width: 400px"
   >
     <n-flex vertical justify="center" align="center">
-      <n-h1 class="lucky">{{ luckyGuy }}</n-h1>
-      <n-button block @click="getRandom">再来一次</n-button>
+      <n-h1 :key="pulseKey" class="lucky pulse">{{ luckyGuy }}</n-h1>
+      <n-button block :disabled="isRolling" @click="getRandom">
+        {{ luckyGuy ? "再来一次" : "开始抽签" }}
+      </n-button>
     </n-flex>
   </n-modal>
 </template>
@@ -182,5 +224,21 @@ watch(showModal, (v) => {
 
 .lucky {
   height: 48px;
+}
+
+.pulse {
+  animation: lucky-pulse 0.6s ease-out;
+}
+
+@keyframes lucky-pulse {
+  0% {
+    transform: scale(0.9);
+  }
+  60% {
+    transform: scale(1.18);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 </style>

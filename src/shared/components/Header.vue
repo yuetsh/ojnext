@@ -289,6 +289,6 @@ function handleMenuSelect(key: string) {
 .title {
   font-size: 18px;
   cursor: pointer;
-  margin: 0 20px;
+  margin: 0 16px;
 }
 </style>

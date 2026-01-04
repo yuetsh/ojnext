@@ -198,7 +198,8 @@ const classColumns: DataTableColumn<ClassRank>[] = [
   {
     title: "班级",
     key: "class_name",
-    render: (row) => `${row.class_name.slice(0, 2)}计算机${row.class_name.slice(2)}班`,
+    render: (row) =>
+      `${row.class_name.slice(0, 2)}计算机${row.class_name.slice(2)}班`,
     width: 200,
     titleAlign: "center",
     align: "center",
