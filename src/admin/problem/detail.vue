@@ -14,6 +14,7 @@ import {
   createProblem,
   editContestProblem,
   editProblem,
+  generateFlowchartFromPythonCode,
   getProblem,
   uploadTestcases,
 } from "../api"
@@ -45,6 +46,8 @@ const title = computed(
       "admin contest problem edit": "编辑比赛题目",
     })[<string>route.name],
 )
+
+const isAIGenerating = ref(false)
 
 const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
   _id: "",
@@ -405,8 +408,14 @@ function clear() {
   location.reload()
 }
 
-function generateMermaid() {
-  message.info("还在开发中，敬请期待！")
+async function generateMermaid() {
+  isAIGenerating.value = true
+  const res = await generateFlowchartFromPythonCode(
+    problem.value.answers.filter((a) => a.language === "Python3")[0].code,
+  )
+  isAIGenerating.value = false
+  message.warning("如果渲染不成功，请复制到外部 AI 网站检查语法")
+  problem.value.mermaid_code = res.data.flowchart
 }
 
 onMounted(() => {
@@ -630,11 +639,15 @@ watch(
 
   <!-- 流程图相关设置 -->
   <n-form inline label-placement="left" :show-feedback="false">
-    <n-form-item label="根据上面的答案智能生成 Mermaid 代码">
+    <n-form-item label="根据上面的【Python答案】智能生成 Mermaid 代码">
       <n-button
         type="primary"
         size="small"
-        :disabled="!problem.answers.filter((a) => a.code).length"
+        :disabled="
+          !problem.answers.filter((a) => a.language === 'Python3')[0].code
+            .length
+        "
+        :loading="isAIGenerating"
         @click="generateMermaid"
       >
         AI 生成

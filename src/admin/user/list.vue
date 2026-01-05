@@ -295,8 +295,14 @@ watch(() => [query.page, query.limit, query.type, query.orderBy], listUsers)
         <n-form-item-gi :span="1" label="真名">
           <n-input v-model:value="userEditing.real_name" />
         </n-form-item-gi>
+        <n-form-item-gi v-if="!create" :span="1" label="班级">
+          <n-input v-model:value="userEditing.class_name" />
+        </n-form-item-gi>
         <n-form-item-gi :span="1" label="邮箱">
           <n-input v-model:value="userEditing.email" />
+        </n-form-item-gi>
+        <n-form-item-gi v-if="!create" :span="1" label="类型">
+          <n-select v-model:value="userEditing.admin_type" :options="options" />
         </n-form-item-gi>
         <n-form-item-gi
           :span="1"
@@ -304,9 +310,6 @@ watch(() => [query.page, query.limit, query.type, query.orderBy], listUsers)
           label-style="color: red; font-weight: bold"
         >
           <n-input v-model:value="password" />
-        </n-form-item-gi>
-        <n-form-item-gi v-if="!create" :span="1" label="类型">
-          <n-select v-model:value="userEditing.admin_type" :options="options" />
         </n-form-item-gi>
         <n-form-item-gi
           v-if="!create && userEditing.admin_type === USER_TYPE.ADMIN"

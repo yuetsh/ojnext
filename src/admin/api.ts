@@ -68,6 +68,10 @@ export function toggleProblemVisible(problemID: number) {
   return http.put("admin/problem/visible", { id: problemID })
 }
 
+export function generateFlowchartFromPythonCode(python: string) {
+  return http.post("admin/problem/flowchart", { python })
+}
+
 export function editContestProblem(problem: AdminProblem | BlankProblem) {
   return http.put("admin/contest/problem", problem)
 }
