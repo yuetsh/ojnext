@@ -403,7 +403,19 @@ watch(
     <n-grid :cols="isDesktop ? 2 : 1" :x-gap="20" :y-gap="20">
       <n-gi :span="1">
         <n-card>
-          <template #header>班级排名</template>
+          <template #header>
+            <n-flex align="center">
+              <span>班级排名</span>
+              <n-button
+                type="primary"
+                secondary
+                @click="router.push('/class')"
+                v-if="userStore.isAdminRole"
+              >
+                班级PK
+              </n-button>
+            </n-flex>
+          </template>
           <template #header-extra>
             <n-select
               v-model:value="classQuery.grade"
