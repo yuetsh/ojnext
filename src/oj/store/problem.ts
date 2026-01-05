@@ -8,10 +8,11 @@ import { LANGUAGE, Problem } from "utils/types"
 export const useProblemStore = defineStore("problem", () => {
   // ==================== 状态 ====================
   const problem = ref<Problem | null>(null)
+  const route = useRoute()
 
   // ==================== 计算属性 ====================
   const languages = computed<LANGUAGE[]>(() => {
-    if (problem.value?.allow_flowchart) {
+    if (route.name === "problem" && problem.value?.allow_flowchart) {
       return ["Flowchart", ...problem.value?.languages]
     }
     return problem.value?.languages ?? []

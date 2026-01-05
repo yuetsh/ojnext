@@ -64,14 +64,17 @@ export const ojs: RouteRecordRaw = {
     },
     {
       path: "rank",
+      name: "rank",
       component: () => import("oj/rank/list.vue"),
     },
     {
       path: "class",
+      name: "class",
       component: () => import("oj/class/pk.vue"),
     },
     {
       path: "announcement",
+      name: "announcements",
       component: () => import("oj/announcement/list.vue"),
     },
     {
@@ -97,11 +100,13 @@ export const ojs: RouteRecordRaw = {
     },
     {
       path: "ai-analysis",
+      name: "ai",
       component: () => import("oj/ai/analysis.vue"),
       meta: { requiresAuth: true },
     },
     {
       path: "flowchart",
+      name: "flowchart",
       component: () => import("oj/flowchart/index.vue"),
     },
     {
