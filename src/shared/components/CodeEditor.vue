@@ -3,10 +3,13 @@ import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
 import { EditorView } from "@codemirror/view"
 import { Codemirror } from "vue-codemirror"
-import type { Extension } from "@codemirror/state"
+import { autocompletion } from "@codemirror/autocomplete"
 import { LANGUAGE } from "utils/types"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
+import { enhanceCompletion } from "shared/extensions/autocompletion"
+
+
 interface Props {
   language?: LANGUAGE
   fontSize?: number
@@ -36,13 +39,16 @@ const styleTheme = EditorView.baseTheme({
   },
 })
 
-const lang = computed((): Extension => {
+const langExtension = computed(() => {
   return ["Python2", "Python3"].includes(props.language) ? python() : cpp()
 })
 
 const extensions = computed(() => [
   styleTheme,
-  lang.value,
+  langExtension.value,
+  autocompletion({
+    override: [enhanceCompletion(props.language)],
+  }),
   isDark.value ? oneDark : smoothy,
 ])
 </script>

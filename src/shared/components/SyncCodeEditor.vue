@@ -3,12 +3,15 @@ import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
 import { EditorView } from "@codemirror/view"
 import { Codemirror } from "vue-codemirror"
+import { autocompletion } from "@codemirror/autocomplete"
 import type { Extension } from "@codemirror/state"
 import { LANGUAGE } from "utils/types"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
 import { useCodeSync, SYNC_ERROR_CODES } from "../composables/sync"
 import { useBreakpoints } from "../composables/breakpoints"
+import { enhanceCompletion } from "shared/extensions/autocompletion"
+
 const isDark = useDark()
 
 interface EditorReadyPayload {
@@ -55,14 +58,17 @@ const styleTheme = EditorView.baseTheme({
   },
 })
 
-const lang = computed((): Extension => {
+const langExtension = computed((): Extension => {
   return ["Python2", "Python3"].includes(props.language) ? python() : cpp()
 })
 
 const extensions = computed(() => [
   styleTheme,
-  lang.value,
+  langExtension.value,
   isDark.value ? oneDark : smoothy,
+  autocompletion({
+    override: [enhanceCompletion(props.language)],
+  }),
   getInitialExtension(),
 ])
 
