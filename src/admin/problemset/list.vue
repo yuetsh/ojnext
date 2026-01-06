@@ -76,11 +76,6 @@ const columns: DataTableColumn<ProblemSetList>[] = [
     },
   },
   {
-    title: "题目数量",
-    key: "problems_count",
-    width: 100,
-  },
-  {
     title: "创建时间",
     key: "create_time",
     width: 180,
