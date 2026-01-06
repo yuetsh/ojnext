@@ -9,7 +9,6 @@ import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
 import { enhanceCompletion } from "shared/extensions/autocompletion"
 
-
 interface Props {
   language?: LANGUAGE
   fontSize?: number
