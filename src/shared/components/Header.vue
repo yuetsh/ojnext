@@ -213,7 +213,12 @@ function handleMenuSelect(key: string) {
 <template>
   <n-flex justify="space-between" align="center">
     <n-flex align="center">
-      <n-flex align="center" class="title" @click="goHome">
+      <n-flex
+        align="center"
+        class="title"
+        :class="isDesktop ? 'desktop' : ''"
+        @click="goHome"
+      >
         <Icon icon="streamline-emojis:dog" :height="30"></Icon>
         <div>{{ configStore.config?.website_name }}</div>
         <div v-if="showEnvVersion">({{ envVersion }})</div>
@@ -289,6 +294,9 @@ function handleMenuSelect(key: string) {
 .title {
   font-size: 18px;
   cursor: pointer;
+}
+
+.title.desktop {
   margin: 0 16px;
 }
 </style>
