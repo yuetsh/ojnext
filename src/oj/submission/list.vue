@@ -357,7 +357,7 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
         <n-form-item>
           <n-input
             :disabled="query.myself === '1'"
-            class="input"
+            style="width: 140px;"
             clearable
             v-model:value="query.username"
             placeholder="用户"
@@ -365,7 +365,7 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
         </n-form-item>
         <n-form-item>
           <n-input
-            class="input"
+            style="width: 120px;"
             clearable
             v-model:value="query.problem"
             placeholder="题号"
@@ -478,10 +478,6 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
 </template>
 <style scoped>
 .select {
-  width: 120px;
-}
-
-.input {
   width: 120px;
 }
 
