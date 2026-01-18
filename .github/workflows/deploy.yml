@@ -5,45 +5,41 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: debian
+            build_command: build
+            remote_port: 22
+            target: /root/OJDeploy/data/clientnext
+          - name: school
+            build_command: build:staging
+            remote_port: 8822
+            target: /root/OJ/data/dist
     steps:
       - uses: actions/checkout@v4
 
       - uses: actions/setup-node@v4
         with:
-          node-version: 22
+          node-version: 24
           cache: npm
-      - run: npm install
-      - run: CI=false npm run build
+      - run: npm ci
+      - run: npm run ${{ matrix.build_command }}
+        env:
+          CI: false
 
       - uses: easingthemes/ssh-deploy@main
         with:
           SSH_PRIVATE_KEY: ${{ secrets.KEY }}
           REMOTE_HOST: ${{ secrets.HOST }}
+          REMOTE_PORT: ${{ matrix.remote_port }}
           ARGS: "-avzr --delete"
           SOURCE: dist/
           REMOTE_USER: root
-          TARGET: /root/OJDeploy/data/clientnext
-
-  # deploy-for-test:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - uses: actions/checkout@v4
-
-  #     - uses: actions/setup-node@v4
-  #       with:
-  #         node-version: 22
-  #         cache: npm
-  #     - run: npm install
-  #     - run: CI=false NODE_ENV=development npm run build
-
-  #     - uses: easingthemes/ssh-deploy@main
-  #       with:
-  #         SSH_PRIVATE_KEY: ${{ secrets.KEY }}
-  #         REMOTE_HOST: ${{ secrets.HOST }}
-  #         ARGS: "-avzr --delete"
-  #         SOURCE: dist/
-  #         REMOTE_USER: root
-  #         TARGET: /root/ojtest/data/clientnext
+          TARGET: ${{ matrix.target }}
