@@ -297,6 +297,10 @@ export function getAIHeatmapData() {
   return http.get("ai/heatmap")
 }
 
+export function getAILoginSummary() {
+  return http.get("ai/login_summary")
+}
+
 // ==================== 流程图相关API ====================
 
 export function submitFlowchart(data: {

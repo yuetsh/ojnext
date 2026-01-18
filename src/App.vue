@@ -6,6 +6,7 @@ import { useConfigStore } from "shared/store/config"
 import { useConfigUpdate } from "shared/composables/configUpdate"
 import { useMaxKB } from "shared/composables/maxkb"
 import { useUserStore } from "shared/store/user"
+import LoginSummaryModal from "shared/components/LoginSummaryModal.vue"
 
 const isDark = useDark()
 const configStore = useConfigStore()
@@ -60,6 +61,7 @@ provide("hljs", hljsInstance)
   >
     <n-message-provider>
       <router-view></router-view>
+      <LoginSummaryModal />
     </n-message-provider>
   </n-config-provider>
 </template>
