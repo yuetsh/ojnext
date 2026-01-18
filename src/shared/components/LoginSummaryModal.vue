@@ -8,14 +8,12 @@ import { parseTime } from "utils/functions"
 const loginSummaryStore = useLoginSummaryStore()
 const { isDesktop } = useBreakpoints()
 
-const rangeText = computed(() => {
+const lastLoginTime = computed(() => {
   const summary = loginSummaryStore.summary
-  if (!summary?.start || !summary?.end) {
+  if (!summary?.start) {
     return ""
   }
-  const start = parseTime(summary.start, "YYYY-MM-DD HH:mm")
-  const end = parseTime(summary.end, "YYYY-MM-DD HH:mm")
-  return `${start} - ${end}`
+  return parseTime(summary.start, "YYYY-MM-DD HH:mm")
 })
 
 const hasAnalysis = computed(() => !!loginSummaryStore.analysis)
@@ -31,7 +29,7 @@ const hasAnalysis = computed(() => !!loginSummaryStore.analysis)
   >
     <n-spin :show="loginSummaryStore.loading" size="small">
       <n-flex vertical size="large">
-        <n-text v-if="rangeText">统计区间：{{ rangeText }}</n-text>
+        <n-text v-if="lastLoginTime">上次登录时间：{{ lastLoginTime }}</n-text>
         <n-grid :cols="isDesktop ? 3 : 1" :x-gap="16" :y-gap="16">
           <n-gi>
             <n-statistic
@@ -79,7 +77,7 @@ const hasAnalysis = computed(() => !!loginSummaryStore.analysis)
         />
         <n-empty
           v-else
-          description="提交数少于 3 次，暂不生成 AI 分析"
+          description="期间提交数少于 3 次，暂不生成 AI 分析"
         />
       </n-flex>
     </n-spin>

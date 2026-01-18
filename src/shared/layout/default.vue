@@ -3,6 +3,7 @@ import Beian from "../components/Beian.vue"
 import Header from "../components/Header.vue"
 import Login from "../components/Login.vue"
 import Signup from "../components/Signup.vue"
+import LoginSummaryModal from "../components/LoginSummaryModal.vue"
 </script>
 
 <template>
@@ -17,6 +18,7 @@ import Signup from "../components/Signup.vue"
     </n-layout-content>
     <Login />
     <Signup />
+    <LoginSummaryModal />
     <Beian />
   </n-layout>
 </template>

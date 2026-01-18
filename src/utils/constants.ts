@@ -130,6 +130,7 @@ export const STORAGE_KEY = {
   LEARN_CURRENT_STEP: "learnStep",
   ADMIN_PROBLEM: "adminProblem",
   ADMIN_PROBLEM_TAGS: "adminProblemTags",
+  LOGIN_SUMMARY_LAST_SHOWN: "login-summary-last-shown",
 }
 
 export const DIFFICULTY = {
@@ -205,8 +206,8 @@ const cTemplate = `//TEMPLATE BEGIN
 #include <stdio.h>
 
 int main() {
-  printf("黄岩一职");
-  return 0;
+    printf("黄岩一职");
+    return 0;
 }
 //TEMPLATE END`
 
@@ -214,7 +215,7 @@ const cppTemplate = `//TEMPLATE BEGIN
 #include <iostream>
 
 int main() {
-  return 0;
+    return 0;
 }
 //TEMPLATE END`
 

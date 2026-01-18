@@ -1,4 +1,6 @@
 import { getAILoginSummary } from "oj/api"
+import { STORAGE_KEY } from "utils/constants"
+import storage from "utils/storage"
 
 interface LoginSummary {
   start: string
@@ -17,6 +19,14 @@ export const useLoginSummaryStore = defineStore("loginSummary", () => {
   const analysis = ref("")
   const analysisError = ref("")
 
+  function getTodayKey() {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = String(now.getMonth() + 1).padStart(2, "0")
+    const day = String(now.getDate()).padStart(2, "0")
+    return `${year}-${month}-${day}`
+  }
+
   async function fetchSummary() {
     loading.value = true
     analysis.value = ""
@@ -34,6 +44,12 @@ export const useLoginSummaryStore = defineStore("loginSummary", () => {
   }
 
   async function open() {
+    const today = getTodayKey()
+    const lastShown = storage.get(STORAGE_KEY.LOGIN_SUMMARY_LAST_SHOWN)
+    if (lastShown === today) {
+      return
+    }
+    storage.set(STORAGE_KEY.LOGIN_SUMMARY_LAST_SHOWN, today)
     show.value = true
     await fetchSummary()
   }
