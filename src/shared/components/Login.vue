@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { login } from "../api"
+import { getClassUsernames, login } from "../api"
 import { storeToRefs } from "pinia"
 import { useAuthModalStore } from "../store/authModal"
 import { useConfigStore } from "../store/config"
@@ -18,6 +18,8 @@ const {
   loginError: msg,
 } = storeToRefs(authStore)
 const loginRef = ref()
+const classUserOptions = ref<SelectOption[]>([])
+const classUserLoading = ref(false)
 const classList = computed<SelectOption[]>(() => {
   const defaults = [{ label: "没有我所在的班级", value: "" }]
   const configs =
@@ -28,7 +30,9 @@ const classList = computed<SelectOption[]>(() => {
   return [...defaults, ...configs]
 })
 const rules: FormRules = {
-  username: [{ required: true, message: "用户名必填", trigger: "blur" }],
+  username: [
+    { required: true, message: "用户名必填", trigger: ["blur", "change"] },
+  ],
   password: [
     { required: true, message: "密码必填", trigger: "blur" },
     { min: 6, max: 20, message: "长度在 6 到 20 位之间", trigger: "input" },
@@ -73,6 +77,34 @@ function goSignup() {
   authStore.switchToSignup()
 }
 
+async function loadClassUsernames(selectedClass: string) {
+  classUserLoading.value = true
+  try {
+    const res = await getClassUsernames(selectedClass)
+    classUserOptions.value = res.data.map((name: string) => ({
+      label: name,
+      value: name,
+    }))
+  } catch {
+    classUserOptions.value = []
+  } finally {
+    classUserLoading.value = false
+  }
+}
+
+watch(
+  () => form.value.class,
+  (selectedClass) => {
+    classUserOptions.value = []
+    form.value.username = ""
+    if (!selectedClass) {
+      classUserLoading.value = false
+      return
+    }
+    loadClassUsernames(selectedClass.slice(2))
+  },
+)
+
 onMounted(() => {
   authStore.clearLoginError()
 })
@@ -107,7 +139,19 @@ onMounted(() => {
         />
       </n-form-item>
       <n-form-item label="用户名" path="username">
+        <n-select
+          v-if="form.class"
+          v-model:value="form.username"
+          :options="classUserOptions"
+          :loading="classUserLoading"
+          clearable
+          filterable
+          name="username"
+          id="login-username"
+          placeholder="请选择姓名"
+        />
         <n-input
+          v-else
           v-model:value="form.username"
           autofocus
           clearable

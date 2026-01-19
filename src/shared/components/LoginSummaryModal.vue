@@ -17,7 +17,6 @@ const lastLoginTime = computed(() => {
 })
 
 const hasAnalysis = computed(() => !!loginSummaryStore.analysis)
-
 </script>
 
 <template>
@@ -58,7 +57,9 @@ const hasAnalysis = computed(() => !!loginSummaryStore.analysis)
           <n-gi>
             <n-statistic
               label="流程图提交"
-              :value="loginSummaryStore.summary?.flowchart_submission_count ?? 0"
+              :value="
+                loginSummaryStore.summary?.flowchart_submission_count ?? 0
+              "
             />
           </n-gi>
         </n-grid>
@@ -75,10 +76,7 @@ const hasAnalysis = computed(() => !!loginSummaryStore.analysis)
           v-if="hasAnalysis"
           :model-value="loginSummaryStore.analysis"
         />
-        <n-empty
-          v-else
-          description="期间提交数少于 3 次，暂不生成 AI 分析"
-        />
+        <n-empty v-else description="期间提交数少于 3 次，暂不生成 AI 分析" />
       </n-flex>
     </n-spin>
   </n-modal>

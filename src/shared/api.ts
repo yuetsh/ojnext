@@ -33,3 +33,7 @@ export function getCaptcha() {
 export function getHitokoto() {
   return http.get("hitokoto")
 }
+
+export function getClassUsernames(classroom: string) {
+  return http.get("class_usernames", { params: { classroom: classroom } })
+}
