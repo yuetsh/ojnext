@@ -20,6 +20,7 @@ const {
 const loginRef = ref()
 const classUserOptions = ref<SelectOption[]>([])
 const classUserLoading = ref(false)
+const isClassLogin = computed(() => Boolean(form.value.class))
 const classList = computed<SelectOption[]>(() => {
   const defaults = [{ label: "没有我所在的班级", value: "" }]
   const configs =
@@ -146,8 +147,8 @@ onMounted(() => {
           :loading="classUserLoading"
           clearable
           filterable
-          name="username"
-          id="login-username"
+          :name="isClassLogin ? 'class-username' : 'username'"
+          :id="isClassLogin ? 'login-class-username' : 'login-username'"
           placeholder="请选择姓名"
         />
         <n-input
@@ -155,9 +156,9 @@ onMounted(() => {
           v-model:value="form.username"
           autofocus
           clearable
-          name="username"
-          id="login-username"
-          autocomplete="username"
+          :name="isClassLogin ? 'class-username' : 'username'"
+          :id="isClassLogin ? 'login-class-username' : 'login-username'"
+          :autocomplete="isClassLogin ? 'off' : 'username'"
         />
       </n-form-item>
       <n-form-item label="密码" path="password">
@@ -165,9 +166,9 @@ onMounted(() => {
           v-model:value="form.password"
           clearable
           type="password"
-          name="password"
-          id="login-password"
-          autocomplete="current-password"
+          :name="isClassLogin ? 'class-password' : 'password'"
+          :id="isClassLogin ? 'login-class-password' : 'login-password'"
+          :autocomplete="isClassLogin ? 'new-password' : 'current-password'"
           @keyup.enter="submit"
         />
       </n-form-item>
