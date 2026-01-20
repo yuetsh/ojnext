@@ -17,6 +17,21 @@ export const useLoginSummaryStore = defineStore("loginSummary", () => {
   const analysis = ref("")
   const analysisError = ref("")
 
+  function shouldShowSummary(nextSummary: LoginSummary | null) {
+    if (!nextSummary) {
+      return false
+    }
+    const values = [
+      nextSummary.new_problem_count,
+      nextSummary.submission_count,
+      nextSummary.accepted_count,
+      nextSummary.solved_count,
+      nextSummary.flowchart_submission_count,
+    ]
+    const zeroCount = values.filter((value) => value === 0).length
+    return zeroCount < Math.floor(values.length / 2) + 1
+  }
+
   async function fetchSummary() {
     loading.value = true
     analysis.value = ""
@@ -34,8 +49,12 @@ export const useLoginSummaryStore = defineStore("loginSummary", () => {
   }
 
   async function open() {
-    show.value = true
     await fetchSummary()
+    if (!summary.value && analysisError.value) {
+      show.value = true
+      return
+    }
+    show.value = shouldShowSummary(summary.value)
   }
 
   function close() {
