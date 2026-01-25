@@ -1,7 +1,7 @@
 <template>
   <n-space v-if="!hiddenICP" justify="center" class="beian">
     <div>
-      &copy; 2026 判题狗 保留所有权利 采用
+      &copy; 2022 - 2026 判题狗 保留所有权利 采用
       <n-button text @click="goCC">CC BY-NC 4.0</n-button> 许可协议
     </div>
     <n-button text @click="goICP">浙ICP备2023044109号</n-button>
