@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { NButton, NH2, NText } from "naive-ui"
+import { NButton } from "naive-ui"
 import { useRouteQuery } from "@vueuse/router"
 import {
   adminRejudge,
@@ -34,6 +34,7 @@ interface SubmissionQuery {
   myself: "0" | "1"
   problem: string
   language: LANGUAGE | ""
+  today: "0" | "1"
 }
 
 const route = useRoute()
@@ -55,6 +56,7 @@ const { query, clearQuery } = usePagination<SubmissionQuery>({
   myself: useRouteQuery("myself", "0").value,
   problem: useRouteQuery("problem", "").value,
   language: useRouteQuery("language", "").value,
+  today: "0",
 })
 const submissionID = ref("")
 const problemDisplayID = ref("")
@@ -103,6 +105,7 @@ async function listSubmissions() {
       problem_id: query.problem,
       contest_id: <string>route.params.contestID ?? "",
       language: query.language,
+      today: query.today,
     })
     submissions.value = res.data.results
     total.value = res.data.total
@@ -177,7 +180,14 @@ watchDebounced(() => [query.username, query.problem], listSubmissions, {
 
 // 监听其他查询条件变化
 watch(
-  () => [query.page, query.limit, query.myself, query.result, query.language],
+  () => [
+    query.page,
+    query.limit,
+    query.myself,
+    query.result,
+    query.language,
+    query.today,
+  ],
   listSubmissions,
 )
 
@@ -400,20 +410,19 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
           </n-button>
         </n-form-item>
       </n-form>
-      <n-form
-        :show-feedback="false"
-        inline
-        label-placement="left"
+      <n-tag
         v-if="todayCount > 0"
+        checkable
+        :checked="query.today === '1'"
+        type="success"
+        size="large"
+        @update:checked="(v: boolean) => (query.today = v ? '1' : '0')"
       >
-        <n-form-item>
-          <n-button text>
-            <component :is="isDesktop ? NH2 : NText" class="today-count">
-              <n-gradient-text>今日提交数：{{ todayCount }}</n-gradient-text>
-            </component>
-          </n-button>
-        </n-form-item>
-      </n-form>
+        <n-gradient-text v-if="query.today !== '1'" type="success"
+          >今日提交数：{{ todayCount }}</n-gradient-text
+        >
+        <template v-else>今日提交数：{{ todayCount }}</template>
+      </n-tag>
     </n-space>
     <n-data-table
       v-if="query.language === 'Flowchart'"
@@ -484,10 +493,6 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
 .code {
   font-size: 20px;
   overflow: auto;
-}
-
-.today-count {
-  margin: 0;
 }
 
 .flowchart-iframe {

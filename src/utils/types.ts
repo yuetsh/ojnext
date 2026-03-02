@@ -412,6 +412,7 @@ export interface SubmissionListPayload {
   contest_id?: string
   problem_id?: string
   language: LANGUAGE | ""
+  today?: "1" | "0"
   page: number
   limit: number
   offset: number
