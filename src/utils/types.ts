@@ -128,6 +128,7 @@ export interface Problem {
   share_submission: boolean
   contest: number
   my_status: number
+  my_failed_count?: number
   visible: boolean
 
   // 流程图相关字段

@@ -434,3 +434,8 @@ export function getProblemSetProgress(problemSetId: number) {
 export function removeUserFromProblemSet(problemSetId: number, userId: number) {
   return http.delete(`admin/problemset/${problemSetId}/progress/${userId}`)
 }
+
+// 学生卡点分析
+export function getStuckProblems() {
+  return http.get("admin/problem/stuck")
+}

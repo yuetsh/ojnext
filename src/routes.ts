@@ -276,6 +276,12 @@ export const admins: RouteRecordRaw = {
       props: true,
       meta: { requiresSuperAdmin: true },
     },
+    {
+      path: "problem/stuck",
+      name: "admin stuck problems",
+      component: () => import("admin/problem/Stuck.vue"),
+      meta: { requiresSuperAdmin: true },
+    },
     // 题单管理路由
     {
       path: "problemset/list",

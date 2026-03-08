@@ -10,6 +10,9 @@ export const useProblemStore = defineStore("problem", () => {
   const problem = ref<Problem | null>(null)
   const route = useRoute()
 
+  // 本次会话内累计的失败次数（与服务端 my_failed_count 叠加）
+  const localFailCount = ref(0)
+
   // ==================== 计算属性 ====================
   const languages = computed<LANGUAGE[]>(() => {
     if (route.name === "problem" && problem.value?.allow_flowchart) {
@@ -18,11 +21,27 @@ export const useProblemStore = defineStore("problem", () => {
     return problem.value?.languages ?? []
   })
 
-  return {
-    // 状态
-    problem,
+  const totalFailCount = computed(
+    () => (problem.value?.my_failed_count ?? 0) + localFailCount.value,
+  )
 
-    // 计算属性
+  function incrementFailCount() {
+    localFailCount.value++
+  }
+
+  // 切题时重置
+  watch(
+    () => problem.value?.id,
+    () => {
+      localFailCount.value = 0
+    },
+  )
+
+  return {
+    problem,
+    localFailCount,
     languages,
+    totalFailCount,
+    incrementFailCount,
   }
 })

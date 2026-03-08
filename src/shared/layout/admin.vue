@@ -99,6 +99,15 @@ const options = computed<MenuOption[]>(() => {
           ),
         key: "admin tutorial list",
       },
+      {
+        label: () =>
+          h(
+            RouterLink,
+            { to: "/admin/problem/stuck" },
+            { default: () => "卡点" },
+          ),
+        key: "admin stuck problems",
+      },
     )
   }
 
@@ -112,6 +121,7 @@ const active = computed(() => {
   if (path === "/admin") return "admin home"
   if (path.startsWith("/admin/config")) return "admin config"
   if (path.startsWith("/admin/problemset")) return "admin problemset list"
+  if (path.startsWith("/admin/problem/stuck")) return "admin stuck problems"
   if (path.startsWith("/admin/problem")) return "admin problem list"
   if (path.startsWith("/admin/contest")) return "admin contest list"
   if (path.startsWith("/admin/user")) return "admin user list"

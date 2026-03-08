@@ -124,6 +124,23 @@ async function submit() {
   startMonitoring(res.data.submission_id)
 }
 
+// ==================== 失败计数 ====================
+watch(
+  () => submission.value?.result,
+  (result) => {
+    if (result === undefined || result === null) return
+    if (
+      result === SubmissionStatus.pending ||
+      result === SubmissionStatus.judging ||
+      result === SubmissionStatus.submitting
+    )
+      return
+    if (result !== SubmissionStatus.accepted) {
+      problemStore.incrementFailCount()
+    }
+  },
+)
+
 // ==================== AC庆祝效果 ====================
 watch(
   () => submission.value?.result,

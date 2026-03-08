@@ -301,6 +301,12 @@ export function getAILoginSummary() {
   return http.get("ai/login_summary")
 }
 
+// ==================== 相似题目推荐 ====================
+
+export function getSimilarProblems(problemId: string) {
+  return http.get("problem/similar", { params: { problem_id: problemId } })
+}
+
 // ==================== 流程图相关API ====================
 
 export function submitFlowchart(data: {

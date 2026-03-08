@@ -5,11 +5,13 @@ import { storeToRefs } from "pinia"
 import { useCodeStore } from "oj/store/code"
 import { useProblemStore } from "oj/store/problem"
 import { createTestSubmission } from "utils/judge"
+import { DIFFICULTY } from "utils/constants"
 import { Problem, ProblemStatus } from "utils/types"
 import Copy from "shared/components/Copy.vue"
 import { useDark } from "@vueuse/core"
 import { MdPreview } from "md-editor-v3"
 import "md-editor-v3/lib/preview.css"
+import { getSimilarProblems } from "oj/api"
 
 type Sample = Problem["samples"][number] & {
   id: number
@@ -27,6 +29,34 @@ const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 
 const problemSetId = computed(() => route.params.problemSetId)
+
+const router = useRouter()
+
+// 相似题目推荐
+const similarProblems = ref<any[]>([])
+const similarLoaded = ref(false)
+
+async function loadSimilarProblems() {
+  if (similarLoaded.value || !problem.value) return
+  try {
+    const res = await getSimilarProblems(problem.value._id)
+    similarProblems.value = res.data || []
+  } catch {
+    similarProblems.value = []
+  }
+  similarLoaded.value = true
+}
+
+// AC 或失败次数 >= 3 时加载推荐
+watch(
+  () => [problem.value?.my_status, problemStore.totalFailCount],
+  ([status, failCount]) => {
+    if (status === 0 || (failCount as number) >= 3) {
+      loadSimilarProblems()
+    }
+  },
+  { immediate: true },
+)
 
 const hasTriedButNotPassed = computed(() => {
   return (
@@ -230,6 +260,52 @@ function type(status: ProblemStatus) {
         :model-value="problem.source"
         :theme="isDark ? 'dark' : 'light'"
       />
+    </div>
+
+    <!-- 相似题目推荐 -->
+    <div v-if="similarProblems.length > 0">
+      <n-divider />
+      <p class="title" :style="style">
+        <n-flex align="center">
+          <Icon icon="streamline-emojis:light-bulb"></Icon>
+          相似题目推荐
+        </n-flex>
+      </p>
+      <n-list bordered>
+        <n-list-item v-for="sp in similarProblems" :key="sp._id">
+          <n-flex align="center" justify="space-between">
+            <n-flex align="center">
+              <n-tag size="small">{{ sp._id }}</n-tag>
+              <n-button
+                text
+                type="info"
+                @click="
+                  router.push({
+                    name: 'problem',
+                    params: { problemID: sp._id },
+                  })
+                "
+              >
+                {{ sp.title }}
+              </n-button>
+            </n-flex>
+            <n-tag
+              size="small"
+              :type="
+                sp.difficulty === 'Low'
+                  ? 'success'
+                  : sp.difficulty === 'High'
+                    ? 'error'
+                    : 'warning'
+              "
+            >
+              {{
+                DIFFICULTY[sp.difficulty as keyof typeof DIFFICULTY] || "中等"
+              }}
+            </n-tag>
+          </n-flex>
+        </n-list-item>
+      </n-list>
     </div>
   </div>
 </template>

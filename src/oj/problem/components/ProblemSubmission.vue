@@ -4,7 +4,11 @@ import { getSubmissions, getRankOfProblem } from "oj/api"
 import Pagination from "shared/components/Pagination.vue"
 import SubmissionResultTag from "shared/components/SubmissionResultTag.vue"
 import { useUserStore } from "shared/store/user"
-import { LANGUAGE_SHOW_VALUE } from "utils/constants"
+import {
+  JUDGE_STATUS,
+  LANGUAGE_SHOW_VALUE,
+  SubmissionStatus,
+} from "utils/constants"
 import { parseTime } from "utils/functions"
 import { renderTableTitle } from "utils/renders"
 import { Submission } from "utils/types"
@@ -81,6 +85,23 @@ const total = ref(0)
 const query = reactive({
   limit: 10,
   page: 1,
+})
+
+// 错误分布统计
+const statusDistribution = computed(() => {
+  if (!submissions.value.length) return []
+  const counts = new Map<number, number>()
+  for (const s of submissions.value) {
+    counts.set(s.result, (counts.get(s.result) || 0) + 1)
+  }
+  return Array.from(counts.entries())
+    .sort((a, b) => a[0] - b[0])
+    .map(([result, count]) => ({
+      result,
+      name: JUDGE_STATUS[result as keyof typeof JUDGE_STATUS]?.name || "未知",
+      type: JUDGE_STATUS[result as keyof typeof JUDGE_STATUS]?.type || "info",
+      count,
+    }))
 })
 
 const errorMsg = computed(() => {
@@ -256,6 +277,25 @@ watch(query, listSubmissions)
   </template>
 
   <template v-if="userStore.showSubmissions && userStore.isAuthed">
+    <!-- 错误分布统计 -->
+    <n-flex
+      v-if="statusDistribution.length"
+      class="tip"
+      align="center"
+      :wrap="true"
+    >
+      <span style="font-weight: bold; font-size: 13px">我的提交统计：</span>
+      <n-tag
+        v-for="item in statusDistribution"
+        :key="item.result"
+        :type="item.type as any"
+        size="small"
+        round
+      >
+        {{ item.name }} × {{ item.count }}
+      </n-tag>
+    </n-flex>
+
     <n-data-table
       v-if="submissions.length > 0"
       striped
