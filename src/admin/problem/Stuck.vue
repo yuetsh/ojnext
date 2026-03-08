@@ -45,7 +45,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h2 style="margin-top: 0">学生卡点分析</h2>
+  <h2 style="margin-top: 0">学生卡点分析（只分析前40道题目）</h2>
   <n-data-table
     :loading="loading"
     :columns="columns"
