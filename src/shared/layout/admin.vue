@@ -99,15 +99,6 @@ const options = computed<MenuOption[]>(() => {
           ),
         key: "admin tutorial list",
       },
-      {
-        label: () =>
-          h(
-            RouterLink,
-            { to: "/admin/problem/stuck" },
-            { default: () => "卡点" },
-          ),
-        key: "admin stuck problems",
-      },
     )
   }
 

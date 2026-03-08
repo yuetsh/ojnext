@@ -140,6 +140,12 @@ watch(() => [query.page, query.limit, query.author], listProblems)
       >
         新建
       </n-button>
+      <n-button
+        v-if="!isContestProblemList"
+        @click="$router.push({ name: 'admin stuck problems' })"
+      >
+        卡点分析
+      </n-button>
     </n-flex>
     <n-flex>
       <n-button v-if="isContestProblemList" @click="createContestProblem">
