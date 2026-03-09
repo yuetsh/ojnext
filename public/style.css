@@ -8,7 +8,7 @@
 }
 
 .md-editor-preview img {
-  height: auto;
+  height: auto !important;
 }
 
 .md-editor-preview h1 {
