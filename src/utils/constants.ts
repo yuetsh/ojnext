@@ -239,9 +239,9 @@ export const CODE_TEMPLATES = {
 } as const
 
 export enum ScreenMode {
-  both = "题目 | 自测",
-  code = "仅自测",
-  problem = "仅题目",
+  both = "双栏",
+  code = "自测",
+  problem = "题目",
 }
 
 export enum ChartType {

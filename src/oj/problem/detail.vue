@@ -117,9 +117,66 @@ watch(isMobile, (value) => {
 </script>
 
 <template>
-  <n-grid v-if="problem" x-gap="16" :cols="screenModeStore.isBothMode ? 7 : 1">
-    <n-gi :span="isDesktop ? 3 : 7" v-if="shouldShowProblem">
-      <n-scrollbar v-if="isDesktop" style="max-height: calc(100vh - 92px)">
+  <template v-if="problem">
+    <n-split
+      v-if="isDesktop && screenModeStore.isBothMode"
+      direction="horizontal"
+      :default-size="0.43"
+      :min="0.2"
+      :max="0.8"
+      style="height: calc(100vh - 92px)"
+    >
+      <template #1>
+        <n-scrollbar style="height: 100%">
+          <n-tabs v-model:value="currentTab" type="segment">
+            <n-tab-pane name="content" tab="题目描述">
+              <ProblemContent />
+            </n-tab-pane>
+            <n-tab-pane
+              v-if="problem.show_flowchart && problem.mermaid_code"
+              name="flowchart"
+              tab="流程图表"
+            >
+              <ProblemFlowchart />
+            </n-tab-pane>
+            <n-tab-pane
+              name="info"
+              tab="题目统计"
+              :disabled="!!props.problemSetId"
+            >
+              <ProblemInfo />
+            </n-tab-pane>
+            <n-tab-pane
+              v-if="!props.contestID"
+              name="comment"
+              tab="题目点评"
+              :disabled="!!props.problemSetId"
+            >
+              <ProblemComment />
+            </n-tab-pane>
+            <n-tab-pane
+              name="submission"
+              tab="我的提交"
+              :disabled="!!props.problemSetId"
+            >
+              <ProblemSubmission />
+            </n-tab-pane>
+          </n-tabs>
+        </n-scrollbar>
+      </template>
+      <template #2>
+        <component :is="inProblem ? ProblemEditor : ContestEditor" />
+      </template>
+    </n-split>
+
+    <!-- Desktop: code only mode -->
+    <template v-else-if="isDesktop && screenModeStore.isCodeOnlyMode">
+      <EditorForTest />
+    </template>
+
+    <!-- Desktop: problem only mode -->
+    <template v-else-if="isDesktop && shouldShowProblem">
+      <n-scrollbar style="max-height: calc(100vh - 92px)">
         <n-tabs v-model:value="currentTab" type="segment">
           <n-tab-pane name="content" tab="题目描述">
             <ProblemContent />
@@ -155,42 +212,38 @@ watch(isMobile, (value) => {
           </n-tab-pane>
         </n-tabs>
       </n-scrollbar>
-      <n-tabs v-else v-model:value="currentTab" type="segment">
-        <n-tab-pane name="content" tab="描述">
-          <ProblemContent />
-        </n-tab-pane>
-        <n-tab-pane v-if="problem.show_flowchart" name="flowchart" tab="流程">
-          <ProblemFlowchart />
-        </n-tab-pane>
-        <n-tab-pane name="editor" tab="代码">
-          <component :is="inProblem ? ProblemEditor : ContestEditor" />
-        </n-tab-pane>
-        <n-tab-pane name="info" tab="统计" :disabled="!!props.problemSetId">
-          <ProblemInfo />
-        </n-tab-pane>
-        <n-tab-pane
-          v-if="!props.contestID"
-          name="comment"
-          tab="点评"
-          :disabled="!!props.problemSetId"
-        >
-          <ProblemComment />
-        </n-tab-pane>
-        <n-tab-pane
-          name="submission"
-          tab="提交"
-          :disabled="!!props.problemSetId"
-        >
-          <ProblemSubmission />
-        </n-tab-pane>
-      </n-tabs>
-    </n-gi>
-    <n-gi :span="4" v-if="isDesktop && screenModeStore.isBothMode">
-      <component :is="inProblem ? ProblemEditor : ContestEditor" />
-    </n-gi>
-    <n-gi v-if="isDesktop && screenModeStore.isCodeOnlyMode">
-      <EditorForTest />
-    </n-gi>
-  </n-grid>
+    </template>
+
+    <!-- Mobile -->
+    <n-tabs v-else v-model:value="currentTab" type="segment">
+      <n-tab-pane name="content" tab="描述">
+        <ProblemContent />
+      </n-tab-pane>
+      <n-tab-pane v-if="problem.show_flowchart" name="flowchart" tab="流程">
+        <ProblemFlowchart />
+      </n-tab-pane>
+      <n-tab-pane name="editor" tab="代码">
+        <component :is="inProblem ? ProblemEditor : ContestEditor" />
+      </n-tab-pane>
+      <n-tab-pane name="info" tab="统计" :disabled="!!props.problemSetId">
+        <ProblemInfo />
+      </n-tab-pane>
+      <n-tab-pane
+        v-if="!props.contestID"
+        name="comment"
+        tab="点评"
+        :disabled="!!props.problemSetId"
+      >
+        <ProblemComment />
+      </n-tab-pane>
+      <n-tab-pane
+        name="submission"
+        tab="提交"
+        :disabled="!!props.problemSetId"
+      >
+        <ProblemSubmission />
+      </n-tab-pane>
+    </n-tabs>
+  </template>
   <n-empty v-else :description="errMsg"></n-empty>
 </template>
