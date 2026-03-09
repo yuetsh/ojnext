@@ -38,14 +38,18 @@ const editorHeight = computed(() =>
   isDesktop.value ? "calc(100vh - 133px)" : "calc(100vh - 172px)",
 )
 
-onMounted(() => {
+function loadCode() {
   const savedCode = storage.get(storageKey.value)
   codeStore.setCode(
     savedCode ||
       problem.value!.template[codeStore.code.language] ||
       SOURCES[codeStore.code.language],
   )
-})
+}
+
+onMounted(loadCode)
+
+watch(() => problem.value?._id, loadCode)
 
 const changeCode = (v: string) => {
   storage.set(storageKey.value, v)
