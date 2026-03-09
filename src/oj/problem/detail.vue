@@ -104,6 +104,7 @@ async function init() {
   }
 }
 onMounted(init)
+watch(() => props.problemID, init)
 onBeforeUnmount(() => {
   problem.value = null
   errMsg.value = "无数据"
