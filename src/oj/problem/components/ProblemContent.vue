@@ -267,7 +267,7 @@ function type(status: ProblemStatus) {
       <n-divider />
       <p class="title" :style="style">
         <n-flex align="center">
-          <Icon icon="streamline-emojis:light-bulb"></Icon>
+          <Icon icon="fluent-emoji-flat:light-bulb"></Icon>
           相似题目推荐
         </n-flex>
       </p>
