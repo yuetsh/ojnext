@@ -15,6 +15,17 @@ const formData = ref<CreateProblemSetData & Partial<EditProblemSetData>>({
   difficulty: "Easy",
   status: "draft",
   visible: false,
+  end_time: null,
+})
+
+const endTimeTimestamp = computed({
+  get: () =>
+    formData.value.end_time
+      ? new Date(formData.value.end_time).getTime()
+      : null,
+  set: (val: number | null) => {
+    formData.value.end_time = val ? new Date(val) : null
+  },
 })
 
 const difficultyOptions = [
@@ -44,6 +55,7 @@ async function loadProblemSetDetail() {
       difficulty: data.difficulty,
       status: data.status,
       visible: data.visible,
+      end_time: data.end_time ? new Date(data.end_time) : null,
     }
   } catch (err: any) {
     message.error("加载题单详情失败：" + (err.data || "未知错误"))
@@ -118,6 +130,14 @@ onMounted(() => {
             v-model:value="formData.status"
             :options="statusOptions"
             placeholder="选择状态"
+          />
+        </n-form-item>
+        <n-form-item label="截止时间">
+          <n-date-picker
+            v-model:value="endTimeTimestamp"
+            type="datetime"
+            clearable
+            placeholder="不设置则无截止时间"
           />
         </n-form-item>
         <n-form-item v-if="isEdit" label="是否可见">

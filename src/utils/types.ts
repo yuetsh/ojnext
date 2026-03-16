@@ -193,6 +193,7 @@ export interface ProblemSet {
   create_time: Date
   difficulty: "Easy" | "Medium" | "Hard"
   status: "active" | "archived" | "draft"
+  end_time: Date | null
   visible: boolean
   problems_count: number
   completed_count: number
@@ -213,6 +214,7 @@ export interface ProblemSetList {
   create_time: Date
   difficulty: "Easy" | "Medium" | "Hard"
   status: "active" | "archived" | "draft"
+  end_time: Date | null
   problems_count: number
   visible: boolean
   user_progress: {
@@ -277,6 +279,7 @@ export interface CreateProblemSetData {
   description: string
   difficulty: "Easy" | "Medium" | "Hard"
   status: "active" | "archived" | "draft"
+  end_time?: Date | null
 }
 
 export interface EditProblemSetData {
@@ -285,6 +288,7 @@ export interface EditProblemSetData {
   description?: string
   difficulty?: "Easy" | "Medium" | "Hard"
   status?: "active" | "archived" | "draft"
+  end_time?: Date | null
   visible?: boolean
 }
 

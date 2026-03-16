@@ -318,6 +318,7 @@ export function createProblemSet(data: {
   description: string
   difficulty: string
   status: string
+  end_time?: Date | null
 }) {
   return http.post("admin/problemset", data)
 }
@@ -328,6 +329,7 @@ export function editProblemSet(data: {
   description?: string
   difficulty?: string
   status?: string
+  end_time?: Date | null
   visible?: boolean
 }) {
   return http.put("admin/problemset", data)
