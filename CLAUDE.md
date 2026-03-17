@@ -41,10 +41,10 @@ Each feature module (under `oj/` or `admin/`) typically has:
 - `api.ts` — API calls specific to the feature
 
 Shared logic lives in `shared/`:
-- `store/` — Pinia stores (user, config, authModal, screenMode, loginSummary)
-- `composables/` — reusable composables (pagination, WebSocket, sync, etc.)
+- `store/` — Pinia stores: `user` (auth/roles), `config` (site-wide settings), `authModal` (login/signup form state), `screenMode` (problem split-screen layout), `loginSummary` (AI activity summary)
+- `composables/` — `pagination` (URL-synced), `websocket` (reconnect + heartbeat), `sync` (Yjs/y-webrtc for collaborative editing), `configUpdate` (WS-pushed config sync), `useMermaid` (lazy Mermaid render), `breakpoints`, `maxkb`
 - `layout/` — `default.vue` and `admin.vue` layout wrappers
-- `api.ts` — shared API calls
+- `api.ts` — shared API calls (auth, profile, tags, captcha)
 
 ### Auto-Imports
 
@@ -55,6 +55,7 @@ Configured via `unplugin-auto-import` and `unplugin-vue-components`. You do **no
 - VueUse composables
 - Naive UI composables (`useDialog`, `useMessage`, `useNotification`, `useLoadingBar`)
 - Naive UI components (all `N*` components)
+- Naive UI types (`DataTableColumn`, `FormRules`, `FormItemRule`, `SelectOption`, `UploadCustomRequestOptions`, `UploadFileInfo`, `MenuOption`, `DropdownOption`)
 
 Generated type declaration files: `src/auto-imports.d.ts`, `src/components.d.ts`.
 
@@ -110,4 +111,4 @@ Routes are defined in `src/routes.ts` with two root routes: `ojs` (user-facing) 
 
 ## Related Repository
 
-The backend is at `D:\Projects\OnlineJudge` — a Django 5 + DRF project. See its CLAUDE.md for backend details.
+The backend is at `../OnlineJudge` — a Django 5 + DRF project. See its CLAUDE.md for backend details.
