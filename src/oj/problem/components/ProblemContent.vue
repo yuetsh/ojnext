@@ -332,7 +332,7 @@ function type(status: ProblemStatus) {
 .testcase {
   font-size: 14px;
   white-space: pre;
-  font-family: "Monaco", monospace;
+  font-family: "Monaco";
 }
 
 .status-alert {
