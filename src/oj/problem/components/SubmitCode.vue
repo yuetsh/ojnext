@@ -11,6 +11,7 @@ import type { SubmitCodePayload } from "utils/types"
 import SubmissionResult from "./SubmissionResult.vue"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { useUserStore } from "shared/store/user"
+import { checkPythonSyntax } from "oj/problem/utils/pythonSyntaxCheck"
 
 // ==================== 异步组件 ====================
 const ProblemComment = defineAsyncComponent(
@@ -28,6 +29,7 @@ const problemSetId = <string>route.params.problemSetId ?? ""
 
 const router = useRouter()
 const [commentPanel] = useToggle()
+const message = useMessage()
 
 const { isDesktop } = useBreakpoints()
 
@@ -43,6 +45,8 @@ const {
   isProcessing,
   startMonitoring,
 } = useSubmissionMonitor()
+
+const showResult = ref(false)
 
 // ==================== 提交冷却 ====================
 const { start: startCooldown, isPending: isCooldown } = useTimeout(5000, {
@@ -106,6 +110,15 @@ const submitIcon = computed(() => {
 async function submit() {
   if (!userStore.isAuthed) return
 
+  // 0. Python3 语法检测
+  if (codeStore.code.language === "Python3") {
+    const syntaxError = checkPythonSyntax(codeStore.code.value)
+    if (syntaxError) {
+      message.warning(`第 ${syntaxError.line} 行存在语法错误，请修正后再提交`)
+      return
+    }
+  }
+
   // 1. 构建提交数据
   const data: SubmitCodePayload = {
     problem_id: problem.value!.id,
@@ -122,6 +135,7 @@ async function submit() {
   // 3. 启动冷却 + 监控
   startCooldown()
   startMonitoring(res.data.submission_id)
+  showResult.value = true
 }
 
 // ==================== 失败计数 ====================
@@ -178,11 +192,13 @@ watch(
 <template>
   <!-- 提交按钮 + 结果弹窗 -->
   <n-popover
-    trigger="click"
+    trigger="manual"
     placement="bottom-end"
     scrollable
     :show-arrow="false"
     style="max-height: 600px"
+    :show="showResult"
+    @clickoutside="showResult = false"
   >
     <template #trigger>
       <n-button
