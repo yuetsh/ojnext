@@ -236,11 +236,7 @@ watch(isMobile, (value) => {
       >
         <ProblemComment />
       </n-tab-pane>
-      <n-tab-pane
-        name="submission"
-        tab="提交"
-        :disabled="!!props.problemSetId"
-      >
+      <n-tab-pane name="submission" tab="提交" :disabled="!!props.problemSetId">
         <ProblemSubmission />
       </n-tab-pane>
     </n-tabs>

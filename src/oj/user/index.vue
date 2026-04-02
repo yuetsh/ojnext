@@ -22,6 +22,40 @@ const [show, toggleShow] = useToggle(false)
 
 const { isDesktop } = useBreakpoints()
 
+const isDefaultAvatar = computed(
+  () => profile.value?.avatar.endsWith("default.png") ?? true,
+)
+
+const problemsFlexRef = ref<HTMLElement | null>(null)
+const itemsPerRow = ref(8)
+
+function updateItemsPerRow() {
+  if (!problemsFlexRef.value) return
+  const buttons = problemsFlexRef.value.querySelectorAll("button")
+  if (!buttons.length) return
+  const firstTop = buttons[0].offsetTop
+  let count = 0
+  for (const btn of buttons) {
+    if (btn.offsetTop === firstTop) count++
+    else break
+  }
+  if (count > 0) itemsPerRow.value = count
+}
+
+useResizeObserver(problemsFlexRef, updateItemsPerRow)
+watch(problems, async () => {
+  await nextTick()
+  updateItemsPerRow()
+})
+
+const visibleProblems = computed(() =>
+  show.value ? problems.value : problems.value.slice(0, itemsPerRow.value * 3),
+)
+
+const hasMoreProblems = computed(
+  () => problems.value.length > itemsPerRow.value * 3,
+)
+
 // 分组徽章接口
 interface GroupedBadge {
   icon: string
@@ -157,7 +191,18 @@ onMounted(init)
     align="center"
     v-if="!loading && profile"
   >
-    <n-avatar round :size="140" :src="profile.avatar" />
+    <n-image
+      :width="140"
+      :height="140"
+      :src="profile.avatar"
+      :preview-disabled="isDefaultAvatar"
+      object-fit="cover"
+      :style="{
+        borderRadius: '50%',
+        overflow: 'hidden',
+        cursor: isDefaultAvatar ? 'default' : 'pointer',
+      }"
+    />
     <h2>{{ profile.user.username }}</h2>
     <p class="desc">{{ profile.mood }}</p>
   </n-flex>
@@ -213,35 +258,24 @@ onMounted(init)
           <n-button
             text
             type="primary"
-            v-if="problems.length > 21"
+            v-if="hasMoreProblems"
             @click="toggleShow(!show)"
           >
             {{ show ? "隐藏全部" : "显示全部" }}
           </n-button>
         </n-flex>
       </template>
-      <n-flex vertical>
+      <div ref="problemsFlexRef">
         <n-flex>
           <n-button
-            v-for="id in problems.slice(0, 21)"
-            key="id"
+            v-for="id in visibleProblems"
+            :key="id"
             @click="router.push('/problem/' + id)"
           >
             {{ id }}
           </n-button>
         </n-flex>
-        <n-collapse-transition :show="show" v-if="problems.length > 21">
-          <n-flex>
-            <n-button
-              v-for="id in problems.slice(21)"
-              key="id"
-              @click="router.push('/problem/' + id)"
-            >
-              {{ id }}
-            </n-button>
-          </n-flex>
-        </n-collapse-transition>
-      </n-flex>
+      </div>
     </n-descriptions-item>
   </n-descriptions>
   <n-empty v-if="!loading && !profile" description="该用户不存在">
