@@ -20,6 +20,35 @@ const { isMobile, isDesktop } = useBreakpoints()
 
 const isDark = useDark()
 
+function toggleDark(event: MouseEvent) {
+  const { clientX: x, clientY: y } = event
+  const radius = Math.hypot(
+    Math.max(x, window.innerWidth - x),
+    Math.max(y, window.innerHeight - y),
+  )
+  if (!document.startViewTransition) {
+    isDark.value = !isDark.value
+    return
+  }
+  document.startViewTransition(() => {
+    isDark.value = !isDark.value
+  }).ready.then(() => {
+    document.documentElement.animate(
+      {
+        clipPath: [
+          `circle(0px at ${x}px ${y}px)`,
+          `circle(${radius}px at ${x}px ${y}px)`,
+        ],
+      },
+      {
+        duration: 400,
+        easing: "ease-in-out",
+        pseudoElement: "::view-transition-new(root)",
+      },
+    )
+  }).catch(() => {})
+}
+
 // 从 store 中获取屏幕模式状态
 const { screenMode } = storeToRefs(screenModeStore)
 
@@ -270,7 +299,7 @@ function handleMenuSelect(key: string) {
           </n-button>
         </n-flex>
       </div>
-      <n-button :bordered="false" circle @click="isDark = !isDark">
+      <n-button :bordered="false" circle @click="toggleDark">
         <template #icon>
           <Icon v-if="isDark" icon="twemoji:sun-behind-small-cloud"></Icon>
           <Icon v-else icon="twemoji:cloud-with-lightning-and-rain"></Icon>
