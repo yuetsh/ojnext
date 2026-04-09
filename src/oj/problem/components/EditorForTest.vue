@@ -74,14 +74,7 @@ const runCode = async () => {
 
 const languageOptions: DropdownOption[] = problem.value!.languages.map(
   (it) => ({
-    label: () =>
-      h("div", { style: "display: flex; align-items: center;" }, [
-        h("img", {
-          src: `/${it}.svg`,
-          style: { width: "16px", height: "16px", marginRight: "8px" },
-        }),
-        LANGUAGE_SHOW_VALUE[it],
-      ]),
+    label: () => LANGUAGE_SHOW_VALUE[it],
     value: it,
   }),
 )
