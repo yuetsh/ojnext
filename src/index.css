@@ -9,3 +9,9 @@ body {
 .md-editor-dark div.vuepress-theme {
   --md-theme-color: var(--n-text-color) !important;
 }
+
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
