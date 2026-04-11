@@ -114,7 +114,11 @@ const handleClear = () => {
 
 // 键盘事件
 const handleKeyDown = (event: KeyboardEvent) => {
-  if (event.target instanceof HTMLInputElement) return
+  if (
+    event.target instanceof HTMLInputElement ||
+    event.target instanceof HTMLTextAreaElement
+  )
+    return
 
   if (event.key === "Delete" || event.key === "Backspace") {
     deleteSelected()

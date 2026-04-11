@@ -11,9 +11,17 @@ export function useMermaidConverter() {
 
     let mermaid = "graph TD\n"
 
+    // Build safe ID mapping to prevent Mermaid syntax errors from special characters
+    const idMap = new Map<string, string>()
+    nodes.forEach((node: any, index: number) => {
+      idMap.set(node.id, `node_${index}`)
+    })
+    const safeId = (id: string) =>
+      idMap.get(id) || id.replace(/[^a-zA-Z0-9_]/g, "_")
+
     // 处理节点 - 根据原始类型和自定义标签
     nodes.forEach((node: any) => {
-      const nodeId = node.id
+      const nodeId = safeId(node.id)
       const label = node.data?.customLabel || node.data?.label || "节点"
       const originalType = node.data?.originalType || node.type
 
@@ -50,8 +58,8 @@ export function useMermaidConverter() {
 
     // 处理边
     edges.forEach((edge: any) => {
-      const source = edge.source
-      const target = edge.target
+      const source = safeId(edge.source)
+      const target = safeId(edge.target)
       const label = edge.label ?? ""
 
       if (label && label.trim() !== "") {
@@ -77,7 +85,7 @@ export function useMermaidConverter() {
 
     // 为节点应用样式
     nodes.forEach((node: any) => {
-      const nodeId = node.id
+      const nodeId = safeId(node.id)
       const originalType = node.data?.originalType || node.type
 
       switch (originalType) {

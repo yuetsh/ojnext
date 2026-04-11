@@ -22,7 +22,7 @@ const loadMermaid = async () => {
     mermaid = mermaidModule.default
     mermaid.initialize({
       startOnLoad: false,
-      securityLevel: "loose",
+      securityLevel: "strict",
       theme: "default",
     })
   }
@@ -72,12 +72,17 @@ const renderMermaid = async () => {
     const errorMessage = error?.message || "请检查代码语法"
     renderSuccess.value = false
 
-    mermaidContainer.value.innerHTML = `
-      <div style="color: #ff4d4f; padding: 20px; text-align: center; border: 1px dashed #ff4d4f; border-radius: 4px;">
-        <p>❌ Mermaid语法错误</p>
-        <p style="font-size: 12px; color: #666;">${errorMessage}</p>
-      </div>
-    `
+    const errorDiv = document.createElement("div")
+    errorDiv.style.cssText = "color: #ff4d4f; padding: 20px; text-align: center; border: 1px dashed #ff4d4f; border-radius: 4px;"
+    const titleP = document.createElement("p")
+    titleP.textContent = "Mermaid语法错误"
+    const detailP = document.createElement("p")
+    detailP.style.cssText = "font-size: 12px; color: #666;"
+    detailP.textContent = errorMessage
+    errorDiv.appendChild(titleP)
+    errorDiv.appendChild(detailP)
+    mermaidContainer.value.innerHTML = ""
+    mermaidContainer.value.appendChild(errorDiv)
   }
 }
 

@@ -14,7 +14,7 @@ export function useMermaid() {
       mermaid = mermaidModule.default
       mermaid.initialize({
         startOnLoad: false,
-        securityLevel: "loose",
+        securityLevel: "strict",
         theme: "default",
       })
     }

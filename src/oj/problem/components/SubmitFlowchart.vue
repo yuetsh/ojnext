@@ -106,7 +106,7 @@ async function submitFlowchartData(flowchartEditorRef: any) {
   // 获取流程图的JSON数据
   const flowchartData = flowchartEditorRef.value.getFlowchartData()
 
-  if (flowchartData.nodes.length === 0 || flowchartData.edges.length === 0) {
+  if (!flowchartData?.nodes?.length || !flowchartData?.edges?.length) {
     message.error("流程图节点或边不能为空")
     return
   }
