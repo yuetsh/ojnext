@@ -14,5 +14,10 @@ defineProps<{
       width="18"
       icon="vscode-icons:file-type-drawio"
     />
+    <Icon
+      v-else-if="problem.show_flowchart"
+      width="18"
+      icon="fluent:document-flowchart-24-filled"
+    />
   </n-flex>
 </template>

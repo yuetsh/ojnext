@@ -173,6 +173,7 @@ export interface ProblemFiltered {
   status: "not_test" | "passed" | "failed"
   author: string
   allow_flowchart: boolean
+  show_flowchart: boolean
 }
 
 export interface AdminProblemFiltered {

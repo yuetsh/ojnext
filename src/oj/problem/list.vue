@@ -15,6 +15,7 @@ import { renderTableTitle } from "utils/renders"
 import ProblemStatus from "./components/ProblemStatus.vue"
 import AuthorSelect from "shared/components/AuthorSelect.vue"
 import ProblemListTitle from "./components/ProblemListTitle.vue"
+import { labelRect } from "mermaid/dist/rendering-util/rendering-elements/shapes/labelRect"
 
 interface Tag {
   id: number
@@ -44,6 +45,7 @@ const sortOptions = [
   { label: "最少提交", value: "submission_number" },
   { label: "最多通过", value: "-accepted_number" },
   { label: "最少通过", value: "accepted_number" },
+  { label: "画流程图", value: "flowchart" },
 ]
 
 const router = useRouter()
