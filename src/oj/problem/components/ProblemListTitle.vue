@@ -17,7 +17,7 @@ defineProps<{
     <Icon
       v-else-if="problem.show_flowchart"
       width="18"
-      icon="fluent:document-flowchart-24-filled"
+      icon="vscode-icons:file-type-graphql"
     />
   </n-flex>
 </template>
