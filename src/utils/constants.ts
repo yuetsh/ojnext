@@ -191,7 +191,7 @@ export const LANGUAGE_SHOW_VALUE = {
 } as const
 
 export const ICON_SET = {
-  Flowchart: "streamline-freehand-color:programming-flowchart",
+  Flowchart: "vscode-icons:file-type-drawio",
   Python2: "devicon:python",
   Python3: "devicon:python",
   C: "devicon:c",
