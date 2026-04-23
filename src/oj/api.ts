@@ -423,6 +423,8 @@ export function getProblemSetUserProgress(
 }
 
 export async function getExercises(tutorialId: number): Promise<Exercise[]> {
-  const res = await http.get("exercises", { params: { tutorial_id: tutorialId } })
+  const res = await http.get("exercises", {
+    params: { tutorial_id: tutorialId },
+  })
   return res.data
 }

@@ -4,7 +4,10 @@ type Segment =
   | { type: "md"; content: string }
   | { type: "exercise"; exercise: Exercise }
 
-export function parseExercises(content: string, exercises: Exercise[]): Segment[] {
+export function parseExercises(
+  content: string,
+  exercises: Exercise[],
+): Segment[] {
   const exerciseMap = new Map(exercises.map((e) => [e.id, e]))
   const segments: Segment[] = []
   const regex = /\[\[exercise:(\d+)\]\]/g
@@ -13,7 +16,10 @@ export function parseExercises(content: string, exercises: Exercise[]): Segment[
 
   while ((match = regex.exec(content)) !== null) {
     if (match.index > lastIndex) {
-      segments.push({ type: "md", content: content.slice(lastIndex, match.index) })
+      segments.push({
+        type: "md",
+        content: content.slice(lastIndex, match.index),
+      })
     }
     const id = parseInt(match[1])
     const exercise = exerciseMap.get(id)

@@ -30,23 +30,26 @@ function toggleDark(event: MouseEvent) {
     isDark.value = !isDark.value
     return
   }
-  document.startViewTransition(() => {
-    isDark.value = !isDark.value
-  }).ready.then(() => {
-    document.documentElement.animate(
-      {
-        clipPath: [
-          `circle(0px at ${x}px ${y}px)`,
-          `circle(${radius}px at ${x}px ${y}px)`,
-        ],
-      },
-      {
-        duration: 400,
-        easing: "ease-in-out",
-        pseudoElement: "::view-transition-new(root)",
-      },
-    )
-  }).catch(() => {})
+  document
+    .startViewTransition(() => {
+      isDark.value = !isDark.value
+    })
+    .ready.then(() => {
+      document.documentElement.animate(
+        {
+          clipPath: [
+            `circle(0px at ${x}px ${y}px)`,
+            `circle(${radius}px at ${x}px ${y}px)`,
+          ],
+        },
+        {
+          duration: 400,
+          easing: "ease-in-out",
+          pseudoElement: "::view-transition-new(root)",
+        },
+      )
+    })
+    .catch(() => {})
 }
 
 // 从 store 中获取屏幕模式状态

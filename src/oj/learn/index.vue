@@ -34,7 +34,11 @@
               :theme="isDark ? 'dark' : 'light'"
               :model-value="seg.content"
             />
-            <ExerciseWidget v-else :exercise="seg.exercise" :lang="tutorial.type" />
+            <ExerciseWidget
+              v-else
+              :exercise="seg.exercise"
+              :lang="tutorial.type"
+            />
           </template>
         </n-card>
       </n-gi>
@@ -74,7 +78,11 @@
               :theme="isDark ? 'dark' : 'light'"
               :model-value="seg.content"
             />
-            <ExerciseWidget v-else :exercise="seg.exercise" :lang="tutorial.type" />
+            <ExerciseWidget
+              v-else
+              :exercise="seg.exercise"
+              :lang="tutorial.type"
+            />
           </template>
         </n-tab-pane>
 
@@ -86,11 +94,21 @@
       <n-divider style="margin: 12px 0" />
 
       <n-flex align="center" justify="space-between">
-        <n-button secondary type="primary" :disabled="isFirstLesson" @click="goToPrevLesson">
+        <n-button
+          secondary
+          type="primary"
+          :disabled="isFirstLesson"
+          @click="goToPrevLesson"
+        >
           ← 上一课
         </n-button>
         <n-text>{{ step }} / {{ titles.length }}</n-text>
-        <n-button secondary type="primary" :disabled="isLastLesson" @click="goToNextLesson">
+        <n-button
+          secondary
+          type="primary"
+          :disabled="isLastLesson"
+          @click="goToNextLesson"
+        >
           下一课 →
         </n-button>
       </n-flex>
@@ -106,8 +124,12 @@ import { getTutorial, getTutorials, getExercises } from "../api"
 import { parseExercises } from "./composables/useExerciseParse"
 import { useBreakpoints } from "shared/composables/breakpoints"
 
-const ExerciseWidget = defineAsyncComponent(() => import("./components/ExerciseWidget.vue"))
-const CodeEditor = defineAsyncComponent(() => import("shared/components/CodeEditor.vue"))
+const ExerciseWidget = defineAsyncComponent(
+  () => import("./components/ExerciseWidget.vue"),
+)
+const CodeEditor = defineAsyncComponent(
+  () => import("shared/components/CodeEditor.vue"),
+)
 
 const isDark = useDark()
 const route = useRoute()
@@ -119,7 +141,12 @@ const step = computed(() => {
   return parseInt(route.params.step[0])
 })
 
-const tutorial = ref<Partial<Tutorial>>({ id: 0, title: "", content: "", code: "" })
+const tutorial = ref<Partial<Tutorial>>({
+  id: 0,
+  title: "",
+  content: "",
+  code: "",
+})
 const titles = ref<{ id: number; title: string }[]>([])
 const exercises = ref<Exercise[]>([])
 const activeTab = ref("content")
@@ -147,7 +174,10 @@ async function init() {
   titles.value = res1.data
   if (titles.value.length === 0) return
   const id = titles.value[step.value - 1].id
-  const [res2, exs] = await Promise.allSettled([getTutorial(id), getExercises(id)])
+  const [res2, exs] = await Promise.allSettled([
+    getTutorial(id),
+    getExercises(id),
+  ])
   if (res2.status === "fulfilled") tutorial.value = res2.value.data
   exercises.value = exs.status === "fulfilled" ? exs.value : []
 }

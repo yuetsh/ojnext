@@ -39,10 +39,15 @@ function optionType(idx: number): "default" | "primary" | "success" {
 </script>
 
 <template>
-  <n-card size="small" style="margin: 16px 0; border: 1.5px solid var(--n-border-color)">
+  <n-card
+    size="small"
+    style="margin: 16px 0; border: 1.5px solid var(--n-border-color)"
+  >
     <template #header>
       <n-space align="center" :size="8">
-        <n-tag type="success" size="small" :bordered="false">练一练 · 选择题</n-tag>
+        <n-tag type="success" size="small" :bordered="false"
+          >练一练 · 选择题</n-tag
+        >
       </n-space>
     </template>
 
@@ -56,11 +61,17 @@ function optionType(idx: number): "default" | "primary" | "success" {
         :secondary="optionType(idx) !== 'default'"
         :tertiary="optionType(idx) === 'default'"
         :strong="idx === selected"
-        :style="{ justifyContent: 'flex-start', width: '100%', textAlign: 'left' }"
+        :style="{
+          justifyContent: 'flex-start',
+          width: '100%',
+          textAlign: 'left',
+        }"
         @click="select(idx)"
       >
         <template #icon>
-          <span style="font-weight: 700">{{ String.fromCharCode(65 + idx) }}</span>
+          <span style="font-weight: 700">{{
+            String.fromCharCode(65 + idx)
+          }}</span>
         </template>
         {{ opt }}
       </n-button>

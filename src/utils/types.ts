@@ -590,10 +590,15 @@ export interface ExerciseSortData {
   lines: string[]
 }
 
+export interface ExerciseFillData {
+  question: string
+  code: string
+}
+
 export interface Exercise {
   id: number
-  type: 'mcq' | 'sort'
-  data: ExerciseMcqData | ExerciseSortData
+  type: "mcq" | "sort" | "fill"
+  data: ExerciseMcqData | ExerciseSortData | ExerciseFillData
   order: number
 }
 

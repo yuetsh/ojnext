@@ -64,7 +64,6 @@ async function submit() {
       await updateTutorial(tutorial)
       message.success("修改已保存")
     }
-    router.push({ name: "admin tutorial list" })
   } catch (err: any) {
     message.error(err.data)
   }

@@ -1,5 +1,10 @@
 <script setup lang="ts">
-import { Exercise, ExerciseMcqData, ExerciseSortData } from "utils/types"
+import {
+  Exercise,
+  ExerciseMcqData,
+  ExerciseSortData,
+  ExerciseFillData,
+} from "utils/types"
 import {
   getAdminExercises,
   createExercise,
@@ -14,7 +19,7 @@ const dialog = useDialog()
 const exercises = ref<Exercise[]>([])
 const showForm = ref(false)
 const editingId = ref<number | null>(null)
-const formType = ref<"mcq" | "sort">("mcq")
+const formType = ref<"mcq" | "sort" | "fill">("mcq")
 const formOrder = ref(0)
 
 const mcqQuestion = ref("")
@@ -23,6 +28,9 @@ const mcqAnswer = ref(0)
 
 const sortQuestion = ref("")
 const sortCode = ref("")
+
+const fillQuestion = ref("")
+const fillCode = ref("")
 
 async function load() {
   exercises.value = await getAdminExercises(props.tutorialId)
@@ -39,6 +47,8 @@ function openCreate() {
   mcqAnswer.value = 0
   sortQuestion.value = ""
   sortCode.value = ""
+  fillQuestion.value = ""
+  fillCode.value = ""
   showForm.value = true
 }
 
@@ -51,29 +61,51 @@ function openEdit(ex: Exercise) {
     mcqQuestion.value = d.question
     mcqOptions.value = [...d.options]
     mcqAnswer.value = d.answer
-  } else {
+  } else if (ex.type === "sort") {
     const d = ex.data as ExerciseSortData
     sortQuestion.value = d.question
     sortCode.value = d.lines.join("\n")
+  } else {
+    const d = ex.data as ExerciseFillData
+    fillQuestion.value = d.question
+    fillCode.value = d.code
   }
   showForm.value = true
 }
 
 async function save() {
-  const data =
-    formType.value === "mcq"
-      ? { question: mcqQuestion.value, options: mcqOptions.value, answer: mcqAnswer.value }
-      : {
-          question: sortQuestion.value || "将下列代码行排列为正确顺序",
-          lines: sortCode.value.split("\n").filter((l) => l.trim() !== ""),
-        }
+  let data: Record<string, unknown>
+  if (formType.value === "mcq") {
+    data = {
+      question: mcqQuestion.value,
+      options: mcqOptions.value,
+      answer: mcqAnswer.value,
+    }
+  } else if (formType.value === "sort") {
+    data = {
+      question: sortQuestion.value || "将下列代码行排列为正确顺序",
+      lines: sortCode.value.split("\n").filter((l) => l.trim() !== ""),
+    }
+  } else {
+    data = { question: fillQuestion.value, code: fillCode.value }
+  }
 
   try {
     if (editingId.value) {
-      await updateExercise({ id: editingId.value, type: formType.value, data, order: formOrder.value })
+      await updateExercise({
+        id: editingId.value,
+        type: formType.value,
+        data,
+        order: formOrder.value,
+      })
       message.success("练习题已更新")
     } else {
-      await createExercise({ tutorial_id: props.tutorialId, type: formType.value, data, order: formOrder.value })
+      await createExercise({
+        tutorial_id: props.tutorialId,
+        type: formType.value,
+        data,
+        order: formOrder.value,
+      })
       message.success("练习题已创建")
     }
     showForm.value = false
@@ -102,7 +134,15 @@ function copyPlaceholder(id: number) {
 }
 
 function typeName(type: string) {
-  return type === "mcq" ? "选择题" : "代码排序"
+  if (type === "mcq") return "选择题"
+  if (type === "sort") return "代码排序"
+  return "代码填空"
+}
+
+function typeTagType(type: string): "success" | "info" | "warning" {
+  if (type === "mcq") return "success"
+  if (type === "sort") return "info"
+  return "warning"
 }
 </script>
 
@@ -110,7 +150,9 @@ function typeName(type: string) {
   <div>
     <n-flex justify="space-between" align="center" style="margin-bottom: 16px">
       <n-text>共 {{ exercises.length }} 道练习题</n-text>
-      <n-button type="primary" size="small" @click="openCreate">+ 添加练习题</n-button>
+      <n-button type="primary" size="small" @click="openCreate"
+        >+ 添加练习题</n-button
+      >
     </n-flex>
 
     <n-empty v-if="exercises.length === 0" description="暂无练习题" />
@@ -119,11 +161,7 @@ function typeName(type: string) {
       <n-list-item v-for="ex in exercises" :key="ex.id">
         <n-flex justify="space-between" align="center">
           <div>
-            <n-tag
-              size="small"
-              :type="ex.type === 'mcq' ? 'success' : 'info'"
-              :bordered="false"
-            >
+            <n-tag size="small" :type="typeTagType(ex.type)" :bordered="false">
               {{ typeName(ex.type) }}
             </n-tag>
             <n-text style="margin-left: 10px">
@@ -133,12 +171,16 @@ function typeName(type: string) {
           <n-space :size="8">
             <n-tooltip trigger="hover">
               <template #trigger>
-                <n-button size="small" @click="copyPlaceholder(ex.id)">复制占位符</n-button>
+                <n-button size="small" @click="copyPlaceholder(ex.id)"
+                  >复制占位符</n-button
+                >
               </template>
               将 [[exercise:{{ ex.id }}]] 粘贴到 Markdown 内容中
             </n-tooltip>
             <n-button size="small" @click="openEdit(ex)">编辑</n-button>
-            <n-button size="small" type="error" @click="confirmDelete(ex.id)">删除</n-button>
+            <n-button size="small" type="error" @click="confirmDelete(ex.id)"
+              >删除</n-button
+            >
           </n-space>
         </n-flex>
       </n-list-item>
@@ -155,11 +197,16 @@ function typeName(type: string) {
           <n-radio-group v-model:value="formType" :disabled="!!editingId">
             <n-radio value="mcq">选择题</n-radio>
             <n-radio value="sort">代码排序</n-radio>
+            <n-radio value="fill">代码填空</n-radio>
           </n-radio-group>
         </n-form-item>
 
         <n-form-item label="顺序">
-          <n-input-number v-model:value="formOrder" :min="0" style="width: 100px" />
+          <n-input-number
+            v-model:value="formOrder"
+            :min="0"
+            style="width: 100px"
+          />
         </n-form-item>
 
         <template v-if="formType === 'mcq'">
@@ -168,7 +215,12 @@ function typeName(type: string) {
           </n-form-item>
           <n-form-item label="选项（正确答案前选择单选按钮）">
             <n-space vertical style="width: 100%">
-              <n-flex v-for="(opt, i) in mcqOptions" :key="i" align="center" :size="8">
+              <n-flex
+                v-for="(opt, i) in mcqOptions"
+                :key="i"
+                align="center"
+                :size="8"
+              >
                 <n-radio
                   :value="i"
                   :checked="mcqAnswer === i"
@@ -182,19 +234,32 @@ function typeName(type: string) {
                 <n-button
                   size="small"
                   :disabled="mcqOptions.length <= 2"
-                  @click="() => { mcqOptions.splice(i, 1); if (mcqAnswer >= mcqOptions.length) mcqAnswer = mcqOptions.length - 1 }"
+                  @click="
+                    () => {
+                      mcqOptions.splice(i, 1)
+                      if (mcqAnswer >= mcqOptions.length)
+                        mcqAnswer = mcqOptions.length - 1
+                    }
+                  "
                 >
                   ✕
                 </n-button>
               </n-flex>
-              <n-button size="small" @click="mcqOptions.push('')">+ 添加选项</n-button>
+              <n-button size="small" @click="mcqOptions.push('')"
+                >+ 添加选项</n-button
+              >
             </n-space>
           </n-form-item>
         </template>
 
-        <template v-else>
+        <template v-else-if="formType === 'sort'">
           <n-form-item label="题目">
-            <n-input v-model:value="sortQuestion" type="textarea" :rows="2" placeholder="将下列代码行排列为正确顺序" />
+            <n-input
+              v-model:value="sortQuestion"
+              type="textarea"
+              :rows="2"
+              placeholder="将下列代码行排列为正确顺序"
+            />
           </n-form-item>
           <n-form-item label="正确代码（每行将自动成为一道排序项）">
             <n-input
@@ -202,6 +267,26 @@ function typeName(type: string) {
               type="textarea"
               :rows="10"
               placeholder="在此粘贴正确的代码，保存后将自动按行拆分并乱序"
+              style="font-family: monospace"
+            />
+          </n-form-item>
+        </template>
+
+        <template v-else>
+          <n-form-item label="题目说明">
+            <n-input
+              v-model:value="fillQuestion"
+              type="textarea"
+              :rows="2"
+              placeholder="例：补全下面的循环语句"
+            />
+          </n-form-item>
+          <n-form-item label="含空位的代码">
+            <n-input
+              v-model:value="fillCode"
+              type="textarea"
+              :rows="10"
+              placeholder="用 {{答案}} 标记空位，多个合法答案用 | 分隔，例如：for {{i|idx}} in range(10):"
               style="font-family: monospace"
             />
           </n-form-item>

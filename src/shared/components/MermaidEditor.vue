@@ -73,7 +73,8 @@ const renderMermaid = async () => {
     renderSuccess.value = false
 
     const errorDiv = document.createElement("div")
-    errorDiv.style.cssText = "color: #ff4d4f; padding: 20px; text-align: center; border: 1px dashed #ff4d4f; border-radius: 4px;"
+    errorDiv.style.cssText =
+      "color: #ff4d4f; padding: 20px; text-align: center; border: 1px dashed #ff4d4f; border-radius: 4px;"
     const titleP = document.createElement("p")
     titleP.textContent = "Mermaid语法错误"
     const detailP = document.createElement("p")

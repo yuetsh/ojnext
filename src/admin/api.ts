@@ -263,7 +263,9 @@ export function setTutorialVisibility(id: number, is_public: boolean) {
 }
 
 export async function getAdminExercises(tutorialId: number) {
-  const res = await http.get("admin/exercise", { params: { tutorial_id: tutorialId } })
+  const res = await http.get("admin/exercise", {
+    params: { tutorial_id: tutorialId },
+  })
   return res.data as Exercise[]
 }
 
