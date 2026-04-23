@@ -1,7 +1,13 @@
 <script setup lang="ts">
+import hljs from "highlight.js/lib/core"
+import python from "highlight.js/lib/languages/python"
+import c from "highlight.js/lib/languages/c"
 import { Exercise, ExerciseSortData } from "utils/types"
 
-const props = defineProps<{ exercise: Exercise }>()
+hljs.registerLanguage("python", python)
+hljs.registerLanguage("c", c)
+
+const props = defineProps<{ exercise: Exercise; lang?: string }>()
 const data = computed(() => props.exercise.data as ExerciseSortData)
 
 type LineItem = { originalIdx: number; text: string }
@@ -40,6 +46,7 @@ function onDrop(targetIdx: number) {
   newLines.splice(targetIdx, 0, moved)
   lines.value = newLines
   dragIdx.value = null
+  submitted.value = false
 }
 
 function lineStatus(idx: number): "correct" | "wrong" | "default" {
@@ -56,6 +63,33 @@ function submit() {
 function reset() {
   init()
 }
+
+function escapeHtml(text: string): string {
+  return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+}
+
+const lineHtmlMap = computed<Record<number, string>>(() => {
+  const rawLines = data.value.lines
+  const map: Record<number, string> = {}
+  const lang = props.lang === "python" ? "python" : props.lang === "c" ? "c" : null
+
+  if (lang) {
+    try {
+      const result = hljs.highlight(rawLines.join("\n"), { language: lang }).value
+      result.split("\n").forEach((html, i) => {
+        map[i] = html
+      })
+    } catch {
+      // fall through
+    }
+  }
+
+  rawLines.forEach((text, i) => {
+    if (map[i] === undefined) map[i] = escapeHtml(text)
+  })
+
+  return map
+})
 </script>
 
 <template>
@@ -100,7 +134,7 @@ function reset() {
         @drop="onDrop(idx)"
       >
         <span style="color: #bbb; cursor: grab">⠿</span>
-        <span>{{ line.text }}</span>
+        <span v-html="lineHtmlMap[line.originalIdx]" style="white-space: pre" />
       </div>
     </n-space>
 
@@ -112,10 +146,40 @@ function reset() {
     />
 
     <n-space style="margin-top: 12px" :size="8">
-      <n-button type="info" size="small" :disabled="submitted" @click="submit">
+      <n-button type="info" size="small" :disabled="submitted && allCorrect" @click="submit">
         提交
       </n-button>
       <n-button size="small" @click="reset">重置</n-button>
     </n-space>
   </n-card>
 </template>
+
+<style>
+.hljs-keyword,
+.hljs-operator,
+.hljs-selector-tag { color: #d73a49; }
+.hljs-string,
+.hljs-regexp,
+.hljs-template-literal { color: #032f62; }
+.hljs-comment,
+.hljs-quote { color: #6a737d; font-style: italic; }
+.hljs-number,
+.hljs-literal { color: #005cc5; }
+.hljs-built_in,
+.hljs-title.function_,
+.hljs-class .hljs-title { color: #6f42c1; }
+
+.dark .hljs-keyword,
+.dark .hljs-operator,
+.dark .hljs-selector-tag { color: #c678dd; }
+.dark .hljs-string,
+.dark .hljs-regexp,
+.dark .hljs-template-literal { color: #98c379; }
+.dark .hljs-comment,
+.dark .hljs-quote { color: #7f848e; font-style: italic; }
+.dark .hljs-number,
+.dark .hljs-literal { color: #e5c07b; }
+.dark .hljs-built_in,
+.dark .hljs-title.function_,
+.dark .hljs-class .hljs-title { color: #61afef; }
+</style>

@@ -58,8 +58,10 @@ provide("hljs", hljsInstance)
     :date-locale="dateZhCN"
     :hljs="hljsInstance"
   >
-    <n-message-provider>
-      <router-view></router-view>
-    </n-message-provider>
+    <n-dialog-provider>
+      <n-message-provider>
+        <router-view></router-view>
+      </n-message-provider>
+    </n-dialog-provider>
   </n-config-provider>
 </template>

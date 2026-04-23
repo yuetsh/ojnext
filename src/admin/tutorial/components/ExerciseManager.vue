@@ -21,8 +21,7 @@ const mcqQuestion = ref("")
 const mcqOptions = ref(["", ""])
 const mcqAnswer = ref(0)
 
-const sortQuestion = ref("")
-const sortLines = ref(["", ""])
+const sortCode = ref("")
 
 async function load() {
   exercises.value = await getAdminExercises(props.tutorialId)
@@ -37,8 +36,7 @@ function openCreate() {
   mcqQuestion.value = ""
   mcqOptions.value = ["", ""]
   mcqAnswer.value = 0
-  sortQuestion.value = ""
-  sortLines.value = ["", ""]
+  sortCode.value = ""
   showForm.value = true
 }
 
@@ -53,8 +51,7 @@ function openEdit(ex: Exercise) {
     mcqAnswer.value = d.answer
   } else {
     const d = ex.data as ExerciseSortData
-    sortQuestion.value = d.question
-    sortLines.value = [...d.lines]
+    sortCode.value = d.lines.join("\n")
   }
   showForm.value = true
 }
@@ -63,7 +60,10 @@ async function save() {
   const data =
     formType.value === "mcq"
       ? { question: mcqQuestion.value, options: mcqOptions.value, answer: mcqAnswer.value }
-      : { question: sortQuestion.value, lines: sortLines.value }
+      : {
+          question: "将下列代码行排列为正确顺序",
+          lines: sortCode.value.split("\n").filter((l) => l.trim() !== ""),
+        }
 
   try {
     if (editingId.value) {
@@ -169,7 +169,7 @@ function typeName(type: string) {
                 <n-radio
                   :value="i"
                   :checked="mcqAnswer === i"
-                  @update:checked="if ($event) mcqAnswer = i"
+                  @update:checked="$event && (mcqAnswer = i)"
                 />
                 <n-input
                   v-model:value="mcqOptions[i]"
@@ -190,27 +190,14 @@ function typeName(type: string) {
         </template>
 
         <template v-else>
-          <n-form-item label="题目">
-            <n-input v-model:value="sortQuestion" type="textarea" :rows="2" />
-          </n-form-item>
-          <n-form-item label="代码行（按正确顺序输入）">
-            <n-space vertical style="width: 100%">
-              <n-flex v-for="(line, i) in sortLines" :key="i" align="center" :size="8">
-                <n-input
-                  v-model:value="sortLines[i]"
-                  :placeholder="`第 ${i + 1} 行`"
-                  style="flex: 1; font-family: monospace"
-                />
-                <n-button
-                  size="small"
-                  :disabled="sortLines.length <= 2"
-                  @click="sortLines.splice(i, 1)"
-                >
-                  ✕
-                </n-button>
-              </n-flex>
-              <n-button size="small" @click="sortLines.push('')">+ 添加行</n-button>
-            </n-space>
+          <n-form-item label="正确代码（每行将自动成为一道排序项）">
+            <n-input
+              v-model:value="sortCode"
+              type="textarea"
+              :rows="10"
+              placeholder="在此粘贴正确的代码，保存后将自动按行拆分并乱序"
+              style="font-family: monospace"
+            />
           </n-form-item>
         </template>
       </n-form>

@@ -5,26 +5,35 @@ const props = defineProps<{ exercise: Exercise }>()
 const data = computed(() => props.exercise.data as ExerciseMcqData)
 
 const selected = ref<number | null>(null)
-const submitted = ref(false)
+const correct = ref(false)
+const wrong = ref(false)
 
 function select(idx: number) {
-  if (!submitted.value) selected.value = idx
+  if (correct.value) return
+  selected.value = idx
+  wrong.value = false
 }
 
 function submit() {
-  if (selected.value === null) return
-  submitted.value = true
+  if (selected.value === null || correct.value) return
+  if (selected.value === data.value.answer) {
+    correct.value = true
+    wrong.value = false
+  } else {
+    wrong.value = true
+    selected.value = null
+  }
 }
 
 function reset() {
   selected.value = null
-  submitted.value = false
+  correct.value = false
+  wrong.value = false
 }
 
-function optionType(idx: number): "default" | "success" | "error" {
-  if (!submitted.value) return "default"
-  if (idx === data.value.answer) return "success"
-  if (idx === selected.value) return "error"
+function optionType(idx: number): "default" | "primary" | "success" {
+  if (correct.value && idx === data.value.answer) return "success"
+  if (idx === selected.value) return "primary"
   return "default"
 }
 </script>
@@ -46,6 +55,7 @@ function optionType(idx: number): "default" | "success" | "error" {
         :type="optionType(idx)"
         :secondary="optionType(idx) !== 'default'"
         :tertiary="optionType(idx) === 'default'"
+        :strong="idx === selected"
         :style="{ justifyContent: 'flex-start', width: '100%', textAlign: 'left' }"
         @click="select(idx)"
       >
@@ -57,9 +67,9 @@ function optionType(idx: number): "default" | "success" | "error" {
     </n-space>
 
     <n-alert
-      v-if="submitted"
-      :type="selected === data.answer ? 'success' : 'error'"
-      :title="selected === data.answer ? '正确！' : '不对，请看正确答案（绿色）'"
+      v-if="correct || wrong"
+      :type="correct ? 'success' : 'error'"
+      :title="correct ? '正确！' : '选择有误，请重试'"
       style="margin-top: 12px"
     />
 
@@ -67,7 +77,7 @@ function optionType(idx: number): "default" | "success" | "error" {
       <n-button
         type="primary"
         size="small"
-        :disabled="selected === null || submitted"
+        :disabled="selected === null || correct"
         @click="submit"
       >
         提交

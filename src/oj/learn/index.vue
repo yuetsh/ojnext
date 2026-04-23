@@ -34,7 +34,7 @@
               :theme="isDark ? 'dark' : 'light'"
               :model-value="seg.content"
             />
-            <ExerciseWidget v-else :exercise="seg.exercise" />
+            <ExerciseWidget v-else :exercise="seg.exercise" :lang="tutorial.type" />
           </template>
         </n-card>
       </n-gi>
@@ -74,7 +74,7 @@
               :theme="isDark ? 'dark' : 'light'"
               :model-value="seg.content"
             />
-            <ExerciseWidget v-else :exercise="seg.exercise" />
+            <ExerciseWidget v-else :exercise="seg.exercise" :lang="tutorial.type" />
           </template>
         </n-tab-pane>
 
