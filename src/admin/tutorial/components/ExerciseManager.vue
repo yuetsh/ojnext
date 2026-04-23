@@ -21,6 +21,7 @@ const mcqQuestion = ref("")
 const mcqOptions = ref(["", ""])
 const mcqAnswer = ref(0)
 
+const sortQuestion = ref("")
 const sortCode = ref("")
 
 async function load() {
@@ -36,6 +37,7 @@ function openCreate() {
   mcqQuestion.value = ""
   mcqOptions.value = ["", ""]
   mcqAnswer.value = 0
+  sortQuestion.value = ""
   sortCode.value = ""
   showForm.value = true
 }
@@ -51,6 +53,7 @@ function openEdit(ex: Exercise) {
     mcqAnswer.value = d.answer
   } else {
     const d = ex.data as ExerciseSortData
+    sortQuestion.value = d.question
     sortCode.value = d.lines.join("\n")
   }
   showForm.value = true
@@ -61,7 +64,7 @@ async function save() {
     formType.value === "mcq"
       ? { question: mcqQuestion.value, options: mcqOptions.value, answer: mcqAnswer.value }
       : {
-          question: "将下列代码行排列为正确顺序",
+          question: sortQuestion.value || "将下列代码行排列为正确顺序",
           lines: sortCode.value.split("\n").filter((l) => l.trim() !== ""),
         }
 
@@ -179,7 +182,7 @@ function typeName(type: string) {
                 <n-button
                   size="small"
                   :disabled="mcqOptions.length <= 2"
-                  @click="mcqOptions.splice(i, 1)"
+                  @click="() => { mcqOptions.splice(i, 1); if (mcqAnswer >= mcqOptions.length) mcqAnswer = mcqOptions.length - 1 }"
                 >
                   ✕
                 </n-button>
@@ -190,6 +193,9 @@ function typeName(type: string) {
         </template>
 
         <template v-else>
+          <n-form-item label="题目">
+            <n-input v-model:value="sortQuestion" type="textarea" :rows="2" placeholder="将下列代码行排列为正确顺序" />
+          </n-form-item>
           <n-form-item label="正确代码（每行将自动成为一道排序项）">
             <n-input
               v-model:value="sortCode"

@@ -22,7 +22,8 @@ function shuffle(arr: LineItem[]): LineItem[] {
     ;[a[i], a[j]] = [a[j], a[i]]
   }
   const isCorrect = a.every((item, i) => item.originalIdx === i)
-  return isCorrect && a.length > 1 ? shuffle(arr) : a
+  if (isCorrect && a.length > 1) [a[0], a[1]] = [a[1], a[0]]
+  return a
 }
 
 function init() {

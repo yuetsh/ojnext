@@ -147,9 +147,9 @@ async function init() {
   titles.value = res1.data
   if (titles.value.length === 0) return
   const id = titles.value[step.value - 1].id
-  const [res2, exs] = await Promise.all([getTutorial(id), getExercises(id)])
-  tutorial.value = res2.data
-  exercises.value = exs
+  const [res2, exs] = await Promise.allSettled([getTutorial(id), getExercises(id)])
+  if (res2.status === "fulfilled") tutorial.value = res2.value.data
+  exercises.value = exs.status === "fulfilled" ? exs.value : []
 }
 
 watch(
