@@ -2,6 +2,7 @@ import { DIFFICULTY } from "utils/constants"
 import { getACRate } from "utils/functions"
 import http from "utils/http"
 import {
+  Exercise,
   Problem,
   Submission,
   SubmissionListPayload,
@@ -419,4 +420,9 @@ export function getProblemSetUserProgress(
   },
 ) {
   return http.get(`problemset/${problemSetId}/users_progress`, { params })
+}
+
+export async function getExercises(tutorialId: number): Promise<Exercise[]> {
+  const res = await http.get("exercises", { params: { tutorial_id: tutorialId } })
+  return res.data
 }

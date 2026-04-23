@@ -579,6 +579,24 @@ export interface Tutorial {
   created_at?: Date
 }
 
+export interface ExerciseMcqData {
+  question: string
+  options: string[]
+  answer: number
+}
+
+export interface ExerciseSortData {
+  question: string
+  lines: string[]
+}
+
+export interface Exercise {
+  id: number
+  type: 'mcq' | 'sort'
+  data: ExerciseMcqData | ExerciseSortData
+  order: number
+}
+
 export interface DurationData {
   unit: string
   index: number

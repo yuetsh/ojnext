@@ -6,6 +6,7 @@ import {
   BlankContest,
   BlankProblem,
   Contest,
+  Exercise,
   Server,
   TestcaseUploadedReturns,
   Tutorial,
@@ -259,6 +260,35 @@ export function deleteTutorial(id: number) {
 
 export function setTutorialVisibility(id: number, is_public: boolean) {
   return http.put("admin/tutorial/visibility", { id, is_public })
+}
+
+export async function getAdminExercises(tutorialId: number) {
+  const res = await http.get("admin/exercise", { params: { tutorial_id: tutorialId } })
+  return res.data as Exercise[]
+}
+
+export async function createExercise(data: {
+  tutorial_id: number
+  type: "mcq" | "sort"
+  data: object
+  order: number
+}) {
+  const res = await http.post("admin/exercise", data)
+  return res.data as Exercise
+}
+
+export async function updateExercise(data: {
+  id: number
+  type: "mcq" | "sort"
+  data: object
+  order: number
+}) {
+  const res = await http.put("admin/exercise", data)
+  return res.data as Exercise
+}
+
+export function deleteExercise(id: number) {
+  return http.delete("admin/exercise", { params: { id } })
 }
 
 // 将竞赛题目转为公开题目

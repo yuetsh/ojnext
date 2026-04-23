@@ -27,11 +27,15 @@
           :bordered="false"
           size="small"
         >
-          <MdPreview
-            preview-theme="vuepress"
-            :theme="isDark ? 'dark' : 'light'"
-            :model-value="tutorial.content"
-          />
+          <template v-for="(seg, i) in segments" :key="i">
+            <MdPreview
+              v-if="seg.type === 'md'"
+              preview-theme="vuepress"
+              :theme="isDark ? 'dark' : 'light'"
+              :model-value="seg.content"
+            />
+            <ExerciseWidget v-else :exercise="seg.exercise" />
+          </template>
         </n-card>
       </n-gi>
 
@@ -63,11 +67,15 @@
         </n-tab-pane>
 
         <n-tab-pane name="content" :tab="`第 ${step} 课`">
-          <MdPreview
-            preview-theme="vuepress"
-            :theme="isDark ? 'dark' : 'light'"
-            :model-value="tutorial.content"
-          />
+          <template v-for="(seg, i) in segments" :key="i">
+            <MdPreview
+              v-if="seg.type === 'md'"
+              preview-theme="vuepress"
+              :theme="isDark ? 'dark' : 'light'"
+              :model-value="seg.content"
+            />
+            <ExerciseWidget v-else :exercise="seg.exercise" />
+          </template>
         </n-tab-pane>
 
         <n-tab-pane name="code" tab="示例代码" v-if="tutorial.code">
@@ -78,21 +86,11 @@
       <n-divider style="margin: 12px 0" />
 
       <n-flex align="center" justify="space-between">
-        <n-button
-          secondary
-          type="primary"
-          :disabled="isFirstLesson"
-          @click="goToPrevLesson"
-        >
+        <n-button secondary type="primary" :disabled="isFirstLesson" @click="goToPrevLesson">
           ← 上一课
         </n-button>
         <n-text>{{ step }} / {{ titles.length }}</n-text>
-        <n-button
-          secondary
-          type="primary"
-          :disabled="isLastLesson"
-          @click="goToNextLesson"
-        >
+        <n-button secondary type="primary" :disabled="isLastLesson" @click="goToNextLesson">
           下一课 →
         </n-button>
       </n-flex>
@@ -103,56 +101,45 @@
 <script setup lang="ts">
 import { MdPreview } from "md-editor-v3"
 import "md-editor-v3/lib/preview.css"
-import { Tutorial } from "utils/types"
-import { getTutorial, getTutorials } from "../api"
+import { Tutorial, Exercise } from "utils/types"
+import { getTutorial, getTutorials, getExercises } from "../api"
+import { parseExercises } from "./composables/useExerciseParse"
 import { useBreakpoints } from "shared/composables/breakpoints"
+
+const ExerciseWidget = defineAsyncComponent(() => import("./components/ExerciseWidget.vue"))
+const CodeEditor = defineAsyncComponent(() => import("shared/components/CodeEditor.vue"))
+
 const isDark = useDark()
-
-const CodeEditor = defineAsyncComponent(
-  () => import("shared/components/CodeEditor.vue"),
-)
-
 const route = useRoute()
 const router = useRouter()
-
 const { isDesktop } = useBreakpoints()
 
 const step = computed(() => {
   if (!route.params.step || !route.params.step.length) return 1
-  else {
-    return parseInt(route.params.step[0])
-  }
+  return parseInt(route.params.step[0])
 })
 
-const tutorial = ref<Partial<Tutorial>>({
-  id: 0,
-  title: "",
-  content: "",
-  code: "",
-})
-
+const tutorial = ref<Partial<Tutorial>>({ id: 0, title: "", content: "", code: "" })
 const titles = ref<{ id: number; title: string }[]>([])
+const exercises = ref<Exercise[]>([])
 const activeTab = ref("content")
+
+const segments = computed(() =>
+  parseExercises(tutorial.value.content ?? "", exercises.value),
+)
 
 const isFirstLesson = computed(() => step.value === 1)
 const isLastLesson = computed(() => step.value === titles.value.length)
 
 function goToLesson(lessonNumber: number) {
   activeTab.value = "content"
-  const dest = lessonNumber.toString().padStart(2, "0")
-  router.push("/learn/" + dest)
+  router.push("/learn/" + lessonNumber.toString().padStart(2, "0"))
 }
-
 function goToPrevLesson() {
-  if (step.value > 1) {
-    goToLesson(step.value - 1)
-  }
+  if (step.value > 1) goToLesson(step.value - 1)
 }
-
 function goToNextLesson() {
-  if (step.value < titles.value.length) {
-    goToLesson(step.value + 1)
-  }
+  if (step.value < titles.value.length) goToLesson(step.value + 1)
 }
 
 async function init() {
@@ -160,15 +147,15 @@ async function init() {
   titles.value = res1.data
   if (titles.value.length === 0) return
   const id = titles.value[step.value - 1].id
-  const res2 = await getTutorial(id)
+  const [res2, exs] = await Promise.all([getTutorial(id), getExercises(id)])
   tutorial.value = res2.data
+  exercises.value = exs
 }
 
 watch(
   () => route.params.step,
   async () => {
-    if (route.name !== "learn") return
-    init()
+    if (route.name === "learn") init()
   },
   { immediate: true },
 )

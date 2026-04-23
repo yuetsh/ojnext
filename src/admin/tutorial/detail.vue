@@ -3,6 +3,7 @@ import CodeEditor from "shared/components/CodeEditor.vue"
 import MarkdownEditor from "shared/components/MarkdownEditor.vue"
 import { Tutorial } from "utils/types"
 import { createTutorial, getTutorial, updateTutorial } from "../api"
+import ExerciseManager from "./components/ExerciseManager.vue"
 
 interface Props {
   tutorialID?: string
@@ -111,6 +112,10 @@ onMounted(init)
         :language="tutorial.type === 'python' ? 'Python3' : 'C'"
         height="400px"
       />
+    </n-tab-pane>
+    <n-tab-pane name="exercises" tab="练习题" :disabled="!tutorial.id">
+      <ExerciseManager v-if="tutorial.id" :tutorial-id="tutorial.id" />
+      <n-empty v-else description="请先保存教程后再添加练习题" />
     </n-tab-pane>
   </n-tabs>
 </template>
