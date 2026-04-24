@@ -24,7 +24,7 @@ const formOrder = ref(0)
 
 const mcqQuestion = ref("")
 const mcqOptions = ref(["", ""])
-const mcqAnswer = ref(0)
+const mcqAnswer = ref<number[]>([])
 
 const sortQuestion = ref("")
 const sortCode = ref("")
@@ -44,7 +44,7 @@ function openCreate() {
   formOrder.value = exercises.value.length
   mcqQuestion.value = ""
   mcqOptions.value = ["", ""]
-  mcqAnswer.value = 0
+  mcqAnswer.value = []
   sortQuestion.value = ""
   sortCode.value = ""
   fillQuestion.value = ""
@@ -60,7 +60,7 @@ function openEdit(ex: Exercise) {
     const d = ex.data as ExerciseMcqData
     mcqQuestion.value = d.question
     mcqOptions.value = [...d.options]
-    mcqAnswer.value = d.answer
+    mcqAnswer.value = [...d.answer]
   } else if (ex.type === "sort") {
     const d = ex.data as ExerciseSortData
     sortQuestion.value = d.question
@@ -71,6 +71,12 @@ function openEdit(ex: Exercise) {
     fillCode.value = d.code
   }
   showForm.value = true
+}
+
+function toggleAnswer(i: number) {
+  const idx = mcqAnswer.value.indexOf(i)
+  if (idx === -1) mcqAnswer.value.push(i)
+  else mcqAnswer.value.splice(idx, 1)
 }
 
 async function save() {
@@ -218,7 +224,7 @@ function typeTagType(type: string): "success" | "info" | "warning" {
               placeholder="下面选项中正确是哪个？"
             />
           </n-form-item>
-          <n-form-item label="选项（正确答案前选择单选按钮）">
+          <n-form-item label="选项（勾选所有正确答案）">
             <n-space vertical style="width: 100%">
               <n-flex
                 v-for="(opt, i) in mcqOptions"
@@ -226,10 +232,9 @@ function typeTagType(type: string): "success" | "info" | "warning" {
                 align="center"
                 :size="8"
               >
-                <n-radio
-                  :value="i"
-                  :checked="mcqAnswer === i"
-                  @update:checked="$event && (mcqAnswer = i)"
+                <n-checkbox
+                  :checked="mcqAnswer.includes(i)"
+                  @update:checked="toggleAnswer(i)"
                 />
                 <n-input
                   v-model:value="mcqOptions[i]"
@@ -242,8 +247,9 @@ function typeTagType(type: string): "success" | "info" | "warning" {
                   @click="
                     () => {
                       mcqOptions.splice(i, 1)
-                      if (mcqAnswer >= mcqOptions.length)
-                        mcqAnswer = mcqOptions.length - 1
+                      mcqAnswer = mcqAnswer
+                        .filter((a) => a !== i)
+                        .map((a) => (a > i ? a - 1 : a))
                     }
                   "
                 >
