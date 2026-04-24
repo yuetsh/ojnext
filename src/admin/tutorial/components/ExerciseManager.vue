@@ -77,7 +77,7 @@ async function save() {
   let data: Record<string, unknown>
   if (formType.value === "mcq") {
     data = {
-      question: mcqQuestion.value,
+      question: mcqQuestion.value || "下面选项中正确是哪个？",
       options: mcqOptions.value,
       answer: mcqAnswer.value,
     }
@@ -171,16 +171,16 @@ function typeTagType(type: string): "success" | "info" | "warning" {
           <n-space :size="8">
             <n-tooltip trigger="hover">
               <template #trigger>
-                <n-button size="small" @click="copyPlaceholder(ex.id)"
-                  >复制占位符</n-button
-                >
+                <n-button size="small" @click="copyPlaceholder(ex.id)">
+                  复制占位符
+                </n-button>
               </template>
               将 [[exercise:{{ ex.id }}]] 粘贴到 Markdown 内容中
             </n-tooltip>
             <n-button size="small" @click="openEdit(ex)">编辑</n-button>
-            <n-button size="small" type="error" @click="confirmDelete(ex.id)"
-              >删除</n-button
-            >
+            <n-button size="small" type="error" @click="confirmDelete(ex.id)">
+              删除
+            </n-button>
           </n-space>
         </n-flex>
       </n-list-item>
@@ -211,7 +211,12 @@ function typeTagType(type: string): "success" | "info" | "warning" {
 
         <template v-if="formType === 'mcq'">
           <n-form-item label="题目">
-            <n-input v-model:value="mcqQuestion" type="textarea" :rows="2" />
+            <n-input
+              v-model:value="mcqQuestion"
+              type="textarea"
+              :rows="2"
+              placeholder="下面选项中正确是哪个？"
+            />
           </n-form-item>
           <n-form-item label="选项（正确答案前选择单选按钮）">
             <n-space vertical style="width: 100%">
@@ -245,9 +250,9 @@ function typeTagType(type: string): "success" | "info" | "warning" {
                   ✕
                 </n-button>
               </n-flex>
-              <n-button size="small" @click="mcqOptions.push('')"
-                >+ 添加选项</n-button
-              >
+              <n-button size="small" @click="mcqOptions.push('')">
+                + 添加选项
+              </n-button>
             </n-space>
           </n-form-item>
         </template>

@@ -271,7 +271,7 @@ export async function getAdminExercises(tutorialId: number) {
 
 export async function createExercise(data: {
   tutorial_id: number
-  type: "mcq" | "sort"
+  type: "mcq" | "sort" | "fill"
   data: object
   order: number
 }) {
@@ -281,7 +281,7 @@ export async function createExercise(data: {
 
 export async function updateExercise(data: {
   id: number
-  type: "mcq" | "sort"
+  type: "mcq" | "sort" | "fill"
   data: object
   order: number
 }) {
