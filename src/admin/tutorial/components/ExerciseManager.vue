@@ -247,7 +247,7 @@ function typeTagType(type: string): "success" | "info" | "warning" {
                   @click="
                     () => {
                       mcqOptions.splice(i, 1)
-                      mcqAnswer = mcqAnswer
+                      mcqAnswer.value = mcqAnswer.value
                         .filter((a) => a !== i)
                         .map((a) => (a > i ? a - 1 : a))
                     }
