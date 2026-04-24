@@ -4,36 +4,53 @@ import { Exercise, ExerciseMcqData } from "utils/types"
 const props = defineProps<{ exercise: Exercise }>()
 const data = computed(() => props.exercise.data as ExerciseMcqData)
 
-const selected = ref<number | null>(null)
+const selected = ref<Set<number>>(new Set())
 const correct = ref(false)
 const wrong = ref(false)
+const partial = ref(false)
 
 function select(idx: number) {
   if (correct.value) return
-  selected.value = idx
+  const s = new Set(selected.value)
+  if (s.has(idx)) s.delete(idx)
+  else s.add(idx)
+  selected.value = s
   wrong.value = false
+  partial.value = false
 }
 
 function submit() {
-  if (selected.value === null || correct.value) return
-  if (selected.value === data.value.answer) {
+  if (selected.value.size === 0 || correct.value) return
+  const answer = new Set(data.value.answer)
+  const sel = selected.value
+  const isEqual =
+    sel.size === answer.size && [...sel].every((v) => answer.has(v))
+  if (isEqual) {
     correct.value = true
     wrong.value = false
+    partial.value = false
   } else {
-    wrong.value = true
-    selected.value = null
+    const hasIntersection = [...sel].some((v) => answer.has(v))
+    if (hasIntersection) {
+      partial.value = true
+      wrong.value = false
+    } else {
+      wrong.value = true
+      partial.value = false
+    }
   }
 }
 
 function reset() {
-  selected.value = null
+  selected.value = new Set()
   correct.value = false
   wrong.value = false
+  partial.value = false
 }
 
 function optionType(idx: number): "default" | "primary" | "success" {
-  if (correct.value && idx === data.value.answer) return "success"
-  if (idx === selected.value) return "primary"
+  if (correct.value && data.value.answer.includes(idx)) return "success"
+  if (selected.value.has(idx)) return "primary"
   return "default"
 }
 </script>
@@ -46,7 +63,7 @@ function optionType(idx: number): "default" | "primary" | "success" {
     <template #header>
       <n-space align="center" :size="8">
         <n-tag type="success" size="small" :bordered="false"
-          >练一练 · 选择题</n-tag
+          >练一练 · 多选题</n-tag
         >
       </n-space>
     </template>
@@ -60,7 +77,7 @@ function optionType(idx: number): "default" | "primary" | "success" {
         :type="optionType(idx)"
         :secondary="optionType(idx) !== 'default'"
         :tertiary="optionType(idx) === 'default'"
-        :strong="idx === selected"
+        :strong="selected.has(idx)"
         :style="{
           justifyContent: 'flex-start',
           width: '100%',
@@ -78,9 +95,11 @@ function optionType(idx: number): "default" | "primary" | "success" {
     </n-space>
 
     <n-alert
-      v-if="correct || wrong"
-      :type="correct ? 'success' : 'error'"
-      :title="correct ? '正确！' : '选择有误，请重试'"
+      v-if="correct || wrong || partial"
+      :type="correct ? 'success' : partial ? 'warning' : 'error'"
+      :title="
+        correct ? '正确！' : partial ? '部分正确，请重试' : '选择有误，请重试'
+      "
       style="margin-top: 12px"
     />
 
@@ -88,7 +107,7 @@ function optionType(idx: number): "default" | "primary" | "success" {
       <n-button
         type="primary"
         size="small"
-        :disabled="selected === null || correct"
+        :disabled="selected.size === 0 || correct"
         @click="submit"
       >
         提交
