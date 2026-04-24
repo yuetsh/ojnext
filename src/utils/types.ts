@@ -582,7 +582,7 @@ export interface Tutorial {
 export interface ExerciseMcqData {
   question: string
   options: string[]
-  answer: number
+  answer: number[]
 }
 
 export interface ExerciseSortData {
