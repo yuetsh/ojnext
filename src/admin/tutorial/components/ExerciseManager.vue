@@ -80,6 +80,10 @@ function toggleAnswer(i: number) {
 }
 
 async function save() {
+  if (formType.value === "mcq" && mcqAnswer.value.length === 0) {
+    message.error("请至少勾选一个正确答案")
+    return
+  }
   let data: Record<string, unknown>
   if (formType.value === "mcq") {
     data = {
