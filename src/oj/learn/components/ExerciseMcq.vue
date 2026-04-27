@@ -3,6 +3,7 @@ import { Exercise, ExerciseMcqData } from "utils/types"
 
 const props = defineProps<{ exercise: Exercise }>()
 const data = computed(() => props.exercise.data as ExerciseMcqData)
+const isSingle = computed(() => data.value.answer.length === 1)
 
 const selected = ref<Set<number>>(new Set())
 const correct = ref(false)
@@ -12,8 +13,13 @@ const partial = ref(false)
 function select(idx: number) {
   if (correct.value) return
   const s = new Set(selected.value)
-  if (s.has(idx)) s.delete(idx)
-  else s.add(idx)
+  if (isSingle.value) {
+    s.clear()
+    if (!selected.value.has(idx)) s.add(idx)
+  } else {
+    if (s.has(idx)) s.delete(idx)
+    else s.add(idx)
+  }
   selected.value = s
   wrong.value = false
   partial.value = false
@@ -30,6 +36,7 @@ function submit() {
     wrong.value = false
     partial.value = false
   } else {
+    selected.value = new Set()
     const hasIntersection = [...sel].some((v) => answer.has(v))
     if (hasIntersection) {
       partial.value = true
@@ -62,9 +69,9 @@ function optionType(idx: number): "default" | "primary" | "success" {
   >
     <template #header>
       <n-space align="center" :size="8">
-        <n-tag type="success" size="small" :bordered="false"
-          >练一练 · 多选题</n-tag
-        >
+        <n-tag type="success" size="small" :bordered="false">
+          练一练 · {{ isSingle ? "单选题" : "多选题" }}
+        </n-tag>
       </n-space>
     </template>
 
