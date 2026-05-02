@@ -15,7 +15,6 @@ import { renderTableTitle } from "utils/renders"
 import ProblemStatus from "./components/ProblemStatus.vue"
 import AuthorSelect from "shared/components/AuthorSelect.vue"
 import ProblemListTitle from "./components/ProblemListTitle.vue"
-import { labelRect } from "mermaid/dist/rendering-util/rendering-elements/shapes/labelRect"
 
 interface Tag {
   id: number
@@ -226,7 +225,7 @@ function rowProps(row: ProblemFiltered) {
         <n-form :show-feedback="false" inline label-placement="left">
           <n-form-item label="难度">
             <n-select
-              style="width: 120px"
+              style="width: 100px"
               v-model:value="query.difficulty"
               :options="difficultyOptions"
             />
@@ -238,7 +237,7 @@ function rowProps(row: ProblemFiltered) {
         <n-form :show-feedback="false" inline label-placement="left">
           <n-form-item label="排序">
             <n-select
-              style="width: 120px"
+              style="width: 100px"
               v-model:value="query.sort"
               :options="sortOptions"
             />
