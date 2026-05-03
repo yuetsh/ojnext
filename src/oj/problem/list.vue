@@ -220,7 +220,7 @@ function rowProps(row: ProblemFiltered) {
 
 <template>
   <n-flex vertical size="large">
-    <n-flex justify="space-between">
+    <div class="problem-list-toolbar">
       <n-space>
         <n-form :show-feedback="false" inline label-placement="left">
           <n-form-item label="难度">
@@ -273,8 +273,8 @@ function rowProps(row: ProblemFiltered) {
           </n-form-item>
         </n-form>
       </n-space>
-      <Hitokoto v-if="isDesktop" />
-    </n-flex>
+      <Hitokoto v-if="isDesktop" class="problem-list-hitokoto" />
+    </div>
     <n-collapse-transition :show="showTag">
       <n-flex>
         <n-tag
@@ -303,4 +303,22 @@ function rowProps(row: ProblemFiltered) {
   />
 </template>
 
-<style scoped></style>
+<style scoped>
+.problem-list-toolbar {
+  display: grid;
+  grid-template-columns: minmax(0, auto) minmax(320px, 1fr);
+  align-items: start;
+  gap: 12px 16px;
+}
+
+.problem-list-toolbar :deep(.n-space) {
+  min-width: 0;
+}
+
+.problem-list-hitokoto {
+  justify-self: end;
+  width: 100%;
+  max-width: 720px;
+  min-width: 0;
+}
+</style>

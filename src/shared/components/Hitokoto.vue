@@ -34,19 +34,31 @@ onMounted(receive)
 .hitokoto {
   cursor: pointer;
   height: 34px;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  justify-content: center;
+  text-align: right;
 }
 
 .hitokoto .sentence {
-  max-width: 400px;
+  width: 100%;
   text-overflow: ellipsis;
   overflow: hidden;
   word-break: break-all;
   white-space: nowrap;
+  line-height: 18px;
 }
 
 .hitokoto .from {
-  float: right;
+  width: 100%;
+  text-align: right;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
   font-size: 12px;
+  line-height: 16px;
   color: grey;
 }
 </style>
