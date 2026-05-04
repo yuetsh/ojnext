@@ -306,7 +306,7 @@ function rowProps(row: ProblemFiltered) {
 <style scoped>
 .problem-list-toolbar {
   display: grid;
-  grid-template-columns: minmax(0, auto) minmax(320px, 1fr);
+  grid-template-columns: minmax(0, auto) minmax(250px, 1fr);
   align-items: start;
   gap: 12px 16px;
 }
