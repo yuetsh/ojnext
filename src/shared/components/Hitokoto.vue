@@ -26,39 +26,44 @@ onMounted(receive)
     @click="receive"
     v-if="hitokoto.sentence"
   >
-    <div class="sentence">{{ hitokoto.sentence }}</div>
-    <div class="from">{{ "来自 " + hitokoto.from }}</div>
+    <span class="from">{{ "来自 " + hitokoto.from }}</span>
+    <span class="sentence">{{ hitokoto.sentence }}</span>
   </div>
 </template>
 <style scoped>
 .hitokoto {
   cursor: pointer;
-  height: 34px;
+  height: 36px;
   min-width: 0;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  justify-content: center;
+  display: flow-root;
+  overflow: hidden;
   text-align: right;
+  line-height: 18px;
+  word-break: break-all;
+}
+
+.hitokoto::before {
+  content: "";
+  float: right;
+  width: 0;
+  height: 18px;
 }
 
 .hitokoto .sentence {
-  width: 100%;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  word-break: break-all;
-  white-space: nowrap;
-  line-height: 18px;
+  text-align: right;
 }
 
 .hitokoto .from {
-  width: 100%;
+  float: right;
+  clear: right;
+  max-width: min(45%, 260px);
+  margin-left: 8px;
   text-align: right;
   text-overflow: ellipsis;
   overflow: hidden;
   white-space: nowrap;
   font-size: 12px;
-  line-height: 16px;
+  line-height: 18px;
   color: grey;
 }
 </style>
