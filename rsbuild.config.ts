@@ -4,7 +4,7 @@ import AutoImport from "unplugin-auto-import/rspack"
 import Components from "unplugin-vue-components/rspack"
 import { NaiveUiResolver } from "unplugin-vue-components/resolvers"
 
-export default defineConfig(({ envMode }) => {
+const config: ReturnType<typeof defineConfig> = defineConfig(({ envMode }) => {
   const { publicVars, rawPublicVars } = loadEnv({
     cwd: process.cwd(),
     mode: envMode,
@@ -20,9 +20,20 @@ export default defineConfig(({ envMode }) => {
     ws: true,
     changeOrigin: true,
   }
+
   return {
     plugins: [pluginVue()],
     tools: {
+      swc: {
+        detectSyntax: false,
+        jsc: {
+          parser: {
+            decorators: true,
+            syntax: "typescript",
+            tsx: false,
+          },
+        },
+      },
       rspack: {
         plugins: [
           AutoImport({
@@ -96,3 +107,5 @@ export default defineConfig(({ envMode }) => {
     },
   }
 })
+
+export default config
