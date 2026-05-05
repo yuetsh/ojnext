@@ -321,4 +321,14 @@ function rowProps(row: ProblemFiltered) {
   max-width: 720px;
   min-width: 0;
 }
+
+@media (max-width: 768px) {
+  .problem-list-toolbar {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .problem-list-toolbar :deep(.n-space) {
+    width: 100%;
+  }
+}
 </style>
