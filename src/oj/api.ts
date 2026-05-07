@@ -287,16 +287,16 @@ export function getTutorials() {
   return http.get("tutorials")
 }
 
-export function getAIDetailData(start: string, end: string) {
-  return http.get("ai/detail", { params: { start, end } })
+export function getAIDetailData(start: string, end: string, username?: string) {
+  return http.get("ai/detail", { params: { start, end, username } })
 }
 
-export function getAIDurationData(end: string, duration: string) {
-  return http.get("ai/duration", { params: { end, duration } })
+export function getAIDurationData(end: string, duration: string, username?: string) {
+  return http.get("ai/duration", { params: { end, duration, username } })
 }
 
-export function getAIHeatmapData() {
-  return http.get("ai/heatmap")
+export function getAIHeatmapData(username?: string) {
+  return http.get("ai/heatmap", { params: username ? { username } : {} })
 }
 
 export function getAILoginSummary() {

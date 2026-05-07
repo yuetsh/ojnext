@@ -5,6 +5,7 @@ import { getCSRFToken } from "utils/functions"
 
 export const useAIStore = defineStore("ai", () => {
   const duration = ref("months:6")
+  const targetUsername = ref("")
   const durationData = ref<DurationData[]>([])
   const detailsData = reactive<DetailsData>({
     start: "",
@@ -28,7 +29,7 @@ export const useAIStore = defineStore("ai", () => {
   const mdContent = ref("")
 
   async function fetchDetailsData(start: string, end: string) {
-    const res = await getAIDetailData(start, end)
+    const res = await getAIDetailData(start, end, targetUsername.value || undefined)
     detailsData.start = res.data.start
     detailsData.end = res.data.end
     detailsData.solved = res.data.solved
@@ -41,13 +42,13 @@ export const useAIStore = defineStore("ai", () => {
   }
 
   async function fetchDurationData(end: string, duration: string) {
-    const res = await getAIDurationData(end, duration)
+    const res = await getAIDurationData(end, duration, targetUsername.value || undefined)
     durationData.value = res.data
   }
 
   async function fetchHeatmapData() {
     loading.heatmap = true
-    const res = await getAIHeatmapData()
+    const res = await getAIHeatmapData(targetUsername.value || undefined)
     heatmapData.value = res.data
     loading.heatmap = false
   }
@@ -155,6 +156,7 @@ export const useAIStore = defineStore("ai", () => {
     detailsData,
     heatmapData,
     duration,
+    targetUsername,
     loading,
     mdContent,
   }

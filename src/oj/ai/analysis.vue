@@ -5,11 +5,22 @@
         <n-flex vertical size="large">
           <n-flex align="center" justify="space-between">
             <n-h3 style="margin: 0">请选择时间范围，智能分析学习情况</n-h3>
-            <n-select
-              style="width: 140px"
-              :options="options"
-              v-model:value="aiStore.duration"
-            />
+            <n-flex align="center">
+              <n-input
+                v-if="userStore.isSuperAdmin"
+                v-model:value="aiStore.targetUsername"
+                placeholder="查看指定用户"
+                clearable
+                style="width: 140px"
+                @change="onUsernameChange"
+                @clear="onUsernameChange"
+              />
+              <n-select
+                style="width: 140px"
+                :options="options"
+                v-model:value="aiStore.duration"
+              />
+            </n-flex>
           </n-flex>
           <Overview />
           <n-grid :cols="2" :x-gap="20" :y-gap="20">
@@ -64,9 +75,11 @@ import EfficiencyChart from "./components/EfficiencyChart.vue"
 import AI from "./components/AI.vue"
 import SolvedTable from "./components/SolvedTable.vue"
 import { useAIStore } from "../store/ai"
+import { useUserStore } from "shared/store/user"
 import { DURATION_OPTIONS } from "utils/constants"
 
 const aiStore = useAIStore()
+const userStore = useUserStore()
 
 const { isDesktop } = useBreakpoints()
 
@@ -88,6 +101,11 @@ const start = computed(() => {
 const end = computed(() => {
   return formatISO(new Date())
 })
+
+function onUsernameChange() {
+  aiStore.fetchHeatmapData()
+  aiStore.fetchAnalysisData(start.value, end.value, aiStore.duration)
+}
 
 // 获取热力图数据（仅一次）
 onMounted(() => {
