@@ -72,19 +72,19 @@ export function useMermaidConverter() {
     // 添加样式定义来区分不同类型的节点
     mermaid += "\n"
     mermaid +=
-      "    classDef startNode fill:#dcfce7,stroke:#16a34a,stroke-width:2.5px,color:#0f172a\n"
+      "    classDef startNode fill:#e2ebe4,stroke:#527557,stroke-width:2px,color:#1e2a35\n"
     mermaid +=
-      "    classDef endNode fill:#fee2e2,stroke:#dc2626,stroke-width:2.5px,color:#0f172a\n"
+      "    classDef endNode fill:#ebe2e2,stroke:#755252,stroke-width:2px,color:#1e2a35\n"
     mermaid +=
-      "    classDef input fill:#dbeafe,stroke:#2563eb,stroke-width:2.5px,color:#0f172a\n"
+      "    classDef input fill:#e2e6eb,stroke:#526075,stroke-width:2px,color:#1e2a35\n"
     mermaid +=
-      "    classDef output fill:#ede9fe,stroke:#7c3aed,stroke-width:2.5px,color:#0f172a\n"
+      "    classDef output fill:#e8e2eb,stroke:#665275,stroke-width:2px,color:#1e2a35\n"
     mermaid +=
-      "    classDef process fill:#f0f9ff,stroke:#0284c7,stroke-width:2.5px,color:#0f172a\n"
+      "    classDef process fill:#e2e9eb,stroke:#526b75,stroke-width:2px,color:#1e2a35\n"
     mermaid +=
-      "    classDef decision fill:#fef3c7,stroke:#d97706,stroke-width:2.5px,color:#0f172a\n"
+      "    classDef decision fill:#ebe7e2,stroke:#75695a,stroke-width:2px,color:#1e2a35\n"
     mermaid +=
-      "    classDef loop fill:#fae8ff,stroke:#c026d3,stroke-width:2.5px,color:#0f172a\n"
+      "    classDef loop fill:#e7e2eb,stroke:#63527a,stroke-width:2px,color:#1e2a35\n"
     mermaid += "\n"
 
     // 为节点应用样式
