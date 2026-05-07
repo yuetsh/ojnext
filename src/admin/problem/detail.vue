@@ -136,7 +136,6 @@ async function getProblemDetail() {
   }
   try {
     const { data } = await getProblem(props.problemID)
-    toggleReady(true)
     problem.value.id = data.id
     problem.value._id = data._id
     problem.value.title = data.title
@@ -189,6 +188,7 @@ async function getProblemDetail() {
     })
     // 标签
     tags.value.select = data.tags
+    toggleReady(true)
   } catch (error) {
     message.error("获取题目失败")
     router.push({ name: "admin problem list" })
