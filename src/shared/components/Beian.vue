@@ -26,7 +26,7 @@ import { useBreakpoints } from "shared/composables/breakpoints"
 const route = useRoute()
 const { isMobile } = useBreakpoints()
 const hiddenICP = computed(() =>
-  ["problem", "contest problem"].includes(<string>route.name),
+  ["problem", "contest problem"].includes(route.name as string),
 )
 
 function goICP() {

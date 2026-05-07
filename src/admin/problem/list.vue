@@ -23,7 +23,7 @@ const title = computed(
     ({
       "admin problem list": "题目列表",
       "admin contest problem list": "比赛题目列表",
-    })[<string>route.name],
+    })[route.name as string],
 )
 const isContestProblemList = computed(
   () => route.name === "admin contest problem list",

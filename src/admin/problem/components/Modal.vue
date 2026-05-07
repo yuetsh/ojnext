@@ -33,7 +33,7 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
     render: (row) =>
       h(AddButton, {
         problemID: row.id,
-        contestID: <string>route.params.contestID,
+        contestID: route.params.contestID as string,
         onAdded: () => emit("change"),
       }),
     width: 60,

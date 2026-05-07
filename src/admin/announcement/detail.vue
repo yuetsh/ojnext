@@ -54,7 +54,7 @@ async function submit() {
   const api = {
     "admin announcement create": createAnnouncement,
     "admin announcement edit": editAnnouncement,
-  }[<string>route.name]
+  }[route.name as string]
   try {
     await api!(announcement)
     if (route.name === "admin announcement create") {

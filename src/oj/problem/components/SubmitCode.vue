@@ -24,8 +24,8 @@ const codeStore = useCodeStore()
 const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 const route = useRoute()
-const contestID = <string>route.params.contestID ?? ""
-const problemSetId = <string>route.params.problemSetId ?? ""
+const contestID = (route.params.contestID as string) ?? ""
+const problemSetId = (route.params.problemSetId as string) ?? ""
 
 const router = useRouter()
 const [commentPanel] = useToggle()

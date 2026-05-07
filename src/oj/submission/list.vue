@@ -103,7 +103,7 @@ async function listSubmissions() {
       ...query,
       offset,
       problem_id: query.problem,
-      contest_id: <string>route.params.contestID ?? "",
+      contest_id: (route.params.contestID as string) ?? "",
       language: query.language,
       today: query.today,
     })

@@ -48,10 +48,11 @@
   },
   "devDependencies": {
     "@iconify/vue": "^5.0.1",
-    "@rsbuild/core": "^1.7.5",
+    "@rsbuild/core": "^2.0.5",
     "@rsbuild/plugin-vue": "^1.2.7",
     "@types/canvas-confetti": "^1.9.0",
     "@types/node": "^25.6.0",
+    "core-js": "^3.49.0",
     "prettier": "^3.8.3",
     "typescript": "^6.0.3",
     "unplugin-auto-import": "^21.0.0",

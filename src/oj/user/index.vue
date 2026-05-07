@@ -93,7 +93,7 @@ function groupBadgesByIcon(badges: UserBadgeType[]): GroupedBadge[] {
 async function init() {
   toggle(true)
   try {
-    const res = await getProfile(<string>route.query.name)
+    const res = await getProfile(route.query.name as string)
     profile.value = res.data
     const acm = res.data.acm_problems_status.problems || {}
     const oi = res.data.oi_problems_status.problems || {}
@@ -114,7 +114,7 @@ async function init() {
     }
 
     if (route.query.name) {
-      promises.push(getUserBadges(<string>route.query.name))
+      promises.push(getUserBadges(route.query.name as string))
     } else {
       promises.push(getUserBadges())
     }

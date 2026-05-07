@@ -50,7 +50,7 @@ const columns: DataTableColumn<Submission>[] = [
           text: true,
           type: "info",
           onClick: () => {
-            showCodePanel(row.id, <string>route.params.problemID ?? "")
+            showCodePanel(row.id, (route.params.problemID as string) ?? "")
           },
         },
         () => row.id.slice(0, 12),
@@ -116,8 +116,8 @@ async function listSubmissions() {
     ...query,
     myself: "1",
     offset,
-    problem_id: <string>route.params.problemID ?? "",
-    contest_id: <string>route.params.contestID ?? "",
+    problem_id: (route.params.problemID as string) ?? "",
+    contest_id: (route.params.contestID as string) ?? "",
   })
   submissions.value = res.data.results
   total.value = res.data.total
@@ -125,7 +125,7 @@ async function listSubmissions() {
 
 async function getRankOfThisProblem() {
   loading.value = true
-  const res = await getRankOfProblem(<string>route.params.problemID ?? "")
+  const res = await getRankOfProblem((route.params.problemID as string) ?? "")
   loading.value = false
 
   class_name.value = res.data.class_name

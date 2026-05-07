@@ -81,7 +81,7 @@ async function copyToProblem() {
   }
 
   const contestID = submission.value!.contest
-  const problemSetId = <string>route.params.problemSetId ?? ""
+  const problemSetId = (route.params.problemSetId as string) ?? ""
   if (contestID) {
     // 竞赛题目
     router.push({

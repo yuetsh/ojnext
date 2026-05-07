@@ -44,7 +44,7 @@ const title = computed(
       "admin problem edit": "编辑题目",
       "admin contest problem create": "新建比赛题目",
       "admin contest problem edit": "编辑比赛题目",
-    })[<string>route.name],
+    })[route.name as string],
 )
 
 const isAIGenerating = ref(false)
@@ -358,7 +358,7 @@ async function submit() {
     "admin problem edit": editProblem,
     "admin contest problem create": createContestProblem,
     "admin contest problem edit": editContestProblem,
-  }[<string>route.name]
+  }[route.name as string]
   if (
     route.name === "admin contest problem create" ||
     route.name === "admin contest problem edit"
