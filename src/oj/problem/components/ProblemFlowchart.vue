@@ -6,20 +6,18 @@ const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 const mermaidContainer = useTemplateRef<HTMLElement>("mermaidContainer")
 
-// 使用 mermaid composable
 const { renderError, renderFlowchart } = useMermaid()
 
-// 渲染流程图的函数
 const renderProblemFlowchart = async () => {
-  if (problem.value?.mermaid_code) {
-    await renderFlowchart(mermaidContainer.value, problem.value.mermaid_code)
-  }
+  await renderFlowchart(
+    mermaidContainer.value,
+    problem.value?.mermaid_code ?? "",
+  )
 }
 
-// 初始化Mermaid并渲染
-onMounted(() => {
-  renderProblemFlowchart()
-})
+onMounted(renderProblemFlowchart)
+
+watch(() => problem.value?.mermaid_code, renderProblemFlowchart)
 </script>
 
 <template>

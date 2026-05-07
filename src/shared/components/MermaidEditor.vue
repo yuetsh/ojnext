@@ -1,103 +1,35 @@
 <script setup lang="ts">
-import { copyToClipboard, getRandomId } from "utils/functions"
-
-// 动态导入 mermaid
-let mermaid: any = null
+import { copyToClipboard } from "utils/functions"
+import { useMermaid } from "shared/composables/useMermaid"
 
 const modelValue = defineModel<string>({ default: "" })
 const mermaidContainer = useTemplateRef<HTMLElement>("mermaidContainer")
 
-// 渲染状态
-const renderSuccess = ref(false)
+const { renderFlowchart, renderError, renderSuccess } = useMermaid()
 
-// 定义事件
 const emit = defineEmits<{
   renderSuccess: []
 }>()
 
-// 动态加载 Mermaid
-const loadMermaid = async () => {
-  if (!mermaid) {
-    const mermaidModule = await import("mermaid")
-    mermaid = mermaidModule.default
-    mermaid.initialize({
-      startOnLoad: false,
-      securityLevel: "strict",
-      theme: "default",
-    })
-  }
-  return mermaid
-}
-
-// 初始化
-onMounted(async () => {
-  await loadMermaid()
-  nextTick(() => {
-    renderMermaid()
-  })
-})
-
-// 监听代码变化
-watch(modelValue, () => {
-  renderMermaid()
-})
-
-// 渲染Mermaid图表
 const renderMermaid = async () => {
-  if (!mermaidContainer.value) {
-    renderSuccess.value = false
-    return
-  }
-
-  // 总是先清空容器
-  mermaidContainer.value.innerHTML = ""
-
-  // 如果没有内容，直接返回
-  if (!modelValue.value.trim()) {
-    renderSuccess.value = false
-    return
-  }
-
-  try {
-    // 确保 mermaid 已加载
-    const mermaidInstance = await loadMermaid()
-    const id = `mermaid-${getRandomId()}`
-    const { svg } = await mermaidInstance.render(id, modelValue.value)
-    mermaidContainer.value.innerHTML = svg
-
-    // 渲染成功
-    renderSuccess.value = true
-    emit("renderSuccess")
-  } catch (error: any) {
-    const errorMessage = error?.message || "请检查代码语法"
-    renderSuccess.value = false
-
-    const errorDiv = document.createElement("div")
-    errorDiv.style.cssText =
-      "color: #ff4d4f; padding: 20px; text-align: center; border: 1px dashed #ff4d4f; border-radius: 4px;"
-    const titleP = document.createElement("p")
-    titleP.textContent = "Mermaid语法错误"
-    const detailP = document.createElement("p")
-    detailP.style.cssText = "font-size: 12px; color: #666;"
-    detailP.textContent = errorMessage
-    errorDiv.appendChild(titleP)
-    errorDiv.appendChild(detailP)
-    mermaidContainer.value.innerHTML = ""
-    mermaidContainer.value.appendChild(errorDiv)
-  }
+  await renderFlowchart(mermaidContainer.value, modelValue.value)
+  if (renderSuccess.value) emit("renderSuccess")
 }
 
-// 清空代码
+onMounted(() => {
+  nextTick(renderMermaid)
+})
+
+watch(modelValue, renderMermaid)
+
 const clearCode = () => {
   modelValue.value = ""
 }
 
-// 复制代码
-const copyCode = async () => {
+const copyCode = () => {
   copyToClipboard(modelValue.value)
 }
 
-// 组件卸载时清空容器
 onBeforeUnmount(() => {
   if (mermaidContainer.value) {
     mermaidContainer.value.innerHTML = ""
@@ -121,7 +53,6 @@ onBeforeUnmount(() => {
       </n-flex>
       <n-input
         class="code-editor"
-        ref="codeEditor"
         v-model:value="modelValue"
         type="textarea"
         :autosize="{ minRows: 10, maxRows: 20 }"
@@ -134,6 +65,14 @@ onBeforeUnmount(() => {
           ✓ 渲染成功
         </n-tag>
       </n-flex>
+      <n-alert
+        v-if="renderError"
+        type="error"
+        title="Mermaid 语法错误"
+        style="margin-bottom: 8px"
+      >
+        <n-text style="font-size: 12px">{{ renderError }}</n-text>
+      </n-alert>
       <div ref="mermaidContainer" class="mermaid-container"></div>
     </n-flex>
   </n-flex>

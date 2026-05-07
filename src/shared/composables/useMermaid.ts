@@ -1,36 +1,34 @@
 import { getRandomId } from "utils/functions"
 
 const mermaidThemeVariables = {
-  primaryColor: "#e0f2fe",
-  primaryTextColor: "#0f172a",
-  primaryBorderColor: "#0284c7",
-  lineColor: "#64748b",
-  secondaryColor: "#f5f3ff",
-  tertiaryColor: "#ecfdf5",
+  primaryColor: "#eff6ff",
+  primaryTextColor: "#1d4ed8",
+  primaryBorderColor: "#3b82f6",
+  lineColor: "#94a3b8",
   background: "#ffffff",
-  mainBkg: "#f8fafc",
-  secondBkg: "#eef2ff",
-  tertiaryBkg: "#f0fdfa",
-  nodeBorder: "#2563eb",
-  clusterBkg: "#f8fafc",
-  clusterBorder: "#cbd5e1",
-  edgeLabelBackground: "#ffffff",
+  mainBkg: "#eff6ff",
   fontFamily:
     'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
 }
 
-const semanticNodeClasses = [
-  "startNode",
-  "endNode",
-  "startEnd",
-  "input",
-  "output",
-  "process",
-  "decision",
-  "loop",
-]
-
 const displayStyleId = "oj-mermaid-display-style"
+
+const shapes = ["rect", "polygon", "ellipse", "circle", "path"]
+
+function nodeShapeRule(cls: string, fill: string, stroke: string) {
+  const sel = shapes
+    .map((s) => `.oj-mermaid-flowchart g.node.${cls} ${s}`)
+    .join(",\n")
+  return `${sel} { fill: ${fill} !important; stroke: ${stroke} !important; }`
+}
+
+function nodeLabelRule(cls: string, color: string) {
+  const bases = [".label", ".nodeLabel", ".nodeLabel p", ".label span"]
+  const sel = bases
+    .map((b) => `.oj-mermaid-flowchart g.node.${cls} ${b}`)
+    .join(",\n")
+  return `${sel} { color: ${color} !important; fill: ${color} !important; }`
+}
 
 const mermaidDisplayStyle = `
 .oj-mermaid-flowchart {
@@ -38,168 +36,83 @@ const mermaidDisplayStyle = `
   height: auto;
 }
 
+/* Default node */
 .oj-mermaid-flowchart g.node rect,
 .oj-mermaid-flowchart g.node polygon,
 .oj-mermaid-flowchart g.node ellipse,
 .oj-mermaid-flowchart g.node circle,
 .oj-mermaid-flowchart g.node path {
-  stroke-width: 2.5px !important;
-  filter: drop-shadow(0 6px 12px rgba(15, 23, 42, 0.12));
+  fill: #eff6ff !important;
+  stroke: #3b82f6 !important;
+  stroke-width: 1.8px !important;
 }
 
-.oj-mermaid-flowchart g.node.startNode rect,
-.oj-mermaid-flowchart g.node.startNode polygon,
-.oj-mermaid-flowchart g.node.startNode ellipse,
-.oj-mermaid-flowchart g.node.startNode circle,
-.oj-mermaid-flowchart g.node.startNode path,
-.oj-mermaid-flowchart g.node.startEnd rect,
-.oj-mermaid-flowchart g.node.startEnd polygon,
-.oj-mermaid-flowchart g.node.startEnd ellipse,
-.oj-mermaid-flowchart g.node.startEnd circle,
-.oj-mermaid-flowchart g.node.startEnd path {
-  fill: #dcfce7 !important;
-  stroke: #16a34a !important;
-}
-
-.oj-mermaid-flowchart g.node.endNode rect,
-.oj-mermaid-flowchart g.node.endNode polygon,
-.oj-mermaid-flowchart g.node.endNode ellipse,
-.oj-mermaid-flowchart g.node.endNode circle,
-.oj-mermaid-flowchart g.node.endNode path {
-  fill: #fee2e2 !important;
-  stroke: #dc2626 !important;
-}
-
-.oj-mermaid-flowchart g.node.input rect,
-.oj-mermaid-flowchart g.node.input polygon,
-.oj-mermaid-flowchart g.node.input ellipse,
-.oj-mermaid-flowchart g.node.input circle,
-.oj-mermaid-flowchart g.node.input path {
-  fill: #dbeafe !important;
-  stroke: #2563eb !important;
-}
-
-.oj-mermaid-flowchart g.node.output rect,
-.oj-mermaid-flowchart g.node.output polygon,
-.oj-mermaid-flowchart g.node.output ellipse,
-.oj-mermaid-flowchart g.node.output circle,
-.oj-mermaid-flowchart g.node.output path {
-  fill: #ede9fe !important;
-  stroke: #7c3aed !important;
-}
-
-.oj-mermaid-flowchart g.node.process rect,
-.oj-mermaid-flowchart g.node.process polygon,
-.oj-mermaid-flowchart g.node.process ellipse,
-.oj-mermaid-flowchart g.node.process circle,
-.oj-mermaid-flowchart g.node.process path {
-  fill: #f0f9ff !important;
-  stroke: #0284c7 !important;
-}
-
-.oj-mermaid-flowchart g.node.decision rect,
-.oj-mermaid-flowchart g.node.decision polygon,
-.oj-mermaid-flowchart g.node.decision ellipse,
-.oj-mermaid-flowchart g.node.decision circle,
-.oj-mermaid-flowchart g.node.decision path {
-  fill: #fef3c7 !important;
-  stroke: #d97706 !important;
-}
-
-.oj-mermaid-flowchart g.node.loop rect,
-.oj-mermaid-flowchart g.node.loop polygon,
-.oj-mermaid-flowchart g.node.loop ellipse,
-.oj-mermaid-flowchart g.node.loop circle,
-.oj-mermaid-flowchart g.node.loop path {
-  fill: #fae8ff !important;
-  stroke: #c026d3 !important;
-}
-
-.oj-mermaid-flowchart g.node.oj-node-palette-0 rect,
-.oj-mermaid-flowchart g.node.oj-node-palette-0 polygon,
-.oj-mermaid-flowchart g.node.oj-node-palette-0 ellipse,
-.oj-mermaid-flowchart g.node.oj-node-palette-0 circle,
-.oj-mermaid-flowchart g.node.oj-node-palette-0 path {
-  fill: #dbeafe !important;
-  stroke: #2563eb !important;
-}
-
-.oj-mermaid-flowchart g.node.oj-node-palette-1 rect,
-.oj-mermaid-flowchart g.node.oj-node-palette-1 polygon,
-.oj-mermaid-flowchart g.node.oj-node-palette-1 ellipse,
-.oj-mermaid-flowchart g.node.oj-node-palette-1 circle,
-.oj-mermaid-flowchart g.node.oj-node-palette-1 path {
-  fill: #ccfbf1 !important;
-  stroke: #0d9488 !important;
-}
-
-.oj-mermaid-flowchart g.node.oj-node-palette-2 rect,
-.oj-mermaid-flowchart g.node.oj-node-palette-2 polygon,
-.oj-mermaid-flowchart g.node.oj-node-palette-2 ellipse,
-.oj-mermaid-flowchart g.node.oj-node-palette-2 circle,
-.oj-mermaid-flowchart g.node.oj-node-palette-2 path {
-  fill: #ede9fe !important;
-  stroke: #7c3aed !important;
-}
-
-.oj-mermaid-flowchart g.node.oj-node-palette-3 rect,
-.oj-mermaid-flowchart g.node.oj-node-palette-3 polygon,
-.oj-mermaid-flowchart g.node.oj-node-palette-3 ellipse,
-.oj-mermaid-flowchart g.node.oj-node-palette-3 circle,
-.oj-mermaid-flowchart g.node.oj-node-palette-3 path {
-  fill: #ffe4e6 !important;
-  stroke: #e11d48 !important;
-}
-
-.oj-mermaid-flowchart g.node.oj-node-palette-4 rect,
-.oj-mermaid-flowchart g.node.oj-node-palette-4 polygon,
-.oj-mermaid-flowchart g.node.oj-node-palette-4 ellipse,
-.oj-mermaid-flowchart g.node.oj-node-palette-4 circle,
-.oj-mermaid-flowchart g.node.oj-node-palette-4 path {
-  fill: #fef3c7 !important;
-  stroke: #d97706 !important;
-}
-
-.oj-mermaid-flowchart g.node.oj-node-palette-5 rect,
-.oj-mermaid-flowchart g.node.oj-node-palette-5 polygon,
-.oj-mermaid-flowchart g.node.oj-node-palette-5 ellipse,
-.oj-mermaid-flowchart g.node.oj-node-palette-5 circle,
-.oj-mermaid-flowchart g.node.oj-node-palette-5 path {
-  fill: #dcfce7 !important;
-  stroke: #16a34a !important;
-}
-
+/* Default node text */
 .oj-mermaid-flowchart g.node .label,
 .oj-mermaid-flowchart g.node .nodeLabel,
 .oj-mermaid-flowchart g.node .nodeLabel p,
 .oj-mermaid-flowchart g.node .label span {
-  color: #0f172a !important;
-  fill: #0f172a !important;
-  font-weight: 650 !important;
+  color: #1d4ed8 !important;
+  fill: #1d4ed8 !important;
+  font-weight: 600 !important;
 }
 
+/* startNode / startEnd */
+${nodeShapeRule("startNode", "#dcfce7", "#16a34a")}
+${nodeShapeRule("startEnd", "#dcfce7", "#16a34a")}
+${nodeLabelRule("startNode", "#166534")}
+${nodeLabelRule("startEnd", "#166534")}
+
+/* endNode */
+${nodeShapeRule("endNode", "#fee2e2", "#dc2626")}
+${nodeLabelRule("endNode", "#991b1b")}
+
+/* input */
+${nodeShapeRule("input", "#dbeafe", "#2563eb")}
+${nodeLabelRule("input", "#1e40af")}
+
+/* output */
+${nodeShapeRule("output", "#ede9fe", "#7c3aed")}
+${nodeLabelRule("output", "#5b21b6")}
+
+/* process */
+${nodeShapeRule("process", "#f1f5f9", "#64748b")}
+${nodeLabelRule("process", "#334155")}
+
+/* decision */
+${nodeShapeRule("decision", "#fef9c3", "#ca8a04")}
+${nodeLabelRule("decision", "#92400e")}
+
+/* loop */
+${nodeShapeRule("loop", "#fae8ff", "#c026d3")}
+${nodeLabelRule("loop", "#7e22ce")}
+
+/* Edges */
 .oj-mermaid-flowchart .edgePaths path.path,
 .oj-mermaid-flowchart .flowchart-link {
-  stroke: #64748b !important;
-  stroke-width: 2.4px !important;
+  stroke: #94a3b8 !important;
+  stroke-width: 1.8px !important;
 }
 
+/* Arrowheads */
 .oj-mermaid-flowchart marker path,
 .oj-mermaid-flowchart .marker {
-  fill: #64748b !important;
-  stroke: #64748b !important;
+  fill: #94a3b8 !important;
+  stroke: #94a3b8 !important;
 }
 
+/* Edge label background */
 .oj-mermaid-flowchart .edgeLabel rect,
 .oj-mermaid-flowchart .edgeLabel .labelBkg {
-  fill: rgba(255, 255, 255, 0.94) !important;
-  stroke: #cbd5e1 !important;
+  fill: rgba(255, 255, 255, 0.9) !important;
+  stroke: #e2e8f0 !important;
 }
 
+/* Edge label text */
 .oj-mermaid-flowchart .edgeLabel,
 .oj-mermaid-flowchart .edgeLabel span,
 .oj-mermaid-flowchart .edgeLabel p {
-  color: #334155 !important;
+  color: #475569 !important;
   font-weight: 600 !important;
 }
 `
@@ -214,16 +127,6 @@ function applyFlowchartDisplayStyle(container: HTMLElement) {
 
   svg.classList.add("oj-mermaid-flowchart")
 
-  const nodes = Array.from(svg.querySelectorAll<SVGGElement>("g.node"))
-  nodes.forEach((node, index) => {
-    const hasSemanticClass = semanticNodeClasses.some((className) =>
-      node.classList.contains(className),
-    )
-    if (!hasSemanticClass) {
-      node.classList.add(`oj-node-palette-${index % 6}`)
-    }
-  })
-
   svg.querySelector(`#${displayStyleId}`)?.remove()
   const style = document.createElementNS(svgNamespace, "style")
   style.setAttribute("id", displayStyleId)
@@ -231,46 +134,44 @@ function applyFlowchartDisplayStyle(container: HTMLElement) {
   svg.insertBefore(style, svg.firstChild)
 }
 
-export function useMermaid() {
-  // 渲染状态
-  const renderError = ref<string | null>(null)
+let mermaidInstance: any = null
 
-  // 动态导入 mermaid
-  let mermaid: any = null
-
-  // 动态加载 Mermaid
-  const loadMermaid = async () => {
-    if (!mermaid) {
-      const mermaidModule = await import("mermaid")
-      mermaid = mermaidModule.default
-      mermaid.initialize({
-        startOnLoad: false,
-        securityLevel: "strict",
-        theme: "base",
-        themeVariables: mermaidThemeVariables,
-      })
-    }
-    return mermaid
+async function loadMermaid() {
+  if (!mermaidInstance) {
+    const mermaidModule = await import("mermaid")
+    mermaidInstance = mermaidModule.default
+    mermaidInstance.initialize({
+      startOnLoad: false,
+      securityLevel: "strict",
+      theme: "base",
+      themeVariables: mermaidThemeVariables,
+    })
   }
+  return mermaidInstance
+}
 
-  // 渲染流程图的函数
+export function useMermaid() {
+  const renderError = ref<string | null>(null)
+  const renderSuccess = ref(false)
+
   const renderFlowchart = async (
     container: HTMLElement | null,
     mermaidCode: string,
   ) => {
+    renderError.value = null
+    renderSuccess.value = false
+
+    if (container) container.innerHTML = ""
+
+    if (!container || !mermaidCode?.trim()) return
+
     try {
-      renderError.value = null
-
-      // 确保 mermaid 已加载
-      await loadMermaid()
-
-      // 渲染流程图
-      if (container && mermaidCode) {
-        const id = `mermaid-${getRandomId()}`
-        const { svg } = await mermaid.render(id, mermaidCode)
-        container.innerHTML = svg
-        applyFlowchartDisplayStyle(container)
-      }
+      const m = await loadMermaid()
+      const id = `mermaid-${getRandomId()}`
+      const { svg } = await m.render(id, mermaidCode)
+      container.innerHTML = svg
+      applyFlowchartDisplayStyle(container)
+      renderSuccess.value = true
     } catch (error) {
       renderError.value =
         error instanceof Error
@@ -279,13 +180,13 @@ export function useMermaid() {
     }
   }
 
-  // 清除渲染错误
   const clearError = () => {
     renderError.value = null
   }
 
   return {
     renderError: readonly(renderError),
+    renderSuccess: readonly(renderSuccess),
     renderFlowchart,
     clearError,
   }
