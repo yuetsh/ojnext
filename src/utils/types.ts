@@ -623,6 +623,8 @@ export interface SolvedProblem {
   rank: number
   ac_count: number
   grade: Grade
+  period_rank: number
+  period_ac_count: number
   difficulty: string
 }
 

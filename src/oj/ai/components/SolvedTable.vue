@@ -29,7 +29,7 @@
 </template>
 
 <script lang="ts" setup>
-import { NButton } from "naive-ui"
+import { NButton, NTooltip } from "naive-ui"
 import TagTitle from "./TagTitle.vue"
 import { FlowchartSummary, SolvedProblem } from "utils/types"
 import { useAIStore } from "oj/store/ai"
@@ -82,7 +82,25 @@ const columns: DataTableColumn<SolvedProblem>[] = [
     render: (row) => row.rank + " / " + row.ac_count,
   },
   {
-    title: "等级",
+    title: "同期排名",
+    key: "period_rank",
+    width: 100,
+    align: "center",
+    render: (row) => row.period_rank + " / " + row.period_ac_count,
+  },
+  {
+    title: () =>
+      h(NTooltip, null, {
+        trigger: () => h("span", { style: "cursor:help; border-bottom: 1px dashed" }, "等级"),
+        default: () =>
+          h("div", null, [
+            h("div", null, "基于全时段排名的百分位："),
+            h("div", null, "S — 前 10%"),
+            h("div", null, "A — 前 35%"),
+            h("div", null, "B — 前 75%"),
+            h("div", null, "C — 其余"),
+          ]),
+      }),
     key: "grade",
     width: 100,
     align: "center",
