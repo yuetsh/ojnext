@@ -94,7 +94,7 @@ const columns: DataTableColumn<SolvedProblem>[] = [
         trigger: () => h("span", { style: "cursor:help; border-bottom: 1px dashed" }, "等级"),
         default: () =>
           h("div", null, [
-            h("div", null, "基于全时段排名的百分位："),
+            h("div", null, "基于同时段排名的百分位："),
             h("div", null, "S — 前 10%"),
             h("div", null, "A — 前 35%"),
             h("div", null, "B — 前 75%"),
