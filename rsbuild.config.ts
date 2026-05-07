@@ -1,4 +1,3 @@
-import path from "node:path"
 import { defineConfig, loadEnv } from "@rsbuild/core"
 import { pluginVue } from "@rsbuild/plugin-vue"
 import AutoImport from "unplugin-auto-import/rspack"
@@ -85,11 +84,6 @@ const config: ReturnType<typeof defineConfig> = defineConfig(({ envMode }) => {
         oj: "./src/oj",
         admin: "./src/admin",
         shared: "./src/shared",
-        // 强制 @wangeditor-next/editor 所有导入（ESM/CJS）走同一个文件
-        // 避免 Rspack v2 按 exports conditions 分别解析 .mjs/.js 产生双实例
-        "@wangeditor-next/editor$": path.resolve(
-          "./node_modules/@wangeditor-next/editor/dist/index.js"
-        ),
       },
     },
     server: {

@@ -25,6 +25,7 @@ const props = withDefaults(defineProps<Props>(), {
 const message = useMessage()
 
 const editorRef = shallowRef<IDomEditor>()
+const toolbarEditorRef = shallowRef<IDomEditor>()
 
 const toolbarConfig: Partial<IToolbarConfig> = {
   toolbarKeys: [
@@ -91,8 +92,10 @@ function onClick() {
   editorRef.value.focus()
 }
 
-function handleCreated(editor: IDomEditor) {
+async function handleCreated(editor: IDomEditor) {
   editorRef.value = editor
+  await nextTick()
+  toolbarEditorRef.value = editor
 }
 
 async function customUpload(file: File, insertFn: InsertFnType) {
@@ -113,7 +116,7 @@ async function customUpload(file: File, insertFn: InsertFnType) {
   <div class="editorWrapper">
     <Toolbar
       class="toolbar"
-      :editor="editorRef"
+      :editor="toolbarEditorRef"
       :defaultConfig="props.simple ? toolbarConfigSimple : toolbarConfig"
       mode="simple"
     />
