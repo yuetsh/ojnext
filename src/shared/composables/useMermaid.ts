@@ -1,19 +1,19 @@
 import { getRandomId } from "utils/functions"
 
 const mermaidThemeVariables = {
-  primaryColor: "#e4e8eb",
-  primaryTextColor: "#1e2a35",
-  primaryBorderColor: "#6b8096",
-  lineColor: "#7a8a96",
-  secondaryColor: "#e8e4eb",
-  tertiaryColor: "#e4ebe6",
+  primaryColor: "#e0f2fe",
+  primaryTextColor: "#0f172a",
+  primaryBorderColor: "#0284c7",
+  lineColor: "#64748b",
+  secondaryColor: "#f5f3ff",
+  tertiaryColor: "#ecfdf5",
   background: "#ffffff",
-  mainBkg: "#f5f5f4",
-  secondBkg: "#f0f0ef",
-  tertiaryBkg: "#f0f2f0",
-  nodeBorder: "#6b8096",
-  clusterBkg: "#f5f5f4",
-  clusterBorder: "#c8cdd2",
+  mainBkg: "#f8fafc",
+  secondBkg: "#eef2ff",
+  tertiaryBkg: "#f0fdfa",
+  nodeBorder: "#2563eb",
+  clusterBkg: "#f8fafc",
+  clusterBorder: "#cbd5e1",
   edgeLabelBackground: "#ffffff",
   fontFamily:
     'Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
@@ -44,7 +44,7 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node circle,
 .oj-mermaid-flowchart g.node path {
   stroke-width: 2px !important;
-  filter: drop-shadow(0 3px 6px rgba(15, 23, 42, 0.07));
+  filter: drop-shadow(0 6px 12px rgba(15, 23, 42, 0.12));
 }
 
 .oj-mermaid-flowchart g.node.startNode rect,
@@ -57,8 +57,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.startEnd ellipse,
 .oj-mermaid-flowchart g.node.startEnd circle,
 .oj-mermaid-flowchart g.node.startEnd path {
-  fill: #e2ebe4 !important;
-  stroke: #527557 !important;
+  fill: #dcfce7 !important;
+  stroke: #16a34a !important;
 }
 
 .oj-mermaid-flowchart g.node.endNode rect,
@@ -66,8 +66,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.endNode ellipse,
 .oj-mermaid-flowchart g.node.endNode circle,
 .oj-mermaid-flowchart g.node.endNode path {
-  fill: #ebe2e2 !important;
-  stroke: #755252 !important;
+  fill: #fee2e2 !important;
+  stroke: #dc2626 !important;
 }
 
 .oj-mermaid-flowchart g.node.input rect,
@@ -75,8 +75,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.input ellipse,
 .oj-mermaid-flowchart g.node.input circle,
 .oj-mermaid-flowchart g.node.input path {
-  fill: #e2e6eb !important;
-  stroke: #526075 !important;
+  fill: #dbeafe !important;
+  stroke: #2563eb !important;
 }
 
 .oj-mermaid-flowchart g.node.output rect,
@@ -84,8 +84,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.output ellipse,
 .oj-mermaid-flowchart g.node.output circle,
 .oj-mermaid-flowchart g.node.output path {
-  fill: #e8e2eb !important;
-  stroke: #665275 !important;
+  fill: #ede9fe !important;
+  stroke: #7c3aed !important;
 }
 
 .oj-mermaid-flowchart g.node.process rect,
@@ -93,8 +93,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.process ellipse,
 .oj-mermaid-flowchart g.node.process circle,
 .oj-mermaid-flowchart g.node.process path {
-  fill: #e2e9eb !important;
-  stroke: #526b75 !important;
+  fill: #f0f9ff !important;
+  stroke: #0284c7 !important;
 }
 
 .oj-mermaid-flowchart g.node.decision rect,
@@ -102,8 +102,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.decision ellipse,
 .oj-mermaid-flowchart g.node.decision circle,
 .oj-mermaid-flowchart g.node.decision path {
-  fill: #ebe7e2 !important;
-  stroke: #75695a !important;
+  fill: #fef3c7 !important;
+  stroke: #d97706 !important;
 }
 
 .oj-mermaid-flowchart g.node.loop rect,
@@ -111,8 +111,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.loop ellipse,
 .oj-mermaid-flowchart g.node.loop circle,
 .oj-mermaid-flowchart g.node.loop path {
-  fill: #e7e2eb !important;
-  stroke: #63527a !important;
+  fill: #fae8ff !important;
+  stroke: #c026d3 !important;
 }
 
 .oj-mermaid-flowchart g.node.oj-node-palette-0 rect,
@@ -120,8 +120,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.oj-node-palette-0 ellipse,
 .oj-mermaid-flowchart g.node.oj-node-palette-0 circle,
 .oj-mermaid-flowchart g.node.oj-node-palette-0 path {
-  fill: #e2e6eb !important;
-  stroke: #526075 !important;
+  fill: #dbeafe !important;
+  stroke: #2563eb !important;
 }
 
 .oj-mermaid-flowchart g.node.oj-node-palette-1 rect,
@@ -129,8 +129,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.oj-node-palette-1 ellipse,
 .oj-mermaid-flowchart g.node.oj-node-palette-1 circle,
 .oj-mermaid-flowchart g.node.oj-node-palette-1 path {
-  fill: #e2ebe6 !important;
-  stroke: #527563 !important;
+  fill: #ccfbf1 !important;
+  stroke: #0d9488 !important;
 }
 
 .oj-mermaid-flowchart g.node.oj-node-palette-2 rect,
@@ -138,8 +138,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.oj-node-palette-2 ellipse,
 .oj-mermaid-flowchart g.node.oj-node-palette-2 circle,
 .oj-mermaid-flowchart g.node.oj-node-palette-2 path {
-  fill: #e8e2eb !important;
-  stroke: #665275 !important;
+  fill: #ede9fe !important;
+  stroke: #7c3aed !important;
 }
 
 .oj-mermaid-flowchart g.node.oj-node-palette-3 rect,
@@ -147,8 +147,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.oj-node-palette-3 ellipse,
 .oj-mermaid-flowchart g.node.oj-node-palette-3 circle,
 .oj-mermaid-flowchart g.node.oj-node-palette-3 path {
-  fill: #ebe2e6 !important;
-  stroke: #75606a !important;
+  fill: #ffe4e6 !important;
+  stroke: #e11d48 !important;
 }
 
 .oj-mermaid-flowchart g.node.oj-node-palette-4 rect,
@@ -156,8 +156,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.oj-node-palette-4 ellipse,
 .oj-mermaid-flowchart g.node.oj-node-palette-4 circle,
 .oj-mermaid-flowchart g.node.oj-node-palette-4 path {
-  fill: #ebe7e2 !important;
-  stroke: #75695a !important;
+  fill: #fef3c7 !important;
+  stroke: #d97706 !important;
 }
 
 .oj-mermaid-flowchart g.node.oj-node-palette-5 rect,
@@ -165,8 +165,8 @@ const mermaidDisplayStyle = `
 .oj-mermaid-flowchart g.node.oj-node-palette-5 ellipse,
 .oj-mermaid-flowchart g.node.oj-node-palette-5 circle,
 .oj-mermaid-flowchart g.node.oj-node-palette-5 path {
-  fill: #e4ebe2 !important;
-  stroke: #5a7552 !important;
+  fill: #dcfce7 !important;
+  stroke: #16a34a !important;
 }
 
 .oj-mermaid-flowchart g.node .label,
