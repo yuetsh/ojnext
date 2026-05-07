@@ -66,9 +66,9 @@ const efficiencyData = computed(() => {
     // 值越接近1，说明一次AC率越高
     const efficiency = problemCount > 0 ? submissionCount / problemCount : 0
 
-    // 计算一次AC率（百分比）
+    // AC率：AC题目数 / 总提交次数（越高说明提交质量越好）
     const onePassRate =
-      problemCount > 0 ? (problemCount / submissionCount) * 100 : 0
+      submissionCount > 0 ? (problemCount / submissionCount) * 100 : 0
 
     return {
       label: [
@@ -106,7 +106,7 @@ const data = computed<ChartData<"line">>(() => {
         yAxisID: "y",
       },
       {
-        label: "一次AC率",
+        label: "提交AC率",
         data: efficiency.map((e) => e.onePassRate),
         borderColor: "rgb(34, 197, 94)",
         backgroundColor: "rgba(34, 197, 94, 0.1)",
@@ -165,7 +165,7 @@ const options = computed(() => {
         max: 100,
         title: {
           display: true,
-          text: "一次AC率（%）",
+          text: "提交AC率（%）",
           font: {
             size: 13,
           },
@@ -201,10 +201,10 @@ const options = computed(() => {
                 `总提交: ${item.submissionCount} 次`,
               ]
             } else {
-              // 一次AC率
+              // 提交AC率
               return [
                 `${dsLabel}: ${item.onePassRate.toFixed(1)}%`,
-                `提示: 值越高表示刷题质量越好`,
+                `提示: AC题目数 / 总提交次数，越高表示提交质量越好`,
               ]
             }
           },

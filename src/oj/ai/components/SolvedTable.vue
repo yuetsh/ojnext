@@ -2,7 +2,6 @@
   <n-tabs animated v-if="submissions.length && flowcharts.length">
     <n-tab-pane name="代码提交">
       <n-data-table
-        v-if="submissions.length"
         striped
         :data="submissions"
         :columns="columns"
@@ -11,7 +10,6 @@
     </n-tab-pane>
     <n-tab-pane name="流程图提交">
       <n-data-table
-        v-if="flowcharts.length"
         striped
         :data="flowcharts"
         :columns="flowchartsColumns"
@@ -20,10 +18,17 @@
     </n-tab-pane>
   </n-tabs>
   <n-data-table
-    v-if="submissions.length && !flowcharts.length"
+    v-else-if="submissions.length"
     striped
     :data="submissions"
     :columns="columns"
+    :max-height="isDesktop ? 1500 : 500"
+  />
+  <n-data-table
+    v-else-if="flowcharts.length"
+    striped
+    :data="flowcharts"
+    :columns="flowchartsColumns"
     :max-height="isDesktop ? 1500 : 500"
   />
 </template>

@@ -88,8 +88,9 @@ const data = computed<ChartData<"bar" | "line">>(() => {
         type: "line",
         label: "等级",
         data: aiStore.durationData.map((duration) =>
-          gradeOrder.indexOf(duration.grade || "C"),
+          duration.grade ? gradeOrder.indexOf(duration.grade) : null,
         ),
+        spanGaps: false,
         tension: 0.4,
         yAxisID: "y1",
         barThickness: 10,

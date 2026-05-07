@@ -1,7 +1,7 @@
 <template>
-  <n-card title="解题排名分布" size="small" v-if="show">
+  <n-card title="同期解题排名分布" size="small" v-if="show">
     <template #header-extra>
-      <n-text depth="3" style="font-size: 12px">了解解题速度和竞争力</n-text>
+      <n-text depth="3" style="font-size: 12px">了解同期解题速度和竞争力</n-text>
     </template>
     <div style="height: 300px">
       <Pie :data="data" :options="options" />
@@ -36,12 +36,10 @@ const rankDistribution = computed(() => {
   }))
 
   aiStore.detailsData.solved.forEach((item) => {
-    const rank = item.rank
-    const acCount = item.ac_count
+    const rank = item.period_rank
+    const acCount = item.period_ac_count
 
     if (rank && acCount && acCount > 0) {
-      // 计算百分位：(rank / acCount) * 100
-      // 例如：第5名/共100人 = 5%
       const percentile = (rank / acCount) * 100
 
       // 找到对应的区间

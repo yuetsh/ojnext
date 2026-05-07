@@ -1,7 +1,7 @@
 <template>
   <n-card title="时间活跃度分析" size="small" v-if="show">
     <template #header-extra>
-      <n-text depth="3" style="font-size: 12px">发现最佳学习时段</n-text>
+      <n-text depth="3" style="font-size: 12px">基于 AC 时间，发现解题高峰时段</n-text>
     </template>
     <div style="height: 300px">
       <Bar :data="data" :options="options" />
