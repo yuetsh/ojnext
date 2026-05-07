@@ -85,6 +85,7 @@ const config: ReturnType<typeof defineConfig> = defineConfig(({ envMode }) => {
         admin: "./src/admin",
         shared: "./src/shared",
       },
+      dedupe: ["slate", "slate-dom", "slate-react", "is-hotkey"],
     },
     server: {
       port: 5173,
