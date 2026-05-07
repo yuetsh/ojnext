@@ -1,5 +1,5 @@
 <template>
-  <n-button v-if="showLink" type="info" text @click="goto">
+  <n-button v-if="showLink" type="info" text @click="handleClick">
     {{ flowchart.id.slice(0, 12) }}
   </n-button>
   <n-text v-else class="flowchart-id" @click="handleClick">
@@ -7,8 +7,8 @@
   </n-text>
 </template>
 <script setup lang="ts">
+import type { FlowchartSubmissionListItem } from "utils/types"
 import { useUserStore } from "shared/store/user"
-import { FlowchartSubmissionListItem } from "utils/types"
 
 const userStore = useUserStore()
 
@@ -26,10 +26,6 @@ const showLink = computed(() => {
   if (userStore.isSuperAdmin) return true
   return props.flowchart.username === userStore.user?.username
 })
-
-function goto() {
-  emit("showDetail", props.flowchart.id)
-}
 
 function handleClick() {
   emit("showDetail", props.flowchart.id)

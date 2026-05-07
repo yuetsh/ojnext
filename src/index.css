@@ -16,14 +16,6 @@ body {
   overflow: auto;
   border: 1px solid rgba(148, 163, 184, 0.24);
   border-radius: 8px;
-  background:
-    linear-gradient(rgba(148, 163, 184, 0.08) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(148, 163, 184, 0.08) 1px, transparent 1px),
-    linear-gradient(135deg, #ffffff 0%, #f8fafc 52%, #eef6ff 100%);
-  background-size:
-    24px 24px,
-    24px 24px,
-    auto;
 }
 
 .oj-mermaid-surface > svg {

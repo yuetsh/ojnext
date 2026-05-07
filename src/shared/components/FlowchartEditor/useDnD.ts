@@ -7,28 +7,36 @@ import {
 } from "./useNodeStyles"
 import { getRandomId } from "utils/functions"
 
+// 模块级共享：当前拖拽的节点类型（Toolbar 写入，canvas 读取）
+export const currentDragNodeType = ref<string | null>(null)
+
 /**
  * 简化的拖拽处理
  */
 export function useDnD() {
   const { addNodes, screenToFlowCoordinate } = useVueFlow()
   const isDragOver = ref(false)
+  const screenDragPos = ref<{ x: number; y: number } | null>(null)
 
   // 拖拽悬停处理
   const onDragOver = (event: DragEvent) => {
     event.preventDefault()
     isDragOver.value = true
+    screenDragPos.value = { x: event.clientX, y: event.clientY }
   }
 
   // 拖拽离开处理
   const onDragLeave = () => {
     isDragOver.value = false
+    screenDragPos.value = null
   }
 
   // 拖拽放置处理
   const onDrop = (event: DragEvent) => {
     event.preventDefault()
     isDragOver.value = false
+    screenDragPos.value = null
+    currentDragNodeType.value = null
 
     const type = event.dataTransfer?.getData("application/vueflow")
     if (!type) return
@@ -68,6 +76,7 @@ export function useDnD() {
 
   return {
     isDragOver,
+    screenDragPos,
     onDragOver,
     onDragLeave,
     onDrop,

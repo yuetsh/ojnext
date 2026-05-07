@@ -14,7 +14,8 @@ import {
 import { Controls } from "@vue-flow/controls"
 import { Background } from "@vue-flow/background"
 
-import { useDnD } from "./useDnD"
+import { useDnD, currentDragNodeType } from "./useDnD"
+import { getNodeTypeConfig } from "./useNodeStyles"
 import { useHistory } from "./useHistory"
 import { useFlowOperations } from "./useFlowOperations"
 import { useCache } from "./useCache"
@@ -42,17 +43,35 @@ const { canUndo, canRedo, saveState, undo, redo } = useHistory()
 const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 // 缓存管理
-const { isSaving, lastSaved, hasUnsavedChanges, loadFromCache, clearCache } =
-  useCache(
-    nodes,
-    edges,
-    problem.value?._id
-      ? `flowchart-editor-data-problem-${problem.value!._id}`
-      : "flowchart-editor-data",
-  )
+const {
+  isSaving,
+  lastSaved,
+  hasUnsavedChanges,
+  saveToCache,
+  loadFromCache,
+  clearCache,
+} = useCache(
+  nodes,
+  edges,
+  problem.value?._id
+    ? `flowchart-editor-data-problem-${problem.value!._id}`
+    : "flowchart-editor-data",
+)
 
 // 拖拽处理
-const { onDragOver, onDragLeave, onDrop } = useDnD()
+const { onDragOver, onDragLeave, onDrop, isDragOver, screenDragPos } = useDnD()
+
+const dragPreviewStyle = computed(() => {
+  if (!screenDragPos.value || !currentDragNodeType.value) return null
+  const config = getNodeTypeConfig(currentDragNodeType.value)
+  const type = currentDragNodeType.value
+  return {
+    left: `${screenDragPos.value.x}px`,
+    top: `${screenDragPos.value.y}px`,
+    background: config.color,
+    borderRadius: type === "start" || type === "end" ? "20px" : "8px",
+  }
+})
 
 // 流程操作
 const {
@@ -93,16 +112,18 @@ const handleDrop = (event: DragEvent) => {
 const handleUndo = () => {
   const state = undo()
   if (state) {
-    nodes.value = [...state.nodes]
-    edges.value = [...state.edges]
+    nodes.value = state.nodes
+    edges.value = state.edges
+    saveToCache()
   }
 }
 
 const handleRedo = () => {
   const state = redo()
   if (state) {
-    nodes.value = [...state.nodes]
-    edges.value = [...state.edges]
+    nodes.value = state.nodes
+    edges.value = state.edges
+    saveToCache()
   }
 }
 
@@ -182,6 +203,19 @@ defineExpose({
 
 <template>
   <div class="container" :style="{ height }">
+    <!-- 拖拽时跟随鼠标的节点预览 -->
+    <Transition name="drag-preview">
+      <div
+        v-if="isDragOver && dragPreviewStyle && currentDragNodeType"
+        class="drag-node-preview"
+        :style="dragPreviewStyle"
+      >
+        <span class="preview-icon">{{
+          getNodeTypeConfig(currentDragNodeType).icon
+        }}</span>
+        <span>{{ getNodeTypeConfig(currentDragNodeType).label }}</span>
+      </div>
+    </Transition>
     <VueFlow
       v-model:nodes="nodes"
       v-model:edges="edges"
@@ -191,7 +225,7 @@ defineExpose({
       @connect="handleConnect"
       @edge-click="handleEdgeClick"
       :default-edge-options="{
-        type: 'step',
+        type: 'default',
         style: {
           stroke: '#6366f1',
           strokeWidth: 2.5,
@@ -268,5 +302,37 @@ defineExpose({
   width: 100%;
   height: 100%;
   position: relative;
+}
+
+.drag-node-preview {
+  position: fixed;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 9999;
+  padding: 8px 18px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  opacity: 0.55;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2);
+  white-space: nowrap;
+  border: 2px dashed rgba(255, 255, 255, 0.6);
+  user-select: none;
+}
+
+.preview-icon {
+  font-size: 16px;
+}
+
+.drag-preview-enter-active,
+.drag-preview-leave-active {
+  transition: opacity 0.1s ease;
+}
+.drag-preview-enter-from,
+.drag-preview-leave-to {
+  opacity: 0;
 }
 </style>

@@ -4,7 +4,7 @@
     :class="{ 'is-hovered': isHovered, 'is-editing': isEditing }"
     :data-node-type="nodeType"
     :draggable="!isEditing"
-    @mouseenter="isHovered = true"
+    @mouseenter="handleMouseEnter"
     @mouseleave="handleMouseLeave"
     @dblclick="handleDoubleClick"
     @dragstart="handleDragStart"
@@ -53,11 +53,17 @@ import { getNodeTypeConfig } from "./useNodeStyles"
 import NodeHandles from "./NodeHandles.vue"
 import NodeActions from "./NodeActions.vue"
 
-// 类型定义
+interface NodeData {
+  label: string
+  color: string
+  originalType: string
+  customLabel?: string
+}
+
 interface Props {
   id: string
   type: string
-  data: any
+  data: NodeData
 }
 
 interface Emits {
@@ -147,6 +153,7 @@ const handleCancelEdit = () => {
 }
 
 const handleMouseEnter = () => {
+  isHovered.value = true
   if (hideTimeout) {
     clearTimeout(hideTimeout)
     hideTimeout = null

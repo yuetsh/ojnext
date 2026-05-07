@@ -69,8 +69,6 @@ const page = ref(1)
 // ==================== WebSocket 相关函数 ====================
 // 处理 WebSocket 消息
 const handleWebSocketMessage = (data: FlowchartEvaluationUpdate) => {
-  console.log("收到流程图评分更新:", data)
-
   if (data.type === "flowchart_evaluation_completed") {
     loading.value = false
     latestRating.value = {
@@ -79,11 +77,8 @@ const handleWebSocketMessage = (data: FlowchartEvaluationUpdate) => {
     }
     message.success(`流程图评分完成！得分: ${data.score}分 (${data.grade}级)`)
   } else if (data.type === "flowchart_evaluation_failed") {
-    console.log("处理评分失败消息")
     loading.value = false
     message.error(`流程图评分失败: ${data.error}`)
-  } else {
-    console.log("未知的消息类型:", data.type)
   }
 }
 
@@ -94,7 +89,6 @@ const { connect, disconnect, subscribe } = useFlowchartWebSocket(
 
 // 订阅提交更新
 function subscribeToSubmission(submissionId: string) {
-  console.log("开始订阅WebSocket更新")
   subscribe(submissionId)
 }
 
@@ -287,16 +281,14 @@ onUnmounted(() => {
       <n-grid :cols="5" :x-gap="16">
         <!-- 左侧：流程图预览区域 -->
         <n-gi :span="3">
-          <n-card title="流程图预览">
-            <div class="flowchart">
-              <n-spin :show="rendering">
-                <n-alert v-if="renderError" type="error" title="流程图渲染失败">
-                  {{ renderError }}
-                </n-alert>
-                <div class="flowchart" v-else ref="mermaidContainer"></div>
-              </n-spin>
-            </div>
-          </n-card>
+          <div class="flowchart">
+            <n-spin :show="rendering">
+              <n-alert v-if="renderError" type="error" title="流程图渲染失败">
+                {{ renderError }}
+              </n-alert>
+              <div class="flowchart" v-else ref="mermaidContainer"></div>
+            </n-spin>
+          </div>
           <!-- 加载到编辑器按钮 -->
           <n-flex style="margin-top: 16px" justify="center">
             <n-button @click="loadToEditor" type="primary">

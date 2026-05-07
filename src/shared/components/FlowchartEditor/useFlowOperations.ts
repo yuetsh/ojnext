@@ -1,5 +1,5 @@
 import type { Ref } from "vue"
-import type { Node, Edge } from "@vue-flow/core"
+import type { Node, Edge, Connection } from "@vue-flow/core"
 import { getRandomId } from "utils/functions"
 
 export function useFlowOperations(
@@ -11,12 +11,11 @@ export function useFlowOperations(
   removeEdges: (edgeIds: string[]) => void,
   saveState: (nodes: Node[], edges: Edge[]) => void,
 ) {
-  // 根据节点类型和handle自动推断标签
   const getAutoLabel = (
-    sourceNode: any,
-    targetNode: any,
-    sourceHandle: string,
-    targetHandle: string,
+    sourceNode: Node | undefined,
+    targetNode: Node | undefined,
+    sourceHandle: string | null | undefined,
+    targetHandle: string | null | undefined,
   ) => {
     const sourceType = sourceNode?.data?.originalType || sourceNode?.type
     const targetType = targetNode?.data?.originalType || targetNode?.type
@@ -51,9 +50,7 @@ export function useFlowOperations(
     return ""
   }
 
-  // 连接处理
-  const handleConnect = (params: any) => {
-    // 获取源节点和目标节点
+  const handleConnect = (params: Connection) => {
     const sourceNode = nodes.value.find((node) => node.id === params.source)
     const targetNode = nodes.value.find((node) => node.id === params.target)
 
@@ -79,9 +76,8 @@ export function useFlowOperations(
     saveState(nodes.value, edges.value)
   }
 
-  // 边点击处理 - 单击删除
-  const handleEdgeClick = (event: any) => {
-    removeEdges([event.edge.id])
+  const handleEdgeClick = ({ edge }: { edge: Edge }) => {
+    removeEdges([edge.id])
     saveState(nodes.value, edges.value)
   }
 
@@ -115,12 +111,7 @@ export function useFlowOperations(
         },
       }
 
-      // 使用 Vue Flow 的更新方法
       nodes.value[nodeIndex] = updatedNode
-
-      // 强制触发响应式更新
-      nodes.value = [...nodes.value]
-
       saveState(nodes.value, edges.value)
     }
   }

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed } from "vue"
 import { getNodeTypeConfig } from "./useNodeStyles"
+import { currentDragNodeType } from "./useDnD"
 
 // 拖拽开始处理
 const onDragStart = (event: DragEvent, type: string) => {
@@ -8,6 +9,17 @@ const onDragStart = (event: DragEvent, type: string) => {
 
   event.dataTransfer.setData("application/vueflow", type)
   event.dataTransfer.effectAllowed = "move"
+  currentDragNodeType.value = type
+
+  // 隐藏浏览器默认拖影，改用 canvas 跟随预览
+  const emptyImg = new Image(1, 1)
+  emptyImg.src =
+    "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+  event.dataTransfer.setDragImage(emptyImg, 0, 0)
+}
+
+const onDragEnd = () => {
+  currentDragNodeType.value = null
 }
 
 // Props
@@ -42,8 +54,7 @@ const nodeTypes = computed(() =>
   ),
 )
 
-// 获取保存状态标题
-const getSaveStatusTitle = () => {
+const saveStatusTitle = computed(() => {
   if (props.isSaving) {
     return "正在保存..."
   } else if (props.hasUnsavedChanges) {
@@ -53,7 +64,7 @@ const getSaveStatusTitle = () => {
   } else {
     return "已保存"
   }
-}
+})
 </script>
 <template>
   <div class="toolbar">
@@ -68,7 +79,7 @@ const getSaveStatusTitle = () => {
             unsaved: props.hasUnsavedChanges && !props.isSaving,
             saved: !props.hasUnsavedChanges && !props.isSaving,
           }"
-          :title="getSaveStatusTitle()"
+          :title="saveStatusTitle"
         >
           <span v-if="props.isSaving" class="spinner">⏳</span>
           <span v-else-if="props.hasUnsavedChanges">●</span>
@@ -86,6 +97,7 @@ const getSaveStatusTitle = () => {
         class="node-item"
         :draggable="true"
         @dragstart="onDragStart($event, nodeType.type)"
+        @dragend="onDragEnd"
         :style="{ borderColor: nodeType.color }"
         :title="`${nodeType.label} - ${nodeType.description}`"
       >
