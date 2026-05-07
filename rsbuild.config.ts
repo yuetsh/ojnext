@@ -74,9 +74,10 @@ const config: ReturnType<typeof defineConfig> = defineConfig(({ envMode }) => {
       },
       define: publicVars,
     },
-    output: {
-      target: "web",
-      polyfill: "usage",
+    performance: {
+      chunkSplit: {
+        strategy: "split-by-module",
+      },
     },
     resolve: {
       alias: {
