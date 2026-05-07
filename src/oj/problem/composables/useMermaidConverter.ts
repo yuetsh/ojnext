@@ -72,15 +72,19 @@ export function useMermaidConverter() {
     // 添加样式定义来区分不同类型的节点
     mermaid += "\n"
     mermaid +=
-      "    classDef startEnd fill:#e1f5fe,stroke:#01579b,stroke-width:2px\n"
+      "    classDef startNode fill:#dcfce7,stroke:#16a34a,stroke-width:2.5px,color:#0f172a\n"
     mermaid +=
-      "    classDef input fill:#e3f2fd,stroke:#1976d2,stroke-width:2px\n"
+      "    classDef endNode fill:#fee2e2,stroke:#dc2626,stroke-width:2.5px,color:#0f172a\n"
     mermaid +=
-      "    classDef output fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px\n"
+      "    classDef input fill:#dbeafe,stroke:#2563eb,stroke-width:2.5px,color:#0f172a\n"
     mermaid +=
-      "    classDef process fill:#e8f5e8,stroke:#1b5e20,stroke-width:2px\n"
+      "    classDef output fill:#ede9fe,stroke:#7c3aed,stroke-width:2.5px,color:#0f172a\n"
     mermaid +=
-      "    classDef decision fill:#fff3e0,stroke:#e65100,stroke-width:2px\n"
+      "    classDef process fill:#f0f9ff,stroke:#0284c7,stroke-width:2.5px,color:#0f172a\n"
+    mermaid +=
+      "    classDef decision fill:#fef3c7,stroke:#d97706,stroke-width:2.5px,color:#0f172a\n"
+    mermaid +=
+      "    classDef loop fill:#fae8ff,stroke:#c026d3,stroke-width:2.5px,color:#0f172a\n"
     mermaid += "\n"
 
     // 为节点应用样式
@@ -90,8 +94,10 @@ export function useMermaidConverter() {
 
       switch (originalType) {
         case "start":
+          mermaid += `    class ${nodeId} startNode\n`
+          break
         case "end":
-          mermaid += `    class ${nodeId} startEnd\n`
+          mermaid += `    class ${nodeId} endNode\n`
           break
         case "input":
           mermaid += `    class ${nodeId} input\n`
@@ -100,8 +106,10 @@ export function useMermaidConverter() {
           mermaid += `    class ${nodeId} output\n`
           break
         case "decision":
-        case "loop":
           mermaid += `    class ${nodeId} decision\n`
+          break
+        case "loop":
+          mermaid += `    class ${nodeId} loop\n`
           break
         default:
           mermaid += `    class ${nodeId} process\n`
