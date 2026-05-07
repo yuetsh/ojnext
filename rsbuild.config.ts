@@ -24,16 +24,6 @@ const config: ReturnType<typeof defineConfig> = defineConfig(({ envMode }) => {
   return {
     plugins: [pluginVue()],
     tools: {
-      swc: {
-        detectSyntax: false,
-        jsc: {
-          parser: {
-            decorators: true,
-            syntax: "typescript",
-            tsx: false,
-          },
-        },
-      },
       rspack: {
         plugins: [
           AutoImport({
