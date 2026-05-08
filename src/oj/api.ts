@@ -291,7 +291,11 @@ export function getAIDetailData(start: string, end: string, username?: string) {
   return http.get("ai/detail", { params: { start, end, username } })
 }
 
-export function getAIDurationData(end: string, duration: string, username?: string) {
+export function getAIDurationData(
+  end: string,
+  duration: string,
+  username?: string,
+) {
   return http.get("ai/duration", { params: { end, duration, username } })
 }
 

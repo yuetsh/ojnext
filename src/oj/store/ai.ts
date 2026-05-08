@@ -29,7 +29,11 @@ export const useAIStore = defineStore("ai", () => {
   const mdContent = ref("")
 
   async function fetchDetailsData(start: string, end: string) {
-    const res = await getAIDetailData(start, end, targetUsername.value || undefined)
+    const res = await getAIDetailData(
+      start,
+      end,
+      targetUsername.value || undefined,
+    )
     detailsData.start = res.data.start
     detailsData.end = res.data.end
     detailsData.solved = res.data.solved
@@ -42,7 +46,11 @@ export const useAIStore = defineStore("ai", () => {
   }
 
   async function fetchDurationData(end: string, duration: string) {
-    const res = await getAIDurationData(end, duration, targetUsername.value || undefined)
+    const res = await getAIDurationData(
+      end,
+      duration,
+      targetUsername.value || undefined,
+    )
     durationData.value = res.data
   }
 

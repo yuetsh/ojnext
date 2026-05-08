@@ -96,7 +96,12 @@ const columns: DataTableColumn<SolvedProblem>[] = [
   {
     title: () =>
       h(NTooltip, null, {
-        trigger: () => h("span", { style: "cursor:help; border-bottom: 1px dashed" }, "等级"),
+        trigger: () =>
+          h(
+            "span",
+            { style: "cursor:help; border-bottom: 1px dashed" },
+            "等级",
+          ),
         default: () =>
           h("div", null, [
             h("div", null, "基于同时段排名的百分位："),

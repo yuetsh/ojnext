@@ -1,6 +1,10 @@
 <script setup lang="ts">
 import { JUDGE_STATUS, SubmissionStatus } from "utils/constants"
-import { submissionMemoryFormat, submissionTimeFormat } from "utils/functions"
+import {
+  getCSRFToken,
+  submissionMemoryFormat,
+  submissionTimeFormat,
+} from "utils/functions"
 import type { Submission } from "utils/types"
 import SubmissionResultTag from "shared/components/SubmissionResultTag.vue"
 import { useProblemStore } from "oj/store/problem"
@@ -61,9 +65,18 @@ async function fetchHint(submissionId: string) {
   hintError.value = ""
 
   try {
+    const headers: Record<string, string> = {
+      "Content-Type": "application/json",
+    }
+
+    const csrfToken = getCSRFToken()
+    if (csrfToken) {
+      headers["X-CSRFToken"] = csrfToken
+    }
+
     const response = await fetch("/api/ai/hint", {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      headers,
       body: JSON.stringify({ submission_id: submissionId }),
     })
 
