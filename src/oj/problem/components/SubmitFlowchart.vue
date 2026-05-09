@@ -306,7 +306,7 @@ onUnmounted(() => {
         </n-gi>
 
         <!-- 右侧：评分详情区域 -->
-        <n-gi :span="2">
+        <n-gi :span="2" style="max-height: 550px; overflow: auto;">
           <!-- AI反馈 -->
           <n-card
             v-if="evaluation.feedback"

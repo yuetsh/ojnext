@@ -43,12 +43,24 @@
 
       <!-- 改进建议 -->
       <n-card
-        v-if="submission.ai_suggestions"
+        v-if="suggestionItems.length"
         size="small"
         title="改进建议"
         style="margin-bottom: 16px"
       >
-        <n-text>{{ submission.ai_suggestions }}</n-text>
+        <div class="suggestion-list">
+          <div
+            v-for="(item, index) in suggestionItems"
+            :key="`${index}-${item.text}`"
+            class="suggestion-item"
+            :class="{ 'suggestion-item--important': item.important }"
+          >
+            <n-tag v-if="item.important" type="warning" size="small">
+              重点
+            </n-tag>
+            <n-text>{{ item.text }}</n-text>
+          </div>
+        </div>
       </n-card>
 
       <!-- 详细评分 -->
@@ -109,6 +121,30 @@ const loading = ref(false)
 const rendering = ref(false)
 const showLargeImage = ref(false)
 
+const suggestionItems = computed(() => {
+  const suggestions = submission.value?.ai_suggestions ?? ""
+
+  return suggestions
+    .split(/\r?\n/)
+    .flatMap((line) => line.split(/(?=【重点】)/))
+    .map((raw) => raw.trim())
+    .filter(Boolean)
+    .map((raw) => {
+      const textWithoutBullet = raw
+        .replace(/^(?:[-*]\s*|\d+[.)、]\s*)/, "")
+        .trim()
+      const important = textWithoutBullet.startsWith("【重点】")
+      const text = important
+        ? textWithoutBullet.replace(/^【重点】\s*/, "").trim()
+        : textWithoutBullet
+
+      return {
+        important,
+        text: text || textWithoutBullet,
+      }
+    })
+})
+
 function getPercentType(percent: number) {
   if (percent >= 0.8) return "primary"
   else if (percent >= 0.6) return "info"
@@ -162,5 +198,26 @@ watch(() => props.submissionId, loadSubmission, { immediate: true })
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.suggestion-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.suggestion-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--n-color);
+  line-height: 1.6;
+}
+
+.suggestion-item--important {
+  border: 1px solid var(--n-warning-color);
+  background: var(--n-warning-color-suppl);
 }
 </style>
