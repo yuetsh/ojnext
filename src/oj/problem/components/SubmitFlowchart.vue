@@ -71,6 +71,18 @@ const evaluation = ref<Evaluation>({
   criteria_details: {},
 })
 const page = ref(1)
+const suggestionLines = computed(() =>
+  splitSuggestionLines(evaluation.value.suggestions),
+)
+
+function splitSuggestionLines(suggestions?: string | null) {
+  return suggestions
+    ? suggestions
+        .split("\n")
+        .map((suggestion) => suggestion.trim())
+        .filter(Boolean)
+    : []
+}
 
 // ==================== WebSocket 相关函数 ====================
 // 处理 WebSocket 消息
@@ -306,7 +318,7 @@ onUnmounted(() => {
         </n-gi>
 
         <!-- 右侧：评分详情区域 -->
-        <n-gi :span="2" style="max-height: 550px; overflow: auto;">
+        <n-gi :span="2" style="max-height: 550px; overflow: auto">
           <!-- AI反馈 -->
           <n-card
             v-if="evaluation.feedback"
@@ -319,12 +331,19 @@ onUnmounted(() => {
 
           <!-- 改进建议 -->
           <n-card
-            v-if="evaluation.suggestions"
+            v-if="suggestionLines.length"
             size="small"
             title="改进建议"
             style="margin-bottom: 16px"
           >
-            <n-text>{{ evaluation.suggestions }}</n-text>
+            <n-flex vertical :size="6">
+              <n-text
+                v-for="(suggestion, index) in suggestionLines"
+                :key="`${index}-${suggestion}`"
+              >
+                {{ suggestion }}
+              </n-text>
+            </n-flex>
           </n-card>
 
           <!-- 详细评分 -->
