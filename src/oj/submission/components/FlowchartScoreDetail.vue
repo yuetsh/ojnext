@@ -31,6 +31,7 @@
 
     <!-- 右侧：评分详情区域 -->
     <n-gi v-if="!showLargeImage" :span="2">
+      <div style="max-height: 500px; overflow-y: auto; padding-right: 4px">
       <!-- AI反馈 -->
       <n-card
         v-if="submission.ai_feedback"
@@ -86,6 +87,7 @@
           </n-text>
         </div>
       </n-card>
+      </div>
     </n-gi>
   </n-grid>
   <n-spin v-else :show="loading" class="loading-container"> </n-spin>
