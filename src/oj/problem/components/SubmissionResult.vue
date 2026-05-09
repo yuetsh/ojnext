@@ -160,10 +160,9 @@ const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
 
     <!-- AI 提示区域 -->
     <template v-if="showAIHint">
-      <n-divider />
-      <n-card size="small">
+      <n-card size="small" style="margin-top: 12px; max-width: 480px">
         <template #header>
-          <span class="gradient-text">AI 提示</span>
+          <n-gradient-text type="warning">AI 提示</n-gradient-text>
         </template>
         <n-alert
           v-if="hintError"

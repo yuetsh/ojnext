@@ -196,7 +196,7 @@ watch(
     placement="bottom-end"
     scrollable
     :show-arrow="false"
-    style="max-height: 600px; width: min(480px, 90vw)"
+    style="max-height: 600px;"
     :show="showResult"
     @clickoutside="showResult = false"
   >
