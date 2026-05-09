@@ -269,6 +269,7 @@ async function loadMermaid() {
 export function useMermaid() {
   const renderError = ref<string | null>(null)
   const renderSuccess = ref(false)
+  let renderGeneration = 0
 
   const renderFlowchart = async (
     container: HTMLElement | null,
@@ -281,14 +282,17 @@ export function useMermaid() {
 
     if (!container || !mermaidCode?.trim()) return
 
+    const gen = ++renderGeneration
     try {
       const m = await loadMermaid()
       const id = `mermaid-${getRandomId()}`
       const { svg } = await m.render(id, mermaidCode)
+      if (gen !== renderGeneration) return
       container.innerHTML = svg
       applyFlowchartDisplayStyle(container)
       renderSuccess.value = true
     } catch (error) {
+      if (gen !== renderGeneration) return
       renderError.value =
         error instanceof Error
           ? error.message

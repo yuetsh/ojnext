@@ -36,8 +36,13 @@ interface Evaluation extends Rating {
 }
 
 // ==================== 组合式函数和响应式变量 ====================
+interface FlowchartEditorInstance {
+  getFlowchartData: () => { nodes: unknown[]; edges: unknown[] }
+  setFlowchartData: (data: { nodes: unknown[]; edges: unknown[] }) => void
+}
+
 // 通过inject获取FlowchartEditor组件的引用
-const flowchartEditorRef = inject<any>("flowchartEditorRef")
+const flowchartEditorRef = inject<Ref<FlowchartEditorInstance | null>>("flowchartEditorRef")
 const mermaidContainer = useTemplateRef<HTMLElement>("mermaidContainer")
 
 // 基础组合式函数
@@ -94,7 +99,7 @@ function subscribeToSubmission(submissionId: string) {
 
 // ==================== 提交相关函数 ====================
 // 提交流程图
-async function submitFlowchartData(flowchartEditorRef: any) {
+async function submitFlowchartData() {
   if (!flowchartEditorRef?.value) return
 
   // 获取流程图的JSON数据
@@ -138,7 +143,7 @@ async function submitFlowchartData(flowchartEditorRef: any) {
 
 // 提交函数
 function submit() {
-  submitFlowchartData(flowchartEditorRef)
+  submitFlowchartData()
 }
 
 // ==================== 数据获取和处理函数 ====================
