@@ -159,6 +159,7 @@ async function getSubmission(submissionPage = 0) {
     problem.value.id,
     submissionPage,
   )
+  submissionCount.value = data.count
   const submission = data.submission
   myFlowchartZippedStr.value = submission.flowchart_data.data
   myMermaidCode.value = submission.mermaid_code || ""
@@ -190,6 +191,7 @@ async function openDetailModal() {
   showDetailModal.value = true
   rendering.value = true
   await getSubmission()
+  page.value = submissionCount.value
   // 等待 DOM 更新，确保弹框已经渲染
   await nextTick()
   await renderFlowchart(mermaidContainer.value, myMermaidCode.value)
