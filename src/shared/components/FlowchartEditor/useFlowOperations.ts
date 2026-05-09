@@ -1,16 +1,17 @@
 import type { Ref } from "vue"
 import type { Node, Edge, Connection } from "@vue-flow/core"
+import { useVueFlow } from "@vue-flow/core"
 import { getRandomId } from "utils/functions"
 
 export function useFlowOperations(
   nodes: Ref<Node[]>,
   edges: Ref<Edge[]>,
-  addNodes: (nodes: Node[]) => void,
   addEdges: (edges: Edge[]) => void,
   removeNodes: (nodeIds: string[]) => void,
   removeEdges: (edgeIds: string[]) => void,
   saveState: (nodes: Node[], edges: Edge[]) => void,
 ) {
+  const { findNode, getSelectedNodes, getSelectedEdges } = useVueFlow()
   const getAutoLabel = (
     sourceNode: Node | undefined,
     targetNode: Node | undefined,
@@ -95,23 +96,16 @@ export function useFlowOperations(
     saveState(nodes.value, edges.value)
   }
 
-  // 节点更新
+  // 节点更新，空标签时清除自定义标签（恢复默认类型名称）
   const handleNodeUpdate = (nodeId: string, newLabel: string) => {
-    const nodeIndex = nodes.value.findIndex((node) => node.id === nodeId)
-
-    if (nodeIndex !== -1) {
-      const oldNode = nodes.value[nodeIndex]
-
-      // 创建新的节点对象以确保响应式更新
-      const updatedNode = {
-        ...oldNode,
-        data: {
-          ...oldNode.data,
-          customLabel: newLabel,
-        },
+    const node = findNode(nodeId)
+    if (node) {
+      if (newLabel) {
+        node.data = { ...node.data, customLabel: newLabel }
+      } else {
+        const { customLabel: _, ...rest } = node.data
+        node.data = rest
       }
-
-      nodes.value[nodeIndex] = updatedNode
       saveState(nodes.value, edges.value)
     }
   }
@@ -125,8 +119,8 @@ export function useFlowOperations(
 
   // 删除选中的节点和边
   const deleteSelected = () => {
-    const selectedNodes = nodes.value.filter((node) => (node as any).selected)
-    const selectedEdges = edges.value.filter((edge) => (edge as any).selected)
+    const selectedNodes = getSelectedNodes.value
+    const selectedEdges = getSelectedEdges.value
 
     if (selectedNodes.length > 0) {
       removeNodes(selectedNodes.map((node) => node.id))

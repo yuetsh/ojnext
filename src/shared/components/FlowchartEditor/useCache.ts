@@ -1,4 +1,4 @@
-import { ref, watch } from "vue"
+import { ref, watch, type Ref, type MaybeRefOrGetter } from "vue"
 import { useStorage, useDebounceFn } from "@vueuse/core"
 import type { Node, Edge } from "@vue-flow/core"
 
@@ -6,15 +6,15 @@ import type { Node, Edge } from "@vue-flow/core"
  * 缓存管理 - 使用 @vueuse 的 useStorage
  */
 export function useCache(
-  nodes: any,
-  edges: any,
-  storageKey: string = "flowchart-editor-data",
+  nodes: Ref<Node[]>,
+  edges: Ref<Edge[]>,
+  storageKey: MaybeRefOrGetter<string> = "flowchart-editor-data",
 ) {
   const isSaving = ref(false)
   const lastSaved = ref<Date | null>(null)
   const hasUnsavedChanges = ref(false)
 
-  // 使用 useStorage 管理数据存储
+  // 使用 useStorage 管理数据存储，支持响应式 key（题目 ID 异步加载时自动切换）
   const storedData = useStorage<{
     nodes: Node[]
     edges: Edge[]
@@ -25,9 +25,8 @@ export function useCache(
     timestamp: "",
   })
 
-  // 防抖保存
+  // 防抖保存：isSaving 在 watch 中置 true，保存完成后置 false，使 UI 能感知保存中状态
   const debouncedSave = useDebounceFn(() => {
-    isSaving.value = true
     storedData.value.nodes = nodes.value
     storedData.value.edges = edges.value
     storedData.value.timestamp = new Date().toISOString()
@@ -68,11 +67,12 @@ export function useCache(
     hasUnsavedChanges.value = false
   }
 
-  // 监听节点和边的变化
+  // 监听节点和边的变化，isSaving 在此置 true 以覆盖防抖等待窗口
   watch(
     [nodes, edges],
     () => {
       hasUnsavedChanges.value = true
+      isSaving.value = true
       debouncedSave()
     },
     { deep: true },

@@ -28,7 +28,6 @@
         @keydown.enter="handleSaveEdit"
         @keydown.escape="handleCancelEdit"
         @click.stop
-        @focusout="handleSaveEdit"
       />
 
       <!-- 隐藏的文字用于保持尺寸 -->
@@ -96,25 +95,19 @@ const displayLabel = computed(
 const handleDelete = () => emit("delete", props.id)
 
 const handleMouseDown = (event: MouseEvent) => {
-  // 检查是否点击在连线点区域
   const target = event.target as HTMLElement
   if (target.closest(".vue-flow__handle")) {
-    // 如果在连线点区域，禁用节点拖拽
     event.preventDefault()
-    return false
   }
 }
 
 const handleDragStart = (event: DragEvent) => {
-  if (isEditing.value) {
-    return
-  }
+  if (isEditing.value) return
 
-  // 检查是否在连线点区域开始拖拽
   const target = event.target as HTMLElement
   if (target.closest(".vue-flow__handle")) {
     event.preventDefault()
-    return false
+    return
   }
 
   if (event.dataTransfer) {
@@ -137,10 +130,7 @@ const handleDoubleClick = (event: MouseEvent) => {
 
 const handleSaveEdit = () => {
   if (isEditing.value) {
-    // 保存编辑的文本
-    if (editText.value.trim()) {
-      emit("update", props.id, editText.value.trim())
-    }
+    emit("update", props.id, editText.value.trim())
     isEditing.value = false
     removeGlobalClickHandler()
   }

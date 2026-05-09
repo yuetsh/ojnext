@@ -31,7 +31,7 @@ withDefaults(defineProps<Props>(), {
 })
 
 // Vue Flow 实例
-const { addNodes, addEdges, removeNodes, removeEdges } = useVueFlow()
+const { addEdges, removeNodes, removeEdges } = useVueFlow()
 
 // 节点和边的响应式数据
 const nodes = ref<Node[]>([])
@@ -42,7 +42,12 @@ const { canUndo, canRedo, saveState, undo, redo } = useHistory()
 
 const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
-// 缓存管理
+// 缓存管理：用 computed key 支持题目 ID 异步加载后自动切换到正确的 storage
+const cacheKey = computed(() =>
+  problem.value?._id
+    ? `flowchart-editor-data-problem-${problem.value!._id}`
+    : "flowchart-editor-data",
+)
 const {
   isSaving,
   lastSaved,
@@ -50,13 +55,7 @@ const {
   saveToCache,
   loadFromCache,
   clearCache,
-} = useCache(
-  nodes,
-  edges,
-  problem.value?._id
-    ? `flowchart-editor-data-problem-${problem.value!._id}`
-    : "flowchart-editor-data",
-)
+} = useCache(nodes, edges, cacheKey)
 
 // 拖拽处理
 const { onDragOver, onDragLeave, onDrop, isDragOver, screenDragPos } = useDnD()
@@ -84,26 +83,16 @@ const {
 } = useFlowOperations(
   nodes,
   edges,
-  addNodes,
   addEdges,
   removeNodes,
   removeEdges,
   saveState,
 )
 
-// 拖拽处理包装
-const handleDragOver = (event: DragEvent) => {
-  onDragOver(event)
-}
-
-const handleDragLeave = () => {
-  onDragLeave()
-}
-
-const handleDrop = (event: DragEvent) => {
-  // 处理正常的节点创建拖拽
+const handleDrop = async (event: DragEvent) => {
   const newNode = onDrop(event)
   if (newNode) {
+    await nextTick()
     saveState(nodes.value, edges.value)
   }
 }
@@ -219,8 +208,8 @@ defineExpose({
     <VueFlow
       v-model:nodes="nodes"
       v-model:edges="edges"
-      @dragover="handleDragOver"
-      @dragleave="handleDragLeave"
+      @dragover="onDragOver"
+      @dragleave="onDragLeave"
       @drop="handleDrop"
       @connect="handleConnect"
       @edge-click="handleEdgeClick"
