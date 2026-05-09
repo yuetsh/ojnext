@@ -1,8 +1,23 @@
 import { tags as t } from "@lezer/highlight"
+import { EditorView } from "@codemirror/view"
+import type { Extension } from "@codemirror/state"
 import { createTheme } from "./createTheme"
 
+const tooltipTheme = EditorView.theme({
+  ".cm-tooltip": {
+    border: "1px solid #e0e0e0",
+    backgroundColor: "#f8f8f8",
+  },
+  ".cm-tooltip-autocomplete": {
+    "& > ul > li[aria-selected]": {
+      backgroundColor: "#e8e8e8",
+      color: "#000000",
+    },
+  },
+})
+
 // Author: Kenneth Reitz
-export const smoothy = createTheme({
+const smoothyBase = createTheme({
   variant: "light",
   settings: {
     background: "#FFFFFF",
@@ -81,3 +96,5 @@ export const smoothy = createTheme({
     },
   ],
 })
+
+export const smoothy: Extension = [smoothyBase, tooltipTheme]

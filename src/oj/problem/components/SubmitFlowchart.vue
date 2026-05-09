@@ -42,7 +42,8 @@ interface FlowchartEditorInstance {
 }
 
 // 通过inject获取FlowchartEditor组件的引用
-const flowchartEditorRef = inject<Ref<FlowchartEditorInstance | null>>("flowchartEditorRef")
+const flowchartEditorRef =
+  inject<Ref<FlowchartEditorInstance | null>>("flowchartEditorRef")
 const mermaidContainer = useTemplateRef<HTMLElement>("mermaidContainer")
 
 // 基础组合式函数

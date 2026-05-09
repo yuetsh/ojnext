@@ -1,13 +1,19 @@
 <script lang="ts" setup>
 import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
+import { bracketMatching } from "@codemirror/language"
 import { EditorView } from "@codemirror/view"
 import { Codemirror } from "vue-codemirror"
-import { autocompletion } from "@codemirror/autocomplete"
+import {
+  autocompletion,
+  closeBrackets,
+  completeAnyWord,
+} from "@codemirror/autocomplete"
 import type { Extension } from "@codemirror/state"
-import { LANGUAGE } from "utils/types"
+import type { LANGUAGE } from "utils/types"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
+import { styleTheme } from "shared/extensions/baseTheme"
 import { useCodeSync, SYNC_ERROR_CODES } from "../composables/sync"
 import { useBreakpoints } from "../composables/breakpoints"
 import { enhanceCompletion } from "shared/extensions/autocompletion"
@@ -50,14 +56,6 @@ const emit = defineEmits<{
 
 const { isDesktop } = useBreakpoints()
 
-const styleTheme = EditorView.baseTheme({
-  "& .cm-scroller": { "font-family": "Monaco" },
-  "&.cm-editor.cm-focused": { outline: "none" },
-  "&.cm-editor .cm-tooltip.cm-tooltip-autocomplete ul": {
-    "font-family": "Monaco",
-  },
-})
-
 const langExtension = computed((): Extension => {
   return ["Python2", "Python3"].includes(props.language) ? python() : cpp()
 })
@@ -65,9 +63,11 @@ const langExtension = computed((): Extension => {
 const extensions = computed(() => [
   styleTheme,
   langExtension.value,
+  bracketMatching(),
+  closeBrackets(),
   isDark.value ? oneDark : smoothy,
   autocompletion({
-    override: [enhanceCompletion(props.language)],
+    override: [enhanceCompletion(props.language), completeAnyWord],
   }),
   getInitialExtension(),
 ])

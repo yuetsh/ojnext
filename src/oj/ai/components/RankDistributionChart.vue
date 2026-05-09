@@ -3,7 +3,7 @@
     <template #header-extra>
       <n-text depth="3" style="font-size: 12px">
         了解同期解题速度和竞争力
-        </n-text>
+      </n-text>
     </template>
     <div style="height: 300px">
       <Pie :data="data" :options="options" />

@@ -82,7 +82,7 @@ export const createTheme = ({
       ".cm-cursor, .cm-dropCursor": {
         borderLeftColor: settings.caret,
       },
-      "&.cm-focused .cm-selectionBackgroundm .cm-selectionBackground, .cm-content ::selection":
+      "&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection":
         {
           backgroundColor: settings.selection,
         },

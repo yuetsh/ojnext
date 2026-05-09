@@ -5,7 +5,7 @@ import type {
   CompletionSource,
 } from "@codemirror/autocomplete"
 import type { EditorView } from "@codemirror/view"
-import { LANGUAGE } from "utils/types"
+import type { LANGUAGE } from "utils/types"
 import { c } from "./c"
 import { python } from "./python"
 
@@ -25,7 +25,7 @@ export function enhanceCompletion(language: LANGUAGE): CompletionSource {
     context: CompletionContext,
   ): Promise<CompletionResult | null> {
     const word = context.matchBefore(/\w+/)
-    if (!word) return null
+    if (!word && !context.explicit) return null
 
     const trulyLanguage = language.startsWith("Python") ? "python" : "c"
     const completions: Completion[] = (
@@ -63,7 +63,7 @@ export function enhanceCompletion(language: LANGUAGE): CompletionSource {
     })
 
     return {
-      from: word.from,
+      from: word ? word.from : context.pos,
       options: completions,
       validFor: /^\w+$/,
     }

@@ -1,12 +1,17 @@
 <script lang="ts" setup>
 import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
-import { EditorView } from "@codemirror/view"
+import { bracketMatching } from "@codemirror/language"
 import { Codemirror } from "vue-codemirror"
-import { autocompletion } from "@codemirror/autocomplete"
-import { LANGUAGE } from "utils/types"
+import {
+  autocompletion,
+  closeBrackets,
+  completeAnyWord,
+} from "@codemirror/autocomplete"
+import type { LANGUAGE } from "utils/types"
 import { oneDark } from "../themes/oneDark"
 import { smoothy } from "../themes/smoothy"
+import { styleTheme } from "shared/extensions/baseTheme"
 import { enhanceCompletion } from "shared/extensions/autocompletion"
 
 interface Props {
@@ -30,14 +35,6 @@ const code = defineModel<string>("value")
 
 const isDark = useDark()
 
-const styleTheme = EditorView.baseTheme({
-  "& .cm-scroller": { "font-family": "Monaco" },
-  "&.cm-editor.cm-focused": { outline: "none" },
-  "&.cm-editor .cm-tooltip.cm-tooltip-autocomplete ul": {
-    "font-family": "Monaco",
-  },
-})
-
 const langExtension = computed(() => {
   return ["Python2", "Python3"].includes(props.language) ? python() : cpp()
 })
@@ -45,8 +42,10 @@ const langExtension = computed(() => {
 const extensions = computed(() => [
   styleTheme,
   langExtension.value,
+  bracketMatching(),
+  closeBrackets(),
   autocompletion({
-    override: [enhanceCompletion(props.language)],
+    override: [enhanceCompletion(props.language), completeAnyWord],
   }),
   isDark.value ? oneDark : smoothy,
 ])
