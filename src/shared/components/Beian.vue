@@ -8,13 +8,9 @@
   >
     <n-flex justify="center" align="center" :vertical="isMobile" size="small">
       <n-text>&copy; 2022 - 2026 判题狗 保留所有权利</n-text>
-      <n-flex justify="center" align="center" size="small">
-        <n-text>采用</n-text>
-        <n-button text @click="goCC">CC BY-NC 4.0</n-button>
-        <n-text>许可协议</n-text>
-      </n-flex>
+      <n-button text @click="goCC">CC BY-NC 4.0</n-button>
     </n-flex>
-    <n-button text @click="goICP">浙ICP备2023044109号</n-button>
+    <n-button text @click="goICP">浙ICP备2023044109号-1</n-button>
     <n-button text @click="goPublicSecurity">
       浙公网安备33100402331786号
     </n-button>
