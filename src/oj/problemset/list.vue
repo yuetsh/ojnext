@@ -3,7 +3,7 @@ import { Icon } from "@iconify/vue"
 import { useRouteQuery } from "@vueuse/router"
 import { getProblemSetList } from "../api"
 import { parseTime } from "utils/functions"
-import { ProblemSetList } from "utils/types"
+import type { ProblemSetList } from "utils/types"
 import Pagination from "shared/components/Pagination.vue"
 import { usePagination } from "shared/composables/pagination"
 import { useBreakpoints } from "shared/composables/breakpoints"
@@ -21,11 +21,16 @@ interface ProblemSetQuery {
 }
 
 // 使用分页 composable
-const { query, clearQuery } = usePagination<ProblemSetQuery>({
-  keyword: useRouteQuery("keyword", "").value,
-  difficulty: useRouteQuery("difficulty", "").value,
-  status: useRouteQuery("status", "").value,
-})
+const { query, clearQuery } = usePagination<ProblemSetQuery>(
+  {
+    keyword: useRouteQuery("keyword", "").value,
+    difficulty: useRouteQuery("difficulty", "").value,
+    status: useRouteQuery("status", "").value,
+  },
+  {
+    defaultLimit: 30,
+  },
+)
 
 const difficultyOptions = [
   { label: "全部", value: "" },

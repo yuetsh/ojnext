@@ -14,8 +14,6 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits(["update:limit", "update:page"])
 
-const route = useRoute()
-
 const { isDesktop } = useBreakpoints()
 
 const limit = ref(props.limit)
