@@ -138,7 +138,7 @@ const lineHtmlMap = computed<Record<number, string>>(() => {
                 ? 'rgba(208,48,80,0.07)'
                 : 'transparent',
           cursor: 'grab',
-          fontFamily: 'monospace',
+          fontFamily: 'Monaco',
           userSelect: 'none',
         }"
         @dragstart="onDragStart(idx)"

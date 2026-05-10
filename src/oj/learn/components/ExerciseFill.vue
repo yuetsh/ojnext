@@ -90,16 +90,16 @@ function inputWidth(idx: number): string {
     style="margin: 16px 0; border: 1.5px solid var(--n-border-color)"
   >
     <template #header>
-      <n-tag type="warning" size="small" :bordered="false"
-        >练一练 · 代码填空</n-tag
-      >
+      <n-tag type="warning" size="small" :bordered="false">
+        练一练 · 代码填空
+      </n-tag>
     </template>
 
     <p style="font-weight: 500; margin-bottom: 12px">{{ data.question }}</p>
 
     <pre
       :style="{
-        fontFamily: 'monospace',
+        fontFamily: 'Monaco',
         lineHeight: '1.6',
         background: 'var(--n-color)',
         border: '1px solid var(--n-border-color)',
@@ -109,14 +109,16 @@ function inputWidth(idx: number): string {
         whiteSpace: 'pre-wrap',
         margin: 0,
       }"
-    ><template v-for="(seg, i) in segments" :key="i"
-      ><span v-if="seg.type === 'code'" v-html="seg.html" /><input
+    >
+    <template v-for="(seg, i) in segments" :key="i">
+      <span v-if="seg.type === 'code'" v-html="seg.html" />
+      <input
         v-else
         :value="userInputs[seg.index]"
         :disabled="allCorrect"
         :style="{
           width: inputWidth(seg.index),
-          fontFamily: 'monospace',
+          fontFamily: 'Monaco',
           padding: '1px 4px',
           borderRadius: '3px',
           border: `1.5px solid ${
@@ -136,7 +138,9 @@ function inputWidth(idx: number): string {
           minWidth: '4ch',
         }"
         @input="userInputs[seg.index] = ($event.target as HTMLInputElement).value"
-      /></template></pre>
+      />
+    </template>
+  </pre>
 
     <n-alert
       v-if="wrongBlanks.size > 0 || allCorrect"
