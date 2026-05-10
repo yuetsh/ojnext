@@ -2,7 +2,7 @@
 import hljs from "highlight.js/lib/core"
 import python from "highlight.js/lib/languages/python"
 import c from "highlight.js/lib/languages/c"
-import { Exercise, ExerciseFillData } from "utils/types"
+import type { Exercise, ExerciseFillData } from "utils/types"
 
 hljs.registerLanguage("python", python)
 hljs.registerLanguage("c", c)
@@ -90,9 +90,7 @@ function inputWidth(idx: number): string {
     style="margin: 16px 0; border: 1.5px solid var(--n-border-color)"
   >
     <template #header>
-      <n-tag type="warning" size="small" :bordered="false">
-        练一练 · 代码填空
-      </n-tag>
+      <n-tag type="warning" size="small" :bordered="false">练一练 · 代码填空</n-tag>
     </template>
 
     <p style="font-weight: 500; margin-bottom: 12px">{{ data.question }}</p>
@@ -109,10 +107,8 @@ function inputWidth(idx: number): string {
         whiteSpace: 'pre-wrap',
         margin: 0,
       }"
-    >
-    <template v-for="(seg, i) in segments" :key="i">
-      <span v-if="seg.type === 'code'" v-html="seg.html" />
-      <input
+    ><template v-for="(seg, i) in segments" :key="i"
+      ><span v-if="seg.type === 'code'" v-html="seg.html" /><input
         v-else
         :value="userInputs[seg.index]"
         :disabled="allCorrect"
@@ -138,9 +134,7 @@ function inputWidth(idx: number): string {
           minWidth: '4ch',
         }"
         @input="userInputs[seg.index] = ($event.target as HTMLInputElement).value"
-      />
-    </template>
-  </pre>
+      /></template></pre>
 
     <n-alert
       v-if="wrongBlanks.size > 0 || allCorrect"
