@@ -14,6 +14,8 @@ import {
   Colors,
 } from "chart.js"
 import { getProblemBeatRate } from "oj/api"
+import { getProblemYearlyAC, type YearlyACData } from "oj/api"
+import ProblemYearlyChart from "./ProblemYearlyChart.vue"
 import { useBreakpoints } from "shared/composables/breakpoints"
 
 // 仅注册饼图所需的 Chart.js 组件
@@ -25,6 +27,7 @@ const { problem } = storeToRefs(problemStore)
 const { isDesktop } = useBreakpoints()
 
 const beatRate = ref("0")
+const yearlyACData = ref<YearlyACData[]>([])
 
 const data = computed(() => {
   const status = problem.value!.statistic_info
@@ -90,7 +93,15 @@ async function getBeatRate() {
   beatRate.value = res.data
 }
 
-onMounted(getBeatRate)
+async function getYearlyAC() {
+  const res = await getProblemYearlyAC(problem.value!._id)
+  yearlyACData.value = res.data
+}
+
+onMounted(() => {
+  getBeatRate()
+  getYearlyAC()
+})
 </script>
 
 <template>
@@ -142,6 +153,7 @@ onMounted(getBeatRate)
   <div class="pie" v-if="problem && problem.submission_number > 0">
     <Pie :data="data" :options="options" />
   </div>
+  <ProblemYearlyChart :data="yearlyACData" />
 </template>
 <style scoped>
 .cards {
