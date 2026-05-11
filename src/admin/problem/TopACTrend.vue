@@ -35,7 +35,21 @@ interface ProblemTrend {
   yearly: YearlyEntry[]
 }
 
-const loading = ref(true)
+const currentYear = new Date().getFullYear()
+const yearOptions = Array.from({ length: currentYear - 2022 + 1 }, (_, i) => ({
+  label: String(2022 + i),
+  value: 2022 + i,
+}))
+const minPerYearOptions = [
+  { label: "50", value: 50 },
+  { label: "100", value: 100 },
+  { label: "200", value: 200 },
+]
+
+const sinceYear = ref(2023)
+const untilYear = ref(new Date().getFullYear())
+const minPerYear = ref(100)
+const loading = ref(false)
 const data = ref<ProblemTrend[]>([])
 
 const acLabelPlugin = {
@@ -109,18 +123,45 @@ function getChartOptions(problem: ProblemTrend) {
   }
 }
 
-onMounted(async () => {
+async function fetchData() {
+  loading.value = true
   try {
-    const res = await getTopACTrend()
+    const res = await getTopACTrend({ since_year: sinceYear.value, until_year: untilYear.value, min_per_year: minPerYear.value })
     data.value = res.data
   } finally {
     loading.value = false
   }
-})
+}
+
+onMounted(fetchData)
 </script>
 
 <template>
   <h2 style="margin-top: 0">年度趋势</h2>
+  <n-space align="center" style="margin-bottom: 16px">
+    <span>年份范围</span>
+    <n-select
+      v-model:value="sinceYear"
+      :options="yearOptions"
+      style="width: 100px"
+      @update:value="fetchData"
+    />
+    <span>—</span>
+    <n-select
+      v-model:value="untilYear"
+      :options="yearOptions"
+      style="width: 100px"
+      @update:value="fetchData"
+    />
+    <span>年提交下限</span>
+    <n-select
+      v-model:value="minPerYear"
+      :options="minPerYearOptions"
+      style="width: 90px"
+      @update:value="fetchData"
+    />
+    <n-tag type="info" size="small">共 {{ data.length }} 题</n-tag>
+  </n-space>
   <n-spin :show="loading">
     <div
       v-if="!loading && data.length === 0"

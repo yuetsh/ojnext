@@ -474,6 +474,6 @@ export function getStuckProblems() {
   return http.get("admin/problem/stuck")
 }
 
-export function getTopACTrend() {
-  return http.get("admin/problem/top_ac_trend")
+export function getTopACTrend(params: { since_year: number; until_year: number; min_per_year: number }) {
+  return http.get("admin/problem/top_ac_trend", { params })
 }
