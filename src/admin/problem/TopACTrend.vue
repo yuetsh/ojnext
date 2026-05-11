@@ -4,7 +4,6 @@ import {
   Chart as ChartJS,
   CategoryScale,
   Filler,
-  Legend,
   LinearScale,
   LineElement,
   PointElement,
@@ -16,7 +15,6 @@ import { getTopACTrend } from "admin/api"
 ChartJS.register(
   CategoryScale,
   Filler,
-  Legend,
   LinearScale,
   LineElement,
   PointElement,
@@ -37,80 +35,78 @@ interface ProblemTrend {
   yearly: YearlyEntry[]
 }
 
-const COLORS = [
-  "#4e79a7",
-  "#f28e2b",
-  "#e15759",
-  "#76b7b2",
-  "#59a14f",
-  "#edc948",
-  "#b07aa1",
-  "#ff9da7",
-  "#9c755f",
-  "#bab0ac",
-]
-
 const loading = ref(true)
 const data = ref<ProblemTrend[]>([])
 
-const allYears = computed(() => {
-  const years = new Set<number>()
-  data.value.forEach((p) => p.yearly.forEach((y) => years.add(y.year)))
-  return Array.from(years).sort()
-})
+const acLabelPlugin = {
+  id: "acLabel",
+  afterDatasetsDraw(chart: any) {
+    const ctx = chart.ctx
+    chart.data.datasets.forEach((_: any, i: number) => {
+      const meta = chart.getDatasetMeta(i)
+      meta.data.forEach((point: any, j: number) => {
+        const value = chart.data.datasets[i].data[j]
+        if (value === null || value === undefined) return
+        ctx.save()
+        ctx.font = "bold 11px sans-serif"
+        ctx.fillStyle = "rgba(99, 179, 237, 1)"
+        ctx.textAlign = "center"
+        ctx.textBaseline = "bottom"
+        ctx.fillText(`${value}%`, point.x, point.y - 6)
+        ctx.restore()
+      })
+    })
+  },
+}
 
-const chartData = computed(() => ({
-  labels: allYears.value.map(String),
-  datasets: data.value.map((problem, i) => {
-    const byYear = new Map(problem.yearly.map((y) => [y.year, y]))
-    return {
-      label: `${problem.problem_id} ${problem.problem_title}`,
-      data: allYears.value.map((year) => byYear.get(year)?.ac_rate ?? null),
-      borderColor: COLORS[i % COLORS.length],
-      backgroundColor: COLORS[i % COLORS.length] + "33",
-      tension: 0.3,
-      spanGaps: false,
-      pointRadius: 4,
-    }
-  }),
-}))
+function getChartData(problem: ProblemTrend) {
+  return {
+    labels: problem.yearly.map((y) => String(y.year)),
+    datasets: [
+      {
+        label: "AC 率",
+        data: problem.yearly.map((y) => y.ac_rate),
+        fill: true,
+        tension: 0.3,
+        backgroundColor: "rgba(99, 179, 237, 0.2)",
+        borderColor: "rgba(99, 179, 237, 1)",
+        pointBackgroundColor: "rgba(99, 179, 237, 1)",
+        pointRadius: 4,
+      },
+    ],
+  }
+}
 
-const chartOptions = {
-  responsive: true,
-  maintainAspectRatio: false,
-  plugins: {
-    title: {
-      display: true,
-      text: "提交次数前 10 题目 · 历年 AC 率",
-      font: { size: 18 },
-    },
-    legend: {
-      position: "bottom" as const,
-      labels: { boxWidth: 12, padding: 12 },
-    },
-    tooltip: {
-      callbacks: {
-        label: (ctx: any) => {
-          const problem = data.value[ctx.datasetIndex]
-          const year = allYears.value[ctx.dataIndex]
-          const entry = problem.yearly.find((y) => y.year === year)
-          if (!entry) return `${ctx.dataset.label}: 无数据`
-          return `${ctx.dataset.label}: ${entry.ac_rate}% (${entry.accepted}/${entry.total})`
+function getChartOptions(problem: ProblemTrend) {
+  return {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      title: {
+        display: true,
+        text: `${problem.problem_id} · ${problem.problem_title}`,
+        font: { size: 14 },
+      },
+      tooltip: {
+        callbacks: {
+          label: (ctx: any) => {
+            const entry = problem.yearly[ctx.dataIndex]
+            return `AC 率: ${entry.ac_rate}% (${entry.accepted}/${entry.total})`
+          },
         },
       },
     },
-  },
-  scales: {
-    y: {
-      min: 0,
-      max: 100,
-      ticks: { callback: (v: any) => `${v}%` },
-      title: { display: true, text: "AC 率" },
+    scales: {
+      y: {
+        min: 0,
+        max: 100,
+        ticks: { callback: (v: any) => `${v}%` },
+      },
+      x: {
+        title: { display: true, text: "年份" },
+      },
     },
-    x: {
-      title: { display: true, text: "年份" },
-    },
-  },
+  }
 }
 
 onMounted(async () => {
@@ -124,21 +120,34 @@ onMounted(async () => {
 </script>
 
 <template>
-  <h2 style="margin-top: 0">提交次数前 10 题目 · 历年 AC 率趋势</h2>
+  <h2 style="margin-top: 0">年度趋势</h2>
   <n-spin :show="loading">
-    <div v-if="!loading && data.length === 0" style="text-align: center; padding: 40px">
+    <div
+      v-if="!loading && data.length === 0"
+      style="text-align: center; padding: 40px"
+    >
       暂无数据
     </div>
-    <div v-else class="chart-wrapper">
-      <Line :data="chartData" :options="chartOptions" />
+    <div v-else class="grid">
+      <div v-for="problem in data" :key="problem.problem_id" class="chart-card">
+        <Line :data="getChartData(problem)" :options="getChartOptions(problem)" :plugins="[acLabelPlugin]" />
+      </div>
     </div>
   </n-spin>
 </template>
 
 <style scoped>
-.chart-wrapper {
-  width: 100%;
-  height: 500px;
-  padding: 16px 0;
+.grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  padding: 8px 0;
+}
+
+.chart-card {
+  height: 260px;
+  border-radius: 8px;
+  padding: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 </style>
