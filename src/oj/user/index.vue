@@ -211,7 +211,6 @@ onMounted(init)
       v-if="userStore.isSuperAdmin"
       type="info"
       secondary
-      size="small"
       @click="
         router.push({
           name: 'ai',
