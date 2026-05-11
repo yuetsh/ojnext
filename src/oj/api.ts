@@ -313,6 +313,19 @@ export function getSimilarProblems(problemId: string) {
   return http.get("problem/similar", { params: { problem_id: problemId } })
 }
 
+export interface YearlyACData {
+  year: number
+  total: number
+  accepted: number
+  ac_rate: number
+}
+
+export function getProblemYearlyAC(problemId: string) {
+  return http.get<YearlyACData[]>("problem/yearly_ac", {
+    params: { problem_id: problemId },
+  })
+}
+
 // ==================== 流程图相关API ====================
 
 export function submitFlowchart(data: {
