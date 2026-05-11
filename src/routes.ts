@@ -282,6 +282,12 @@ export const admins: RouteRecordRaw = {
       component: () => import("admin/problem/Stuck.vue"),
       meta: { requiresSuperAdmin: true },
     },
+    {
+      path: "problem/top_ac_trend",
+      name: "admin top ac trend",
+      component: () => import("admin/problem/TopACTrend.vue"),
+      meta: { requiresSuperAdmin: true },
+    },
     // 题单管理路由
     {
       path: "problemset/list",

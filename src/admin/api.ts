@@ -473,3 +473,7 @@ export function removeUserFromProblemSet(problemSetId: number, userId: number) {
 export function getStuckProblems() {
   return http.get("admin/problem/stuck")
 }
+
+export function getTopACTrend() {
+  return http.get("admin/problem/top_ac_trend")
+}
