@@ -4,12 +4,14 @@ import { NH2, NH3 } from "naive-ui"
 import { getProfile } from "shared/api"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { durationToDays, parseTime } from "utils/functions"
-import { Profile, UserBadge as UserBadgeType } from "utils/types"
+import type { Profile, UserBadge as UserBadgeType } from "utils/types"
 import { getMetrics, getUserBadges } from "../api"
 import GroupedUserBadge from "shared/components/GroupedUserBadge.vue"
+import { useUserStore } from "shared/store/user"
 
 const route = useRoute()
 const router = useRouter()
+const userStore = useUserStore()
 const profile = ref<Profile | null>(null)
 const problems = ref<string[]>([])
 const firstSubmissionAt = ref("")
@@ -204,6 +206,15 @@ onMounted(init)
       }"
     />
     <h2>{{ profile.user.username }}</h2>
+    <n-button
+      v-if="userStore.isSuperAdmin"
+      type="info"
+      secondary
+      size="small"
+      @click="router.push({ name: 'ai', query: { username: profile.user.username, duration: 'months:1' } })"
+    >
+      智能分析
+    </n-button>
     <p class="desc">{{ profile.mood }}</p>
   </n-flex>
 

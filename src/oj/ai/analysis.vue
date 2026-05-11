@@ -8,7 +8,7 @@
             <n-flex align="center">
               <n-input
                 v-if="userStore.isSuperAdmin"
-                v-model:value="aiStore.targetUsername"
+                v-model:value="urlUsername"
                 placeholder="查看指定用户"
                 clearable
                 style="width: 140px"
@@ -18,7 +18,7 @@
               <n-select
                 style="width: 140px"
                 :options="options"
-                v-model:value="aiStore.duration"
+                v-model:value="urlDuration"
               />
             </n-flex>
           </n-flex>
@@ -63,6 +63,7 @@
 <script setup lang="ts">
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { formatISO, sub, type Duration } from "date-fns"
+import { useRouteQuery } from "@vueuse/router"
 import TagsRadarChart from "./components/TagsRadarChart.vue"
 import DifficultyGradeChart from "./components/DifficultyGradeChart.vue"
 import TimeActivityHeatmap from "./components/TimeActivityHeatmap.vue"
@@ -80,42 +81,41 @@ import { DURATION_OPTIONS } from "utils/constants"
 
 const aiStore = useAIStore()
 const userStore = useUserStore()
-
 const { isDesktop } = useBreakpoints()
 
 const options = [...DURATION_OPTIONS]
 
+const urlUsername = useRouteQuery<string>("username", "")
+const urlDuration = useRouteQuery<string>("duration", "months:6")
+
+// Initialize store synchronously from URL params before watch fires
+aiStore.targetUsername = urlUsername.value
+aiStore.duration = urlDuration.value
+
 const subOptions = computed<Duration>(() => {
   let dur = options.find((it) => it.value === aiStore.duration) ?? options[0]
   const x = dur.value!.toString().split(":")
-  const unit = x[0]
-  const n = x[1]
-  return { [unit]: parseInt(n) } as Duration
+  return { [x[0]]: parseInt(x[1]) } as Duration
 })
 
-const start = computed(() => {
-  const current = new Date()
-  return formatISO(sub(current, subOptions.value))
-})
-
-const end = computed(() => {
-  return formatISO(new Date())
-})
+const start = computed(() => formatISO(sub(new Date(), subOptions.value)))
+const end = computed(() => formatISO(new Date()))
 
 function onUsernameChange() {
+  aiStore.targetUsername = urlUsername.value
   aiStore.fetchHeatmapData()
   aiStore.fetchAnalysisData(start.value, end.value, aiStore.duration)
 }
 
-// 获取热力图数据（仅一次）
 onMounted(() => {
   aiStore.fetchHeatmapData()
 })
 
 watch(
-  () => aiStore.duration,
-  () => {
-    aiStore.fetchAnalysisData(start.value, end.value, aiStore.duration)
+  () => urlDuration.value,
+  (val) => {
+    aiStore.duration = val
+    aiStore.fetchAnalysisData(start.value, end.value, val)
   },
   { immediate: true },
 )

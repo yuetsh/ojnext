@@ -23,6 +23,14 @@ async function banUser() {
   <n-flex>
     <n-button
       size="small"
+      type="info"
+      secondary
+      @click="$router.push({ name: 'ai', query: { username: props.user.username, duration: 'months:2' } })"
+    >
+      智能分析
+    </n-button>
+    <n-button
+      size="small"
       type="error"
       secondary
       @click="$emit('resetPassword', props.user)"
