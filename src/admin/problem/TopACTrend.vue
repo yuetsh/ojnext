@@ -47,7 +47,7 @@ const minPerYearOptions = [
 ]
 
 const sinceYear = ref(2023)
-const untilYear = ref(new Date().getFullYear())
+const untilYear = ref(new Date().getFullYear()-1)
 const minPerYear = ref(100)
 const loading = ref(false)
 const data = ref<ProblemTrend[]>([])
