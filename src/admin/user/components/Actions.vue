@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { editUser } from "admin/api"
-import { User } from "utils/types"
+import type { User } from "utils/types"
 
 interface Props {
   user: User
@@ -21,14 +21,6 @@ async function banUser() {
 </script>
 <template>
   <n-flex>
-    <n-button
-      size="small"
-      type="info"
-      secondary
-      @click="$router.push({ name: 'ai', query: { username: props.user.username, duration: 'months:2' } })"
-    >
-      智能分析
-    </n-button>
     <n-button
       size="small"
       type="error"

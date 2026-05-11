@@ -206,16 +206,21 @@ onMounted(init)
       }"
     />
     <h2>{{ profile.user.username }}</h2>
+    <p class="desc">{{ profile.mood }}</p>
     <n-button
       v-if="userStore.isSuperAdmin"
       type="info"
       secondary
       size="small"
-      @click="router.push({ name: 'ai', query: { username: profile.user.username, duration: 'months:1' } })"
+      @click="
+        router.push({
+          name: 'ai',
+          query: { username: profile.user.username, duration: 'months:6' },
+        })
+      "
     >
       智能分析
     </n-button>
-    <p class="desc">{{ profile.mood }}</p>
   </n-flex>
 
   <n-grid
