@@ -91,7 +91,29 @@ const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
 // 从服务器来的tag列表
 const tagList = shallowRef<Tag[]>([])
 
-const tagValue = ref<string[]>([])
+const selectedTags = ref<string[]>([])
+const newTags = ref<string[]>([])
+const selectedTagSet = computed(() => new Set(selectedTags.value))
+
+function toggleTag(name: string) {
+  const set = new Set(selectedTags.value)
+  if (set.has(name)) set.delete(name)
+  else set.add(name)
+  selectedTags.value = Array.from(set)
+}
+
+function validateNewTags(v: string[]) {
+  const existing = new Set(tagList.value.map((t) => t.name))
+  const blanks: string[] = []
+  for (const tag of unique(v)) {
+    if (existing.has(tag)) {
+      message.error("已经存在标签：" + tag)
+      break
+    }
+    blanks.push(tag)
+  }
+  newTags.value = blanks
+}
 
 // 这几个用的少，就不缓存本地了
 const [needTemplate, toggleNeedTemplate] = useToggle(false)
@@ -117,9 +139,6 @@ const languageOptions = [
   { label: LANGUAGE_SHOW_VALUE["C++"], value: "C++" },
 ]
 
-const tagOptions = computed(() =>
-  tagList.value.map((tag) => ({ label: tag.name, value: tag.name }))
-)
 
 async function getProblemDetail() {
   if (!props.problemID) {
@@ -179,7 +198,8 @@ async function getProblemDetail() {
       }
     })
     // 标签
-    tagValue.value = data.tags
+    selectedTags.value = data.tags
+    newTags.value = []
     toggleReady(true)
   } catch (error) {
     message.error("获取题目失败")
@@ -241,7 +261,7 @@ async function validateProblem() {
     hasErrors = true
   }
   // 标签
-  else if (tagValue.value.length === 0) {
+  else if (selectedTags.value.length === 0 && newTags.value.length === 0) {
     message.error("标签没有填写")
     hasErrors = true
   }
@@ -344,7 +364,8 @@ async function submit() {
   try {
     await api!(problem.value)
     problem.value = null
-    tagValue.value = []
+    selectedTags.value = []
+    newTags.value = []
     if (
       route.name === "admin problem create" ||
       route.name === "admin contest problem create"
@@ -379,7 +400,8 @@ const showClear = computed(
 
 function clear() {
   problem.value = null
-  tagValue.value = []
+  selectedTags.value = []
+  newTags.value = []
   // 为了给所有状态初始化，刷新页面
   location.reload()
 }
@@ -399,8 +421,8 @@ onMounted(() => {
   getProblemDetail()
 })
 
-watch(tagValue, (val) => {
-  problem.value.tags = val
+watch([selectedTags, newTags], ([sel, newT]) => {
+  problem.value.tags = [...sel, ...newT]
 })
 watch(
   () => problem.value.languages,
@@ -440,15 +462,23 @@ watch(
       <n-switch v-model:value="problem.visible" />
     </n-form-item>
     <n-form-item label="标签">
-      <n-select
-        v-model:value="tagValue"
-        multiple
-        filterable
-        tag
-        clearable
-        :options="tagOptions"
-        placeholder="搜索或输入新标签（Enter 创建）"
-      />
+      <n-flex vertical style="width: 100%">
+        <n-flex size="small" style="flex-wrap: wrap">
+          <n-tag
+            v-for="tag in tagList"
+            :key="tag.id"
+            checkable
+            :checked="selectedTagSet.has(tag.name)"
+            @update:checked="toggleTag(tag.name)"
+          >
+            {{ tag.name }}
+          </n-tag>
+        </n-flex>
+        <n-dynamic-tags
+          v-model:value="newTags"
+          @update:value="validateNewTags"
+        />
+      </n-flex>
     </n-form-item>
   </n-form>
   <TextEditor
