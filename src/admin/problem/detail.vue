@@ -461,6 +461,8 @@ watch(
     <n-form-item label="可见">
       <n-switch v-model:value="problem.visible" />
     </n-form-item>
+  </n-form>
+  <n-form label-placement="left" :show-feedback="false">
     <n-form-item label="标签">
       <n-flex vertical style="width: 100%">
         <n-flex size="small" style="flex-wrap: wrap">
