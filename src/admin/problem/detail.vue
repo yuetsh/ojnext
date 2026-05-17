@@ -100,6 +100,7 @@ const tags = useLocalStorage<Tags>(STORAGE_KEY.ADMIN_PROBLEM_TAGS, {
   select: [],
   upload: [],
 })
+const tagKeyword = ref("")
 
 // 这几个用的少，就不缓存本地了
 const [needTemplate, toggleNeedTemplate] = useToggle(false)
@@ -125,9 +126,34 @@ const languageOptions = [
   { label: LANGUAGE_SHOW_VALUE["C++"], value: "C++" },
 ]
 
-const tagOptions = computed(() =>
-  tagList.value.map((tag) => ({ label: tag.name, value: tag.name })),
-)
+
+const filteredTagList = computed(() => {
+  const keyword = tagKeyword.value.trim().toLowerCase()
+  if (!keyword) return tagList.value
+  return tagList.value.filter((tag) => tag.name.toLowerCase().includes(keyword))
+})
+
+const selectedTagSet = computed(() => new Set(tags.value.select))
+
+function toggleExistingTag(tagName: string) {
+  const selected = new Set(tags.value.select)
+  if (selected.has(tagName)) {
+    selected.delete(tagName)
+  } else {
+    selected.add(tagName)
+  }
+  tags.value.select = Array.from(selected)
+}
+
+function selectFilteredTags() {
+  const selected = new Set(tags.value.select)
+  filteredTagList.value.forEach((tag) => selected.add(tag.name))
+  tags.value.select = Array.from(selected)
+}
+
+function clearExistingTags() {
+  tags.value.select = []
+}
 
 async function getProblemDetail() {
   if (!props.problemID) {
@@ -468,21 +494,66 @@ watch(
       <n-switch v-model:value="problem.visible" />
     </n-form-item>
   </n-form>
-  <n-form inline label-placement="left">
-    <n-form-item label="现成的标签">
-      <n-select
-        class="tag"
-        multiple
-        v-model:value="tags.select"
-        :options="tagOptions"
-      />
-    </n-form-item>
-    <n-form-item label="新增的标签">
-      <n-dynamic-tags
-        v-model:value="tags.upload"
-        @update:value="updateNewTags"
-      />
-    </n-form-item>
+  <n-form label-placement="top" :show-feedback="false">
+    <n-grid :cols="2" :x-gap="20" responsive="screen">
+      <n-gi>
+        <n-form-item>
+          <template #label>
+            <n-flex align="center" justify="space-between" class="tag-label">
+              <span>现成的标签</span>
+              <n-text depth="3">已选 {{ tags.select.length }} 个</n-text>
+            </n-flex>
+          </template>
+          <div class="tag-picker">
+            <n-flex align="center" justify="space-between" class="tag-toolbar">
+              <n-input
+                v-model:value="tagKeyword"
+                clearable
+                placeholder="搜索现成标签"
+              />
+              <n-button size="small" tertiary @click="selectFilteredTags">
+                全选当前
+              </n-button>
+              <n-button size="small" tertiary @click="clearExistingTags">
+                清空
+              </n-button>
+            </n-flex>
+            <n-scrollbar class="tag-scroll">
+              <n-empty
+                v-if="filteredTagList.length === 0"
+                description="没有匹配的现成标签"
+              />
+              <n-flex v-else size="small" class="tag-cloud">
+                <n-tag
+                  v-for="tag in filteredTagList"
+                  :key="tag.id"
+                  checkable
+                  :checked="selectedTagSet.has(tag.name)"
+                  :bordered="!selectedTagSet.has(tag.name)"
+                  :type="selectedTagSet.has(tag.name) ? 'success' : 'default'"
+                  @click="toggleExistingTag(tag.name)"
+                >
+                  {{ tag.name }}
+                </n-tag>
+              </n-flex>
+            </n-scrollbar>
+          </div>
+        </n-form-item>
+      </n-gi>
+      <n-gi>
+        <n-form-item label="新增的标签">
+          <div class="tag-picker new-tag-panel">
+            <n-dynamic-tags
+              v-model:value="tags.upload"
+              @update:value="updateNewTags"
+            />
+            <n-text depth="3" class="tag-help">
+              只填写标签库里还没有的标签；已有标签请在左侧点击选择。
+            </n-text>
+          </div>
+        </n-form-item>
+      </n-gi>
+    </n-grid>
   </n-form>
   <TextEditor
     v-if="ready"
@@ -738,11 +809,50 @@ watch(
   width: 300px;
 }
 
-.tag {
-  width: 500px;
-}
-
 .addSamples {
   width: 100%;
+}
+
+.tag-label {
+  width: 100%;
+}
+
+.tag-picker {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--n-border-color);
+  border-radius: 8px;
+  padding: 12px;
+}
+
+.tag-toolbar {
+  margin-bottom: 10px;
+}
+
+.tag-toolbar :deep(.n-input) {
+  flex: 1 1 220px;
+  min-width: 160px;
+}
+
+.tag-scroll {
+  max-height: 156px;
+}
+
+.tag-cloud {
+  padding-right: 8px;
+}
+
+.tag-cloud :deep(.n-tag) {
+  cursor: pointer;
+  user-select: none;
+}
+
+.new-tag-panel {
+  min-height: 220px;
+}
+
+.tag-help {
+  display: block;
+  margin-top: 10px;
 }
 </style>
