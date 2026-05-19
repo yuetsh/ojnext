@@ -52,13 +52,13 @@ interface ClassComparison {
   iqr: number
   std_dev: number
   top_10_avg: number
+  middle_80_avg: number
   bottom_10_avg: number
-  top_25_avg: number
-  bottom_25_avg: number
   excellent_rate: number
   pass_rate: number
   active_rate: number
   ac_rate: number
+  composite_score: number
   recent_total_ac?: number
   recent_avg_ac?: number
   recent_median_ac?: number
@@ -170,6 +170,24 @@ function getClassColor(index: number) {
   return colors[index % colors.length]
 }
 
+// 综合分对比图
+const compositeScoreChartData = computed(() => {
+  if (comparisons.value.length === 0) return null
+
+  const labels = comparisons.value.map((c) => c.class_name)
+  const datasets = [
+    {
+      label: "综合分",
+      data: comparisons.value.map((c) => c.composite_score),
+      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
+      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
+      borderWidth: 2,
+    },
+  ]
+
+  return { labels, datasets }
+})
+
 // 总AC数对比图 - 每个班级用不同颜色
 const totalAcChartData = computed(() => {
   if (comparisons.value.length === 0) return null
@@ -278,14 +296,14 @@ const activeRateChartData = computed(() => {
   return { labels, datasets }
 })
 
-// 前10名平均对比图
+// 前10%平均对比图
 const top10AvgChartData = computed(() => {
   if (comparisons.value.length === 0) return null
 
   const labels = comparisons.value.map((c) => c.class_name)
   const datasets = [
     {
-      label: "前10名平均",
+      label: "前10%平均",
       data: comparisons.value.map((c) => c.top_10_avg),
       backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
       borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
@@ -296,14 +314,14 @@ const top10AvgChartData = computed(() => {
   return { labels, datasets }
 })
 
-// 后10名平均对比图
+// 后10%平均对比图
 const bottom10AvgChartData = computed(() => {
   if (comparisons.value.length === 0) return null
 
   const labels = comparisons.value.map((c) => c.class_name)
   const datasets = [
     {
-      label: "后10名平均",
+      label: "后10%平均",
       data: comparisons.value.map((c) => c.bottom_10_avg),
       backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
       borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
@@ -314,33 +332,15 @@ const bottom10AvgChartData = computed(() => {
   return { labels, datasets }
 })
 
-// 前25%平均对比图
-const top25AvgChartData = computed(() => {
+// 中间80%均值对比图
+const middle80AvgChartData = computed(() => {
   if (comparisons.value.length === 0) return null
 
   const labels = comparisons.value.map((c) => c.class_name)
   const datasets = [
     {
-      label: "前25%平均",
-      data: comparisons.value.map((c) => c.top_25_avg),
-      backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
-      borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
-      borderWidth: 2,
-    },
-  ]
-
-  return { labels, datasets }
-})
-
-// 后25%平均对比图
-const bottom25AvgChartData = computed(() => {
-  if (comparisons.value.length === 0) return null
-
-  const labels = comparisons.value.map((c) => c.class_name)
-  const datasets = [
-    {
-      label: "后25%平均",
-      data: comparisons.value.map((c) => c.bottom_25_avg),
+      label: "中间80%均值",
+      data: comparisons.value.map((c) => c.middle_80_avg),
       backgroundColor: comparisons.value.map((_, i) => getClassColor(i).bg),
       borderColor: comparisons.value.map((_, i) => getClassColor(i).border),
       borderWidth: 2,
@@ -474,6 +474,17 @@ const chartOptions = {
   },
 }
 
+const compositeScoreChartOptions = {
+  ...chartOptions,
+  scales: {
+    ...chartOptions.scales,
+    y: {
+      ...chartOptions.scales.y,
+      max: 100,
+    },
+  },
+}
+
 const radarChartOptions = {
   responsive: true,
   maintainAspectRatio: false,
@@ -575,6 +586,9 @@ const radarChartOptions = {
             <template #header-extra>
               <n-tag :type="getRankColor(index).type" size="large">
                 #{{ getRankColor(index).text }}
+                <span style="margin-left: 6px; font-size: 12px; opacity: 0.85">
+                  {{ classData.composite_score }} 分
+                </span>
               </n-tag>
             </template>
 
@@ -676,24 +690,19 @@ const radarChartOptions = {
                 </n-descriptions-item>
 
                 <!-- 分层统计 -->
-                <n-descriptions-item label="前10名平均">
+                <n-descriptions-item label="前10%均值">
                   <span style="color: #cf1322; font-weight: 600">{{
                     classData.top_10_avg.toFixed(2)
                   }}</span>
                 </n-descriptions-item>
-                <n-descriptions-item label="后10名平均">
+                <n-descriptions-item label="中间80%均值">
+                  <span style="color: #389e0d; font-weight: 600">{{
+                    classData.middle_80_avg.toFixed(2)
+                  }}</span>
+                </n-descriptions-item>
+                <n-descriptions-item label="后10%均值">
                   <span style="color: #096dd9; font-weight: 500">{{
                     classData.bottom_10_avg.toFixed(2)
-                  }}</span>
-                </n-descriptions-item>
-                <n-descriptions-item label="前25%平均">
-                  <span style="color: #f5222d; font-weight: 600">{{
-                    classData.top_25_avg.toFixed(2)
-                  }}</span>
-                </n-descriptions-item>
-                <n-descriptions-item label="后25%平均">
-                  <span style="color: #531dab; font-weight: 500">{{
-                    classData.bottom_25_avg.toFixed(2)
                   }}</span>
                 </n-descriptions-item>
 
@@ -793,6 +802,17 @@ const radarChartOptions = {
 
       <!-- 可视化图表 - 专注于对比 -->
       <template v-if="comparisons.length > 0">
+        <!-- 综合分对比 - 一眼看出胜负 -->
+        <n-card title="综合分对比（满分100）" style="margin-top: 20px">
+          <div style="height: 300px">
+            <Bar
+              v-if="compositeScoreChartData"
+              :data="compositeScoreChartData"
+              :options="compositeScoreChartOptions"
+            />
+          </div>
+        </n-card>
+
         <!-- AC核心指标对比 - 三个独立图表并排显示 -->
         <n-card title="AC核心指标对比" style="margin-top: 20px">
           <n-grid :cols="3" :x-gap="16" :y-gap="16">
@@ -859,9 +879,9 @@ const radarChartOptions = {
           </n-grid>
         </n-card>
 
-        <!-- 分层统计对比 - 四个独立图表并排显示 -->
+        <!-- 分层统计对比 - 三个独立图表并排显示 -->
         <n-card title="分层统计对比" style="margin-top: 20px">
-          <n-grid :cols="2" :x-gap="16" :y-gap="16">
+          <n-grid :cols="3" :x-gap="16" :y-gap="16">
             <n-gi>
               <div style="height: 300px">
                 <Bar
@@ -874,26 +894,17 @@ const radarChartOptions = {
             <n-gi>
               <div style="height: 300px">
                 <Bar
+                  v-if="middle80AvgChartData"
+                  :data="middle80AvgChartData"
+                  :options="chartOptions"
+                />
+              </div>
+            </n-gi>
+            <n-gi>
+              <div style="height: 300px">
+                <Bar
                   v-if="bottom10AvgChartData"
                   :data="bottom10AvgChartData"
-                  :options="chartOptions"
-                />
-              </div>
-            </n-gi>
-            <n-gi>
-              <div style="height: 300px">
-                <Bar
-                  v-if="top25AvgChartData"
-                  :data="top25AvgChartData"
-                  :options="chartOptions"
-                />
-              </div>
-            </n-gi>
-            <n-gi>
-              <div style="height: 300px">
-                <Bar
-                  v-if="bottom25AvgChartData"
-                  :data="bottom25AvgChartData"
                   :options="chartOptions"
                 />
               </div>
@@ -927,6 +938,17 @@ const radarChartOptions = {
               key: 'rank',
               render: (_, index) => getRankColor(index).text,
               width: 80,
+            },
+            {
+              title: '综合分',
+              key: 'composite_score',
+              width: 90,
+              render: (row) =>
+                h(
+                  'span',
+                  { style: { color: '#722ed1', fontWeight: '700', fontSize: '15px' } },
+                  row.composite_score.toFixed(1),
+                ),
             },
             {
               title: '班级',
@@ -980,7 +1002,7 @@ const radarChartOptions = {
                 ),
             },
             {
-              title: '前10名平均',
+              title: '前10%均值',
               key: 'top_10_avg',
               width: 100,
               render: (row) =>
@@ -991,7 +1013,18 @@ const radarChartOptions = {
                 ),
             },
             {
-              title: '后10名平均',
+              title: '中间80%均值',
+              key: 'middle_80_avg',
+              width: 110,
+              render: (row) =>
+                h(
+                  'span',
+                  { style: { color: '#389e0d', fontWeight: '600' } },
+                  row.middle_80_avg.toFixed(2),
+                ),
+            },
+            {
+              title: '后10%均值',
               key: 'bottom_10_avg',
               width: 100,
               render: (row) =>
