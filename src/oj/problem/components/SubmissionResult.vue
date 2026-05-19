@@ -51,7 +51,7 @@ const msg = computed(() => {
 const showAIHint = computed(() => {
   if (!props.submission) return false
   return (
-    problemStore.totalFailCount >= 3 &&
+    problemStore.failCount >= 3 &&
     props.submission.result !== SubmissionStatus.accepted &&
     props.submission.result !== SubmissionStatus.pending &&
     props.submission.result !== SubmissionStatus.judging &&

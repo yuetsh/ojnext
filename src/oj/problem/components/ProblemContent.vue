@@ -61,7 +61,7 @@ watch(
   () => [
     problem.value?._id,
     problem.value?.my_status,
-    problemStore.totalFailCount,
+    problemStore.failCount,
   ],
   ([, status, failCount]) => {
     if (status === 0 || (failCount as number) >= 3) {
