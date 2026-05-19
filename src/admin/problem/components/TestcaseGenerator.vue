@@ -5,6 +5,7 @@ import { createTestSubmission } from "utils/judge"
 import { uploadTestcases } from "../../api"
 
 interface FileEntry {
+  id: number
   in: string
   out: string
   error: boolean
@@ -21,8 +22,9 @@ const emit = defineEmits<{
 
 const message = useMessage()
 
+let nextId = 0
 const files = ref<FileEntry[]>(
-  Array.from({ length: 5 }, () => ({ in: "", out: "", error: false })),
+  Array.from({ length: 5 }, () => ({ id: nextId++, in: "", out: "", error: false })),
 )
 
 const selectedLanguage = ref<LANGUAGE>("Python3")
@@ -59,11 +61,11 @@ const canUpload = computed(
 )
 
 function reset() {
-  files.value = Array.from({ length: 5 }, () => ({ in: "", out: "", error: false }))
+  files.value = Array.from({ length: 5 }, () => ({ id: nextId++, in: "", out: "", error: false }))
 }
 
 function add(n: number) {
-  files.value.push(...Array.from({ length: n }, () => ({ in: "", out: "", error: false })))
+  files.value.push(...Array.from({ length: n }, () => ({ id: nextId++, in: "", out: "", error: false })))
 }
 
 function remove(index: number) {
@@ -144,7 +146,7 @@ async function upload() {
         :disabled="!hasAnswerCode"
         placeholder="无答案"
       />
-      <n-button size="small" @click="reset">清空</n-button>
+      <n-button size="small" :disabled="isRunning" @click="reset">清空</n-button>
       <n-button size="small" @click="add(1)">+1</n-button>
       <n-button size="small" @click="add(5)">+5</n-button>
       <n-tooltip :disabled="hasAnswerCode && hasAnyInput">
@@ -176,7 +178,7 @@ async function upload() {
 
     <n-flex
       v-for="(file, index) in files"
-      :key="index"
+      :key="file.id"
       align="start"
       style="gap: 8px"
     >
