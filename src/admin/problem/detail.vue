@@ -664,6 +664,32 @@ watch(
     </div>
   </n-flex>
 
+  <n-alert
+    class="box"
+    v-if="problem.test_case_score.length"
+    :show-icon="false"
+    type="info"
+  >
+    <template #header>
+      <n-flex align="center">
+        <div>
+          测试组编号 {{ problem.test_case_id.slice(0, 12) }} 共有
+          {{ problem.test_case_score.length }}
+          条测试用例
+        </div>
+        <n-button
+          v-if="problem.id"
+          tertiary
+          type="info"
+          size="small"
+          @click="downloadTestcases"
+        >
+          下载
+        </n-button>
+      </n-flex>
+    </template>
+  </n-alert>
+
   <n-modal
     v-model:show="showGeneratorModal"
     preset="card"
@@ -720,32 +746,6 @@ watch(
       />
     </n-form-item>
   </n-form>
-  <n-divider />
-  <n-alert
-    class="box"
-    v-if="problem.test_case_score.length"
-    :show-icon="false"
-    type="info"
-  >
-    <template #header>
-      <n-flex align="center">
-        <div>
-          测试组编号 {{ problem.test_case_id.slice(0, 12) }} 共有
-          {{ problem.test_case_score.length }}
-          条测试用例
-        </div>
-        <n-button
-          v-if="problem.id"
-          tertiary
-          type="info"
-          size="small"
-          @click="downloadTestcases"
-        >
-          下载
-        </n-button>
-      </n-flex>
-    </template>
-  </n-alert>
   <n-flex style="margin-bottom: 120px" align="center" justify="end">
     <n-tooltip placement="left">
       <template #trigger>
