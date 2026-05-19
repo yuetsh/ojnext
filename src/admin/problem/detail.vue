@@ -670,6 +670,7 @@ watch(
     title="测试用例生成器"
     style="width: 80vw; max-width: 900px"
     :mask-closable="false"
+    display-directive="show"
   >
     <TestcaseGenerator
       :answers="problem.answers"
