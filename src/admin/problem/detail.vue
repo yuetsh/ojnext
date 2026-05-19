@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getProblemTagList } from "shared/api"
 import TextEditor from "shared/components/TextEditor.vue"
+import TestcaseGenerator from "./components/TestcaseGenerator.vue"
 import {
   CODE_TEMPLATES,
   LANGUAGE_SHOW_VALUE,
