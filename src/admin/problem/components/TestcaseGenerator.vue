@@ -29,15 +29,18 @@ const files = ref<FileEntry[]>(
 
 const selectedLanguage = ref<LANGUAGE>("Python3")
 
+// 始终显示所有语言，不管有没有答案代码
 const availableLanguages = computed(() =>
-  props.answers
-    .filter((a) => a.code.trim())
-    .map((a) => ({ label: a.language, value: a.language })),
+  props.answers.map((a) => ({ label: a.language, value: a.language })),
 )
 
-const hasAnswerCode = computed(() => availableLanguages.value.length > 0)
+// 当前选中语言是否有答案代码（用于控制"先运行"按钮）
+const hasAnswerCode = computed(() => {
+  const answer = props.answers.find((a) => a.language === selectedLanguage.value)
+  return !!answer?.code.trim()
+})
 
-// 当可用语言列表变化时，确保 selectedLanguage 始终指向一个有效值
+// 当语言列表变化时，确保 selectedLanguage 始终指向一个有效值
 watch(
   availableLanguages,
   (langs) => {
@@ -144,17 +147,14 @@ async function upload() {
         style="width: 120px"
         :options="availableLanguages"
         v-model:value="selectedLanguage"
-        :disabled="!hasAnswerCode"
-        placeholder="无答案"
       />
-      <n-button size="small" :disabled="isRunning" @click="reset">清空</n-button>
-      <n-button size="small" :disabled="isRunning" @click="add(1)">+1</n-button>
-      <n-button size="small" :disabled="isRunning" @click="add(5)">+5</n-button>
+      <n-button :disabled="isRunning" @click="reset">清空</n-button>
+      <n-button :disabled="isRunning" @click="add(1)">+1</n-button>
+      <n-button :disabled="isRunning" @click="add(5)">+5</n-button>
       <n-tooltip :disabled="hasAnswerCode && hasAnyInput">
         <template #trigger>
           <span>
             <n-button
-              size="small"
               type="success"
               :loading="isRunning"
               :disabled="!hasAnswerCode || !hasAnyInput"
@@ -167,7 +167,6 @@ async function upload() {
         {{ !hasAnswerCode ? "请先在题目中填写答案代码" : "请先填写输入" }}
       </n-tooltip>
       <n-button
-        size="small"
         type="primary"
         :loading="isUploading"
         :disabled="!canUpload"
@@ -197,7 +196,6 @@ async function upload() {
         />
       </n-flex>
       <n-button
-        size="small"
         :disabled="files.length === 1 || isRunning"
         style="margin-top: 22px"
         @click="remove(index)"
