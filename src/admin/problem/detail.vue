@@ -8,7 +8,7 @@ import {
 } from "utils/constants"
 import download from "utils/download"
 import { unique } from "utils/functions"
-import { BlankProblem, LANGUAGE, Tag, Testcase } from "utils/types"
+import type { BlankProblem, LANGUAGE, Tag, Testcase } from "utils/types"
 import {
   createContestProblem,
   createProblem,
@@ -416,6 +416,14 @@ async function generateMermaid() {
   problem.value.mermaid_code = res.data.flowchart
 }
 
+const showGeneratorModal = ref(false)
+
+function handleTestcasesGenerated(testCaseId: string, testCaseScore: Testcase[]) {
+  problem.value.test_case_id = testCaseId
+  problem.value.test_case_score = testCaseScore
+  showGeneratorModal.value = false
+}
+
 onMounted(() => {
   getTagList()
   getProblemDetail()
@@ -634,6 +642,36 @@ watch(
 
   <n-divider />
 
+  <h2 class="title">测试用例区域</h2>
+
+  <n-flex align="center" style="margin-bottom: 12px">
+    <n-button type="success" @click="showGeneratorModal = true">
+      生成测试用例
+    </n-button>
+    <n-upload
+      :show-file-list="false"
+      accept=".zip"
+      :custom-request="handleUploadTestcases"
+    >
+      <n-button type="info">上传测试用例</n-button>
+    </n-upload>
+  </n-flex>
+
+  <n-modal
+    v-model:show="showGeneratorModal"
+    preset="card"
+    title="测试用例生成器"
+    style="width: 80vw; max-width: 900px"
+    :mask-closable="false"
+  >
+    <TestcaseGenerator
+      :answers="problem.answers"
+      @uploaded="handleTestcasesGenerated"
+    />
+  </n-modal>
+
+  <n-divider />
+
   <h2 class="title">流程图区域</h2>
 
   <!-- 流程图相关设置 -->
@@ -707,15 +745,6 @@ watch(
       </template>
       【测试用例】最好要有10个，要考虑边界情况，且不要跟【测试样例】一模一样
     </n-tooltip>
-    <div>
-      <n-upload
-        :show-file-list="false"
-        accept=".zip"
-        :custom-request="handleUploadTestcases"
-      >
-        <n-button type="info">上传测试用例</n-button>
-      </n-upload>
-    </div>
     <n-button type="primary" @click="submit">提交</n-button>
   </n-flex>
 </template>
