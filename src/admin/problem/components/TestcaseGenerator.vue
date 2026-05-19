@@ -121,9 +121,10 @@ async function upload() {
 
     const res = await uploadTestcases(file)
     const testcases: Testcase[] = res.data.info
-    const scoreStr = (100 / testcases.length).toFixed(0)
-    testcases.forEach((tc) => {
-      tc.score = scoreStr
+    const baseScore = Math.floor(100 / testcases.length)
+    const remainder = 100 - baseScore * testcases.length
+    testcases.forEach((tc, i) => {
+      tc.score = String(i === testcases.length - 1 ? baseScore + remainder : baseScore)
     })
 
     emit("uploaded", res.data.id, testcases)
@@ -147,8 +148,8 @@ async function upload() {
         placeholder="无答案"
       />
       <n-button size="small" :disabled="isRunning" @click="reset">清空</n-button>
-      <n-button size="small" @click="add(1)">+1</n-button>
-      <n-button size="small" @click="add(5)">+5</n-button>
+      <n-button size="small" :disabled="isRunning" @click="add(1)">+1</n-button>
+      <n-button size="small" :disabled="isRunning" @click="add(5)">+5</n-button>
       <n-tooltip :disabled="hasAnswerCode && hasAnyInput">
         <template #trigger>
           <span>
@@ -197,7 +198,7 @@ async function upload() {
       </n-flex>
       <n-button
         size="small"
-        :disabled="files.length === 1"
+        :disabled="files.length === 1 || isRunning"
         style="margin-top: 22px"
         @click="remove(index)"
       >
