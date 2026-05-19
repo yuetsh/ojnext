@@ -41,6 +41,8 @@ const availableLanguages = computed(() =>
   props.answers.map((a) => ({ label: a.language, value: a.language })),
 )
 
+const hasAnyAnswerCode = computed(() => props.answers.some((a) => a.code.trim()))
+
 // 当前选中语言是否有答案代码（用于控制"先运行"按钮）
 const hasAnswerCode = computed(() => {
   const answer = props.answers.find((a) => a.language === selectedLanguage.value)
@@ -149,6 +151,9 @@ async function upload() {
 
 <template>
   <n-flex vertical>
+    <n-alert v-if="!hasAnyAnswerCode" type="warning" :show-icon="false" style="margin-bottom: 8px">
+      还没有填写答案代码，请先在上方"本题参考答案"中填写至少一种语言的答案，再来生成测试用例
+    </n-alert>
     <n-flex align="center" wrap>
       <n-select
         style="width: 120px"
