@@ -250,11 +250,19 @@ function applyFlowchartDisplayStyle(container: HTMLElement) {
   svg.insertBefore(style, svg.firstChild)
 }
 
+function getChromeVersion(): number {
+  const match = navigator.userAgent.match(/Chrome\/(\d+)/)
+  return match ? parseInt(match[1]) : Infinity
+}
+
 let mermaidInstance: any = null
 
 async function loadMermaid() {
   if (!mermaidInstance) {
-    const mermaidModule = await import("mermaid")
+    const mermaidModule =
+      getChromeVersion() < 94
+        ? await import("mermaid-legacy")
+        : await import("mermaid")
     mermaidInstance = mermaidModule.default
     mermaidInstance.initialize({
       startOnLoad: false,
