@@ -27,7 +27,8 @@ let nextId = 0
 
 function makeInitialFiles(): FileEntry[] {
   const fromSamples = (props.samples ?? []).map((s) => ({ id: nextId++, in: s.input, out: s.output, error: false }))
-  const extra = Math.max(0, 5 - fromSamples.length)
+  const total = Math.ceil(Math.max(fromSamples.length, 1) / 5) * 5
+  const extra = total - fromSamples.length
   return [...fromSamples, ...Array.from({ length: extra }, () => ({ id: nextId++, in: "", out: "", error: false }))]
 }
 
