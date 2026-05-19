@@ -140,7 +140,6 @@ const languageOptions = [
   { label: LANGUAGE_SHOW_VALUE["C++"], value: "C++" },
 ]
 
-
 async function getProblemDetail() {
   if (!props.problemID) {
     toggleReady(true)
@@ -419,7 +418,10 @@ async function generateMermaid() {
 
 const showGeneratorModal = ref(false)
 
-function handleTestcasesGenerated(testCaseId: string, testCaseScore: Testcase[]) {
+function handleTestcasesGenerated(
+  testCaseId: string,
+  testCaseScore: Testcase[],
+) {
   problem.value.test_case_id = testCaseId
   problem.value.test_case_score = testCaseScore
   showGeneratorModal.value = false
@@ -646,16 +648,20 @@ watch(
   <h2 class="title">测试用例区域</h2>
 
   <n-flex align="center" style="margin-bottom: 12px">
-    <n-button type="success" @click="showGeneratorModal = true">
-      生成测试用例
-    </n-button>
-    <n-upload
-      :show-file-list="false"
-      accept=".zip"
-      :custom-request="handleUploadTestcases"
-    >
-      <n-button type="info">上传测试用例</n-button>
-    </n-upload>
+    <div>
+      <n-button type="success" @click="showGeneratorModal = true">
+        （新）直接生成
+      </n-button>
+    </div>
+    <div>
+      <n-upload
+        :show-file-list="false"
+        accept=".zip"
+        :custom-request="handleUploadTestcases"
+      >
+        <n-button type="info">（老）手动上传</n-button>
+      </n-upload>
+    </div>
   </n-flex>
 
   <n-modal
@@ -666,7 +672,6 @@ watch(
     :mask-closable="false"
   >
     <TestcaseGenerator
-      v-if="showGeneratorModal"
       :answers="problem.answers"
       @uploaded="handleTestcasesGenerated"
     />
