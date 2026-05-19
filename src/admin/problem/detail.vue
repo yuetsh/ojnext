@@ -665,6 +665,7 @@ watch(
     :mask-closable="false"
   >
     <TestcaseGenerator
+      v-if="showGeneratorModal"
       :answers="problem.answers"
       @uploaded="handleTestcasesGenerated"
     />
