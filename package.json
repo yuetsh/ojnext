@@ -34,7 +34,7 @@
     "highlight.js": "^11.11.1",
     "md-editor-v3": "^6.5.0",
     "mermaid": "^11.15.0",
-    "mermaid-legacy": "npm:mermaid@^9.4.3",
+    "mermaid-legacy": "npm:mermaid@^9.1.7",
     "naive-ui": "^2.44.1",
     "nanoid": "^5.1.11",
     "normalize.css": "^8.0.1",
