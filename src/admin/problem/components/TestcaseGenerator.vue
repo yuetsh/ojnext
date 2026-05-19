@@ -26,10 +26,9 @@ const message = useMessage()
 let nextId = 0
 
 function makeInitialFiles(): FileEntry[] {
-  if (props.samples?.length) {
-    return props.samples.map((s) => ({ id: nextId++, in: s.input, out: s.output, error: false }))
-  }
-  return Array.from({ length: 5 }, () => ({ id: nextId++, in: "", out: "", error: false }))
+  const fromSamples = (props.samples ?? []).map((s) => ({ id: nextId++, in: s.input, out: s.output, error: false }))
+  const extra = Math.max(0, 5 - fromSamples.length)
+  return [...fromSamples, ...Array.from({ length: extra }, () => ({ id: nextId++, in: "", out: "", error: false }))]
 }
 
 const files = ref<FileEntry[]>(makeInitialFiles())
