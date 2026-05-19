@@ -706,6 +706,7 @@ watch(
   >
     <TestcaseGenerator
       :answers="problem.answers"
+      :samples="problem.samples"
       @uploaded="handleTestcasesGenerated"
     />
   </n-modal>

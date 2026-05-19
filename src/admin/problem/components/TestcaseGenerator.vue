@@ -13,6 +13,7 @@ interface FileEntry {
 
 interface Props {
   answers: { language: LANGUAGE; code: string }[]
+  samples?: { input: string; output: string }[]
 }
 
 const props = defineProps<Props>()
@@ -23,9 +24,15 @@ const emit = defineEmits<{
 const message = useMessage()
 
 let nextId = 0
-const files = ref<FileEntry[]>(
-  Array.from({ length: 5 }, () => ({ id: nextId++, in: "", out: "", error: false })),
-)
+
+function makeInitialFiles(): FileEntry[] {
+  if (props.samples?.length) {
+    return props.samples.map((s) => ({ id: nextId++, in: s.input, out: s.output, error: false }))
+  }
+  return Array.from({ length: 5 }, () => ({ id: nextId++, in: "", out: "", error: false }))
+}
+
+const files = ref<FileEntry[]>(makeInitialFiles())
 
 const selectedLanguage = ref<LANGUAGE>("Python3")
 
