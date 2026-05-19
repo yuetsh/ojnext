@@ -662,6 +662,12 @@ watch(
         <n-button type="info">（老）手动上传</n-button>
       </n-upload>
     </div>
+    <n-tooltip placement="right">
+      <template #trigger>
+        <n-button text>温馨提醒</n-button>
+      </template>
+      【测试用例】最好要有10个，要考虑边界情况，且不要跟【测试样例】一模一样
+    </n-tooltip>
   </n-flex>
 
   <n-alert
@@ -747,12 +753,6 @@ watch(
     </n-form-item>
   </n-form>
   <n-flex style="margin-bottom: 120px" align="center" justify="end">
-    <n-tooltip placement="left">
-      <template #trigger>
-        <n-button text>温馨提醒</n-button>
-      </template>
-      【测试用例】最好要有10个，要考虑边界情况，且不要跟【测试样例】一模一样
-    </n-tooltip>
     <n-button type="primary" @click="submit">提交</n-button>
   </n-flex>
 </template>
