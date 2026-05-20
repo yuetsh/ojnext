@@ -5,6 +5,7 @@ const mermaidThemeVariables = {
   primaryTextColor: "#0f172a",
   primaryBorderColor: "#0284c7",
   lineColor: "#64748b",
+  arrowheadColor: "#64748b",
   secondaryColor: "#f5f3ff",
   tertiaryColor: "#ecfdf5",
   background: "#ffffff",
@@ -256,14 +257,16 @@ function getChromeVersion(): number {
 }
 
 let mermaidInstance: any = null
+let mermaidIsLegacy = false
 
 async function loadMermaid() {
   if (!mermaidInstance) {
-    const mermaidModule =
-      getChromeVersion() < 94
-        ? await import("mermaid-legacy")
-        : await import("mermaid")
-    mermaidInstance = mermaidModule.default
+    if (getChromeVersion() < 94) {
+      mermaidInstance = (await import("mermaid-legacy")).default
+      mermaidIsLegacy = true
+    } else {
+      mermaidInstance = (await import("mermaid")).default
+    }
     mermaidInstance.initialize({
       startOnLoad: false,
       securityLevel: "strict",
@@ -294,7 +297,17 @@ export function useMermaid() {
     try {
       const m = await loadMermaid()
       const id = `mermaid-${getRandomId()}`
-      const { svg } = await m.render(id, mermaidCode)
+      // v9 (mermaid-legacy): callback-based render(id, code, cb)
+      // v10+: Promise-based render(id, code) → { svg }
+      const svg = mermaidIsLegacy
+        ? await new Promise<string>((resolve, reject) => {
+            try {
+              m.render(id, mermaidCode, resolve)
+            } catch (e) {
+              reject(e)
+            }
+          })
+        : (await m.render(id, mermaidCode)).svg
       if (gen !== renderGeneration) return
       container.innerHTML = svg
       applyFlowchartDisplayStyle(container)
