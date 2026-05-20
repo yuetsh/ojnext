@@ -1,12 +1,13 @@
 <script lang="ts" setup>
 import { getProblemList } from "admin/api"
 import Pagination from "shared/components/Pagination.vue"
-import { AdminProblemFiltered } from "utils/types"
+import type { AdminProblemFiltered } from "utils/types"
 import AddButton from "./AddButton.vue"
 
 interface Props {
   show: boolean
   count: number
+  nextDisplayId?: string
 }
 const props = defineProps<Props>()
 const emit = defineEmits<{
@@ -34,6 +35,7 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
       h(AddButton, {
         problemID: row.id,
         contestID: route.params.contestID as string,
+        nextDisplayId: props.nextDisplayId,
         onAdded: () => emit("change"),
       }),
     width: 60,
@@ -53,7 +55,14 @@ watch(
   },
 )
 watch(() => [query.limit, query.page], getList)
-watchDebounced(() => query.keyword, getList, { debounce: 500, maxWait: 1000 })
+watchDebounced(
+  () => query.keyword,
+  () => {
+    query.page = 1
+    getList()
+  },
+  { debounce: 500, maxWait: 1000 },
+)
 </script>
 <template>
   <n-modal

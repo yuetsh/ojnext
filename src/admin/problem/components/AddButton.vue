@@ -4,6 +4,7 @@ import { addProblemForContest } from "admin/api"
 interface Props {
   problemID: number
   contestID: string
+  nextDisplayId?: string
 }
 const props = defineProps<Props>()
 const emit = defineEmits(["added"])
@@ -39,7 +40,7 @@ async function addProblem() {
     </template>
     <n-flex vertical>
       <span>请输入在这场比赛中的显示编号</span>
-      <n-input autofocus v-model:value="displayID" />
+      <n-input autofocus v-model:value="displayID" :placeholder="props.nextDisplayId ?? ''" />
     </n-flex>
   </n-popconfirm>
 </template>

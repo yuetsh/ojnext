@@ -34,6 +34,15 @@ const { count, inc } = useCounter(0)
 const total = ref(0)
 const problems = ref<AdminProblemFiltered[]>([])
 
+const nextDisplayID = computed(() => {
+  if (!isContestProblemList.value || problems.value.length === 0) return ""
+  const ids = problems.value.map((p) => p._id)
+  if (ids.every((id) => /^\d+$/.test(id))) {
+    return String(Math.max(...ids.map((id) => parseInt(id))) + 1)
+  }
+  return ""
+})
+
 interface ProblemQuery {
   keyword: string
   author: string
@@ -184,7 +193,7 @@ watch(() => [query.page, query.limit, query.author], listProblems)
     v-model:limit="query.limit"
     v-model:page="query.page"
   />
-  <Modal v-model:show="show" :count="count" @change="listProblems" />
+  <Modal v-model:show="show" :count="count" :next-display-id="nextDisplayID" @change="listProblems" />
 </template>
 
 <style scoped>
