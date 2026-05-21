@@ -8,7 +8,7 @@ import Pagination from "shared/components/Pagination.vue"
 import { usePagination } from "shared/composables/pagination"
 import { ContestStatus } from "utils/constants"
 import { renderTableTitle } from "utils/renders"
-import { ContestRank, ProblemFiltered } from "utils/types"
+import type { ContestRank, ProblemFiltered } from "utils/types"
 import AcAndSubmission from "../components/AcAndSubmission.vue"
 import LineChart from "../components/LineChart.vue"
 
@@ -190,6 +190,78 @@ async function addColumns() {
   }
 }
 
+// 导出弹窗
+const showExportModal = ref(false)
+const exportLoading = ref(false)
+const exportForm = reactive({
+  first: 0,
+  second: 0,
+  third: 0,
+})
+
+watch(
+  () => total.value,
+  (val) => {
+    if (val > 0) {
+      exportForm.first = Math.round(val * 0.1)
+      exportForm.second = Math.round(val * 0.2)
+      exportForm.third = Math.round(val * 0.3)
+    }
+  },
+)
+
+function openExportModal() {
+  if (total.value > 0) {
+    exportForm.first = Math.round(total.value * 0.1)
+    exportForm.second = Math.round(total.value * 0.2)
+    exportForm.third = Math.round(total.value * 0.3)
+  }
+  showExportModal.value = true
+}
+
+async function downloadExcel() {
+  exportLoading.value = true
+  try {
+    const res = await getContestRank(props.contestID, {
+      limit: total.value || 10000,
+      offset: 0,
+      force_refresh: "1",
+    })
+    const allRanks: ContestRank[] = res.data.results
+
+    const rows = allRanks.map((rank, index) => {
+      const rank1 = index + 1
+      let level = ""
+      if (rank1 <= exportForm.first) {
+        level = "一等奖"
+      } else if (rank1 <= exportForm.first + exportForm.second) {
+        level = "二等奖"
+      } else if (
+        rank1 <=
+        exportForm.first + exportForm.second + exportForm.third
+      ) {
+        level = "三等奖"
+      } else {
+        level = "参与奖"
+      }
+      return { 用户名: rank.user.username, 等级: level }
+    })
+
+    const csv =
+      "用户名,等级\n" + rows.map((r) => `${r.用户名},${r.等级}`).join("\n")
+    const blob = new Blob(["﻿" + csv], { type: "text/csv;charset=utf-8" })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `${contestStore.contest?.title ?? "contest"}获奖情况.csv`
+    a.click()
+    URL.revokeObjectURL(url)
+    showExportModal.value = false
+  } finally {
+    exportLoading.value = false
+  }
+}
+
 // 监听分页参数变化
 watch([() => query.page, () => query.limit], listRanks)
 watch(autoRefresh, (checked) => (checked ? resume() : pause()))
@@ -223,6 +295,13 @@ onMounted(() => {
         <n-switch v-model:value="autoRefresh" />
       </n-form-item>
     </n-form>
+    <n-button
+      v-if="contestStore.contestStatus === ContestStatus.finished"
+      type="primary"
+      @click="openExportModal"
+    >
+      导出数据
+    </n-button>
     <Pagination
       :total="total"
       :limit="query.limit"
@@ -231,6 +310,31 @@ onMounted(() => {
       @update:page="(page: number) => (query.page = page)"
     />
   </n-space>
+
+  <n-modal v-model:show="showExportModal" preset="dialog" title="导出获奖数据">
+    <n-form
+      label-placement="left"
+      label-width="auto"
+      :show-feedback="false"
+      style="margin-top: 16px"
+    >
+      <n-form-item label="一等奖人数" style="margin-bottom: 12px">
+        <n-input-number v-model:value="exportForm.first" :min="0" />
+      </n-form-item>
+      <n-form-item label="二等奖人数" style="margin-bottom: 12px">
+        <n-input-number v-model:value="exportForm.second" :min="0" />
+      </n-form-item>
+      <n-form-item label="三等奖人数">
+        <n-input-number v-model:value="exportForm.third" :min="0" />
+      </n-form-item>
+    </n-form>
+    <template #action>
+      <n-button @click="showExportModal = false">取消</n-button>
+      <n-button type="primary" :loading="exportLoading" @click="downloadExcel">
+        下载 CSV
+      </n-button>
+    </template>
+  </n-modal>
 </template>
 <style>
 .oj-time-with-modal {
