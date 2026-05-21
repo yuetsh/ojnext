@@ -11,7 +11,7 @@ const emit = defineEmits(["added"])
 
 const message = useMessage()
 
-const displayID = ref("")
+const displayID = ref(props.nextDisplayId || "")
 
 async function addProblem() {
   if (!displayID.value) return
@@ -40,7 +40,7 @@ async function addProblem() {
     </template>
     <n-flex vertical>
       <span>请输入在这场比赛中的显示编号</span>
-      <n-input autofocus v-model:value="displayID" :placeholder="props.nextDisplayId ?? ''" />
+      <n-input autofocus v-model:value="displayID" />
     </n-flex>
   </n-popconfirm>
 </template>
