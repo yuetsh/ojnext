@@ -55,7 +55,7 @@ const columns: DataTableColumn<Contest>[] = [
   {
     title: "创建者",
     key: "created_by",
-    width: 100,
+    width: 120,
     render: (row) => row.created_by.username,
   },
   {
@@ -67,7 +67,7 @@ const columns: DataTableColumn<Contest>[] = [
   {
     title: "可见",
     key: "visible",
-    width: 80,
+    width: 100,
     render: (row) =>
       h(NSwitch, {
         value: row.visible,
