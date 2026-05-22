@@ -50,7 +50,7 @@ const columns: DataTableColumn<Submission>[] = [
             {
               trigger: () =>
                 h(NButton, { text: true }, () =>
-                  h(Icon, { icon: "noto:locked" }),
+                  h(Icon, { icon: "catppuccin:lock" }),
                 ),
               default: () =>
                 "这道题在你已经加入的题单中，只有在题单中完成此题，代码才可见。",

@@ -61,8 +61,7 @@ const { query, clearQuery } = usePagination<SubmissionQuery>({
 const submissionID = ref("")
 const problemDisplayID = ref("")
 const [statisticPanel, toggleStatisticPanel] = useToggle(false)
-const [flowchartStatisticPanel, toggleFlowchartStatisticPanel] =
-  useToggle(false)
+
 const [codePanel, toggleCodePanel] = useToggle(false)
 const [scoreDetailPanel, toggleScoreDetailPanel] = useToggle(false)
 const selectedFlowchartId = ref("")

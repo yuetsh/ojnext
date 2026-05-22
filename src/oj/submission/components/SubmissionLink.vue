@@ -20,7 +20,7 @@
       <template #trigger>
         <n-button text>
           <template #icon>
-            <Icon icon="noto:locked"></Icon>
+            <Icon icon="catppuccin:lock"></Icon>
           </template>
         </n-button>
       </template>
