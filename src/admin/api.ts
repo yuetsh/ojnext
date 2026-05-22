@@ -1,5 +1,5 @@
 import http from "utils/http"
-import {
+import type {
   AdminProblem,
   Announcement,
   AnnouncementEdit,
