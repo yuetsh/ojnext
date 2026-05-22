@@ -160,6 +160,10 @@ export function editContest(contest: Contest | BlankContest) {
   return http.put("admin/contest", contest)
 }
 
+export function cloneContest(contest_id: number) {
+  return http.post("admin/contest/clone", { contest_id })
+}
+
 export function getContest(id: string) {
   return http.get<Contest & { password: string }>("admin/contest", {
     params: { id },
