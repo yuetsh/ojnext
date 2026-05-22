@@ -4,7 +4,7 @@ import { NFlex, NTag } from "naive-ui"
 import { useRouteQuery } from "@vueuse/router"
 import { getProblemList, getRandomProblemID } from "oj/api"
 import { getTagColor } from "utils/functions"
-import { ProblemFiltered } from "utils/types"
+import type { ProblemFiltered } from "utils/types"
 import { getProblemTagList } from "shared/api"
 import Hitokoto from "shared/components/Hitokoto.vue"
 import Pagination from "shared/components/Pagination.vue"
@@ -225,7 +225,7 @@ function rowProps(row: ProblemFiltered) {
         <n-form :show-feedback="false" inline label-placement="left">
           <n-form-item label="难度">
             <n-select
-              style="width: 100px"
+              style="width: 80px"
               v-model:value="query.difficulty"
               :options="difficultyOptions"
             />
@@ -237,7 +237,7 @@ function rowProps(row: ProblemFiltered) {
         <n-form :show-feedback="false" inline label-placement="left">
           <n-form-item label="排序">
             <n-select
-              style="width: 100px"
+              style="width: 120px"
               v-model:value="query.sort"
               :options="sortOptions"
             />
