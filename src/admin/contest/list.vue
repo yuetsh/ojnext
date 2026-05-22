@@ -4,6 +4,7 @@ import ContestTitle from "shared/components/ContestTitle.vue"
 import ContestType from "shared/components/ContestType.vue"
 import Pagination from "shared/components/Pagination.vue"
 import { CONTEST_STATUS } from "utils/constants"
+import { parseTime } from "utils/functions"
 import type { Contest } from "utils/types"
 import { editContest, getContestList } from "../api"
 import Actions from "./components/Actions.vue"
@@ -26,24 +27,24 @@ const columns: DataTableColumn<Contest>[] = [
   {
     title: "比赛",
     key: "title",
-    minWidth: 250,
+    minWidth: 200,
     render: (row) => h(ContestTitle, { contest: row }),
   },
   {
     title: "标签",
     key: "tag",
-    width: 80,
+    width: 100,
   },
   {
     title: "类型",
     key: "contest_type",
-    width: 80,
+    width: 100,
     render: (row) => h(ContestType, { contest: row, size: "small" }),
   },
   {
     title: "状态",
     key: "status",
-    width: 80,
+    width: 100,
     render: (row) =>
       h(
         NTag,
@@ -52,9 +53,21 @@ const columns: DataTableColumn<Contest>[] = [
       ),
   },
   {
+    title: "创建者",
+    key: "created_by",
+    width: 100,
+    render: (row) => row.created_by.username,
+  },
+  {
+    title: "创建时间",
+    key: "create_time",
+    width: 160,
+    render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm"),
+  },
+  {
     title: "可见",
     key: "visible",
-    width: 60,
+    width: 80,
     render: (row) =>
       h(NSwitch, {
         value: row.visible,
@@ -66,7 +79,7 @@ const columns: DataTableColumn<Contest>[] = [
   {
     title: "选项",
     key: "actions",
-    width: 260,
+    width: 300,
     render: (row) => h(Actions, { contest: row }),
   },
 ]
