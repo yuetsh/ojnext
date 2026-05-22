@@ -2,7 +2,7 @@
 import Pagination from "shared/components/Pagination.vue"
 import { usePagination } from "shared/composables/pagination"
 import { parseTime } from "utils/functions"
-import { ProblemSetList } from "utils/types"
+import type { ProblemSetList } from "utils/types"
 import { getProblemSetList, toggleProblemSetVisible } from "../api"
 import Actions from "./components/Actions.vue"
 import { NTag, NSwitch } from "naive-ui"
@@ -58,7 +58,11 @@ const columns: DataTableColumn<ProblemSetList>[] = [
         Hard: { type: "error" as const, text: "困难" },
       }
       const config = difficultyMap[row.difficulty]
-      return h(NTag, { type: config.type }, { default: () => config.text })
+      return h(
+        NTag,
+        { type: config.type, size: "small" },
+        { default: () => config.text },
+      )
     },
   },
   {
@@ -72,7 +76,11 @@ const columns: DataTableColumn<ProblemSetList>[] = [
         draft: { type: "info" as const, text: "草稿" },
       }
       const config = statusMap[row.status]
-      return h(NTag, { type: config.type }, { default: () => config.text })
+      return h(
+        NTag,
+        { type: config.type, size: "small" },
+        { default: () => config.text },
+      )
     },
   },
   {
@@ -84,7 +92,7 @@ const columns: DataTableColumn<ProblemSetList>[] = [
   {
     title: "可见",
     key: "visible",
-    width: 80,
+    width: 100,
     render: (row) =>
       h(NSwitch, {
         value: row.visible,
