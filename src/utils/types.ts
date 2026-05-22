@@ -183,6 +183,8 @@ export interface AdminProblemFiltered {
   visible: boolean
   username: string
   create_time: string
+  difficulty: "Low" | "Mid" | "High"
+  tags: string[]
 }
 
 // 题单相关类型

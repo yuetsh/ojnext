@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { NSwitch } from "naive-ui"
+import { NFlex, NSwitch, NTag } from "naive-ui"
 import Pagination from "shared/components/Pagination.vue"
 import { usePagination } from "shared/composables/pagination"
-import { parseTime } from "utils/functions"
-import { AdminProblemFiltered } from "utils/types"
+import { getTagColor, parseTime } from "utils/functions"
+import type { AdminProblemFiltered } from "utils/types"
+import { DIFFICULTY } from "utils/constants"
 import { getProblemList, toggleProblemVisible } from "../api"
 import Actions from "./components/Actions.vue"
 import Modal from "./components/Modal.vue"
@@ -57,8 +58,22 @@ const { query, clearQuery } = usePagination<ProblemQuery>({
 const columns: DataTableColumn<AdminProblemFiltered>[] = [
   { title: "ID", key: "id", width: 100 },
   { title: "显示编号", key: "_id", width: 100 },
-  { title: "标题", key: "title", minWidth: 300 },
-  { title: "出题人", key: "username", width: 160 },
+  { title: "标题", key: "title", minWidth: 200 },
+  {
+    title: "难度",
+    key: "difficulty",
+    width: 80,
+    render: (row) =>
+      h(NTag, { type: getTagColor(row.difficulty), size: "small" }, () => DIFFICULTY[row.difficulty]),
+  },
+  {
+    title: "标签",
+    key: "tags",
+    minWidth: 120,
+    render: (row) =>
+      h(NFlex, { size: 4 }, () => row.tags.map((t) => h(NTag, { key: t, size: "small" }, () => t))),
+  },
+  { title: "出题人", key: "username", width: 120 },
   {
     title: "创建时间",
     key: "create_time",
@@ -68,7 +83,7 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   {
     title: "可见",
     key: "visible",
-    minWidth: 80,
+    minWidth: 100,
     render: (row) =>
       h(NSwitch, {
         value: row.visible,
@@ -80,7 +95,7 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   {
     title: "选项",
     key: "actions",
-    width: 330,
+    width: 300,
     render: (row) =>
       h(Actions, {
         problemID: row.id,
