@@ -48,6 +48,8 @@ export async function getProblemList(
       username: result.created_by.username,
       create_time: result.create_time,
       visible: result.visible,
+      difficulty: result.difficulty,
+      tags: result.tags,
     })),
     total: res.data.total,
   }
