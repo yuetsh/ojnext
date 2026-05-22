@@ -4,7 +4,7 @@ import ContestTitle from "shared/components/ContestTitle.vue"
 import ContestType from "shared/components/ContestType.vue"
 import Pagination from "shared/components/Pagination.vue"
 import { CONTEST_STATUS } from "utils/constants"
-import { Contest } from "utils/types"
+import type { Contest } from "utils/types"
 import { editContest, getContestList } from "../api"
 import Actions from "./components/Actions.vue"
 
@@ -66,7 +66,7 @@ const columns: DataTableColumn<Contest>[] = [
   {
     title: "选项",
     key: "actions",
-    width: 220,
+    width: 260,
     render: (row) => h(Actions, { contest: row }),
   },
 ]
