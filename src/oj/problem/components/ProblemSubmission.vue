@@ -1,17 +1,14 @@
 <script lang="ts" setup>
-import { NButton } from "naive-ui"
+import { NButton, NFlex, NTooltip } from "naive-ui"
+import { Icon } from "@iconify/vue"
 import { getSubmissions, getRankOfProblem } from "oj/api"
 import Pagination from "shared/components/Pagination.vue"
 import SubmissionResultTag from "shared/components/SubmissionResultTag.vue"
 import { useUserStore } from "shared/store/user"
-import {
-  JUDGE_STATUS,
-  LANGUAGE_SHOW_VALUE,
-  SubmissionStatus,
-} from "utils/constants"
+import { JUDGE_STATUS, LANGUAGE_SHOW_VALUE } from "utils/constants"
 import { parseTime } from "utils/functions"
 import { renderTableTitle } from "utils/renders"
-import { Submission } from "utils/types"
+import type { Submission } from "utils/types"
 import SubmissionDetail from "oj/submission/detail.vue"
 import { useBreakpoints } from "shared/composables/breakpoints"
 
@@ -44,6 +41,22 @@ const columns: DataTableColumn<Submission>[] = [
     key: "id",
     minWidth: 160,
     render: (row) => {
+      if (!row.show_link)
+        return h(NFlex, { align: "center" }, () => [
+          h("span", row.id.slice(0, 12)),
+          h(
+            NTooltip,
+            {},
+            {
+              trigger: () =>
+                h(NButton, { text: true }, () =>
+                  h(Icon, { icon: "noto:locked" }),
+                ),
+              default: () =>
+                "这道题在你已经加入的题单中，只有在题单中完成此题，代码才可见。",
+            },
+          ),
+        ])
       return h(
         NButton,
         {

@@ -1,4 +1,4 @@
-import { SUBMISSION_RESULT } from "./types"
+import type { SUBMISSION_RESULT } from "./types"
 
 export enum SubmissionStatus {
   compile_error = -2,
