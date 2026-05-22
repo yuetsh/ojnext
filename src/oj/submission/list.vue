@@ -8,7 +8,7 @@ import {
   getTodaySubmissionCount,
 } from "oj/api"
 import { parseTime } from "utils/functions"
-import {
+import type {
   FlowchartSubmissionListItem,
   LANGUAGE,
   SubmissionListItem,
@@ -418,9 +418,9 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
         size="large"
         @update:checked="(v: boolean) => (query.today = v ? '1' : '0')"
       >
-        <n-gradient-text v-if="query.today !== '1'" type="success"
-          >今日提交数：{{ todayCount }}</n-gradient-text
-        >
+        <n-gradient-text v-if="query.today !== '1'" type="success">
+          今日提交数：{{ todayCount }}
+        </n-gradient-text>
         <template v-else>今日提交数：{{ todayCount }}</template>
       </n-tag>
     </n-space>
