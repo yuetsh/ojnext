@@ -12,6 +12,8 @@ import {
   useFlowchartWebSocket,
   type FlowchartEvaluationUpdate,
 } from "shared/composables/websocket"
+import { Icon } from "@iconify/vue"
+import { usePinnedFlowchartStore } from "shared/store/pinnedFlowchart"
 
 // API 和状态管理
 import {
@@ -51,6 +53,7 @@ const message = useMessage()
 const problemStore = useProblemStore()
 const { problem } = toRefs(problemStore)
 const { isDesktop } = useBreakpoints()
+const pinnedStore = usePinnedFlowchartStore()
 const { convertToMermaid } = useMermaidConverter()
 const { renderError, renderFlowchart } = useMermaid()
 
@@ -220,6 +223,11 @@ function closeModal() {
   showDetailModal.value = false
 }
 
+function pinFlowchart() {
+  pinnedStore.pin(myMermaidCode.value)
+  closeModal()
+}
+
 function loadToEditor() {
   if (myFlowchartZippedStr.value) {
     const str = atou(myFlowchartZippedStr.value)
@@ -291,11 +299,26 @@ onUnmounted(() => {
     <!-- 流程图评分详情模态框 -->
     <n-modal v-model:show="showDetailModal" preset="card" style="width: 1000px">
       <template #header>
-        <n-flex align="center">
-          <n-text>流程图评分详情</n-text>
-          <n-text :type="getGradeType(modalRating.grade)">
-            {{ modalRating.score }}分 {{ modalRating.grade }}级
-          </n-text>
+        <n-flex align="center" justify="space-between" style="width: 100%">
+          <n-flex align="center">
+            <n-text>流程图评分详情</n-text>
+            <n-text :type="getGradeType(modalRating.grade)">
+              {{ modalRating.score }}分 {{ modalRating.grade }}级
+            </n-text>
+          </n-flex>
+          <n-button
+            quaternary
+            size="small"
+            :type="pinnedStore.isPinned ? 'primary' : 'default'"
+            @click="pinFlowchart"
+          >
+            <template #icon>
+              <Icon
+                :icon="pinnedStore.isPinned ? 'mdi:pin' : 'mdi:pin-outline'"
+              />
+            </template>
+            {{ pinnedStore.isPinned ? "已固定" : "固定流程图" }}
+          </n-button>
         </n-flex>
       </template>
       <n-grid :cols="5" :x-gap="16">
