@@ -115,7 +115,7 @@ export function adminRejudge(id: string) {
 }
 
 export function getSubmissionStatistics(
-  duration: { start: string; end: string },
+  duration: { start?: string; end: string },
   problemID?: string,
   username?: string,
 ) {

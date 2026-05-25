@@ -121,7 +121,9 @@ const options: SelectOption[] = [
   { label: "10分钟内", value: "minutes:10" },
   { label: "20分钟内", value: "minutes:20" },
   { label: "30分钟内", value: "minutes:30" },
-].concat(DURATION_OPTIONS)
+  ...DURATION_OPTIONS,
+  { label: "全部时段", value: "all" },
+]
 
 function openSubmission(id: string) {
   window.open(`/submission/${id}`, "_blank", "noopener")
@@ -294,9 +296,12 @@ function goSubmissions() {
 async function handleStatistics() {
   const current = Date.now()
   const end = formatISO(current)
-  const start = formatISO(sub(current, subOptions.value))
+  const duration =
+    query.duration === "all"
+      ? { end }
+      : { start: formatISO(sub(current, subOptions.value)), end }
   const res = await getSubmissionStatistics(
-    { start, end },
+    duration,
     query.problem,
     query.username,
   )
