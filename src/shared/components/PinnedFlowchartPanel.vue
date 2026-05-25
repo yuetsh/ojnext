@@ -5,7 +5,10 @@
     class="pinned-panel"
     :style="{ left: `${x}px`, top: `${y}px` }"
   >
-    <n-card size="small" :content-style="collapsed ? 'display:none' : 'padding:8px'">
+    <n-card
+      size="small"
+      :content-style="collapsed ? 'display:none' : 'padding:8px'"
+    >
       <template #header>
         <div ref="handle" class="pinned-handle">
           <n-flex align="center" :size="8">
@@ -60,7 +63,8 @@ const { x, y } = useDraggable(panelRef, {
 watch(
   () => store.mermaidCode,
   async (code) => {
-    if (!code || collapsed.value) return
+    if (!code) return
+    collapsed.value = false
     await nextTick()
     await renderFlowchart(mermaidContainer.value, code)
   },
