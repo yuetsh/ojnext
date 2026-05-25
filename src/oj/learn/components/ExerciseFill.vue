@@ -90,7 +90,9 @@ function inputWidth(idx: number): string {
     style="margin: 16px 0; border: 1.5px solid var(--n-border-color)"
   >
     <template #header>
-      <n-tag type="warning" size="small" :bordered="false">练一练 · 代码填空</n-tag>
+      <n-tag type="warning" size="small" :bordered="false"
+        >练一练 · 代码填空</n-tag
+      >
     </template>
 
     <p style="font-weight: 500; margin-bottom: 12px">{{ data.question }}</p>

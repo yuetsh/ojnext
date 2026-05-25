@@ -12,7 +12,6 @@ import {
   useFlowchartWebSocket,
   type FlowchartEvaluationUpdate,
 } from "shared/composables/websocket"
-import { Icon } from "@iconify/vue"
 import { usePinnedFlowchartStore } from "shared/store/pinnedFlowchart"
 
 // API 和状态管理
@@ -74,6 +73,7 @@ const evaluation = ref<Evaluation>({
   criteria_details: {},
 })
 const page = ref(1)
+const lastSubmittedMermaidCode = ref("")
 const suggestionLines = computed(() =>
   splitSuggestionLines(evaluation.value.suggestions),
 )
@@ -88,15 +88,15 @@ function splitSuggestionLines(suggestions?: string | null) {
 }
 
 // ==================== WebSocket 相关函数 ====================
-// 处理 WebSocket 消息
 const handleWebSocketMessage = (data: FlowchartEvaluationUpdate) => {
   if (data.type === "flowchart_evaluation_completed") {
     loading.value = false
-    latestRating.value = {
-      score: data.score || 0,
-      grade: data.grade || "",
+    const grade = data.grade || ""
+    latestRating.value = { score: data.score || 0, grade }
+    message.success(`流程图评分完成！得分: ${data.score}分 (${grade}级)`)
+    if ((grade === "A" || grade === "S") && lastSubmittedMermaidCode.value) {
+      pinnedStore.pin(lastSubmittedMermaidCode.value)
     }
-    message.success(`流程图评分完成！得分: ${data.score}分 (${data.grade}级)`)
   } else if (data.type === "flowchart_evaluation_failed") {
     loading.value = false
     message.error(`流程图评分失败: ${data.error}`)
@@ -127,6 +127,7 @@ async function submitFlowchartData() {
   }
 
   const mermaidCode = convertToMermaid(flowchartData)
+  lastSubmittedMermaidCode.value = mermaidCode
   const compressed = utoa(JSON.stringify(flowchartData))
 
   loading.value = true
@@ -223,11 +224,6 @@ function closeModal() {
   showDetailModal.value = false
 }
 
-function pinFlowchart() {
-  pinnedStore.pin(myMermaidCode.value)
-  closeModal()
-}
-
 function loadToEditor() {
   if (myFlowchartZippedStr.value) {
     const str = atou(myFlowchartZippedStr.value)
@@ -259,11 +255,17 @@ const getPercentType = (percent: number) => {
 }
 
 // ==================== 生命周期钩子 ====================
-// 组件挂载时连接 WebSocket 并检查状态
 onMounted(async () => {
   connect()
   await getCurrentSubmission()
   page.value = submissionCount.value
+  const grade = latestRating.value.grade
+  if ((grade === "A" || grade === "S") && submissionCount.value > 0) {
+    await getSubmission(submissionCount.value)
+    if (myMermaidCode.value) {
+      pinnedStore.pin(myMermaidCode.value)
+    }
+  }
 })
 
 // 组件卸载时断开连接
@@ -299,26 +301,11 @@ onUnmounted(() => {
     <!-- 流程图评分详情模态框 -->
     <n-modal v-model:show="showDetailModal" preset="card" style="width: 1000px">
       <template #header>
-        <n-flex align="center" justify="space-between" style="width: 100%">
-          <n-flex align="center">
-            <n-text>流程图评分详情</n-text>
-            <n-text :type="getGradeType(modalRating.grade)">
-              {{ modalRating.score }}分 {{ modalRating.grade }}级
-            </n-text>
-          </n-flex>
-          <n-button
-            quaternary
-            size="small"
-            :type="pinnedStore.isPinned ? 'primary' : 'default'"
-            @click="pinFlowchart"
-          >
-            <template #icon>
-              <Icon
-                :icon="pinnedStore.isPinned ? 'mdi:pin' : 'mdi:pin-outline'"
-              />
-            </template>
-            {{ pinnedStore.isPinned ? "已固定" : "固定流程图" }}
-          </n-button>
+        <n-flex align="center">
+          <n-text>流程图评分详情</n-text>
+          <n-text :type="getGradeType(modalRating.grade)">
+            {{ modalRating.score }}分 {{ modalRating.grade }}级
+          </n-text>
         </n-flex>
       </template>
       <n-grid :cols="5" :x-gap="16">

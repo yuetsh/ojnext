@@ -4,6 +4,7 @@ import { useBreakpoints } from "shared/composables/breakpoints"
 import { storeToRefs } from "pinia"
 import { useProblemStore } from "oj/store/problem"
 import { useScreenModeStore } from "shared/store/screenMode"
+import { usePinnedFlowchartStore } from "shared/store/pinnedFlowchart"
 
 const ProblemEditor = defineAsyncComponent(
   () => import("./components/ProblemEditor.vue"),
@@ -29,6 +30,9 @@ const ProblemComment = defineAsyncComponent(
 const ProblemFlowchart = defineAsyncComponent(
   () => import("./components/ProblemFlowchart.vue"),
 )
+const PinnedFlowchartTab = defineAsyncComponent(
+  () => import("./components/PinnedFlowchartTab.vue"),
+)
 
 interface Props {
   problemID: string
@@ -47,6 +51,7 @@ const router = useRouter()
 
 const problemStore = useProblemStore()
 const screenModeStore = useScreenModeStore()
+const pinnedStore = usePinnedFlowchartStore()
 const { problem } = storeToRefs(problemStore)
 const { shouldShowProblem } = storeToRefs(screenModeStore)
 
@@ -56,6 +61,9 @@ const tabOptions = computed(() => {
   const options: string[] = ["content"]
   if (problem.value?.show_flowchart) {
     options.push("flowchart")
+  }
+  if (pinnedStore.isPinned) {
+    options.push("pinned")
   }
   if (isMobile.value) {
     options.push("editor")
@@ -91,6 +99,13 @@ watch(currentTab, (tab) => {
   })
 })
 
+watch(
+  () => pinnedStore.isPinned,
+  (pinned) => {
+    if (pinned) currentTab.value = "pinned"
+  },
+)
+
 async function init() {
   screenModeStore.resetScreenMode()
   try {
@@ -109,6 +124,7 @@ onBeforeUnmount(() => {
   problem.value = null
   errMsg.value = "无数据"
   screenModeStore.resetScreenMode()
+  pinnedStore.unpin()
 })
 
 watch(isMobile, (value) => {
@@ -138,6 +154,13 @@ watch(isMobile, (value) => {
               tab="流程图表"
             >
               <ProblemFlowchart />
+            </n-tab-pane>
+            <n-tab-pane
+              v-if="pinnedStore.isPinned"
+              name="pinned"
+              tab="我的流程图"
+            >
+              <PinnedFlowchartTab />
             </n-tab-pane>
             <n-tab-pane
               name="info"
@@ -189,6 +212,13 @@ watch(isMobile, (value) => {
             <ProblemFlowchart />
           </n-tab-pane>
           <n-tab-pane
+            v-if="pinnedStore.isPinned"
+            name="pinned"
+            tab="我的流程图"
+          >
+            <PinnedFlowchartTab />
+          </n-tab-pane>
+          <n-tab-pane
             name="info"
             tab="题目统计"
             :disabled="!!props.problemSetId"
@@ -221,6 +251,9 @@ watch(isMobile, (value) => {
       </n-tab-pane>
       <n-tab-pane v-if="problem.show_flowchart" name="flowchart" tab="流程">
         <ProblemFlowchart />
+      </n-tab-pane>
+      <n-tab-pane v-if="pinnedStore.isPinned" name="pinned" tab="我的流程图">
+        <PinnedFlowchartTab />
       </n-tab-pane>
       <n-tab-pane name="editor" tab="代码">
         <component :is="inProblem ? ProblemEditor : ContestEditor" />

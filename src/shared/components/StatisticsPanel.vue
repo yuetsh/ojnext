@@ -23,35 +23,51 @@
     </n-button>
   </n-flex>
 
-  <n-empty v-if="count.total === 0" description="暂无数据" style="margin: 40px 0" />
+  <n-empty
+    v-if="count.total === 0"
+    description="暂无数据"
+    style="margin: 40px 0"
+  />
 
   <template v-if="count.total > 0">
     <n-divider style="margin: 16px 0" />
     <n-flex justify="space-around">
       <div class="stat-item">
         <div class="stat-label">总提交</div>
-        <n-gradient-text type="info" font-size="28">{{ count.total }}</n-gradient-text>
+        <n-gradient-text type="info" font-size="28">{{
+          count.total
+        }}</n-gradient-text>
       </div>
       <div class="stat-item">
         <div class="stat-label">正确提交</div>
-        <n-gradient-text type="primary" font-size="28">{{ count.accepted }}</n-gradient-text>
+        <n-gradient-text type="primary" font-size="28">{{
+          count.accepted
+        }}</n-gradient-text>
       </div>
       <div class="stat-item">
         <div class="stat-label">正确率</div>
-        <n-gradient-text type="warning" font-size="28">{{ count.rate }}</n-gradient-text>
+        <n-gradient-text type="warning" font-size="28">{{
+          count.rate
+        }}</n-gradient-text>
       </div>
       <template v-if="person.count > 0">
         <div class="stat-item">
           <div class="stat-label">完成人数</div>
-          <n-gradient-text type="error" font-size="28">{{ list.length }}</n-gradient-text>
+          <n-gradient-text type="error" font-size="28">{{
+            list.length
+          }}</n-gradient-text>
         </div>
         <div class="stat-item">
           <div class="stat-label">班级人数</div>
-          <n-gradient-text type="warning" font-size="28">{{ adjustedPersonCount }}</n-gradient-text>
+          <n-gradient-text type="warning" font-size="28">{{
+            adjustedPersonCount
+          }}</n-gradient-text>
         </div>
         <div class="stat-item">
           <div class="stat-label">完成度</div>
-          <n-gradient-text type="success" font-size="28">{{ adjustedPersonRate }}</n-gradient-text>
+          <n-gradient-text type="success" font-size="28">{{
+            adjustedPersonRate
+          }}</n-gradient-text>
         </div>
       </template>
     </n-flex>
@@ -67,7 +83,10 @@
           </n-gi>
           <n-gi v-if="person.count > 0">
             <n-card title="班级完成度">
-              <Doughnut :data="completionChartData" :options="completionChartOptions" />
+              <Doughnut
+                :data="completionChartData"
+                :options="completionChartOptions"
+              />
             </n-card>
           </n-gi>
         </n-grid>
@@ -87,22 +106,40 @@
         />
       </n-tab-pane>
 
-      <n-tab-pane name="unaccepted" :tab="`未完成（${visibleUnaccepted.length}）`">
+      <n-tab-pane
+        name="unaccepted"
+        :tab="`未完成（${visibleUnaccepted.length}）`"
+      >
         <n-flex align="center" style="margin: 12px 0">
           <n-switch v-model:value="hideMode" size="large">
             <template #checked>请假隐藏中</template>
             <template #unchecked>请假隐藏</template>
           </n-switch>
-          <n-button v-if="hiddenCount > 0" size="small" type="info" @click="showAll">
+          <n-button
+            v-if="hiddenCount > 0"
+            size="small"
+            type="info"
+            @click="showAll"
+          >
             恢复 {{ hiddenCount }} 位
           </n-button>
         </n-flex>
         <n-flex size="large" align="center">
-          <n-gradient-text v-if="visibleUnaccepted.length === 0" font-size="24" type="success">
+          <n-gradient-text
+            v-if="visibleUnaccepted.length === 0"
+            font-size="24"
+            type="success"
+          >
             全都完成了
           </n-gradient-text>
           <template v-for="item in visibleUnaccepted" :key="item.username">
-            <n-tag v-if="hideMode" closable size="large" style="font-size: 20px" @close="hideStudent(item.username)">
+            <n-tag
+              v-if="hideMode"
+              closable
+              size="large"
+              style="font-size: 20px"
+              @close="hideStudent(item.username)"
+            >
               {{ item.real_name }}
             </n-tag>
             <span v-else style="font-size: 24px">{{ item.real_name }}</span>
@@ -264,7 +301,10 @@ const adjustedPersonCount = computed(() => person.count - hiddenCount.value)
 
 const adjustedPersonRate = computed(() => {
   if (adjustedPersonCount.value <= 0) return "0%"
-  const rate = Math.min(100, (list.value.length / adjustedPersonCount.value) * 100)
+  const rate = Math.min(
+    100,
+    (list.value.length / adjustedPersonCount.value) * 100,
+  )
   return `${Math.round(rate * 100) / 100}%`
 })
 
@@ -321,7 +361,10 @@ const pieChartOptions = {
 // 环形图数据 - 班级完成度
 const completionChartData = computed(() => {
   const completedCount = list.value.length
-  const uncompletedCount = Math.max(0, adjustedPersonCount.value - completedCount)
+  const uncompletedCount = Math.max(
+    0,
+    adjustedPersonCount.value - completedCount,
+  )
   return {
     labels: ["已完成", "未完成"],
     datasets: [

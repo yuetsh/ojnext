@@ -946,7 +946,13 @@ const radarChartOptions = {
               render: (row) =>
                 h(
                   'span',
-                  { style: { color: '#722ed1', fontWeight: '700', fontSize: '15px' } },
+                  {
+                    style: {
+                      color: '#722ed1',
+                      fontWeight: '700',
+                      fontSize: '15px',
+                    },
+                  },
                   row.composite_score.toFixed(1),
                 ),
             },

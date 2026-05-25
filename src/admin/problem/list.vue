@@ -64,14 +64,20 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
     key: "difficulty",
     width: 80,
     render: (row) =>
-      h(NTag, { type: getTagColor(row.difficulty), size: "small" }, () => DIFFICULTY[row.difficulty]),
+      h(
+        NTag,
+        { type: getTagColor(row.difficulty), size: "small" },
+        () => DIFFICULTY[row.difficulty],
+      ),
   },
   {
     title: "标签",
     key: "tags",
     minWidth: 120,
     render: (row) =>
-      h(NFlex, { size: 4 }, () => row.tags.map((t) => h(NTag, { key: t, size: "small" }, () => t))),
+      h(NFlex, { size: 4 }, () =>
+        row.tags.map((t) => h(NTag, { key: t, size: "small" }, () => t)),
+      ),
   },
   { title: "出题人", key: "username", width: 120 },
   {
@@ -208,7 +214,12 @@ watch(() => [query.page, query.limit, query.author], listProblems)
     v-model:limit="query.limit"
     v-model:page="query.page"
   />
-  <Modal v-model:show="show" :count="count" :next-display-id="nextDisplayID" @change="listProblems" />
+  <Modal
+    v-model:show="show"
+    :count="count"
+    :next-display-id="nextDisplayID"
+    @change="listProblems"
+  />
 </template>
 
 <style scoped>

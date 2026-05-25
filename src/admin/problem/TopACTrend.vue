@@ -47,7 +47,7 @@ const minPerYearOptions = [
 ]
 
 const sinceYear = ref(2023)
-const untilYear = ref(new Date().getFullYear()-1)
+const untilYear = ref(new Date().getFullYear() - 1)
 const minPerYear = ref(100)
 const loading = ref(false)
 const data = ref<ProblemTrend[]>([])
@@ -126,7 +126,11 @@ function getChartOptions(problem: ProblemTrend) {
 async function fetchData() {
   loading.value = true
   try {
-    const res = await getTopACTrend({ since_year: sinceYear.value, until_year: untilYear.value, min_per_year: minPerYear.value })
+    const res = await getTopACTrend({
+      since_year: sinceYear.value,
+      until_year: untilYear.value,
+      min_per_year: minPerYear.value,
+    })
     data.value = res.data
   } finally {
     loading.value = false
@@ -171,7 +175,11 @@ onMounted(fetchData)
     </div>
     <div v-else class="grid">
       <div v-for="problem in data" :key="problem.problem_id" class="chart-card">
-        <Line :data="getChartData(problem)" :options="getChartOptions(problem)" :plugins="[acLabelPlugin]" />
+        <Line
+          :data="getChartData(problem)"
+          :options="getChartOptions(problem)"
+          :plugins="[acLabelPlugin]"
+        />
       </div>
     </div>
   </n-spin>

@@ -58,11 +58,7 @@ watch(
 
 // AC 或失败次数 >= 3 时加载推荐
 watch(
-  () => [
-    problem.value?._id,
-    problem.value?.my_status,
-    problemStore.failCount,
-  ],
+  () => [problem.value?._id, problem.value?.my_status, problemStore.failCount],
   ([, status, failCount]) => {
     if (status === 0 || (failCount as number) >= 3) {
       loadSimilarProblems()

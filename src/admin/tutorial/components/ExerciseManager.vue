@@ -282,7 +282,7 @@ function typeTagType(type: string): "success" | "info" | "warning" {
               type="textarea"
               :rows="10"
               placeholder="在此粘贴正确的代码，保存后将自动按行拆分并乱序"
-              style="font-family: 'Monaco'"
+              style="font-family: &quot;Monaco&quot;"
             />
           </n-form-item>
         </template>
@@ -302,7 +302,7 @@ function typeTagType(type: string): "success" | "info" | "warning" {
               type="textarea"
               :rows="10"
               placeholder="用 {{答案}} 标记空位，多个合法答案用 | 分隔，例如：for {{i|idx}} in range(10):"
-              style="font-family: 'Monaco'"
+              style="font-family: &quot;Monaco&quot;"
             />
           </n-form-item>
         </template>

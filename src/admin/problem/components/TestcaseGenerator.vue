@@ -26,10 +26,23 @@ const message = useMessage()
 let nextId = 0
 
 function makeInitialFiles(): FileEntry[] {
-  const fromSamples = (props.samples ?? []).map((s) => ({ id: nextId++, in: s.input, out: s.output, error: false }))
+  const fromSamples = (props.samples ?? []).map((s) => ({
+    id: nextId++,
+    in: s.input,
+    out: s.output,
+    error: false,
+  }))
   const total = Math.ceil(Math.max(fromSamples.length, 1) / 5) * 5
   const extra = total - fromSamples.length
-  return [...fromSamples, ...Array.from({ length: extra }, () => ({ id: nextId++, in: "", out: "", error: false }))]
+  return [
+    ...fromSamples,
+    ...Array.from({ length: extra }, () => ({
+      id: nextId++,
+      in: "",
+      out: "",
+      error: false,
+    })),
+  ]
 }
 
 const files = ref<FileEntry[]>(makeInitialFiles())
@@ -41,11 +54,15 @@ const availableLanguages = computed(() =>
   props.answers.map((a) => ({ label: a.language, value: a.language })),
 )
 
-const hasAnyAnswerCode = computed(() => props.answers.some((a) => a.code.trim()))
+const hasAnyAnswerCode = computed(() =>
+  props.answers.some((a) => a.code.trim()),
+)
 
 // 当前选中语言是否有答案代码（用于控制"先运行"按钮）
 const hasAnswerCode = computed(() => {
-  const answer = props.answers.find((a) => a.language === selectedLanguage.value)
+  const answer = props.answers.find(
+    (a) => a.language === selectedLanguage.value,
+  )
   return !!answer?.code.trim()
 })
 
@@ -53,7 +70,10 @@ const hasAnswerCode = computed(() => {
 watch(
   availableLanguages,
   (langs) => {
-    if (langs.length && !langs.find((l) => l.value === selectedLanguage.value)) {
+    if (
+      langs.length &&
+      !langs.find((l) => l.value === selectedLanguage.value)
+    ) {
       selectedLanguage.value = langs[0].value
     }
   },
@@ -73,11 +93,23 @@ const canUpload = computed(
 )
 
 function reset() {
-  files.value = Array.from({ length: 5 }, () => ({ id: nextId++, in: "", out: "", error: false }))
+  files.value = Array.from({ length: 5 }, () => ({
+    id: nextId++,
+    in: "",
+    out: "",
+    error: false,
+  }))
 }
 
 function add(n: number) {
-  files.value.push(...Array.from({ length: n }, () => ({ id: nextId++, in: "", out: "", error: false })))
+  files.value.push(
+    ...Array.from({ length: n }, () => ({
+      id: nextId++,
+      in: "",
+      out: "",
+      error: false,
+    })),
+  )
 }
 
 function remove(index: number) {
@@ -85,7 +117,9 @@ function remove(index: number) {
 }
 
 async function run() {
-  const answer = props.answers.find((a) => a.language === selectedLanguage.value)
+  const answer = props.answers.find(
+    (a) => a.language === selectedLanguage.value,
+  )
   if (!answer?.code.trim()) return
 
   // 过滤空行，去重（按输入内容）
@@ -108,7 +142,11 @@ async function run() {
           { language: selectedLanguage.value, value: answer.code },
           files.value[i].in,
         )
-        files.value[i] = { ...files.value[i], out: result.output, error: result.status !== 3 }
+        files.value[i] = {
+          ...files.value[i],
+          out: result.output,
+          error: result.status !== 3,
+        }
       } catch {
         files.value[i] = { ...files.value[i], out: "", error: true }
       }
@@ -136,7 +174,9 @@ async function upload() {
     const baseScore = Math.floor(100 / testcases.length)
     const remainder = 100 - baseScore * testcases.length
     testcases.forEach((tc, i) => {
-      tc.score = String(i === testcases.length - 1 ? baseScore + remainder : baseScore)
+      tc.score = String(
+        i === testcases.length - 1 ? baseScore + remainder : baseScore,
+      )
     })
 
     emit("uploaded", res.data.id, testcases)
@@ -151,7 +191,12 @@ async function upload() {
 
 <template>
   <n-flex vertical>
-    <n-alert v-if="!hasAnyAnswerCode" type="warning" :show-icon="false" style="margin-bottom: 8px">
+    <n-alert
+      v-if="!hasAnyAnswerCode"
+      type="warning"
+      :show-icon="false"
+      style="margin-bottom: 8px"
+    >
       还没有填写答案代码，请先在上方"本题参考答案"中填写至少一种语言的答案，再来生成测试用例
     </n-alert>
     <n-flex align="center" wrap>
