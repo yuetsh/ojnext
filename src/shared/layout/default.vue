@@ -4,6 +4,7 @@ import Header from "../components/Header.vue"
 import Login from "../components/Login.vue"
 import Signup from "../components/Signup.vue"
 import LoginSummaryModal from "../components/LoginSummaryModal.vue"
+import PinnedFlowchartPanel from "../components/PinnedFlowchartPanel.vue"
 </script>
 
 <template>
@@ -19,6 +20,7 @@ import LoginSummaryModal from "../components/LoginSummaryModal.vue"
     <Login />
     <Signup />
     <LoginSummaryModal />
+    <PinnedFlowchartPanel />
     <Beian />
   </n-layout>
 </template>
