@@ -1,15 +1,15 @@
 <template>
-  <n-flex>
+  <n-flex align="center">
     <n-input
       placeholder="用户（可选）"
       v-model:value="query.username"
-      style="width: 160px"
+      style="width: 150px"
       clearable
     />
     <n-input
       placeholder="题号（可选）"
       v-model:value="query.problem"
-      style="width: 160px"
+      style="width: 120px"
       clearable
     />
     <n-select
@@ -22,79 +22,95 @@
       前往提交列表
     </n-button>
   </n-flex>
-  <n-flex style="margin: 20px 0" v-if="count.total > 0">
-    <n-gradient-text font-size="24" type="primary">
-      正确提交数：{{ count.accepted }}
-    </n-gradient-text>
-    <n-gradient-text font-size="24" type="info">
-      总提交数：{{ count.total }}
-    </n-gradient-text>
-    <n-gradient-text font-size="24" type="warning">
-      正确率：{{ count.rate }}
-    </n-gradient-text>
-  </n-flex>
-  <n-flex style="margin: 20px 0" v-if="count.total > 0">
-    <n-gradient-text font-size="24" type="error">
-      回答正确的人数：{{ list.length }}
-    </n-gradient-text>
-    <n-gradient-text font-size="24" v-if="person.count > 0" type="warning">
-      班级人数：{{ person.count }}
-    </n-gradient-text>
-    <n-gradient-text font-size="24" v-if="person.count > 0" type="success">
-      班级完成度：{{ person.rate }}
-    </n-gradient-text>
-  </n-flex>
-  <n-flex style="margin: 20px 0" v-if="count.total > 0">
-    <n-button type="warning" @click="toggleUnaccepted(!unaccepted)">
-      {{ unaccepted ? "隐藏没有完成的" : "显示没有完成的" }}
-    </n-button>
-  </n-flex>
-  <n-flex style="margin-top: 20px">
-    <n-gradient-text font-size="24" v-if="count.total === 0" type="primary">
-      暂无数据统计
-    </n-gradient-text>
-  </n-flex>
 
-  <n-flex style="margin-bottom: 20px" v-if="unaccepted" size="large">
-    <span style="font-size: 24px">
-      这 {{ listUnaccepted.length }} 位没有完成：
-    </span>
-    <span style="font-size: 24px" v-for="name in listUnaccepted" :key="name">
-      {{ name }}
-    </span>
-  </n-flex>
+  <n-empty v-if="count.total === 0" description="暂无数据" style="margin: 40px 0" />
 
-  <n-tabs animated v-if="count.total > 0">
-    <n-tab-pane name="charts" tab="数据图表">
-      <n-grid :cols="2" :x-gap="20" :y-gap="20" style="margin-top: 20px">
-        <n-gi>
-          <n-card title="提交正确率">
-            <Doughnut :data="pieChartData" :options="pieChartOptions" />
-          </n-card>
-        </n-gi>
-        <n-gi v-if="person.count > 0">
-          <n-card title="班级完成度">
-            <Doughnut
-              :data="completionChartData"
-              :options="completionChartOptions"
-            />
-          </n-card>
-        </n-gi>
-      </n-grid>
-    </n-tab-pane>
-    <n-tab-pane name="submissions" tab="提交记录">
-      <n-data-table
-        v-if="list.length"
-        striped
-        :columns="columns"
-        :data="list"
-        :row-key="rowKey"
-        :expanded-row-keys="expandedRowKeys"
-        @update:expanded-row-keys="updateExpandedRowKeys"
-        :row-props="rowProps"
-      />
-    </n-tab-pane>
-  </n-tabs>
+  <template v-if="count.total > 0">
+    <n-divider style="margin: 16px 0" />
+    <n-flex justify="space-around">
+      <div class="stat-item">
+        <div class="stat-label">总提交</div>
+        <n-gradient-text type="info" font-size="28">{{ count.total }}</n-gradient-text>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">正确提交</div>
+        <n-gradient-text type="primary" font-size="28">{{ count.accepted }}</n-gradient-text>
+      </div>
+      <div class="stat-item">
+        <div class="stat-label">正确率</div>
+        <n-gradient-text type="warning" font-size="28">{{ count.rate }}</n-gradient-text>
+      </div>
+      <template v-if="person.count > 0">
+        <div class="stat-item">
+          <div class="stat-label">完成人数</div>
+          <n-gradient-text type="error" font-size="28">{{ list.length }}</n-gradient-text>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">班级人数</div>
+          <n-gradient-text type="warning" font-size="28">{{ adjustedPersonCount }}</n-gradient-text>
+        </div>
+        <div class="stat-item">
+          <div class="stat-label">完成度</div>
+          <n-gradient-text type="success" font-size="28">{{ adjustedPersonRate }}</n-gradient-text>
+        </div>
+      </template>
+    </n-flex>
+    <n-divider style="margin: 16px 0" />
+
+    <n-tabs animated type="line">
+      <n-tab-pane name="charts" tab="数据图表">
+        <n-grid :cols="2" :x-gap="20" :y-gap="20" style="margin-top: 12px">
+          <n-gi>
+            <n-card title="提交正确率">
+              <Doughnut :data="pieChartData" :options="pieChartOptions" />
+            </n-card>
+          </n-gi>
+          <n-gi v-if="person.count > 0">
+            <n-card title="班级完成度">
+              <Doughnut :data="completionChartData" :options="completionChartOptions" />
+            </n-card>
+          </n-gi>
+        </n-grid>
+      </n-tab-pane>
+
+      <n-tab-pane name="submissions" tab="提交记录">
+        <n-data-table
+          v-if="list.length"
+          striped
+          :columns="columns"
+          :data="list"
+          :row-key="rowKey"
+          :expanded-row-keys="expandedRowKeys"
+          @update:expanded-row-keys="updateExpandedRowKeys"
+          :row-props="rowProps"
+          style="margin-top: 12px"
+        />
+      </n-tab-pane>
+
+      <n-tab-pane name="unaccepted" :tab="`未完成（${visibleUnaccepted.length}）`">
+        <n-flex align="center" style="margin: 12px 0">
+          <n-switch v-model:value="hideMode" size="large">
+            <template #checked>请假隐藏中</template>
+            <template #unchecked>请假隐藏</template>
+          </n-switch>
+          <n-button v-if="hiddenCount > 0" size="small" type="info" @click="showAll">
+            恢复 {{ hiddenCount }} 位
+          </n-button>
+        </n-flex>
+        <n-flex size="large" align="center">
+          <n-gradient-text v-if="visibleUnaccepted.length === 0" font-size="24" type="success">
+            全都完成了
+          </n-gradient-text>
+          <template v-for="item in visibleUnaccepted" :key="item.username">
+            <n-tag v-if="hideMode" closable size="large" style="font-size: 20px" @close="hideStudent(item.username)">
+              {{ item.real_name }}
+            </n-tag>
+            <span v-else style="font-size: 24px">{{ item.real_name }}</span>
+          </template>
+        </n-flex>
+      </n-tab-pane>
+    </n-tabs>
+  </template>
 </template>
 <script setup lang="ts">
 import { h } from "vue"
@@ -188,10 +204,78 @@ interface UserStatistic {
   }>
 }
 
+interface UnacceptedItem {
+  username: string
+  real_name: string
+}
+
 const list = ref<UserStatistic[]>([])
-const listUnaccepted = ref<string[]>([])
-const [unaccepted, toggleUnaccepted] = useToggle()
+const listUnaccepted = ref<UnacceptedItem[]>([])
 const expandedRowKeys = ref<DataTableRowKey[]>([])
+
+const HIDE_DURATION = 2 * 60 * 60 * 1000
+const STORAGE_KEY = "oj_hidden_students"
+
+function loadHidden(): Record<string, number> {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}")
+  } catch {
+    return {}
+  }
+}
+
+const hiddenStudents = ref<Record<string, number>>(loadHidden())
+const hideMode = ref(false)
+
+function saveHidden(data: Record<string, number>) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
+}
+
+function hideStudent(username: string) {
+  hiddenStudents.value = {
+    ...hiddenStudents.value,
+    [username]: Date.now() + HIDE_DURATION,
+  }
+  saveHidden(hiddenStudents.value)
+}
+
+function showAll() {
+  hiddenStudents.value = {}
+  saveHidden({})
+}
+
+const visibleUnaccepted = computed(() => {
+  const now = Date.now()
+  return listUnaccepted.value.filter((item) => {
+    const exp = hiddenStudents.value[item.username]
+    return !exp || exp <= now
+  })
+})
+
+const hiddenCount = computed(() => {
+  const now = Date.now()
+  return listUnaccepted.value.filter((item) => {
+    const exp = hiddenStudents.value[item.username]
+    return !!exp && exp > now
+  }).length
+})
+
+const adjustedPersonCount = computed(() => person.count - hiddenCount.value)
+
+const adjustedPersonRate = computed(() => {
+  if (adjustedPersonCount.value <= 0) return "0%"
+  const rate = Math.min(100, (list.value.length / adjustedPersonCount.value) * 100)
+  return `${Math.round(rate * 100) / 100}%`
+})
+
+onMounted(() => {
+  const now = Date.now()
+  const cleaned = Object.fromEntries(
+    Object.entries(hiddenStudents.value).filter(([, exp]) => exp > now),
+  )
+  hiddenStudents.value = cleaned
+  saveHidden(cleaned)
+})
 
 // 饼图数据 - 提交正确率分布
 const pieChartData = computed(() => {
@@ -237,7 +321,7 @@ const pieChartOptions = {
 // 环形图数据 - 班级完成度
 const completionChartData = computed(() => {
   const completedCount = list.value.length
-  const uncompletedCount = person.count - completedCount
+  const uncompletedCount = Math.max(0, adjustedPersonCount.value - completedCount)
   return {
     labels: ["已完成", "未完成"],
     datasets: [
@@ -312,8 +396,6 @@ async function handleStatistics() {
   listUnaccepted.value = res.data.data_unaccepted
   person.count = res.data.person_count
   person.rate = res.data.person_rate
-
-  toggleUnaccepted(false)
 }
 
 function rowKey(row: UserStatistic): DataTableRowKey {
@@ -335,4 +417,15 @@ function rowProps(row: UserStatistic) {
   }
 }
 </script>
-<style scoped></style>
+<style scoped>
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+.stat-label {
+  font-size: 13px;
+  color: var(--n-text-color-3, #999);
+}
+</style>
