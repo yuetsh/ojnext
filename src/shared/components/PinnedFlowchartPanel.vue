@@ -42,7 +42,7 @@ import { usePinnedFlowchartStore } from "shared/store/pinnedFlowchart"
 import { useMermaid } from "shared/composables/useMermaid"
 
 const store = usePinnedFlowchartStore()
-const { renderError, renderFlowchart } = useMermaid()
+const { renderError, renderFlowchart, clearError } = useMermaid()
 
 const panelRef = useTemplateRef<HTMLElement>("panel")
 const handleRef = useTemplateRef<HTMLElement>("handle")
@@ -68,7 +68,9 @@ watch(
 )
 
 watch(collapsed, async (val) => {
-  if (!val && store.mermaidCode) {
+  if (val) {
+    clearError()
+  } else if (store.mermaidCode) {
     await nextTick()
     await renderFlowchart(mermaidContainer.value, store.mermaidCode)
   }
