@@ -1,4 +1,5 @@
 import axios from "axios"
+import { useAuthModalStore } from "shared/store/authModal"
 import storage from "./storage"
 import { STORAGE_KEY } from "./constants"
 
@@ -13,6 +14,7 @@ http.interceptors.response.use(
     if (res.data.error) {
       if (res.data.data && res.data.data.startsWith("Please login")) {
         storage.remove(STORAGE_KEY.AUTHED)
+        useAuthModalStore().openLoginModal()
       }
       return Promise.reject(res.data)
     } else {
