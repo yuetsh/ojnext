@@ -18,17 +18,12 @@ watch(
 </script>
 
 <template>
-  <n-flex vertical :size="8" style="padding: 8px 0">
-    <n-flex justify="end">
-      <n-button size="small" secondary @click="store.unpin()"
-        >取消固定</n-button
-      >
-    </n-flex>
+  <div style="padding: 8px 0">
     <n-alert v-if="renderError" type="error" title="渲染失败" size="small">
       {{ renderError }}
     </n-alert>
     <div v-else ref="mermaidContainer" class="flowchart-container"></div>
-  </n-flex>
+  </div>
 </template>
 
 <style scoped>

@@ -62,15 +62,15 @@ const tabOptions = computed(() => {
   if (problem.value?.show_flowchart) {
     options.push("flowchart")
   }
-  if (pinnedStore.isPinned) {
-    options.push("pinned")
-  }
   if (isMobile.value) {
     options.push("editor")
   }
   options.push("info")
   if (!props.contestID) {
     options.push("comment")
+  }
+  if (pinnedStore.isPinned) {
+    options.push("pinned")
   }
   options.push("submission")
   return options
@@ -156,13 +156,6 @@ watch(isMobile, (value) => {
               <ProblemFlowchart />
             </n-tab-pane>
             <n-tab-pane
-              v-if="pinnedStore.isPinned"
-              name="pinned"
-              tab="我的流程图"
-            >
-              <PinnedFlowchartTab />
-            </n-tab-pane>
-            <n-tab-pane
               name="info"
               tab="题目统计"
               :disabled="!!props.problemSetId"
@@ -176,6 +169,13 @@ watch(isMobile, (value) => {
               :disabled="!!props.problemSetId"
             >
               <ProblemComment />
+            </n-tab-pane>
+            <n-tab-pane
+              v-if="pinnedStore.isPinned"
+              name="pinned"
+              tab="我的流程图"
+            >
+              <PinnedFlowchartTab />
             </n-tab-pane>
             <n-tab-pane
               name="submission"
@@ -252,9 +252,6 @@ watch(isMobile, (value) => {
       <n-tab-pane v-if="problem.show_flowchart" name="flowchart" tab="流程">
         <ProblemFlowchart />
       </n-tab-pane>
-      <n-tab-pane v-if="pinnedStore.isPinned" name="pinned" tab="我的流程图">
-        <PinnedFlowchartTab />
-      </n-tab-pane>
       <n-tab-pane name="editor" tab="代码">
         <component :is="inProblem ? ProblemEditor : ContestEditor" />
       </n-tab-pane>
@@ -268,6 +265,9 @@ watch(isMobile, (value) => {
         :disabled="!!props.problemSetId"
       >
         <ProblemComment />
+      </n-tab-pane>
+      <n-tab-pane v-if="pinnedStore.isPinned" name="pinned" tab="我的流程图">
+        <PinnedFlowchartTab />
       </n-tab-pane>
       <n-tab-pane name="submission" tab="提交" :disabled="!!props.problemSetId">
         <ProblemSubmission />
