@@ -4,7 +4,7 @@ import { useBreakpoints } from "shared/composables/breakpoints"
 import { storeToRefs } from "pinia"
 import { useProblemStore } from "oj/store/problem"
 import { useScreenModeStore } from "shared/store/screenMode"
-import { usePinnedFlowchartStore } from "shared/store/pinnedFlowchart"
+import { useMyFlowchartStore } from "shared/store/myFlowchart"
 
 const ProblemEditor = defineAsyncComponent(
   () => import("./components/ProblemEditor.vue"),
@@ -30,8 +30,8 @@ const ProblemComment = defineAsyncComponent(
 const ProblemFlowchart = defineAsyncComponent(
   () => import("./components/ProblemFlowchart.vue"),
 )
-const PinnedFlowchartTab = defineAsyncComponent(
-  () => import("./components/PinnedFlowchartTab.vue"),
+const MyFlowchartTab = defineAsyncComponent(
+  () => import("./components/MyFlowchartTab.vue"),
 )
 
 interface Props {
@@ -51,7 +51,7 @@ const router = useRouter()
 
 const problemStore = useProblemStore()
 const screenModeStore = useScreenModeStore()
-const pinnedStore = usePinnedFlowchartStore()
+const myFlowchartStore = useMyFlowchartStore()
 const { problem } = storeToRefs(problemStore)
 const { shouldShowProblem } = storeToRefs(screenModeStore)
 
@@ -62,6 +62,7 @@ const tabOptions = computed(() => {
   if (problem.value?.show_flowchart) {
     options.push("flowchart")
   }
+
   if (isMobile.value) {
     options.push("editor")
   }
@@ -69,8 +70,8 @@ const tabOptions = computed(() => {
   if (!props.contestID) {
     options.push("comment")
   }
-  if (pinnedStore.isPinned) {
-    options.push("pinned")
+  if (myFlowchartStore.showing) {
+    options.push("my-flowchart")
   }
   options.push("submission")
   return options
@@ -100,9 +101,9 @@ watch(currentTab, (tab) => {
 })
 
 watch(
-  () => pinnedStore.isPinned,
-  (pinned) => {
-    if (pinned) currentTab.value = "pinned"
+  () => myFlowchartStore.showing,
+  (showing) => {
+    if (showing) currentTab.value = "my-flowchart"
   },
 )
 
@@ -124,7 +125,7 @@ onBeforeUnmount(() => {
   problem.value = null
   errMsg.value = "无数据"
   screenModeStore.resetScreenMode()
-  pinnedStore.unpin()
+  myFlowchartStore.hide()
 })
 
 watch(isMobile, (value) => {
@@ -171,11 +172,11 @@ watch(isMobile, (value) => {
               <ProblemComment />
             </n-tab-pane>
             <n-tab-pane
-              v-if="pinnedStore.isPinned"
-              name="pinned"
+              v-if="myFlowchartStore.showing"
+              name="my-flowchart"
               tab="我的流程图"
             >
-              <PinnedFlowchartTab />
+              <MyFlowchartTab />
             </n-tab-pane>
             <n-tab-pane
               name="submission"
@@ -212,13 +213,6 @@ watch(isMobile, (value) => {
             <ProblemFlowchart />
           </n-tab-pane>
           <n-tab-pane
-            v-if="pinnedStore.isPinned"
-            name="pinned"
-            tab="我的流程图"
-          >
-            <PinnedFlowchartTab />
-          </n-tab-pane>
-          <n-tab-pane
             name="info"
             tab="题目统计"
             :disabled="!!props.problemSetId"
@@ -232,6 +226,13 @@ watch(isMobile, (value) => {
             :disabled="!!props.problemSetId"
           >
             <ProblemComment />
+          </n-tab-pane>
+          <n-tab-pane
+            v-if="myFlowchartStore.showing"
+            name="my-flowchart"
+            tab="我的流程图"
+          >
+            <MyFlowchartTab />
           </n-tab-pane>
           <n-tab-pane
             name="submission"
@@ -266,8 +267,8 @@ watch(isMobile, (value) => {
       >
         <ProblemComment />
       </n-tab-pane>
-      <n-tab-pane v-if="pinnedStore.isPinned" name="pinned" tab="我的流程图">
-        <PinnedFlowchartTab />
+      <n-tab-pane v-if="myFlowchartStore.showing" name="my-flowchart" tab="我的流程图">
+        <MyFlowchartTab />
       </n-tab-pane>
       <n-tab-pane name="submission" tab="提交" :disabled="!!props.problemSetId">
         <ProblemSubmission />

@@ -12,7 +12,7 @@ import {
   useFlowchartWebSocket,
   type FlowchartEvaluationUpdate,
 } from "shared/composables/websocket"
-import { usePinnedFlowchartStore } from "shared/store/pinnedFlowchart"
+import { useMyFlowchartStore } from "shared/store/myFlowchart"
 
 // API 和状态管理
 import {
@@ -52,7 +52,7 @@ const message = useMessage()
 const problemStore = useProblemStore()
 const { problem } = toRefs(problemStore)
 const { isDesktop } = useBreakpoints()
-const pinnedStore = usePinnedFlowchartStore()
+const myFlowchartStore = useMyFlowchartStore()
 const { convertToMermaid } = useMermaidConverter()
 const { renderError, renderFlowchart } = useMermaid()
 
@@ -95,7 +95,7 @@ const handleWebSocketMessage = (data: FlowchartEvaluationUpdate) => {
     latestRating.value = { score: data.score || 0, grade }
     message.success(`流程图评分完成！得分: ${data.score}分 (${grade}级)`)
     if ((grade === "A" || grade === "S") && lastSubmittedMermaidCode.value) {
-      pinnedStore.pin(lastSubmittedMermaidCode.value)
+      myFlowchartStore.show(lastSubmittedMermaidCode.value)
     }
   } else if (data.type === "flowchart_evaluation_failed") {
     loading.value = false
@@ -263,7 +263,7 @@ onMounted(async () => {
   if ((grade === "A" || grade === "S") && submissionCount.value > 0) {
     await getSubmission(submissionCount.value)
     if (myMermaidCode.value) {
-      pinnedStore.pin(myMermaidCode.value)
+      myFlowchartStore.show(myMermaidCode.value)
     }
   }
 })

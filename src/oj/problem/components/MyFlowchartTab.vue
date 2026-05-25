@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { usePinnedFlowchartStore } from "shared/store/pinnedFlowchart"
+import { useMyFlowchartStore } from "shared/store/myFlowchart"
 import { useMermaid } from "shared/composables/useMermaid"
 
-const store = usePinnedFlowchartStore()
+const store = useMyFlowchartStore()
 const { renderError, renderFlowchart } = useMermaid()
 const mermaidContainer = useTemplateRef<HTMLElement>("mermaidContainer")
 
