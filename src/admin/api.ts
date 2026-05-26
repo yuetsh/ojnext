@@ -50,6 +50,9 @@ export async function getProblemList(
       visible: result.visible,
       difficulty: result.difficulty,
       tags: result.tags,
+      has_ast_rules: result.has_ast_rules,
+      allow_flowchart: result.allow_flowchart,
+      show_flowchart: result.show_flowchart,
     })),
     total: res.data.total,
   }

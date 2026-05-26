@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { NFlex, NSwitch, NTag } from "naive-ui"
+import { Icon } from "@iconify/vue"
 import Pagination from "shared/components/Pagination.vue"
 import { usePagination } from "shared/composables/pagination"
 import { getTagColor, parseTime } from "utils/functions"
@@ -80,25 +81,20 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
       ),
   },
   {
-    title: "AST",
-    key: "has_ast_rules",
-    width: 60,
+    title: "功能",
+    key: "features",
+    width: 80,
     render: (row) =>
-      row.has_ast_rules ? h(NTag, { type: "info", size: "small" }, () => "AST") : null,
-  },
-  {
-    title: "绘图",
-    key: "allow_flowchart",
-    width: 60,
-    render: (row) =>
-      row.allow_flowchart ? h(NTag, { type: "success", size: "small" }, () => "绘图") : null,
-  },
-  {
-    title: "流程",
-    key: "show_flowchart",
-    width: 60,
-    render: (row) =>
-      row.show_flowchart ? h(NTag, { type: "warning", size: "small" }, () => "流程图") : null,
+      h(NFlex, { size: 4, align: "center" }, () => [
+        row.allow_flowchart
+          ? h(Icon, { width: 18, icon: "vscode-icons:file-type-drawio", title: "绘图" })
+          : row.show_flowchart
+            ? h(Icon, { width: 18, icon: "vscode-icons:file-type-graphql", title: "流程图" })
+            : null,
+        row.has_ast_rules
+          ? h(Icon, { width: 18, icon: "vscode-icons:file-type-light-todo", title: "AST" })
+          : null,
+      ]),
   },
   { title: "出题人", key: "username", width: 120 },
   {
