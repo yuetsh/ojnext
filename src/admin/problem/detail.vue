@@ -646,10 +646,14 @@ watch(
     </n-gi>
   </n-grid>
 
-  <AstRulesEditor
-    v-model="problem.ast_rules"
-    :languages="problem.languages"
-  />
+  <n-grid :cols="2">
+    <n-gi :span="1">
+      <AstRulesEditor
+        v-model="problem.ast_rules!"
+        :languages="problem.languages"
+      />
+    </n-gi>
+  </n-grid>
 
   <n-divider />
 

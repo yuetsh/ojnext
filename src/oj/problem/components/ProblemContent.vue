@@ -6,7 +6,7 @@ import { useCodeStore } from "oj/store/code"
 import { useProblemStore } from "oj/store/problem"
 import { createTestSubmission } from "utils/judge"
 import { DIFFICULTY } from "utils/constants"
-import { Problem, ProblemStatus } from "utils/types"
+import type { Problem, ProblemStatus } from "utils/types"
 import Copy from "shared/components/Copy.vue"
 import { useDark } from "@vueuse/core"
 import { MdPreview } from "md-editor-v3"
@@ -84,6 +84,60 @@ const samples = ref<Sample[]>(
     loading: false,
   })),
 )
+
+const NODE_TARGET_LABELS: Record<string, string> = {
+  for_loop: "for 循环",
+  while_loop: "while 循环",
+  if_statement: "if 条件",
+  else_clause: "else 子句",
+  function_definition: "函数定义",
+  return: "return 语句",
+  break: "break 语句",
+  continue: "continue 语句",
+  list_comprehension: "列表推导式",
+  list_literal: "列表",
+  dict_literal: "字典",
+  set_literal: "集合",
+  f_string: "f-string",
+  try_except: "try-except",
+  class_definition: "类定义",
+}
+
+type AstRule = { engine: string; target?: string; min?: number; max?: number; message: string }
+
+function ruleDescription(rule: AstRule): string {
+  const target = rule.target || ""
+  const targetLabel = NODE_TARGET_LABELS[target] || target
+  const range = (min?: number, max?: number) => {
+    if (min !== undefined && max !== undefined) return `${min}～${max} 次`
+    if (min !== undefined) return `至少 ${min} 次`
+    if (max !== undefined) return `至多 ${max} 次`
+    return ""
+  }
+  switch (rule.engine) {
+    case "must_exist_node": return `必须使用 ${targetLabel}`
+    case "must_not_exist_node": return `不能使用 ${targetLabel}`
+    case "count_node": return `${targetLabel} 出现次数 ${range(rule.min, rule.max)}`
+    case "must_call_function": return `必须调用函数 ${target}`
+    case "must_not_call_function": return `不能调用函数 ${target}`
+    case "count_function_call": return `函数 ${target} 调用次数 ${range(rule.min, rule.max)}`
+    case "must_call_method": return `必须调用方法 ${target}`
+    case "must_not_call_method": return `不能调用方法 ${target}`
+    case "must_use_operator": return `必须使用运算符 ${target}`
+    default: return rule.message || rule.engine
+  }
+}
+
+function ruleTagType(engine: string): "error" | "success" | "info" {
+  if (engine.startsWith("must_not")) return "error"
+  if (engine.startsWith("must")) return "success"
+  return "info"
+}
+
+const astRulesForDisplay = computed(() => {
+  if (!problem.value?.ast_rules) return []
+  return Object.entries(problem.value.ast_rules).filter(([, rules]) => rules.length > 0)
+})
 
 async function test(sample: Sample, index: number) {
   samples.value = samples.value.map((sample) => {
@@ -222,6 +276,29 @@ function type(status: ProblemStatus) {
       />
     </div>
 
+    <!-- 代码要求（AST 规则） -->
+    <div v-if="astRulesForDisplay.length > 0">
+      <p class="title" :style="style">
+        <n-flex align="center">
+          <Icon icon="streamline-emojis:open-book"></Icon>
+          要求
+        </n-flex>
+      </p>
+      <div v-for="[lang, rules] in astRulesForDisplay" :key="lang">
+        <p v-if="astRulesForDisplay.length > 1" class="lang-label">{{ lang }}</p>
+        <n-list bordered style="margin-bottom: 8px">
+          <n-list-item v-for="(rule, i) in rules" :key="i">
+            <n-flex align="center">
+              <n-tag size="small" :type="ruleTagType(rule.engine)">
+                {{ ruleDescription(rule) }}
+              </n-tag>
+              <span v-if="rule.message" class="rule-message">{{ rule.message }}</span>
+            </n-flex>
+          </n-list-item>
+        </n-list>
+      </div>
+    </div>
+
     <div v-for="(sample, index) of samples" :key="index">
       <n-flex align="center">
         <p class="title" :style="style">例子 {{ index + 1 }}</p>
@@ -337,5 +414,15 @@ function type(status: ProblemStatus) {
 
 .status-alert {
   margin-bottom: 16px;
+}
+
+.lang-label {
+  font-weight: 600;
+  margin: 8px 0 4px;
+}
+
+.rule-message {
+  font-size: 13px;
+  opacity: 0.65;
 }
 </style>

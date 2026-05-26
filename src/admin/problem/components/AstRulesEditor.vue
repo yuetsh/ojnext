@@ -164,12 +164,12 @@ watch(() => props.languages, (langs) => {
         <n-tab-pane v-for="lang in languages" :key="lang" :name="lang" :tab="lang">
           <n-flex vertical>
             <div v-for="(rule, index) in getRulesForLang(lang)" :key="index" style="margin-bottom: 8px">
-              <n-flex align="center" :wrap="true">
+              <n-flex align="center" :wrap="false">
                 <n-select
                   :options="ENGINE_OPTIONS"
                   :value="rule.engine"
                   @update:value="(v: string) => updateRule(lang, index, 'engine', v)"
-                  style="width: 160px"
+                  style="width: 150px"
                   size="small"
                 />
                 <n-select
@@ -177,7 +177,7 @@ watch(() => props.languages, (langs) => {
                   :options="NODE_TARGET_OPTIONS"
                   :value="rule.target"
                   @update:value="(v: string) => updateRule(lang, index, 'target', v)"
-                  style="width: 140px"
+                  style="width: 150px"
                   size="small"
                   filterable
                 />
@@ -186,7 +186,7 @@ watch(() => props.languages, (langs) => {
                   :value="rule.target"
                   @update:value="(v: string) => updateRule(lang, index, 'target', v)"
                   placeholder="函数/方法名"
-                  style="width: 120px"
+                  style="width: 150px"
                   size="small"
                 />
                 <n-select
@@ -194,7 +194,7 @@ watch(() => props.languages, (langs) => {
                   :options="OPERATOR_TARGET_OPTIONS"
                   :value="rule.target"
                   @update:value="(v: string) => updateRule(lang, index, 'target', v)"
-                  style="width: 100px"
+                  style="width: 150px"
                   size="small"
                 />
                 <n-input-number
@@ -202,7 +202,7 @@ watch(() => props.languages, (langs) => {
                   :value="rule.min ?? null"
                   @update:value="(v: number | null) => updateRule(lang, index, 'min', v)"
                   placeholder="最少"
-                  style="width: 90px"
+                  style="width: 150px"
                   size="small"
                   :min="0"
                   clearable
@@ -212,7 +212,7 @@ watch(() => props.languages, (langs) => {
                   :value="rule.max ?? null"
                   @update:value="(v: number | null) => updateRule(lang, index, 'max', v)"
                   placeholder="最多"
-                  style="width: 90px"
+                  style="width: 150px"
                   size="small"
                   :min="0"
                   clearable
@@ -221,7 +221,7 @@ watch(() => props.languages, (langs) => {
                   :value="rule.message"
                   @update:value="(v: string) => updateRule(lang, index, 'message', v)"
                   placeholder="错误提示（选填）"
-                  style="width: 200px"
+                  style="flex: 1"
                   size="small"
                 />
                 <n-button size="small" tertiary type="error" @click="removeRule(lang, index)">
