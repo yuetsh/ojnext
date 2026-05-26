@@ -82,8 +82,8 @@ export const JUDGE_STATUS: {
     type: "info",
   },
   "10": {
-    name: "代码检查未通过",
-    type: "warning",
+    name: "语法未通过",
+    type: "success",
   },
 }
 

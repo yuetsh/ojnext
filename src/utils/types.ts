@@ -390,6 +390,7 @@ export interface Submission {
     err_info?: string
     time_cost?: number
     memory_cost?: number
+    ast_results?: Array<{ description: string; passed: boolean }>
   }
   ip: string
   contest: number

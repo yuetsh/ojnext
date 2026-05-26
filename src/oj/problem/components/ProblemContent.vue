@@ -289,7 +289,7 @@ function type(status: ProblemStatus) {
         <n-list bordered style="margin-bottom: 8px">
           <n-list-item v-for="(rule, i) in rules" :key="i">
             <n-flex align="center">
-              <n-tag size="small" :type="ruleTagType(rule.engine)">
+              <n-tag :type="ruleTagType(rule.engine)">
                 {{ ruleDescription(rule) }}
               </n-tag>
               <span v-if="rule.message" class="rule-message">{{ rule.message }}</span>

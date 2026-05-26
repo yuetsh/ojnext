@@ -72,6 +72,7 @@ const selectedFlowchart = computed(() => {
 const resultOptions: SelectOption[] = [
   { label: "全部", value: "" },
   { label: "答案正确", value: "0" },
+  { label: "语法未通过", value: "10" },
   { label: "答案错误", value: "-1" },
   { label: "编译失败", value: "-2" },
   { label: "运行时错误", value: "4" },

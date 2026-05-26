@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { Icon } from "@iconify/vue"
+import { useThemeVars } from "naive-ui"
 import { JUDGE_STATUS, SubmissionStatus } from "utils/constants"
 import {
   getCSRFToken,
@@ -19,6 +21,7 @@ const props = defineProps<{
 
 const isDark = useDark()
 const problemStore = useProblemStore()
+const theme = useThemeVars()
 
 // AI 提示状态
 const hintContent = ref("")
@@ -40,11 +43,7 @@ const msg = computed(() => {
     msg += "请仔细检查，看看代码的格式是不是写错了！\n\n"
   }
 
-  if (result === SubmissionStatus.ast_check_failed) {
-    msg += "你的答案是正确的，但是代码结构不符合要求：\n\n"
-  }
-
-  if (props.submission.statistic_info?.err_info) {
+  if (result !== SubmissionStatus.ast_check_failed && props.submission.statistic_info?.err_info) {
     msg += props.submission.statistic_info.err_info
   }
 
@@ -154,7 +153,22 @@ const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
       :title="JUDGE_STATUS[submission.result]['name']"
       class="mb-3"
     />
-    <n-flex vertical v-if="msg || infoTable.length">
+    <n-flex vertical v-if="msg || infoTable.length || submission.statistic_info?.ast_results?.length">
+      <n-card v-if="submission.statistic_info?.ast_results?.length" embedded>
+        <n-flex vertical :size="8">
+          <n-flex
+            v-for="(rule, i) in submission.statistic_info.ast_results"
+            :key="i"
+            align="center"
+            :size="6"
+          >
+            <n-icon :color="rule.passed ? theme.successColor : theme.errorColor">
+              <Icon :icon="rule.passed ? 'ep:select' : 'ep:close-bold'" />
+            </n-icon>
+            <span>{{ rule.description }}</span>
+          </n-flex>
+        </n-flex>
+      </n-card>
       <n-card v-if="msg" embedded class="msg">{{ msg }}</n-card>
       <n-data-table
         v-if="infoTable.length"
