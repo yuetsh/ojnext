@@ -12,6 +12,7 @@ export enum SubmissionStatus {
   judging = 7,
   partial_accepted = 8,
   submitting = 9,
+  ast_check_failed = 10,
 }
 
 export enum ContestStatus {
@@ -79,6 +80,10 @@ export const JUDGE_STATUS: {
   "9": {
     name: "正在提交",
     type: "info",
+  },
+  "10": {
+    name: "代码检查未通过",
+    type: "warning",
   },
 }
 

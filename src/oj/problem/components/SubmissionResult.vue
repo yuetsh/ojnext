@@ -40,6 +40,10 @@ const msg = computed(() => {
     msg += "请仔细检查，看看代码的格式是不是写错了！\n\n"
   }
 
+  if (result === SubmissionStatus.ast_check_failed) {
+    msg += "你的答案是正确的，但是代码结构不符合要求：\n\n"
+  }
+
   if (props.submission.statistic_info?.err_info) {
     msg += props.submission.statistic_info.err_info
   }
@@ -53,6 +57,7 @@ const showAIHint = computed(() => {
   return (
     problemStore.failCount >= 3 &&
     props.submission.result !== SubmissionStatus.accepted &&
+    props.submission.result !== SubmissionStatus.ast_check_failed &&
     props.submission.result !== SubmissionStatus.pending &&
     props.submission.result !== SubmissionStatus.judging &&
     props.submission.result !== SubmissionStatus.submitting
@@ -108,6 +113,7 @@ const infoTable = computed(() => {
   // AC、编译错误、运行时错误不显示测试用例表格
   if (
     result === SubmissionStatus.accepted ||
+    result === SubmissionStatus.ast_check_failed ||
     result === SubmissionStatus.compile_error ||
     result === SubmissionStatus.runtime_error
   ) {
