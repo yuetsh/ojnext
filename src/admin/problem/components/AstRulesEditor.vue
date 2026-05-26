@@ -4,6 +4,7 @@ import type { LANGUAGE } from "utils/types"
 interface AstRule {
   engine: string
   target?: string
+  label?: string
   min?: number
   max?: number
   message: string
@@ -111,9 +112,17 @@ function updateRules(lang: string, rules: AstRule[]) {
   emit("update:modelValue", Object.keys(current).length > 0 ? current : null)
 }
 
+function getTargetLabel(engine: string, target: string): string | undefined {
+  if (isNodeEngine(engine))
+    return (NODE_TARGET_OPTIONS.find((o) => o.value === target) as any)?.label
+  if (isOperatorEngine(engine))
+    return (OPERATOR_TARGET_OPTIONS.find((o) => o.value === target) as any)?.label
+  return undefined
+}
+
 function addRule(lang: string) {
   const rules = [...getRulesForLang(lang)]
-  rules.push({ engine: "must_exist_node", target: "for_loop", message: "" })
+  rules.push({ engine: "must_exist_node", target: "for_loop", label: "for 循环", message: "" })
   updateRules(lang, rules)
 }
 
@@ -129,13 +138,16 @@ function updateRule(lang: string, index: number, field: string, value: any) {
 
   if (field === "engine") {
     rule.engine = value
-    if (isNodeEngine(value)) rule.target = "for_loop"
-    else if (isOperatorEngine(value)) rule.target = "+"
-    else rule.target = ""
+    if (isNodeEngine(value)) { rule.target = "for_loop"; rule.label = "for 循环" }
+    else if (isOperatorEngine(value)) { rule.target = "+"; rule.label = "+" }
+    else { rule.target = ""; delete rule.label }
     delete rule.min
     delete rule.max
   } else if (field === "target") {
     rule.target = value
+    const lbl = getTargetLabel(rule.engine, value)
+    if (lbl) rule.label = lbl
+    else delete rule.label
   } else if (field === "min") {
     if (value === null || value === undefined) delete rule.min
     else rule.min = value
