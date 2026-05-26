@@ -5,6 +5,7 @@ interface AstRule {
   engine: string
   target?: string
   label?: string
+  exact?: number
   min?: number
   max?: number
   message: string
@@ -93,6 +94,38 @@ function isMethodEngine(engine: string) { return METHOD_ENGINES.includes(engine)
 function isOperatorEngine(engine: string) { return OPERATOR_ENGINES.includes(engine) }
 function isCountEngine(engine: string) { return COUNT_ENGINES.includes(engine) }
 
+const COUNT_MODE_OPTIONS: SelectOption[] = [
+  { label: "精确", value: "exact" },
+  { label: "范围", value: "range" },
+]
+
+function getCountMode(rule: AstRule): "exact" | "range" {
+  return rule.exact !== undefined ? "exact" : "range"
+}
+
+function updateCountMode(lang: string, index: number, mode: "exact" | "range") {
+  const rules = [...getRulesForLang(lang)]
+  const rule = { ...rules[index] }
+  if (mode === "exact") {
+    rule.exact = rule.min ?? 1
+    delete rule.min
+    delete rule.max
+  } else {
+    delete rule.exact
+  }
+  rules[index] = rule
+  updateRules(lang, rules)
+}
+
+function updateExactCount(lang: string, index: number, v: number | null) {
+  const rules = [...getRulesForLang(lang)]
+  const rule = { ...rules[index] }
+  if (v === null) delete rule.exact
+  else rule.exact = v
+  rules[index] = rule
+  updateRules(lang, rules)
+}
+
 function needsTargetDropdown(engine: string) { return isNodeEngine(engine) }
 function needsTargetInput(engine: string) { return isFunctionEngine(engine) || isMethodEngine(engine) }
 function needsOperatorDropdown(engine: string) { return isOperatorEngine(engine) }
@@ -143,6 +176,7 @@ function updateRule(lang: string, index: number, field: string, value: any) {
     else { rule.target = ""; delete rule.label }
     delete rule.min
     delete rule.max
+    delete rule.exact
   } else if (field === "target") {
     rule.target = value
     const lbl = getTargetLabel(rule.engine, value)
@@ -209,26 +243,45 @@ watch(() => props.languages, (langs) => {
                   style="width: 150px"
                   size="small"
                 />
-                <n-input-number
-                  v-if="isCountEngine(rule.engine)"
-                  :value="rule.min ?? null"
-                  @update:value="(v: number | null) => updateRule(lang, index, 'min', v)"
-                  placeholder="最少"
-                  style="width: 150px"
-                  size="small"
-                  :min="0"
-                  clearable
-                />
-                <n-input-number
-                  v-if="isCountEngine(rule.engine)"
-                  :value="rule.max ?? null"
-                  @update:value="(v: number | null) => updateRule(lang, index, 'max', v)"
-                  placeholder="最多"
-                  style="width: 150px"
-                  size="small"
-                  :min="0"
-                  clearable
-                />
+                <template v-if="isCountEngine(rule.engine)">
+                  <n-select
+                    :options="COUNT_MODE_OPTIONS"
+                    :value="getCountMode(rule)"
+                    @update:value="(v: 'exact' | 'range') => updateCountMode(lang, index, v)"
+                    style="width: 80px"
+                    size="small"
+                  />
+                  <n-input-number
+                    v-if="getCountMode(rule) === 'exact'"
+                    :value="rule.exact ?? null"
+                    @update:value="(v: number | null) => updateExactCount(lang, index, v)"
+                    placeholder="次数"
+                    style="width: 100px"
+                    size="small"
+                    :min="1"
+                    clearable
+                  />
+                  <template v-else>
+                    <n-input-number
+                      :value="rule.min ?? null"
+                      @update:value="(v: number | null) => updateRule(lang, index, 'min', v)"
+                      placeholder="最少"
+                      style="width: 100px"
+                      size="small"
+                      :min="0"
+                      clearable
+                    />
+                    <n-input-number
+                      :value="rule.max ?? null"
+                      @update:value="(v: number | null) => updateRule(lang, index, 'max', v)"
+                      placeholder="最多"
+                      style="width: 100px"
+                      size="small"
+                      :min="0"
+                      clearable
+                    />
+                  </template>
+                </template>
                 <n-input
                   :value="rule.message"
                   @update:value="(v: string) => updateRule(lang, index, 'message', v)"
