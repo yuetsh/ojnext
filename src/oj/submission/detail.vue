@@ -120,7 +120,7 @@ onMounted(init)
       <n-alert
         style="flex: 1"
         :type="JUDGE_STATUS[submission.result]['type']"
-        :title="JUDGE_STATUS[submission.result]['name']"
+        :title="JUDGE_STATUS[submission.result]['title']"
       >
         <n-flex>
           <span>提交时间：{{ parseTime(submission.create_time) }}</span>

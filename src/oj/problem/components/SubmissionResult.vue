@@ -150,7 +150,7 @@ const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
   <div v-if="submission">
     <n-alert
       :type="JUDGE_STATUS[submission.result]['type']"
-      :title="JUDGE_STATUS[submission.result]['name']"
+      :title="JUDGE_STATUS[submission.result]['title']"
       class="mb-3"
     />
     <n-flex vertical v-if="msg || infoTable.length || submission.statistic_info?.ast_results?.length">

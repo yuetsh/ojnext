@@ -30,59 +30,73 @@ export enum ContestType {
 export const JUDGE_STATUS: {
   [key in SUBMISSION_RESULT]: {
     name: string
+    title: string
     type: "error" | "success" | "warning" | "info"
   }
 } = {
   "-2": {
     name: "编译失败",
+    title: "编译失败",
     type: "warning",
   },
   "-1": {
     name: "答案错误",
+    title: "答案错误",
     type: "error",
   },
   "0": {
     name: "答案正确",
+    title: "答案正确",
     type: "success",
   },
   "1": {
     name: "运行超时",
+    title: "运行超时",
     type: "error",
   },
   "2": {
     name: "运行超时",
+    title: "运行超时",
     type: "error",
   },
   "3": {
     name: "内存超限",
+    title: "内存超限",
     type: "error",
   },
   "4": {
     name: "运行时错误",
+    title: "运行时错误",
     type: "warning",
   },
   "5": {
     name: "系统错误",
+    title: "系统错误",
     type: "error",
   },
   "6": {
     name: "等待评分",
+    title: "等待评分",
     type: "warning",
   },
   "7": {
     name: "正在评分",
+    title: "正在评分",
     type: "warning",
   },
   "8": {
     name: "部分正确",
+    title: "部分正确",
     type: "warning",
   },
   "9": {
     name: "正在提交",
+    title: "正在提交",
     type: "info",
   },
   "10": {
     name: "语法未通过",
+    title: "答案正确，但语法未通过",
     type: "success",
   },
 }
