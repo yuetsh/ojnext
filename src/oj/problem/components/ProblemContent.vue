@@ -103,28 +103,45 @@ const NODE_TARGET_LABELS: Record<string, string> = {
   class_definition: "类定义",
 }
 
-type AstRule = { engine: string; target?: string; min?: number; max?: number; message: string }
+type AstRule = {
+  engine: string
+  target?: string
+  label?: string
+  exact?: number
+  min?: number
+  max?: number
+  message: string
+}
 
 function ruleDescription(rule: AstRule): string {
+  if (rule.message) return rule.message
   const target = rule.target || ""
-  const targetLabel = NODE_TARGET_LABELS[target] || target
-  const range = (min?: number, max?: number) => {
-    if (min !== undefined && max !== undefined) return `${min}～${max} 次`
-    if (min !== undefined) return `至少 ${min} 次`
-    if (max !== undefined) return `至多 ${max} 次`
+  const targetLabel = rule.label || NODE_TARGET_LABELS[target] || target
+  const countDesc = () => {
+    if (rule.exact !== undefined) return `出现 ${rule.exact} 次`
+    if (rule.min !== undefined && rule.max !== undefined) return `出现 ${rule.min}～${rule.max} 次`
+    if (rule.min !== undefined) return `至少出现 ${rule.min} 次`
+    if (rule.max !== undefined) return `至多出现 ${rule.max} 次`
+    return ""
+  }
+  const callDesc = () => {
+    if (rule.exact !== undefined) return `调用 ${rule.exact} 次`
+    if (rule.min !== undefined && rule.max !== undefined) return `调用 ${rule.min}～${rule.max} 次`
+    if (rule.min !== undefined) return `至少调用 ${rule.min} 次`
+    if (rule.max !== undefined) return `至多调用 ${rule.max} 次`
     return ""
   }
   switch (rule.engine) {
     case "must_exist_node": return `必须使用 ${targetLabel}`
     case "must_not_exist_node": return `不能使用 ${targetLabel}`
-    case "count_node": return `${targetLabel} 出现次数 ${range(rule.min, rule.max)}`
-    case "must_call_function": return `必须调用函数 ${target}`
-    case "must_not_call_function": return `不能调用函数 ${target}`
-    case "count_function_call": return `函数 ${target} 调用次数 ${range(rule.min, rule.max)}`
-    case "must_call_method": return `必须调用方法 ${target}`
-    case "must_not_call_method": return `不能调用方法 ${target}`
-    case "must_use_operator": return `必须使用运算符 ${target}`
-    default: return rule.message || rule.engine
+    case "count_node": return `${targetLabel} ${countDesc()}`
+    case "must_call_function": return `必须调用 ${target}()`
+    case "must_not_call_function": return `不能调用 ${target}()`
+    case "count_function_call": return `${target}() ${callDesc()}`
+    case "must_call_method": return `必须调用 .${target}()`
+    case "must_not_call_method": return `不能调用 .${target}()`
+    case "must_use_operator": return `必须使用 ${target} 运算符`
+    default: return rule.engine
   }
 }
 
