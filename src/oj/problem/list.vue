@@ -45,6 +45,7 @@ const sortOptions = [
   { label: "最多通过", value: "-accepted_number" },
   { label: "最少通过", value: "accepted_number" },
   { label: "画流程图", value: "flowchart" },
+  { label: "语法检查", value: "ast" },
 ]
 
 const router = useRouter()
@@ -240,6 +241,7 @@ function rowProps(row: ProblemFiltered) {
               style="width: 120px"
               v-model:value="query.sort"
               :options="sortOptions"
+              :dropdown-style="{ maxHeight: 'unset' }"
             />
           </n-form-item>
           <n-form-item>

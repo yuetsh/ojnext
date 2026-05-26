@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { ProblemFiltered } from "utils/types"
+import type { ProblemFiltered } from "utils/types"
 import { Icon } from "@iconify/vue"
 
 defineProps<{
@@ -18,6 +18,11 @@ defineProps<{
       v-else-if="problem.show_flowchart"
       width="18"
       icon="vscode-icons:file-type-graphql"
+    />
+    <Icon
+      v-if="problem.has_ast_rules"
+      width="18"
+      icon="vscode-icons:file-type-light-todo"
     />
   </n-flex>
 </template>

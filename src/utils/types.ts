@@ -138,6 +138,7 @@ export interface Problem {
   flowchart_hint?: string
   show_flowchart?: boolean
   ast_rules?: { [key: string]: { engine: string; target?: string; min?: number; max?: number; message: string }[] } | null
+  has_ast_rules?: boolean
 }
 
 export type AdminProblem = Problem & AlterProblem
@@ -175,6 +176,7 @@ export interface ProblemFiltered {
   author: string
   allow_flowchart: boolean
   show_flowchart: boolean
+  has_ast_rules: boolean
 }
 
 export interface AdminProblemFiltered {

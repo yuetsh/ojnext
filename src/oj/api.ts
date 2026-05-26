@@ -22,6 +22,7 @@ function filterResult(result: Problem) {
     author: result.created_by.username,
     allow_flowchart: result.allow_flowchart,
     show_flowchart: result.show_flowchart,
+    has_ast_rules: result.has_ast_rules,
   }
   if (result.my_status === null || result.my_status === undefined) {
     newResult.status = "not_test"
