@@ -79,6 +79,27 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
         row.tags.map((t) => h(NTag, { key: t, size: "small" }, () => t)),
       ),
   },
+  {
+    title: "AST",
+    key: "has_ast_rules",
+    width: 60,
+    render: (row) =>
+      row.has_ast_rules ? h(NTag, { type: "info", size: "small" }, () => "AST") : null,
+  },
+  {
+    title: "绘图",
+    key: "allow_flowchart",
+    width: 60,
+    render: (row) =>
+      row.allow_flowchart ? h(NTag, { type: "success", size: "small" }, () => "绘图") : null,
+  },
+  {
+    title: "流程",
+    key: "show_flowchart",
+    width: 60,
+    render: (row) =>
+      row.show_flowchart ? h(NTag, { type: "warning", size: "small" }, () => "流程图") : null,
+  },
   { title: "出题人", key: "username", width: 120 },
   {
     title: "创建时间",

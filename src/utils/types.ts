@@ -186,6 +186,9 @@ export interface AdminProblemFiltered {
   create_time: string
   difficulty: "Low" | "Mid" | "High"
   tags: string[]
+  has_ast_rules: boolean
+  allow_flowchart: boolean
+  show_flowchart: boolean
 }
 
 // 题单相关类型
