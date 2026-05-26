@@ -2,6 +2,7 @@
 import { getProblemTagList } from "shared/api"
 import TextEditor from "shared/components/TextEditor.vue"
 import TestcaseGenerator from "./components/TestcaseGenerator.vue"
+import AstRulesEditor from "./components/AstRulesEditor.vue"
 import {
   CODE_TEMPLATES,
   LANGUAGE_SHOW_VALUE,
@@ -87,6 +88,7 @@ const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
   flowchart_data: {},
   flowchart_hint: "",
   show_flowchart: false,
+  ast_rules: null as { [key: string]: any[] } | null,
 })
 
 // 从服务器来的tag列表
@@ -176,6 +178,7 @@ async function getProblemDetail() {
     problem.value.mermaid_code = data.mermaid_code ?? ""
     problem.value.flowchart_hint = data.flowchart_hint ?? ""
     problem.value.flowchart_data = data.flowchart_data
+    problem.value.ast_rules = data.ast_rules ?? null
     if (data.answers && data.answers.length) {
       problem.value.answers = data.answers
     } else {
@@ -642,6 +645,11 @@ watch(
       </n-form>
     </n-gi>
   </n-grid>
+
+  <AstRulesEditor
+    v-model="problem.ast_rules"
+    :languages="problem.languages"
+  />
 
   <n-divider />
 
