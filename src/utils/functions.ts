@@ -102,11 +102,11 @@ export function secondsToDuration(seconds: number): string {
     start: 0,
     end: seconds * 1000,
   })
-  return [
-    duration.hours ?? 0,
-    duration.minutes ?? 0,
-    duration.seconds ?? 0,
-  ].join(":")
+  const hours = (duration.days ?? 0) * 24 + (duration.hours ?? 0)
+  const pad = (n: number) => String(n).padStart(2, "0")
+  return [hours, pad(duration.minutes ?? 0), pad(duration.seconds ?? 0)].join(
+    ":",
+  )
 }
 
 export function submissionMemoryFormat(memory: number | string | undefined) {

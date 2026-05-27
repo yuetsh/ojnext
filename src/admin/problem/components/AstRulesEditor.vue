@@ -24,23 +24,41 @@ const emit = defineEmits<{
 const activeTab = ref(props.languages[0] || "Python3")
 
 const ENGINE_OPTIONS: SelectOption[] = [
-  { label: "节点检查", type: "group", key: "node_group", children: [
-    { label: "必须存在", value: "must_exist_node" },
-    { label: "不能存在", value: "must_not_exist_node" },
-    { label: "出现次数", value: "count_node" },
-  ]},
-  { label: "函数调用", type: "group", key: "func_group", children: [
-    { label: "必须调用函数", value: "must_call_function" },
-    { label: "不能调用函数", value: "must_not_call_function" },
-    { label: "函数调用次数", value: "count_function_call" },
-  ]},
-  { label: "方法调用", type: "group", key: "method_group", children: [
-    { label: "必须调用方法", value: "must_call_method" },
-    { label: "不能调用方法", value: "must_not_call_method" },
-  ]},
-  { label: "运算符", type: "group", key: "op_group", children: [
-    { label: "必须使用运算符", value: "must_use_operator" },
-  ]},
+  {
+    label: "节点检查",
+    type: "group",
+    key: "node_group",
+    children: [
+      { label: "必须存在", value: "must_exist_node" },
+      { label: "不能存在", value: "must_not_exist_node" },
+      { label: "出现次数", value: "count_node" },
+    ],
+  },
+  {
+    label: "函数调用",
+    type: "group",
+    key: "func_group",
+    children: [
+      { label: "必须调用函数", value: "must_call_function" },
+      { label: "不能调用函数", value: "must_not_call_function" },
+      { label: "函数调用次数", value: "count_function_call" },
+    ],
+  },
+  {
+    label: "方法调用",
+    type: "group",
+    key: "method_group",
+    children: [
+      { label: "必须调用方法", value: "must_call_method" },
+      { label: "不能调用方法", value: "must_not_call_method" },
+    ],
+  },
+  {
+    label: "运算符",
+    type: "group",
+    key: "op_group",
+    children: [{ label: "必须使用运算符", value: "must_use_operator" }],
+  },
 ]
 
 const NODE_TARGET_OPTIONS: SelectOption[] = [
@@ -83,16 +101,30 @@ const OPERATOR_TARGET_OPTIONS: SelectOption[] = [
 ]
 
 const NODE_ENGINES = ["must_exist_node", "must_not_exist_node", "count_node"]
-const FUNCTION_ENGINES = ["must_call_function", "must_not_call_function", "count_function_call"]
+const FUNCTION_ENGINES = [
+  "must_call_function",
+  "must_not_call_function",
+  "count_function_call",
+]
 const METHOD_ENGINES = ["must_call_method", "must_not_call_method"]
 const OPERATOR_ENGINES = ["must_use_operator"]
 const COUNT_ENGINES = ["count_node", "count_function_call"]
 
-function isNodeEngine(engine: string) { return NODE_ENGINES.includes(engine) }
-function isFunctionEngine(engine: string) { return FUNCTION_ENGINES.includes(engine) }
-function isMethodEngine(engine: string) { return METHOD_ENGINES.includes(engine) }
-function isOperatorEngine(engine: string) { return OPERATOR_ENGINES.includes(engine) }
-function isCountEngine(engine: string) { return COUNT_ENGINES.includes(engine) }
+function isNodeEngine(engine: string) {
+  return NODE_ENGINES.includes(engine)
+}
+function isFunctionEngine(engine: string) {
+  return FUNCTION_ENGINES.includes(engine)
+}
+function isMethodEngine(engine: string) {
+  return METHOD_ENGINES.includes(engine)
+}
+function isOperatorEngine(engine: string) {
+  return OPERATOR_ENGINES.includes(engine)
+}
+function isCountEngine(engine: string) {
+  return COUNT_ENGINES.includes(engine)
+}
 
 const COUNT_MODE_OPTIONS: SelectOption[] = [
   { label: "精确", value: "exact" },
@@ -126,9 +158,15 @@ function updateExactCount(lang: string, index: number, v: number | null) {
   updateRules(lang, rules)
 }
 
-function needsTargetDropdown(engine: string) { return isNodeEngine(engine) }
-function needsTargetInput(engine: string) { return isFunctionEngine(engine) || isMethodEngine(engine) }
-function needsOperatorDropdown(engine: string) { return isOperatorEngine(engine) }
+function needsTargetDropdown(engine: string) {
+  return isNodeEngine(engine)
+}
+function needsTargetInput(engine: string) {
+  return isFunctionEngine(engine) || isMethodEngine(engine)
+}
+function needsOperatorDropdown(engine: string) {
+  return isOperatorEngine(engine)
+}
 
 function getRulesForLang(lang: string): AstRule[] {
   if (!props.modelValue) return []
@@ -149,13 +187,19 @@ function getTargetLabel(engine: string, target: string): string | undefined {
   if (isNodeEngine(engine))
     return (NODE_TARGET_OPTIONS.find((o) => o.value === target) as any)?.label
   if (isOperatorEngine(engine))
-    return (OPERATOR_TARGET_OPTIONS.find((o) => o.value === target) as any)?.label
+    return (OPERATOR_TARGET_OPTIONS.find((o) => o.value === target) as any)
+      ?.label
   return undefined
 }
 
 function addRule(lang: string) {
   const rules = [...getRulesForLang(lang)]
-  rules.push({ engine: "must_exist_node", target: "for_loop", label: "for 循环", message: "" })
+  rules.push({
+    engine: "must_exist_node",
+    target: "for_loop",
+    label: "for 循环",
+    message: "",
+  })
   updateRules(lang, rules)
 }
 
@@ -171,9 +215,16 @@ function updateRule(lang: string, index: number, field: string, value: any) {
 
   if (field === "engine") {
     rule.engine = value
-    if (isNodeEngine(value)) { rule.target = "for_loop"; rule.label = "for 循环" }
-    else if (isOperatorEngine(value)) { rule.target = "+"; rule.label = "+" }
-    else { rule.target = ""; delete rule.label }
+    if (isNodeEngine(value)) {
+      rule.target = "for_loop"
+      rule.label = "for 循环"
+    } else if (isOperatorEngine(value)) {
+      rule.target = "+"
+      rule.label = "+"
+    } else {
+      rule.target = ""
+      delete rule.label
+    }
     delete rule.min
     delete rule.max
     delete rule.exact
@@ -196,25 +247,39 @@ function updateRule(lang: string, index: number, field: string, value: any) {
   updateRules(lang, rules)
 }
 
-watch(() => props.languages, (langs) => {
-  if (langs.length && !langs.includes(activeTab.value as LANGUAGE)) {
-    activeTab.value = langs[0]
-  }
-})
+watch(
+  () => props.languages,
+  (langs) => {
+    if (langs.length && !langs.includes(activeTab.value as LANGUAGE)) {
+      activeTab.value = langs[0]
+    }
+  },
+)
 </script>
 
 <template>
   <n-collapse>
     <n-collapse-item title="代码规则检查（选填）" name="ast-rules">
       <n-tabs v-if="languages.length" type="segment" v-model:value="activeTab">
-        <n-tab-pane v-for="lang in languages" :key="lang" :name="lang" :tab="lang">
+        <n-tab-pane
+          v-for="lang in languages"
+          :key="lang"
+          :name="lang"
+          :tab="lang"
+        >
           <n-flex vertical>
-            <div v-for="(rule, index) in getRulesForLang(lang)" :key="index" style="margin-bottom: 8px">
+            <div
+              v-for="(rule, index) in getRulesForLang(lang)"
+              :key="index"
+              style="margin-bottom: 8px"
+            >
               <n-flex align="center" :wrap="false">
                 <n-select
                   :options="ENGINE_OPTIONS"
                   :value="rule.engine"
-                  @update:value="(v: string) => updateRule(lang, index, 'engine', v)"
+                  @update:value="
+                    (v: string) => updateRule(lang, index, 'engine', v)
+                  "
                   style="width: 150px"
                   size="small"
                 />
@@ -222,7 +287,9 @@ watch(() => props.languages, (langs) => {
                   v-if="needsTargetDropdown(rule.engine)"
                   :options="NODE_TARGET_OPTIONS"
                   :value="rule.target"
-                  @update:value="(v: string) => updateRule(lang, index, 'target', v)"
+                  @update:value="
+                    (v: string) => updateRule(lang, index, 'target', v)
+                  "
                   style="width: 150px"
                   size="small"
                   filterable
@@ -230,7 +297,9 @@ watch(() => props.languages, (langs) => {
                 <n-input
                   v-if="needsTargetInput(rule.engine)"
                   :value="rule.target"
-                  @update:value="(v: string) => updateRule(lang, index, 'target', v)"
+                  @update:value="
+                    (v: string) => updateRule(lang, index, 'target', v)
+                  "
                   placeholder="函数/方法名"
                   style="width: 150px"
                   size="small"
@@ -239,7 +308,9 @@ watch(() => props.languages, (langs) => {
                   v-if="needsOperatorDropdown(rule.engine)"
                   :options="OPERATOR_TARGET_OPTIONS"
                   :value="rule.target"
-                  @update:value="(v: string) => updateRule(lang, index, 'target', v)"
+                  @update:value="
+                    (v: string) => updateRule(lang, index, 'target', v)
+                  "
                   style="width: 150px"
                   size="small"
                 />
@@ -247,14 +318,18 @@ watch(() => props.languages, (langs) => {
                   <n-select
                     :options="COUNT_MODE_OPTIONS"
                     :value="getCountMode(rule)"
-                    @update:value="(v: 'exact' | 'range') => updateCountMode(lang, index, v)"
+                    @update:value="
+                      (v: 'exact' | 'range') => updateCountMode(lang, index, v)
+                    "
                     style="width: 80px"
                     size="small"
                   />
                   <n-input-number
                     v-if="getCountMode(rule) === 'exact'"
                     :value="rule.exact ?? null"
-                    @update:value="(v: number | null) => updateExactCount(lang, index, v)"
+                    @update:value="
+                      (v: number | null) => updateExactCount(lang, index, v)
+                    "
                     placeholder="次数"
                     style="width: 100px"
                     size="small"
@@ -264,7 +339,9 @@ watch(() => props.languages, (langs) => {
                   <template v-else>
                     <n-input-number
                       :value="rule.min ?? null"
-                      @update:value="(v: number | null) => updateRule(lang, index, 'min', v)"
+                      @update:value="
+                        (v: number | null) => updateRule(lang, index, 'min', v)
+                      "
                       placeholder="最少"
                       style="width: 100px"
                       size="small"
@@ -273,7 +350,9 @@ watch(() => props.languages, (langs) => {
                     />
                     <n-input-number
                       :value="rule.max ?? null"
-                      @update:value="(v: number | null) => updateRule(lang, index, 'max', v)"
+                      @update:value="
+                        (v: number | null) => updateRule(lang, index, 'max', v)
+                      "
                       placeholder="最多"
                       style="width: 100px"
                       size="small"
@@ -284,17 +363,29 @@ watch(() => props.languages, (langs) => {
                 </template>
                 <n-input
                   :value="rule.message"
-                  @update:value="(v: string) => updateRule(lang, index, 'message', v)"
+                  @update:value="
+                    (v: string) => updateRule(lang, index, 'message', v)
+                  "
                   placeholder="错误提示（选填）"
                   style="flex: 1"
                   size="small"
                 />
-                <n-button size="small" tertiary type="error" @click="removeRule(lang, index)">
+                <n-button
+                  size="small"
+                  tertiary
+                  type="error"
+                  @click="removeRule(lang, index)"
+                >
                   删除
                 </n-button>
               </n-flex>
             </div>
-            <n-button size="small" tertiary type="primary" @click="addRule(lang)">
+            <n-button
+              size="small"
+              tertiary
+              type="primary"
+              @click="addRule(lang)"
+            >
               添加规则
             </n-button>
           </n-flex>

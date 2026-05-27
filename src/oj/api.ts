@@ -211,7 +211,7 @@ export async function getContestProblems(contestID: string) {
 
 export function getContestRank(
   contestID: string,
-  query: { limit: number; offset: number; force_refresh: "1" | "0" },
+  query: { limit: number; offset: number },
 ) {
   return http.get("contest_rank", {
     params: {

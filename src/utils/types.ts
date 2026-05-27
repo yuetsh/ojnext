@@ -65,7 +65,20 @@ export type LANGUAGE =
 export type LANGUAGE_SHOW_LABEL =
   (typeof LANGUAGE_SHOW_VALUE)[keyof typeof LANGUAGE_SHOW_VALUE]
 
-export type SUBMISSION_RESULT = -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
+export type SUBMISSION_RESULT =
+  | -2
+  | -1
+  | 0
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 10
 
 export type ProblemStatus = "passed" | "failed" | "not_test"
 
@@ -137,7 +150,15 @@ export interface Problem {
   flowchart_data?: Record<string, any>
   flowchart_hint?: string
   show_flowchart?: boolean
-  ast_rules?: { [key: string]: { engine: string; target?: string; min?: number; max?: number; message: string }[] } | null
+  ast_rules?: {
+    [key: string]: {
+      engine: string
+      target?: string
+      min?: number
+      max?: number
+      message: string
+    }[]
+  } | null
   has_ast_rules?: boolean
 }
 
@@ -482,9 +503,7 @@ export interface BlankContest {
   tag: string
   start_time: string
   end_time: string
-  rule_type: "ACM" | "OI"
   password: string
-  real_time_rank: boolean
   visible: boolean
   allowed_ip_ranges: { value: string }[]
 }

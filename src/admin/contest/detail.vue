@@ -56,9 +56,7 @@ const contest = reactive<BlankContest & { id: number }>({
   tag: "练习",
   start_time: "",
   end_time: "",
-  rule_type: "ACM",
   password: "",
-  real_time_rank: true,
   visible: false,
   allowed_ip_ranges: [],
 })
@@ -79,9 +77,7 @@ async function getContestDetail() {
   contest.tag = data.tag
   contest.start_time = data.start_time
   contest.end_time = data.end_time
-  contest.rule_type = "ACM"
   contest.password = data.password
-  contest.real_time_rank = true
   contest.visible = data.visible
   contest.allowed_ip_ranges = []
 

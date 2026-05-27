@@ -87,12 +87,24 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
     render: (row) =>
       h(NFlex, { size: 4, align: "center" }, () => [
         row.allow_flowchart
-          ? h(Icon, { width: 18, icon: "vscode-icons:file-type-drawio", title: "绘图" })
+          ? h(Icon, {
+              width: 18,
+              icon: "vscode-icons:file-type-drawio",
+              title: "绘图",
+            })
           : row.show_flowchart
-            ? h(Icon, { width: 18, icon: "vscode-icons:file-type-graphql", title: "流程图" })
+            ? h(Icon, {
+                width: 18,
+                icon: "vscode-icons:file-type-graphql",
+                title: "流程图",
+              })
             : null,
         row.has_ast_rules
-          ? h(Icon, { width: 18, icon: "vscode-icons:file-type-light-todo", title: "AST" })
+          ? h(Icon, {
+              width: 18,
+              icon: "vscode-icons:file-type-light-todo",
+              title: "AST",
+            })
           : null,
       ]),
   },

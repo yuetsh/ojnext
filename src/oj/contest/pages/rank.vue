@@ -95,7 +95,6 @@ async function listRanks() {
   const res = await getContestRank(props.contestID, {
     limit: query.limit,
     offset: query.limit * (query.page - 1),
-    force_refresh: "1",
   })
   total.value = res.data.total
   data.value = res.data.results
@@ -225,7 +224,6 @@ async function downloadExcel() {
     const res = await getContestRank(props.contestID, {
       limit: total.value || 10000,
       offset: 0,
-      force_refresh: "1",
     })
     const allRanks: ContestRank[] = res.data.results
 

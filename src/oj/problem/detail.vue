@@ -267,7 +267,11 @@ watch(isMobile, (value) => {
       >
         <ProblemComment />
       </n-tab-pane>
-      <n-tab-pane v-if="myFlowchartStore.showing" name="my-flowchart" tab="我的流程图">
+      <n-tab-pane
+        v-if="myFlowchartStore.showing"
+        name="my-flowchart"
+        tab="我的流程图"
+      >
         <MyFlowchartTab />
       </n-tab-pane>
       <n-tab-pane name="submission" tab="提交" :disabled="!!props.problemSetId">

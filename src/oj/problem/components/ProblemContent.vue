@@ -119,29 +119,41 @@ function ruleDescription(rule: AstRule): string {
   const targetLabel = rule.label || NODE_TARGET_LABELS[target] || target
   const countDesc = () => {
     if (rule.exact !== undefined) return `出现 ${rule.exact} 次`
-    if (rule.min !== undefined && rule.max !== undefined) return `出现 ${rule.min}～${rule.max} 次`
+    if (rule.min !== undefined && rule.max !== undefined)
+      return `出现 ${rule.min}～${rule.max} 次`
     if (rule.min !== undefined) return `至少出现 ${rule.min} 次`
     if (rule.max !== undefined) return `至多出现 ${rule.max} 次`
     return ""
   }
   const callDesc = () => {
     if (rule.exact !== undefined) return `调用 ${rule.exact} 次`
-    if (rule.min !== undefined && rule.max !== undefined) return `调用 ${rule.min}～${rule.max} 次`
+    if (rule.min !== undefined && rule.max !== undefined)
+      return `调用 ${rule.min}～${rule.max} 次`
     if (rule.min !== undefined) return `至少调用 ${rule.min} 次`
     if (rule.max !== undefined) return `至多调用 ${rule.max} 次`
     return ""
   }
   switch (rule.engine) {
-    case "must_exist_node": return `必须使用 ${targetLabel}`
-    case "must_not_exist_node": return `不能使用 ${targetLabel}`
-    case "count_node": return `${targetLabel} ${countDesc()}`
-    case "must_call_function": return `必须调用 ${target}()`
-    case "must_not_call_function": return `不能调用 ${target}()`
-    case "count_function_call": return `${target}() ${callDesc()}`
-    case "must_call_method": return `必须调用 .${target}()`
-    case "must_not_call_method": return `不能调用 .${target}()`
-    case "must_use_operator": return `必须使用 ${target} 运算符`
-    default: return rule.engine
+    case "must_exist_node":
+      return `必须使用 ${targetLabel}`
+    case "must_not_exist_node":
+      return `不能使用 ${targetLabel}`
+    case "count_node":
+      return `${targetLabel} ${countDesc()}`
+    case "must_call_function":
+      return `必须调用 ${target}()`
+    case "must_not_call_function":
+      return `不能调用 ${target}()`
+    case "count_function_call":
+      return `${target}() ${callDesc()}`
+    case "must_call_method":
+      return `必须调用 .${target}()`
+    case "must_not_call_method":
+      return `不能调用 .${target}()`
+    case "must_use_operator":
+      return `必须使用 ${target} 运算符`
+    default:
+      return rule.engine
   }
 }
 
@@ -153,7 +165,9 @@ function ruleTagType(engine: string): "error" | "success" | "info" {
 
 const astRulesForDisplay = computed(() => {
   if (!problem.value?.ast_rules) return []
-  return Object.entries(problem.value.ast_rules).filter(([, rules]) => rules.length > 0)
+  return Object.entries(problem.value.ast_rules).filter(
+    ([, rules]) => rules.length > 0,
+  )
 })
 
 async function test(sample: Sample, index: number) {
@@ -302,14 +316,18 @@ function type(status: ProblemStatus) {
         </n-flex>
       </p>
       <div v-for="[lang, rules] in astRulesForDisplay" :key="lang">
-        <p v-if="astRulesForDisplay.length > 1" class="lang-label">{{ lang }}</p>
+        <p v-if="astRulesForDisplay.length > 1" class="lang-label">
+          {{ lang }}
+        </p>
         <n-list bordered style="margin-bottom: 8px">
           <n-list-item v-for="(rule, i) in rules" :key="i">
             <n-flex align="center">
               <n-tag :type="ruleTagType(rule.engine)">
                 {{ ruleDescription(rule) }}
               </n-tag>
-              <span v-if="rule.message" class="rule-message">{{ rule.message }}</span>
+              <span v-if="rule.message" class="rule-message">{{
+                rule.message
+              }}</span>
             </n-flex>
           </n-list-item>
         </n-list>

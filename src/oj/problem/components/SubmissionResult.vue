@@ -43,7 +43,10 @@ const msg = computed(() => {
     msg += "请仔细检查，看看代码的格式是不是写错了！\n\n"
   }
 
-  if (result !== SubmissionStatus.ast_check_failed && props.submission.statistic_info?.err_info) {
+  if (
+    result !== SubmissionStatus.ast_check_failed &&
+    props.submission.statistic_info?.err_info
+  ) {
     msg += props.submission.statistic_info.err_info
   }
 
@@ -153,7 +156,14 @@ const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
       :title="JUDGE_STATUS[submission.result]['title']"
       class="mb-3"
     />
-    <n-flex vertical v-if="msg || infoTable.length || submission.statistic_info?.ast_results?.length">
+    <n-flex
+      vertical
+      v-if="
+        msg ||
+        infoTable.length ||
+        submission.statistic_info?.ast_results?.length
+      "
+    >
       <n-card v-if="submission.statistic_info?.ast_results?.length" embedded>
         <n-flex vertical :size="8">
           <n-flex
@@ -162,7 +172,9 @@ const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
             align="center"
             :size="6"
           >
-            <n-icon :color="rule.passed ? theme.successColor : theme.errorColor">
+            <n-icon
+              :color="rule.passed ? theme.successColor : theme.errorColor"
+            >
               <Icon :icon="rule.passed ? 'ep:select' : 'ep:close-bold'" />
             </n-icon>
             <span>{{ rule.description }}</span>

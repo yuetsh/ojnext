@@ -149,7 +149,10 @@ watch(
       result === SubmissionStatus.submitting
     )
       return
-    if (result !== SubmissionStatus.accepted && result !== SubmissionStatus.ast_check_failed) {
+    if (
+      result !== SubmissionStatus.accepted &&
+      result !== SubmissionStatus.ast_check_failed
+    ) {
       problemStore.incrementFailCount()
     }
   },
@@ -159,7 +162,11 @@ watch(
 watch(
   () => submission.value?.result,
   async (result) => {
-    if (result !== SubmissionStatus.accepted && result !== SubmissionStatus.ast_check_failed) return
+    if (
+      result !== SubmissionStatus.accepted &&
+      result !== SubmissionStatus.ast_check_failed
+    )
+      return
 
     // 1. 刷新题目状态
     problem.value!.my_status = 0
