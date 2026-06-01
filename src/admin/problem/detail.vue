@@ -93,10 +93,41 @@ const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
 
 // 从服务器来的tag列表
 const tagList = shallowRef<Tag[]>([])
+const tagListLoaded = ref(false)
 
 const selectedTags = ref<string[]>([])
 const newTags = ref<string[]>([])
 const selectedTagSet = computed(() => new Set(selectedTags.value))
+let syncingTagInputs = false
+
+function normalizeTagNames(tags: unknown): string[] {
+  if (!Array.isArray(tags)) return []
+  return unique(
+    tags
+      .map((tag) => (typeof tag === "string" ? tag : tag?.name))
+      .filter((tag): tag is string => !!tag),
+  )
+}
+
+function syncProblemTags() {
+  problem.value.tags = unique([...selectedTags.value, ...newTags.value])
+}
+
+function syncTagInputsFromProblemTags(tags: unknown = problem.value.tags) {
+  const tagNames = normalizeTagNames(tags)
+  const existingTagNames = new Set(tagList.value.map((tag) => tag.name))
+
+  syncingTagInputs = true
+  if (!tagListLoaded.value) {
+    selectedTags.value = tagNames
+    newTags.value = []
+  } else {
+    selectedTags.value = tagNames.filter((tag) => existingTagNames.has(tag))
+    newTags.value = tagNames.filter((tag) => !existingTagNames.has(tag))
+  }
+  syncingTagInputs = false
+  syncProblemTags()
+}
 
 function toggleTag(name: string) {
   const set = new Set(selectedTags.value)
@@ -144,6 +175,7 @@ const languageOptions = [
 
 async function getProblemDetail() {
   if (!props.problemID) {
+    syncTagInputsFromProblemTags()
     toggleReady(true)
     return
   }
@@ -161,7 +193,7 @@ async function getProblemDetail() {
     problem.value.difficulty = data.difficulty
     problem.value.visible = data.visible
     problem.value.share_submission = data.share_submission
-    problem.value.tags = data.tags
+    problem.value.tags = normalizeTagNames(data.tags)
     problem.value.languages = data.languages
     problem.value.template = data.template
     problem.value.samples = data.samples
@@ -201,8 +233,7 @@ async function getProblemDetail() {
       }
     })
     // 标签
-    selectedTags.value = data.tags
-    newTags.value = []
+    syncTagInputsFromProblemTags(problem.value.tags)
     toggleReady(true)
   } catch (error) {
     message.error("获取题目失败")
@@ -213,6 +244,8 @@ async function getProblemDetail() {
 async function getTagList() {
   const res = await getProblemTagList()
   tagList.value = res.data
+  tagListLoaded.value = true
+  syncTagInputsFromProblemTags()
 }
 
 function addSample() {
@@ -352,6 +385,7 @@ async function submit() {
   filterHint()
   getTemplate()
   filterAnswers()
+  syncProblemTags()
   const api = {
     "admin problem create": createProblem,
     "admin problem edit": editProblem,
@@ -436,7 +470,8 @@ onMounted(() => {
 })
 
 watch([selectedTags, newTags], ([sel, newT]) => {
-  problem.value.tags = [...sel, ...newT]
+  if (syncingTagInputs) return
+  problem.value.tags = unique([...sel, ...newT])
 })
 watch(
   () => problem.value.languages,
