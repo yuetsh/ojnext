@@ -6,6 +6,10 @@ import { useConfigStore } from "shared/store/config"
 import { Icon } from "@iconify/vue"
 import { Bar, Radar } from "vue-chartjs"
 import { useBreakpoints } from "shared/composables/breakpoints"
+import { MdPreview } from "md-editor-v3"
+import "md-editor-v3/lib/preview.css"
+import { consumeJSONEventStream } from "utils/stream"
+import { getCSRFToken } from "utils/functions"
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -71,6 +75,11 @@ const comparisons = ref<ClassComparison[]>([])
 const duration = ref<string>("")
 const loading = ref(false)
 const hasTimeRange = ref(false)
+
+const aiLoading = ref(false)
+const aiContent = ref("")
+const showAIModal = ref(false)
+let aiController: AbortController | null = null
 
 // 时间段选项（与 rank/list.vue 保持一致）
 const timeRangeOptions: SelectOption[] = [
@@ -142,6 +151,68 @@ async function compare() {
     message.error("获取数据失败")
   } finally {
     loading.value = false
+  }
+}
+
+async function analyzeWithAI() {
+  if (aiController) {
+    aiController.abort()
+  }
+  const controller = new AbortController()
+  aiController = controller
+
+  const timeRangeLabel =
+    timeRangeOptions.find((o) => o.value === duration.value)?.label ?? "全部时间"
+
+  showAIModal.value = true
+  aiContent.value = ""
+  aiLoading.value = true
+
+  const headers: Record<string, string> = { "Content-Type": "application/json" }
+  const csrfToken = getCSRFToken()
+  if (csrfToken) headers["X-CSRFToken"] = csrfToken
+
+  try {
+    const response = await fetch("/api/ai/class_pk", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({
+        comparisons: comparisons.value,
+        time_range_label: timeRangeLabel,
+      }),
+      signal: controller.signal,
+    })
+
+    if (!response.ok) throw new Error("AI 分析生成失败")
+
+    let hasStarted = false
+
+    await consumeJSONEventStream(response, {
+      signal: controller.signal,
+      onEvent(event) {
+        if (event === "end" && !hasStarted) aiLoading.value = false
+      },
+      onMessage(payload) {
+        const parsed = payload as { type?: string; content?: string; message?: string }
+        if (parsed.type === "delta" && parsed.content) {
+          if (!hasStarted) {
+            hasStarted = true
+            aiLoading.value = false
+          }
+          aiContent.value += parsed.content
+        } else if (parsed.type === "error") {
+          throw new Error(parsed.message || "AI 服务异常")
+        } else if (parsed.type === "done" && !hasStarted) {
+          aiLoading.value = false
+        }
+      },
+    })
+  } catch (error: any) {
+    if (controller.signal.aborted) return
+    message.error(error?.message || "AI 分析失败，请稍后再试")
+    aiLoading.value = false
+  } finally {
+    if (aiController === controller) aiController = null
   }
 }
 
@@ -566,7 +637,40 @@ const radarChartOptions = {
         >
           开始PK
         </n-button>
+        <n-button
+          type="info"
+          @click="analyzeWithAI"
+          :loading="aiLoading"
+          :disabled="comparisons.length === 0"
+          style="margin-top: 26px"
+        >
+          <template #icon>
+            <Icon icon="mingcute:ai-line" />
+          </template>
+          AI分析
+        </n-button>
       </n-flex>
+
+      <n-modal
+        v-model:show="showAIModal"
+        preset="card"
+        title="AI 分析报告"
+        :style="{ width: '800px', maxWidth: '95vw' }"
+      >
+        <n-spin :show="aiLoading" :delay="50">
+          <div style="min-height: 200px">
+            <MdPreview v-if="aiContent" :model-value="aiContent" />
+            <n-flex
+              v-else-if="!aiLoading"
+              align="center"
+              justify="center"
+              style="min-height: 200px"
+            >
+              <n-empty description="暂无分析内容" />
+            </n-flex>
+          </div>
+        </n-spin>
+      </n-modal>
 
       <!-- 班级对比卡片 -->
       <n-grid v-if="comparisons.length > 0" :cols="2" :x-gap="16" :y-gap="16">
@@ -802,16 +906,31 @@ const radarChartOptions = {
 
       <!-- 可视化图表 - 专注于对比 -->
       <template v-if="comparisons.length > 0">
-        <!-- 综合分对比 - 一眼看出胜负 -->
-        <n-card title="综合分对比（满分100）" style="margin-top: 20px">
-          <div style="height: 300px">
-            <Bar
-              v-if="compositeScoreChartData"
-              :data="compositeScoreChartData"
-              :options="compositeScoreChartOptions"
-            />
-          </div>
-        </n-card>
+        <!-- 综合分对比 + 多维度雷达图 同行 -->
+        <n-grid style="margin-top: 20px" :cols="2" :x-gap="16">
+          <n-gi>
+            <n-card title="综合分对比（满分100）" style="height: 100%">
+              <div style="height: 380px">
+                <Bar
+                  v-if="compositeScoreChartData"
+                  :data="compositeScoreChartData"
+                  :options="compositeScoreChartOptions"
+                />
+              </div>
+            </n-card>
+          </n-gi>
+          <n-gi>
+            <n-card title="多维度综合对比" style="height: 100%">
+              <div style="height: 380px">
+                <Radar
+                  v-if="radarChartData"
+                  :data="radarChartData"
+                  :options="radarChartOptions"
+                />
+              </div>
+            </n-card>
+          </n-gi>
+        </n-grid>
 
         <!-- AC核心指标对比 - 三个独立图表并排显示 -->
         <n-card title="AC核心指标对比" style="margin-top: 20px">
@@ -912,16 +1031,6 @@ const radarChartOptions = {
           </n-grid>
         </n-card>
 
-        <!-- 多维度雷达图 - 综合对比 -->
-        <n-card title="多维度综合对比" style="margin-top: 20px">
-          <div style="height: 500px">
-            <Radar
-              v-if="radarChartData"
-              :data="radarChartData"
-              :options="radarChartOptions"
-            />
-          </div>
-        </n-card>
       </template>
 
       <!-- 对比表格 -->
