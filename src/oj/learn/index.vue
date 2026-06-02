@@ -1,8 +1,8 @@
 <template>
-  <div>
+  <div class="learn-container">
     <!-- 桌面端布局 -->
-    <n-grid :cols="5" :x-gap="16" v-if="tutorial.id && isDesktop">
-      <n-gi :span="1">
+    <n-grid :cols="5" :x-gap="16" v-if="tutorial.id && isDesktop" class="learn-grid">
+      <n-gi :span="1" class="learn-col">
         <n-card title="教程目录" :bordered="false" size="small">
           <n-list hoverable clickable>
             <n-list-item
@@ -21,7 +21,7 @@
         </n-card>
       </n-gi>
 
-      <n-gi :span="tutorial.code ? 2 : 4">
+      <n-gi :span="tutorial.code ? 2 : 4" class="learn-col">
         <n-card
           :title="`第 ${step} 课：${titles[step - 1]?.title}`"
           :bordered="false"
@@ -43,9 +43,15 @@
         </n-card>
       </n-gi>
 
-      <n-gi :span="2" v-if="tutorial.code">
-        <n-card title="示例代码" :bordered="false" size="small">
-          <CodeEditor language="Python3" v-model="tutorial.code" />
+      <n-gi :span="2" v-if="tutorial.code" class="learn-col learn-col--code">
+        <n-card
+          title="示例代码"
+          :bordered="false"
+          size="small"
+          class="code-card"
+          content-style="height: calc(100% - 44px); padding: 0;"
+        >
+          <CodeEditor language="Python3" v-model="tutorial.code" height="100%" />
         </n-card>
       </n-gi>
     </n-grid>
@@ -119,7 +125,7 @@
 <script setup lang="ts">
 import { MdPreview } from "md-editor-v3"
 import "md-editor-v3/lib/preview.css"
-import { Tutorial, Exercise } from "utils/types"
+import type { Tutorial, Exercise } from "utils/types"
 import { getTutorial, getTutorials, getExercises } from "../api"
 import { parseExercises } from "./composables/useExerciseParse"
 import { useBreakpoints } from "shared/composables/breakpoints"
@@ -190,3 +196,26 @@ watch(
   { immediate: true },
 )
 </script>
+
+<style scoped>
+.learn-container {
+  height: calc(100vh - 138px);
+}
+
+.learn-grid {
+  height: 100%;
+}
+
+.learn-col {
+  overflow-y: auto;
+  height: 100%;
+}
+
+.learn-col--code {
+  overflow-y: hidden;
+}
+
+.code-card {
+  height: 100%;
+}
+</style>

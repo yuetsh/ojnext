@@ -45,6 +45,6 @@ function goPublicSecurity() {
 </script>
 <style scoped>
 .beian {
-  margin-bottom: 12px;
+  margin: 12px 0;
 }
 </style>
