@@ -88,6 +88,12 @@
               <Radar :data="radarChartData" :options="radarOptions" />
             </n-card>
           </n-gi>
+          <!-- 4. Criteria bar chart (only when class exists, pairs with radar) -->
+          <n-gi v-if="data.person_count > 0 && hasRadarData">
+            <n-card title="各维度平均得分">
+              <Bar :data="criteriaBarChartData" :options="barOptions" />
+            </n-card>
+          </n-gi>
           <!-- 4. Word cloud -->
           <n-gi :span="2" v-if="data.word_frequencies.length > 0">
             <n-card title="常见问题高频词">
@@ -102,16 +108,42 @@
       <n-tab-pane
         v-if="data.data_unaccepted.length > 0"
         name="unaccepted"
-        :tab="`未完成（${data.data_unaccepted.length}）`"
+        :tab="`未完成（${visibleUnaccepted.length}）`"
       >
-        <n-flex size="large" align="center" style="margin-top: 12px">
-          <span
-            v-for="item in data.data_unaccepted"
-            :key="item.username"
-            style="font-size: 24px"
+        <n-flex align="center" style="margin: 12px 0">
+          <n-switch v-model:value="hideMode" size="large">
+            <template #checked>请假隐藏中</template>
+            <template #unchecked>请假隐藏</template>
+          </n-switch>
+          <n-button
+            v-if="hiddenCount > 0"
+            size="small"
+            type="info"
+            @click="showAll"
           >
-            {{ item.real_name }}
-          </span>
+            恢复 {{ hiddenCount }} 位
+          </n-button>
+        </n-flex>
+        <n-flex size="large" align="center">
+          <n-gradient-text
+            v-if="visibleUnaccepted.length === 0"
+            font-size="24"
+            type="success"
+          >
+            全都完成了
+          </n-gradient-text>
+          <template v-for="item in visibleUnaccepted" :key="item.username">
+            <n-tag
+              v-if="hideMode"
+              closable
+              size="large"
+              style="font-size: 20px"
+              @close="hideStudent(item.username)"
+            >
+              {{ item.real_name }}
+            </n-tag>
+            <span v-else style="font-size: 24px">{{ item.real_name }}</span>
+          </template>
         </n-flex>
       </n-tab-pane>
     </n-tabs>
@@ -122,7 +154,7 @@
 import { formatISO, sub, type Duration } from "date-fns"
 import { getFlowchartStatistics } from "oj/api"
 import { DURATION_OPTIONS } from "utils/constants"
-import { Doughnut, Radar } from "vue-chartjs"
+import { Doughnut, Radar, Bar } from "vue-chartjs"
 import {
   Chart as ChartJS,
   ArcElement,
@@ -134,6 +166,8 @@ import {
   LineElement,
   Filler,
   LinearScale,
+  BarElement,
+  CategoryScale,
 } from "chart.js"
 import {
   WordCloudController,
@@ -150,6 +184,8 @@ ChartJS.register(
   LineElement,
   Filler,
   LinearScale,
+  BarElement,
+  CategoryScale,
   WordCloudController,
   WordElement,
 )
@@ -200,11 +236,71 @@ const data = reactive<StatisticsData>({
 const wordcloudCanvas = useTemplateRef<HTMLCanvasElement>("wordcloudCanvas")
 let wordcloudChart: ChartJS | null = null
 
+const HIDE_DURATION = 2 * 60 * 60 * 1000
+const STORAGE_KEY = "oj_hidden_students_flowchart"
+
+function loadHidden(): Record<string, number> {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "{}")
+  } catch {
+    return {}
+  }
+}
+
+const hiddenStudents = ref<Record<string, number>>(loadHidden())
+const hideMode = ref(false)
+
+function saveHidden(d: Record<string, number>) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(d))
+}
+
+function hideStudent(username: string) {
+  hiddenStudents.value = {
+    ...hiddenStudents.value,
+    [username]: Date.now() + HIDE_DURATION,
+  }
+  saveHidden(hiddenStudents.value)
+}
+
+function showAll() {
+  hiddenStudents.value = {}
+  saveHidden({})
+}
+
+const visibleUnaccepted = computed(() => {
+  const now = Date.now()
+  return data.data_unaccepted.filter((item) => {
+    const exp = hiddenStudents.value[item.username]
+    return !exp || exp <= now
+  })
+})
+
+const hiddenCount = computed(() => {
+  const now = Date.now()
+  return data.data_unaccepted.filter((item) => {
+    const exp = hiddenStudents.value[item.username]
+    return !!exp && exp > now
+  }).length
+})
+
+const adjustedPersonCount = computed(() =>
+  Math.max(0, data.person_count - hiddenCount.value),
+)
+
+onMounted(() => {
+  const now = Date.now()
+  const cleaned = Object.fromEntries(
+    Object.entries(hiddenStudents.value).filter(([, exp]) => exp > now),
+  )
+  hiddenStudents.value = cleaned
+  saveHidden(cleaned)
+})
+
 const completionRate = computed(() => {
-  if (data.person_count <= 0) return "0%"
+  if (adjustedPersonCount.value <= 0) return "0%"
   const rate = Math.min(
     100,
-    (data.completed_count / data.person_count) * 100,
+    (data.completed_count / adjustedPersonCount.value) * 100,
   )
   return `${Math.round(rate * 100) / 100}%`
 })
@@ -236,7 +332,7 @@ const gradeChartData = computed(() => {
 })
 
 const completionChartData = computed(() => {
-  const uncompleted = Math.max(0, data.person_count - data.completed_count)
+  const uncompleted = Math.max(0, adjustedPersonCount.value - data.completed_count)
   return {
     labels: ["已完成", "未完成"],
     datasets: [
@@ -325,6 +421,40 @@ const radarOptions = {
         },
       },
     },
+  },
+}
+
+const criteriaBarChartData = computed(() => {
+  const labels = CRITERIA_ORDER.filter((k) => k in data.criteria_averages)
+  return {
+    labels,
+    datasets: [
+      {
+        label: "平均得分",
+        data: labels.map((k) => data.criteria_averages[k]?.avg ?? 0),
+        backgroundColor: "rgba(32, 128, 240, 0.6)",
+        borderColor: "rgba(32, 128, 240, 1)",
+        borderWidth: 2,
+      },
+      {
+        label: "满分",
+        data: labels.map((k) => data.criteria_averages[k]?.max ?? 0),
+        backgroundColor: "rgba(200, 200, 200, 0.3)",
+        borderColor: "rgba(150, 150, 150, 0.8)",
+        borderWidth: 1,
+      },
+    ],
+  }
+})
+
+const barOptions = {
+  responsive: true,
+  maintainAspectRatio: false,
+  scales: {
+    y: { beginAtZero: true },
+  },
+  plugins: {
+    legend: { position: "bottom" as const },
   },
 }
 
