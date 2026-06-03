@@ -24,7 +24,7 @@ const isNotRegularUser = computed(
     >
       {{ getUserRole(props.user.admin_type).label }}
     </n-tag>
-    <n-tag size="small" v-if="props.user.admin_type === USER_TYPE.ADMIN">
+    <n-tag size="small" v-if="props.user.admin_type === USER_TYPE.STUDENT_ADMIN || props.user.admin_type === USER_TYPE.TEACHER_ADMIN">
       {{
         props.user.problem_permission === PROBLEM_PERMISSION.ALL
           ? "全部"

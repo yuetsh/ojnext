@@ -133,7 +133,8 @@ export const CONTEST_TYPE = {
 
 export const USER_TYPE = {
   REGULAR_USER: "Regular User",
-  ADMIN: "Admin",
+  STUDENT_ADMIN: "Student Admin",
+  TEACHER_ADMIN: "Teacher Admin",
   SUPER_ADMIN: "Super Admin",
 }
 

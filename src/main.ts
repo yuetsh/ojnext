@@ -40,7 +40,9 @@ router.beforeEach(async (to, from, next) => {
   if (
     to.matched.some(
       (record) =>
-        record.meta.requiresSuperAdmin || record.meta.requiresProblemPermission,
+        record.meta.requiresSuperAdmin ||
+        record.meta.requiresTeacherAdmin ||
+        record.meta.requiresProblemPermission,
     )
   ) {
     if (!storage.get(STORAGE_KEY.AUTHED)) {
@@ -60,6 +62,13 @@ router.beforeEach(async (to, from, next) => {
     }
     if (to.matched.some((record) => record.meta.requiresSuperAdmin)) {
       if (!userStore.isSuperAdmin) {
+        next("/")
+        return
+      }
+    } else if (
+      to.matched.some((record) => record.meta.requiresTeacherAdmin)
+    ) {
+      if (!userStore.isTeacherOrAbove) {
         next("/")
         return
       }

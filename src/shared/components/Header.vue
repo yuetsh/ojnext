@@ -166,7 +166,7 @@ const menus = computed<MenuOption[]>(() => [
     label: () =>
       h(
         RouterLink,
-        { to: userStore.isTheAdmin ? "/admin/problem/list" : "/admin" },
+        { to: userStore.isSuperAdmin ? "/admin" : "/admin/problem/list" },
         { default: () => "后台" },
       ),
     show: userStore.isAdminRole,

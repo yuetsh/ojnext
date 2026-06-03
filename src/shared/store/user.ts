@@ -13,10 +13,21 @@ export const useUserStore = defineStore("user", () => {
   const isAuthed = computed(() => !!user.value?.email)
   const isAdminRole = computed(
     () =>
-      user.value?.admin_type === USER_TYPE.ADMIN ||
+      user.value?.admin_type === USER_TYPE.STUDENT_ADMIN ||
+      user.value?.admin_type === USER_TYPE.TEACHER_ADMIN ||
       user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
   )
-  const isTheAdmin = computed(() => user.value?.admin_type === USER_TYPE.ADMIN)
+  const isStudentAdmin = computed(
+    () => user.value?.admin_type === USER_TYPE.STUDENT_ADMIN,
+  )
+  const isTeacherAdmin = computed(
+    () => user.value?.admin_type === USER_TYPE.TEACHER_ADMIN,
+  )
+  const isTeacherOrAbove = computed(
+    () =>
+      user.value?.admin_type === USER_TYPE.TEACHER_ADMIN ||
+      user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
+  )
   const isSuperAdmin = computed(
     () => user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
   )
@@ -47,7 +58,9 @@ export const useUserStore = defineStore("user", () => {
     isFinished,
     user,
     isAdminRole,
-    isTheAdmin,
+    isStudentAdmin,
+    isTeacherAdmin,
+    isTeacherOrAbove,
     isSuperAdmin,
     hasProblemPermission,
     isAuthed,

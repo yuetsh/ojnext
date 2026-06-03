@@ -33,7 +33,7 @@ export interface Profile {
   submission_number: number
 }
 
-export type UserAdminType = "Regular User" | "Admin" | "Super Admin"
+export type UserAdminType = "Regular User" | "Student Admin" | "Teacher Admin" | "Super Admin"
 
 export interface User {
   id: number

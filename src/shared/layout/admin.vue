@@ -19,8 +19,8 @@ const options = computed<MenuOption[]>(() => {
     },
   ]
 
-  // admin 可以访问的功能
-  if (userStore.isTheAdmin) {
+  // Student Admin: only problems
+  if (userStore.isStudentAdmin) {
     baseOptions.push({
       label: () =>
         h(RouterLink, { to: "/admin/problem/list" }, { default: () => "题目" }),
@@ -28,7 +28,40 @@ const options = computed<MenuOption[]>(() => {
     })
   }
 
-  // super_admin 可以访问的功能
+  // Teacher Admin: problems + contests + problemsets
+  if (userStore.isTeacherAdmin) {
+    baseOptions.push(
+      {
+        label: () =>
+          h(
+            RouterLink,
+            { to: "/admin/problem/list" },
+            { default: () => "题目" },
+          ),
+        key: "admin problem list",
+      },
+      {
+        label: () =>
+          h(
+            RouterLink,
+            { to: "/admin/contest/list" },
+            { default: () => "比赛" },
+          ),
+        key: "admin contest list",
+      },
+      {
+        label: () =>
+          h(
+            RouterLink,
+            { to: "/admin/problemset/list" },
+            { default: () => "题单" },
+          ),
+        key: "admin problemset list",
+      },
+    )
+  }
+
+  // Super Admin: everything
   if (userStore.isSuperAdmin) {
     baseOptions.push(
       {

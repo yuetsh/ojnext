@@ -38,7 +38,8 @@ const userEditing = ref<User | null>(null)
 
 const adminOptions = [
   { label: "全部用户", value: "" },
-  { label: "管理员", value: USER_TYPE.ADMIN },
+  { label: "学生管理员", value: USER_TYPE.STUDENT_ADMIN },
+  { label: "教师管理员", value: USER_TYPE.TEACHER_ADMIN },
   { label: "超级管理员", value: USER_TYPE.SUPER_ADMIN },
 ]
 
@@ -106,7 +107,8 @@ const columns: DataTableColumn<User>[] = [
 
 const options: SelectOption[] = [
   { label: "普通", value: USER_TYPE.REGULAR_USER },
-  { label: "管理员", value: USER_TYPE.ADMIN },
+  { label: "学生管理员", value: USER_TYPE.STUDENT_ADMIN },
+  { label: "教师管理员", value: USER_TYPE.TEACHER_ADMIN },
   { label: "超级管理员", value: USER_TYPE.SUPER_ADMIN },
 ]
 
@@ -166,7 +168,7 @@ function createNewUser() {
     username: "",
     real_name: "",
     email: "",
-    admin_type: "Admin",
+    admin_type: "Student Admin",
     problem_permission: "None",
     create_time: new Date(),
     last_login: new Date(),
@@ -312,7 +314,7 @@ watch(() => [query.page, query.limit, query.type, query.orderBy], listUsers)
           <n-input v-model:value="password" />
         </n-form-item-gi>
         <n-form-item-gi
-          v-if="!create && userEditing.admin_type === USER_TYPE.ADMIN"
+          v-if="!create && (userEditing.admin_type === USER_TYPE.STUDENT_ADMIN || userEditing.admin_type === USER_TYPE.TEACHER_ADMIN)"
           :span="1"
           label="出题权限"
         >
