@@ -3,6 +3,7 @@ import { h } from "vue"
 import { formatISO, sub, type Duration } from "date-fns"
 import { getClassPK } from "oj/api"
 import { useConfigStore } from "shared/store/config"
+import { useUserStore } from "shared/store/user"
 import { Icon } from "@iconify/vue"
 import { Bar, Radar } from "vue-chartjs"
 import { useBreakpoints } from "shared/composables/breakpoints"
@@ -41,6 +42,7 @@ ChartJS.register(
 )
 
 const configStore = useConfigStore()
+const { isTeacherOrAbove } = useUserStore()
 const message = useMessage()
 const { isDesktop } = useBreakpoints()
 
@@ -556,6 +558,149 @@ const compositeScoreChartOptions = {
   },
 }
 
+const tableColumns: DataTableColumn<ClassComparison>[] = [
+  {
+    title: "排名",
+    key: "rank",
+    render: (_, index) => getRankColor(index).text,
+    width: 80,
+  },
+  {
+    title: "综合分",
+    key: "composite_score",
+    width: 90,
+    render: (row) =>
+      h(
+        "span",
+        {
+          style: {
+            color: "#722ed1",
+            fontWeight: "700",
+            fontSize: "15px",
+          },
+        },
+        row.composite_score.toFixed(1),
+      ),
+  },
+  {
+    title: "班级",
+    key: "class_name",
+    render: (row) =>
+      `${row.class_name.slice(0, 2)}计算机${row.class_name.slice(2)}班`,
+    width: 160,
+  },
+  {
+    title: "人数",
+    key: "user_count",
+    width: 80,
+    render: (row) =>
+      h(
+        "span",
+        { style: { color: "#1890ff", fontWeight: "600" } },
+        row.user_count,
+      ),
+  },
+  {
+    title: "总AC数",
+    key: "total_ac",
+    width: 100,
+    render: (row) =>
+      h(
+        "span",
+        { style: { color: "#ff4d4f", fontWeight: "600" } },
+        row.total_ac,
+      ),
+  },
+  {
+    title: "平均AC",
+    key: "avg_ac",
+    width: 100,
+    render: (row) =>
+      h(
+        "span",
+        { style: { color: "#52c41a", fontWeight: "600" } },
+        row.avg_ac.toFixed(2),
+      ),
+  },
+  {
+    title: "中位数AC",
+    key: "median_ac",
+    width: 100,
+    render: (row) =>
+      h(
+        "span",
+        { style: { color: "#fa8c16", fontWeight: "600" } },
+        row.median_ac.toFixed(2),
+      ),
+  },
+  {
+    title: "前10%均值",
+    key: "top_10_avg",
+    width: 100,
+    render: (row) =>
+      h(
+        "span",
+        { style: { color: "#cf1322", fontWeight: "600" } },
+        row.top_10_avg.toFixed(2),
+      ),
+  },
+  {
+    title: "中间80%均值",
+    key: "middle_80_avg",
+    width: 110,
+    render: (row) =>
+      h(
+        "span",
+        { style: { color: "#389e0d", fontWeight: "600" } },
+        row.middle_80_avg.toFixed(2),
+      ),
+  },
+  {
+    title: "后10%均值",
+    key: "bottom_10_avg",
+    width: 100,
+    render: (row) =>
+      h(
+        "span",
+        { style: { color: "#096dd9", fontWeight: "500" } },
+        row.bottom_10_avg.toFixed(2),
+      ),
+  },
+  {
+    title: "优秀率",
+    key: "excellent_rate",
+    width: 100,
+    render: (row) =>
+      h(
+        "span",
+        { style: { color: "#faad14", fontWeight: "600" } },
+        row.excellent_rate.toFixed(1) + "%",
+      ),
+  },
+  {
+    title: "及格率",
+    key: "pass_rate",
+    width: 100,
+    render: (row) =>
+      h(
+        "span",
+        { style: { color: "#52c41a", fontWeight: "600" } },
+        row.pass_rate.toFixed(1) + "%",
+      ),
+  },
+  {
+    title: "参与度",
+    key: "active_rate",
+    width: 100,
+    render: (row) =>
+      h(
+        "span",
+        { style: { color: "#1890ff", fontWeight: "600" } },
+        row.active_rate.toFixed(1) + "%",
+      ),
+  },
+]
+
 const radarChartOptions = {
   responsive: true,
   maintainAspectRatio: false,
@@ -638,6 +783,7 @@ const radarChartOptions = {
           开始PK
         </n-button>
         <n-button
+          v-if="isTeacherOrAbove"
           type="info"
           @click="analyzeWithAI"
           :loading="aiLoading"
@@ -1041,148 +1187,7 @@ const radarChartOptions = {
       >
         <n-data-table
           :data="comparisons"
-          :columns="[
-            {
-              title: '排名',
-              key: 'rank',
-              render: (_, index) => getRankColor(index).text,
-              width: 80,
-            },
-            {
-              title: '综合分',
-              key: 'composite_score',
-              width: 90,
-              render: (row) =>
-                h(
-                  'span',
-                  {
-                    style: {
-                      color: '#722ed1',
-                      fontWeight: '700',
-                      fontSize: '15px',
-                    },
-                  },
-                  row.composite_score.toFixed(1),
-                ),
-            },
-            {
-              title: '班级',
-              key: 'class_name',
-              render: (row) =>
-                `${row.class_name.slice(0, 2)}计算机${row.class_name.slice(2)}班`,
-              width: 160,
-            },
-            {
-              title: '人数',
-              key: 'user_count',
-              width: 80,
-              render: (row) =>
-                h(
-                  'span',
-                  { style: { color: '#1890ff', fontWeight: '600' } },
-                  row.user_count,
-                ),
-            },
-            {
-              title: '总AC数',
-              key: 'total_ac',
-              width: 100,
-              render: (row) =>
-                h(
-                  'span',
-                  { style: { color: '#ff4d4f', fontWeight: '600' } },
-                  row.total_ac,
-                ),
-            },
-            {
-              title: '平均AC',
-              key: 'avg_ac',
-              width: 100,
-              render: (row) =>
-                h(
-                  'span',
-                  { style: { color: '#52c41a', fontWeight: '600' } },
-                  row.avg_ac.toFixed(2),
-                ),
-            },
-            {
-              title: '中位数AC',
-              key: 'median_ac',
-              width: 100,
-              render: (row) =>
-                h(
-                  'span',
-                  { style: { color: '#fa8c16', fontWeight: '600' } },
-                  row.median_ac.toFixed(2),
-                ),
-            },
-            {
-              title: '前10%均值',
-              key: 'top_10_avg',
-              width: 100,
-              render: (row) =>
-                h(
-                  'span',
-                  { style: { color: '#cf1322', fontWeight: '600' } },
-                  row.top_10_avg.toFixed(2),
-                ),
-            },
-            {
-              title: '中间80%均值',
-              key: 'middle_80_avg',
-              width: 110,
-              render: (row) =>
-                h(
-                  'span',
-                  { style: { color: '#389e0d', fontWeight: '600' } },
-                  row.middle_80_avg.toFixed(2),
-                ),
-            },
-            {
-              title: '后10%均值',
-              key: 'bottom_10_avg',
-              width: 100,
-              render: (row) =>
-                h(
-                  'span',
-                  { style: { color: '#096dd9', fontWeight: '500' } },
-                  row.bottom_10_avg.toFixed(2),
-                ),
-            },
-            {
-              title: '优秀率',
-              key: 'excellent_rate',
-              width: 100,
-              render: (row) =>
-                h(
-                  'span',
-                  { style: { color: '#faad14', fontWeight: '600' } },
-                  row.excellent_rate.toFixed(1) + '%',
-                ),
-            },
-            {
-              title: '及格率',
-              key: 'pass_rate',
-              width: 100,
-              render: (row) =>
-                h(
-                  'span',
-                  { style: { color: '#52c41a', fontWeight: '600' } },
-                  row.pass_rate.toFixed(1) + '%',
-                ),
-            },
-            {
-              title: '参与度',
-              key: 'active_rate',
-              width: 100,
-              render: (row) =>
-                h(
-                  'span',
-                  { style: { color: '#1890ff', fontWeight: '600' } },
-                  row.active_rate.toFixed(1) + '%',
-                ),
-            },
-          ]"
+          :columns="tableColumns"
         />
       </n-card>
     </n-flex>
