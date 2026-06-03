@@ -8,6 +8,13 @@ hljs.registerLanguage("python", python)
 hljs.registerLanguage("c", c)
 
 const props = defineProps<{ exercise: Exercise; lang?: string }>()
+
+function renderInlineCode(s: string): string {
+  return s.replace(
+    /`([^`]+)`/g,
+    (_, code) => `<code style="background:rgba(127,127,127,0.12);padding:2px 6px;border-radius:4px;font-family:Monaco,monospace;font-size:14px">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`,
+  )
+}
 const data = computed(() => props.exercise.data as ExerciseSortData)
 
 type LineItem = { originalIdx: number; text: string }
@@ -110,7 +117,7 @@ const lineHtmlMap = computed<Record<number, string>>(() => {
       >
     </template>
 
-    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px">{{ data.question }}</p>
+    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px" v-html="renderInlineCode(data.question)" />
 
     <n-space vertical :size="6">
       <div

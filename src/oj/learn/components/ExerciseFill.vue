@@ -8,6 +8,13 @@ hljs.registerLanguage("python", python)
 hljs.registerLanguage("c", c)
 
 const props = defineProps<{ exercise: Exercise; lang?: string }>()
+
+function renderInlineCode(s: string): string {
+  return s.replace(
+    /`([^`]+)`/g,
+    (_, code) => `<code style="background:rgba(127,127,127,0.12);padding:2px 6px;border-radius:4px;font-family:Monaco,monospace;font-size:14px">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`,
+  )
+}
 const data = computed(() => props.exercise.data as ExerciseFillData)
 
 type CodeSeg = { type: "code"; html: string }
@@ -94,11 +101,12 @@ function inputWidth(idx: number): string {
       >
     </template>
 
-    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px">{{ data.question }}</p>
+    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px" v-html="renderInlineCode(data.question)" />
 
     <pre
       :style="{
         fontFamily: 'Monaco',
+        fontSize: '16px',
         lineHeight: '1.6',
         background: 'var(--n-color)',
         border: '1px solid var(--n-border-color)',
@@ -116,7 +124,8 @@ function inputWidth(idx: number): string {
         :style="{
           width: inputWidth(seg.index),
           fontFamily: 'Monaco',
-          padding: '1px 4px',
+          fontSize: '16px',
+          padding: '2px 6px',
           borderRadius: '3px',
           border: `1.5px solid ${
             allCorrect

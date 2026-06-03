@@ -2,6 +2,13 @@
 import { Exercise, ExerciseMcqData } from "utils/types"
 
 const props = defineProps<{ exercise: Exercise }>()
+
+function renderInlineCode(s: string): string {
+  return s.replace(
+    /`([^`]+)`/g,
+    (_, code) => `<code style="background:rgba(127,127,127,0.12);padding:2px 6px;border-radius:4px;font-family:Monaco,monospace;font-size:14px">${code.replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code>`,
+  )
+}
 const data = computed(() => props.exercise.data as ExerciseMcqData)
 const isSingle = computed(() => data.value.answer.length === 1)
 
@@ -74,7 +81,7 @@ function optionType(idx: number): "default" | "primary" | "success" {
       </n-space>
     </template>
 
-    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px">{{ data.question }}</p>
+    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px" v-html="renderInlineCode(data.question)" />
 
     <n-space vertical :size="8">
       <n-button
@@ -96,7 +103,7 @@ function optionType(idx: number): "default" | "primary" | "success" {
             String.fromCharCode(65 + idx)
           }}</span>
         </template>
-        {{ opt }}
+        <span v-html="renderInlineCode(opt)" />
       </n-button>
     </n-space>
 
