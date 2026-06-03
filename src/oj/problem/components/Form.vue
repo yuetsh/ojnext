@@ -185,7 +185,7 @@ onMounted(() => {
     </n-button>
 
     <n-button
-      v-if="userStore.isSuperAdmin"
+      v-if="userStore.isTeacherOrAbove"
       :size="buttonSize"
       @click="statisticPanel = true"
     >
@@ -247,7 +247,7 @@ onMounted(() => {
   </n-flex>
 
   <n-modal
-    v-if="userStore.isSuperAdmin"
+    v-if="userStore.isTeacherOrAbove"
     v-model:show="statisticPanel"
     preset="card"
     title="提交记录的统计"

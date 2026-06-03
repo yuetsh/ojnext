@@ -260,7 +260,7 @@ const columns = computed(() => {
         ),
     },
   ]
-  if (!route.params.contestID && userStore.isSuperAdmin) {
+  if (!route.params.contestID && userStore.isTeacherOrAbove) {
     res.push({
       title: renderTableTitle("选项", "streamline-emojis:wrench"),
       key: "rejudge",
@@ -399,7 +399,7 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
           <n-button @click="clear" quaternary>重置</n-button>
         </n-form-item>
         <n-form-item
-          v-if="userStore.isSuperAdmin && route.name === 'submissions'"
+          v-if="userStore.isTeacherOrAbove && route.name === 'submissions'"
         >
           <n-button
             quaternary
@@ -443,7 +443,7 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
     v-model:page="query.page"
   />
   <n-modal
-    v-if="userStore.isSuperAdmin"
+    v-if="userStore.isTeacherOrAbove"
     v-model:show="statisticPanel"
     preset="card"
     :style="{ maxWidth: isDesktop && '800px', maxHeight: '80vh' }"
