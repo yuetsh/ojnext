@@ -2,7 +2,7 @@
 import { formatISO } from "date-fns"
 import TextEditor from "shared/components/TextEditor.vue"
 import { parseTime } from "utils/functions"
-import { BlankContest } from "utils/types"
+import type { BlankContest } from "utils/types"
 import { createContest, editContest, getContest } from "../api"
 
 interface Props {

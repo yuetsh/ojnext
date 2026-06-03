@@ -130,7 +130,7 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   {
     title: "选项",
     key: "actions",
-    width: 300,
+    width: 320,
     render: (row) =>
       h(Actions, {
         problemID: row.id,
