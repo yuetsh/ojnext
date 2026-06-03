@@ -84,6 +84,8 @@ export function checkRoutePermission(routeName: string): boolean {
     "admin problemset create",
     "admin problemset edit",
     "admin problemset detail",
+    "admin stuck problems",
+    "admin top ac trend",
   ]
 
   const problemPermissionRoutes = [

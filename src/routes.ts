@@ -280,13 +280,13 @@ export const admins: RouteRecordRaw = {
       path: "problem/stuck",
       name: "admin stuck problems",
       component: () => import("admin/problem/Stuck.vue"),
-      meta: { requiresSuperAdmin: true },
+      meta: { requiresTeacherAdmin: true },
     },
     {
       path: "problem/top_ac_trend",
       name: "admin top ac trend",
       component: () => import("admin/problem/TopACTrend.vue"),
-      meta: { requiresSuperAdmin: true },
+      meta: { requiresTeacherAdmin: true },
     },
     // 题单管理路由
     {
