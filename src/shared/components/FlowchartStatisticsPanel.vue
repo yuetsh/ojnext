@@ -89,8 +89,8 @@
             </n-card>
           </n-gi>
           <!-- 4. Word cloud -->
-          <n-gi v-if="data.word_frequencies.length > 0">
-            <n-card title="高频改进建议">
+          <n-gi :span="2" v-if="data.word_frequencies.length > 0">
+            <n-card title="常见问题高频词">
               <div class="wordcloud-container">
                 <canvas ref="wordcloudCanvas"></canvas>
               </div>
@@ -363,6 +363,7 @@ function renderWordCloud() {
           color: words.map(
             (_, i) => WORD_COLORS[i % WORD_COLORS.length],
           ),
+          rotate: 0,
         } as any,
       ],
     },
