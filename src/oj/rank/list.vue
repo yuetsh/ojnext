@@ -1,15 +1,16 @@
 <script setup lang="ts">
 import { formatISO, sub, type Duration } from "date-fns"
-import { NButton, NFlex, useThemeVars } from "naive-ui"
+import { NButton, NFlex } from "naive-ui"
 import {
   getActivityRank,
   getClassRank,
   getRank,
   getUserClassRank,
+  getClassPK,
 } from "oj/api"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { getACRate } from "utils/functions"
-import { Rank } from "utils/types"
+import type { Rank } from "utils/types"
 import Pagination from "shared/components/Pagination.vue"
 import { ChartType } from "utils/constants"
 import { renderTableTitle } from "utils/renders"
@@ -52,6 +53,24 @@ const myClassQuery = reactive({
   limit: 10,
 })
 
+const showClassDetailModal = ref(false)
+const classDetailData = ref<ClassComparison | null>(null)
+const classDetailLoading = ref(false)
+
+async function loadClassDetail(className: string) {
+  showClassDetailModal.value = true
+  classDetailLoading.value = true
+  classDetailData.value = null
+  try {
+    const res = await getClassPK([className])
+    classDetailData.value = res.data.comparisons[0] ?? null
+  } catch {
+    // ignore
+  } finally {
+    classDetailLoading.value = false
+  }
+}
+
 interface ClassRank {
   rank: number
   class_name: string
@@ -60,6 +79,27 @@ interface ClassRank {
   total_submission: number
   avg_ac: number
   ac_rate: number
+}
+
+interface ClassComparison {
+  class_name: string
+  user_count: number
+  total_ac: number
+  total_submission: number
+  avg_ac: number
+  median_ac: number
+  q1_ac: number
+  q3_ac: number
+  iqr: number
+  std_dev: number
+  top_10_avg: number
+  middle_80_avg: number
+  bottom_10_avg: number
+  excellent_rate: number
+  pass_rate: number
+  active_rate: number
+  ac_rate: number
+  composite_score: number
 }
 
 interface UserRank {
@@ -191,7 +231,7 @@ const classColumns: DataTableColumn<ClassRank>[] = [
   {
     title: "排名",
     key: "rank",
-    width: 100,
+    width: 60,
     titleAlign: "center",
     align: "center",
   },
@@ -200,45 +240,62 @@ const classColumns: DataTableColumn<ClassRank>[] = [
     key: "class_name",
     render: (row) =>
       `${row.class_name.slice(0, 2)}计算机${row.class_name.slice(2)}班`,
-    width: 200,
+    minWidth: 120,
     titleAlign: "center",
     align: "center",
   },
   {
     title: "人数",
     key: "user_count",
-    width: 100,
+    width: 60,
     titleAlign: "center",
     align: "center",
   },
   {
-    title: "总AC数",
+    title: "总 AC 数",
     key: "total_ac",
-    width: 120,
+    width: 70,
     titleAlign: "center",
     align: "center",
   },
   {
-    title: "总提交数",
+    title: "提交数",
     key: "total_submission",
-    width: 120,
+    width: 70,
     titleAlign: "center",
     align: "center",
   },
   {
-    title: "平均AC数",
+    title: "平均 AC 数",
     key: "avg_ac",
-    width: 120,
+    width: 70,
     titleAlign: "center",
     align: "center",
   },
   {
     title: "正确率",
     key: "ac_rate",
-    width: 100,
+    width: 70,
     titleAlign: "center",
     align: "center",
     render: (row) => `${row.ac_rate}%`,
+  },
+  {
+    title: "详情",
+    key: "action",
+    width: 60,
+    titleAlign: "center",
+    align: "center",
+    render: (row) =>
+      h(
+        NButton,
+        {
+          text: true,
+          type: "info",
+          onClick: () => loadClassDetail(row.class_name),
+        },
+        () => "查看",
+      ),
   },
 ]
 
@@ -453,6 +510,85 @@ watch(
       </n-gi>
     </n-grid>
   </n-flex>
+
+  <n-modal
+    v-model:show="showClassDetailModal"
+    preset="card"
+    :title="classDetailData ? `${classDetailData.class_name.slice(0, 2)}计算机${classDetailData.class_name.slice(2)}班` : '班级详情'"
+    :style="{ width: '700px', maxWidth: '95vw' }"
+  >
+    <n-spin :show="classDetailLoading" style="min-height: 200px">
+      <n-flex v-if="classDetailData" vertical :size="12">
+        <n-grid :cols="5" :x-gap="8" responsive="screen">
+          <n-gi>
+            <n-statistic label="总AC数" :value="classDetailData.total_ac" size="large" />
+          </n-gi>
+          <n-gi>
+            <n-statistic label="平均AC数" :value="classDetailData.avg_ac.toFixed(2)" size="large" />
+          </n-gi>
+          <n-gi>
+            <n-statistic label="中位数AC" :value="classDetailData.median_ac.toFixed(2)" size="large" />
+          </n-gi>
+          <n-gi>
+            <n-statistic label="总提交数" :value="classDetailData.total_submission" size="large" />
+          </n-gi>
+          <n-gi>
+            <n-statistic label="AC率" :value="classDetailData.ac_rate.toFixed(1) + '%'" size="large" />
+          </n-gi>
+        </n-grid>
+
+        <n-divider style="margin: 12px 0" />
+
+        <n-descriptions bordered :column="2" size="small" label-placement="left">
+          <n-descriptions-item label="第一四分位数(Q1)">
+            <span style="color: #9254de; font-weight: 500">{{ classDetailData.q1_ac.toFixed(2) }}</span>
+          </n-descriptions-item>
+          <n-descriptions-item label="第三四分位数(Q3)">
+            <span style="color: #f759ab; font-weight: 500">{{ classDetailData.q3_ac.toFixed(2) }}</span>
+          </n-descriptions-item>
+          <n-descriptions-item label="四分位距(IQR)">
+            <span style="color: #13c2c2; font-weight: 500">{{ classDetailData.iqr.toFixed(2) }}</span>
+          </n-descriptions-item>
+          <n-descriptions-item label="标准差">
+            <span style="color: #fa8c16; font-weight: 500">{{ classDetailData.std_dev.toFixed(2) }}</span>
+          </n-descriptions-item>
+          <n-descriptions-item label="前10%均值">
+            <span style="color: #cf1322; font-weight: 600">{{ classDetailData.top_10_avg.toFixed(2) }}</span>
+          </n-descriptions-item>
+          <n-descriptions-item label="中间80%均值">
+            <span style="color: #389e0d; font-weight: 600">{{ classDetailData.middle_80_avg.toFixed(2) }}</span>
+          </n-descriptions-item>
+          <n-descriptions-item label="后10%均值">
+            <span style="color: #096dd9; font-weight: 500">{{ classDetailData.bottom_10_avg.toFixed(2) }}</span>
+          </n-descriptions-item>
+          <n-descriptions-item label="人数">
+            <span style="color: #1890ff; font-weight: 600">{{ classDetailData.user_count }}</span>
+          </n-descriptions-item>
+        </n-descriptions>
+
+        <n-card size="small" title="比率统计" embedded style="margin-top: 12px">
+          <n-space vertical :size="10">
+            <n-progress type="line" :percentage="classDetailData.excellent_rate" :show-indicator="true" :border-radius="4">
+              <template #default>优秀率: {{ classDetailData.excellent_rate.toFixed(1) }}%</template>
+            </n-progress>
+            <n-progress type="line" :percentage="classDetailData.pass_rate" :show-indicator="true" :border-radius="4" status="success">
+              <template #default>及格率: {{ classDetailData.pass_rate.toFixed(1) }}%</template>
+            </n-progress>
+            <n-progress type="line" :percentage="classDetailData.active_rate" :show-indicator="true" :border-radius="4" status="info">
+              <template #default>参与度: {{ classDetailData.active_rate.toFixed(1) }}%</template>
+            </n-progress>
+          </n-space>
+        </n-card>
+
+        <n-flex justify="center" style="margin-top: 12px">
+          <n-tag type="success" size="large">
+            综合分: {{ classDetailData.composite_score.toFixed(1) }}
+          </n-tag>
+        </n-flex>
+      </n-flex>
+      <n-empty v-else-if="!classDetailLoading" description="暂无数据" style="padding: 40px 0" />
+    </n-spin>
+  </n-modal>
 </template>
 
 <style scoped></style>
