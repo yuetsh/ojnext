@@ -363,7 +363,7 @@ function renderWordCloud() {
           color: words.map(
             (_, i) => WORD_COLORS[i % WORD_COLORS.length],
           ),
-          rotate: 0,
+          rotate: words.map(() => 0),
         } as any,
       ],
     },
