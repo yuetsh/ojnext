@@ -64,18 +64,17 @@ function optionType(idx: number): "default" | "primary" | "success" {
 
 <template>
   <n-card
-    size="small"
     style="margin: 16px 0; border: 1.5px solid var(--n-border-color)"
   >
     <template #header>
       <n-space align="center" :size="8">
-        <n-tag type="success" size="small" :bordered="false">
+        <n-tag type="success" :bordered="false">
           练一练 · {{ isSingle ? "单选题" : "多选题" }}
         </n-tag>
       </n-space>
     </template>
 
-    <p style="font-weight: 500; margin-bottom: 12px">{{ data.question }}</p>
+    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px">{{ data.question }}</p>
 
     <n-space vertical :size="8">
       <n-button
@@ -113,13 +112,12 @@ function optionType(idx: number): "default" | "primary" | "success" {
     <n-space style="margin-top: 12px" :size="8">
       <n-button
         type="primary"
-        size="small"
         :disabled="selected.size === 0 || correct"
         @click="submit"
       >
         提交
       </n-button>
-      <n-button size="small" @click="reset">重置</n-button>
+      <n-button @click="reset">重置</n-button>
     </n-space>
   </n-card>
 </template>

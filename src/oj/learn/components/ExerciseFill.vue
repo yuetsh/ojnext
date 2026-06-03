@@ -86,16 +86,15 @@ function inputWidth(idx: number): string {
 
 <template>
   <n-card
-    size="small"
     style="margin: 16px 0; border: 1.5px solid var(--n-border-color)"
   >
     <template #header>
-      <n-tag type="warning" size="small" :bordered="false"
+      <n-tag type="warning" :bordered="false"
         >练一练 · 代码填空</n-tag
       >
     </template>
 
-    <p style="font-weight: 500; margin-bottom: 12px">{{ data.question }}</p>
+    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px">{{ data.question }}</p>
 
     <pre
       :style="{
@@ -148,13 +147,12 @@ function inputWidth(idx: number): string {
     <n-space style="margin-top: 12px" :size="8">
       <n-button
         type="warning"
-        size="small"
         :disabled="allCorrect"
         @click="submit"
       >
         提交
       </n-button>
-      <n-button size="small" @click="reset">重置</n-button>
+      <n-button @click="reset">重置</n-button>
     </n-space>
   </n-card>
 </template>
