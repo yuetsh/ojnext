@@ -353,6 +353,20 @@ export function getFlowchartSubmissions(params: {
   return http.get("flowchart/submissions", { params })
 }
 
+export function getFlowchartStatistics(
+  duration: { start?: string; end: string },
+  problemID?: string,
+  username?: string,
+) {
+  return http.get("admin/flowchart/statistics", {
+    params: {
+      ...duration,
+      problem_id: problemID,
+      username,
+    },
+  })
+}
+
 export function retryFlowchartSubmission(submissionId: string) {
   return http.post("flowchart/submission/retry", {
     submission_id: submissionId,

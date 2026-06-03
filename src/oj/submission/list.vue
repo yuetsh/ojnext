@@ -22,6 +22,7 @@ import { LANGUAGE_SHOW_VALUE } from "utils/constants"
 import { renderTableTitle } from "utils/renders"
 import ButtonWithSearch from "./components/ButtonWithSearch.vue"
 import StatisticsPanel from "shared/components/StatisticsPanel.vue"
+import FlowchartStatisticsPanel from "shared/components/FlowchartStatisticsPanel.vue"
 import SubmissionLink from "./components/SubmissionLink.vue"
 import SubmissionDetail from "./detail.vue"
 import Grade from "./components/Grade.vue"
@@ -448,9 +449,14 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
     preset="card"
     :style="{ maxWidth: isDesktop && '800px', maxHeight: '80vh' }"
     :content-style="{ overflow: 'auto' }"
-    title="提交记录的统计"
+    :title="query.language === 'Flowchart' ? '流程图提交的统计' : '提交记录的统计'"
   >
-    <StatisticsPanel :problem="query.problem" :username="query.username" />
+    <FlowchartStatisticsPanel
+      v-if="query.language === 'Flowchart'"
+      :problem="query.problem"
+      :username="query.username"
+    />
+    <StatisticsPanel v-else :problem="query.problem" :username="query.username" />
   </n-modal>
   <n-modal
     v-model:show="codePanel"

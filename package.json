@@ -26,6 +26,7 @@
     "axios": "^1.16.1",
     "canvas-confetti": "^1.9.4",
     "chart.js": "^4.5.1",
+    "chartjs-chart-wordcloud": "^4.4.5",
     "client-zip": "^2.5.0",
     "codemirror": "^6.0.2",
     "copy-text-to-clipboard": "^3.2.2",
