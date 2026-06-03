@@ -33,38 +33,38 @@
     <n-divider style="margin: 16px 0" />
     <n-flex justify="space-around">
       <div class="stat-item">
-        <div class="stat-label">总提交</div>
+        <n-text>总提交</n-text>
         <n-gradient-text type="info" font-size="28">{{
           count.total
         }}</n-gradient-text>
       </div>
       <div class="stat-item">
-        <div class="stat-label">正确提交</div>
+        <n-text>正确提交</n-text>
         <n-gradient-text type="primary" font-size="28">{{
           count.accepted
         }}</n-gradient-text>
       </div>
       <div class="stat-item">
-        <div class="stat-label">正确率</div>
+        <n-text>正确率</n-text>
         <n-gradient-text type="warning" font-size="28">{{
           count.rate
         }}</n-gradient-text>
       </div>
       <template v-if="person.count > 0">
         <div class="stat-item">
-          <div class="stat-label">完成人数</div>
+          <n-text>完成人数</n-text>
           <n-gradient-text type="error" font-size="28">{{
             list.length
           }}</n-gradient-text>
         </div>
         <div class="stat-item">
-          <div class="stat-label">班级人数</div>
+          <n-text>班级人数</n-text>
           <n-gradient-text type="warning" font-size="28">{{
             adjustedPersonCount
           }}</n-gradient-text>
         </div>
         <div class="stat-item">
-          <div class="stat-label">完成度</div>
+          <n-text>完成度</n-text>
           <n-gradient-text type="success" font-size="28">{{
             adjustedPersonRate
           }}</n-gradient-text>
@@ -466,9 +466,5 @@ function rowProps(row: UserStatistic) {
   flex-direction: column;
   align-items: center;
   gap: 4px;
-}
-.stat-label {
-  font-size: 13px;
-  color: var(--n-text-color-3, #999);
 }
 </style>
