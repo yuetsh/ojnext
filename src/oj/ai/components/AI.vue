@@ -10,7 +10,7 @@
         <template v-if="aiStore.pinnedReport">
           <MdPreview :model-value="aiStore.pinnedReport.analysis" />
         </template>
-        <template v-else>
+        <template v-else-if="!aiStore.loading.pinned">
           <n-button
             v-if="!aiStore.mdContent && !aiStore.loading.ai"
             type="primary"
@@ -43,12 +43,6 @@ async function handleAnalyze() {
   }
   await aiStore.fetchAIAnalysis()
 }
-
-onMounted(async () => {
-  if (!aiStore.targetUsername) {
-    await aiStore.fetchPinnedReport()
-  }
-})
 </script>
 <style scoped>
 .cool-title {
