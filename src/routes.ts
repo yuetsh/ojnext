@@ -1,4 +1,4 @@
-import { RouteRecordRaw } from "vue-router"
+import type { RouteRecordRaw } from "vue-router"
 
 export const ojs: RouteRecordRaw = {
   path: "/",
@@ -313,6 +313,12 @@ export const admins: RouteRecordRaw = {
       name: "admin problemset detail",
       component: () => import("admin/problemset/detail.vue"),
       props: true,
+      meta: { requiresTeacherAdmin: true },
+    },
+    {
+      path: "ai/reports",
+      name: "admin ai reports",
+      component: () => import("admin/ai/list.vue"),
       meta: { requiresTeacherAdmin: true },
     },
   ],

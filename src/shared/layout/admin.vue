@@ -58,6 +58,15 @@ const options = computed<MenuOption[]>(() => {
           ),
         key: "admin problemset list",
       },
+      {
+        label: () =>
+          h(
+            RouterLink,
+            { to: "/admin/ai/reports" },
+            { default: () => "AI报告" },
+          ),
+        key: "admin ai reports",
+      },
     )
   }
 
@@ -132,6 +141,15 @@ const options = computed<MenuOption[]>(() => {
           ),
         key: "admin tutorial list",
       },
+      {
+        label: () =>
+          h(
+            RouterLink,
+            { to: "/admin/ai/reports" },
+            { default: () => "AI报告" },
+          ),
+        key: "admin ai reports",
+      },
     )
   }
 
@@ -152,6 +170,7 @@ const active = computed(() => {
   if (path.startsWith("/admin/comment")) return "admin comment list"
   if (path.startsWith("/admin/announcement")) return "admin announcement list"
   if (path.startsWith("/admin/tutorial")) return "admin tutorial list"
+  if (path.startsWith("/admin/ai")) return "admin ai reports"
   return route.name as string
 })
 

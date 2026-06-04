@@ -490,3 +490,14 @@ export function getTopACTrend(params: {
 }) {
   return http.get("admin/problem/top_ac_trend", { params })
 }
+
+// AI 学习分析报告
+export function getAIReportList(offset = 0, limit = 10, username = "") {
+  return http.get("admin/ai/reports", {
+    params: { paging: true, offset, limit, username: username || undefined },
+  })
+}
+
+export function getAIReportDetail(id: number) {
+  return http.get("admin/ai/reports", { params: { id } })
+}
