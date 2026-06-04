@@ -24,7 +24,6 @@ export const useAIStore = defineStore("ai", () => {
     fetching: false, // 合并 details 和 duration 的 loading
     ai: false,
     heatmap: false,
-    pinned: true,
   })
 
   const mdContent = ref("")
@@ -159,13 +158,8 @@ export const useAIStore = defineStore("ai", () => {
   }
 
   async function fetchPinnedReport() {
-    loading.pinned = true
-    try {
-      const res = await getAIPinnedReport()
-      pinnedReport.value = res.data
-    } finally {
-      loading.pinned = false
-    }
+    const res = await getAIPinnedReport()
+    pinnedReport.value = res.data
   }
 
   return {

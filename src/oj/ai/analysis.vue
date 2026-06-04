@@ -109,9 +109,6 @@ function onUsernameChange() {
 
 onMounted(() => {
   aiStore.fetchHeatmapData()
-  if (!aiStore.targetUsername) {
-    aiStore.fetchPinnedReport()
-  }
 })
 
 watch(
