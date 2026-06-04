@@ -7,24 +7,19 @@
     </template>
     <n-spin :show="aiStore.loading.ai" :delay="50">
       <n-flex align="center" justify="center" class="container">
-        <template v-if="aiStore.pinnedReport">
-          <MdPreview :model-value="aiStore.pinnedReport.analysis" />
-        </template>
-        <template v-else>
-          <n-button
-            v-if="!aiStore.mdContent && !aiStore.loading.ai"
-            type="primary"
-            size="large"
-            :loading="aiStore.loading.fetching"
-            @click="handleAnalyze"
-          >
-            <template #icon>
-              <Icon icon="mingcute:ai-line" />
-            </template>
-            开始分析
-          </n-button>
-          <MdPreview v-else :model-value="aiStore.mdContent" />
-        </template>
+        <n-button
+          v-if="!aiStore.mdContent && !aiStore.loading.ai"
+          type="primary"
+          size="large"
+          :loading="aiStore.loading.fetching"
+          @click="handleAnalyze"
+        >
+          <template #icon>
+            <Icon icon="mingcute:ai-line" />
+          </template>
+          开始分析
+        </n-button>
+        <MdPreview v-else :model-value="aiStore.mdContent" />
       </n-flex>
     </n-spin>
   </n-card>
@@ -41,7 +36,11 @@ async function handleAnalyze() {
   if (aiStore.loading.fetching || aiStore.loading.ai) {
     return
   }
-  await aiStore.fetchAIAnalysis()
+  if (aiStore.pinnedReport) {
+    await aiStore.simulatePinnedStream()
+  } else {
+    await aiStore.fetchAIAnalysis()
+  }
 }
 
 onMounted(async () => {

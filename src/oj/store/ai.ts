@@ -162,11 +162,35 @@ export const useAIStore = defineStore("ai", () => {
     pinnedReport.value = res.data
   }
 
+  async function simulatePinnedStream() {
+    if (!pinnedReport.value) return
+    const text = pinnedReport.value.analysis
+    mdContent.value = ""
+    loading.ai = true
+    const CHUNK = 6
+    const DELAY = 18
+    await new Promise<void>((resolve) => {
+      let i = 0
+      function step() {
+        if (i >= text.length) {
+          loading.ai = false
+          resolve()
+          return
+        }
+        mdContent.value += text.slice(i, i + CHUNK)
+        i += CHUNK
+        setTimeout(step, DELAY)
+      }
+      step()
+    })
+  }
+
   return {
     fetchAnalysisData,
     fetchHeatmapData,
     fetchAIAnalysis,
     fetchPinnedReport,
+    simulatePinnedStream,
     durationData,
     detailsData,
     heatmapData,
