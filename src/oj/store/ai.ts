@@ -1,6 +1,6 @@
 import { DetailsData, DurationData } from "utils/types"
 import { consumeJSONEventStream } from "utils/stream"
-import { getAIDetailData, getAIDurationData, getAIHeatmapData } from "../api"
+import { getAIDetailData, getAIDurationData, getAIHeatmapData, getAIPinnedReport } from "../api"
 import { getCSRFToken } from "utils/functions"
 
 export const useAIStore = defineStore("ai", () => {
@@ -27,6 +27,7 @@ export const useAIStore = defineStore("ai", () => {
   })
 
   const mdContent = ref("")
+  const pinnedReport = ref<{ analysis: string } | null>(null)
 
   async function fetchDetailsData(start: string, end: string) {
     const res = await getAIDetailData(
@@ -156,10 +157,16 @@ export const useAIStore = defineStore("ai", () => {
     }
   }
 
+  async function fetchPinnedReport() {
+    const res = await getAIPinnedReport()
+    pinnedReport.value = res.data
+  }
+
   return {
     fetchAnalysisData,
     fetchHeatmapData,
     fetchAIAnalysis,
+    fetchPinnedReport,
     durationData,
     detailsData,
     heatmapData,
@@ -167,5 +174,6 @@ export const useAIStore = defineStore("ai", () => {
     targetUsername,
     loading,
     mdContent,
+    pinnedReport,
   }
 })

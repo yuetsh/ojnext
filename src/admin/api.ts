@@ -501,3 +501,11 @@ export function getAIReportList(offset = 0, limit = 10, username = "") {
 export function getAIReportDetail(id: number) {
   return http.get("admin/ai/reports", { params: { id } })
 }
+
+export function pinAIReport(id: number) {
+  return http.post("admin/ai/reports", { id })
+}
+
+export function getPinnedAIReports() {
+  return http.get("admin/ai/reports", { params: { pinned_only: "true" } })
+}

@@ -308,6 +308,10 @@ export function getAILoginSummary() {
   return http.get("ai/login_summary")
 }
 
+export function getAIPinnedReport() {
+  return http.get("ai/pinned")
+}
+
 // ==================== 相似题目推荐 ====================
 
 export function getSimilarProblems(problemId: string) {

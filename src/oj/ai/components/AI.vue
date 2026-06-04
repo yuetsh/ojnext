@@ -7,19 +7,24 @@
     </template>
     <n-spin :show="aiStore.loading.ai" :delay="50">
       <n-flex align="center" justify="center" class="container">
-        <n-button
-          v-if="!aiStore.mdContent && !aiStore.loading.ai"
-          type="primary"
-          size="large"
-          :loading="aiStore.loading.fetching"
-          @click="handleAnalyze"
-        >
-          <template #icon>
-            <Icon icon="mingcute:ai-line" />
-          </template>
-          开始分析
-        </n-button>
-        <MdPreview v-else :model-value="aiStore.mdContent" />
+        <template v-if="aiStore.pinnedReport">
+          <MdPreview :model-value="aiStore.pinnedReport.analysis" />
+        </template>
+        <template v-else>
+          <n-button
+            v-if="!aiStore.mdContent && !aiStore.loading.ai"
+            type="primary"
+            size="large"
+            :loading="aiStore.loading.fetching"
+            @click="handleAnalyze"
+          >
+            <template #icon>
+              <Icon icon="mingcute:ai-line" />
+            </template>
+            开始分析
+          </n-button>
+          <MdPreview v-else :model-value="aiStore.mdContent" />
+        </template>
       </n-flex>
     </n-spin>
   </n-card>
@@ -38,6 +43,12 @@ async function handleAnalyze() {
   }
   await aiStore.fetchAIAnalysis()
 }
+
+onMounted(async () => {
+  if (!aiStore.targetUsername) {
+    await aiStore.fetchPinnedReport()
+  }
+})
 </script>
 <style scoped>
 .cool-title {
