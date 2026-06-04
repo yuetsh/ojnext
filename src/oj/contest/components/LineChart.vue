@@ -34,188 +34,188 @@ interface Props {
 
 const props = defineProps<Props>()
 
+const PENALTY_SECONDS = 20 * 60
+
 const showChart = computed(() => {
   const hasRanks = props.ranks.length > 0
   const hasProblems = props.problems.length >= 3
   return hasProblems && hasRanks
 })
 
-// 预定义的颜色方案 - 更现代和可访问的颜色
 const colorPalette = [
-  "#3B82F6", // 蓝色
-  "#EF4444", // 红色
-  "#10B981", // 绿色
-  "#F59E0B", // 黄色
-  "#8B5CF6", // 紫色
-  "#EC4899", // 粉色
-  "#06B6D4", // 青色
-  "#84CC16", // 青绿色
-  "#F97316", // 橙色
-  "#6366F1", // 靛蓝色
+  "#3B82F6",
+  "#EF4444",
+  "#10B981",
+  "#F59E0B",
+  "#8B5CF6",
+  "#EC4899",
+  "#06B6D4",
+  "#84CC16",
+  "#F97316",
+  "#6366F1",
 ]
 
-// 数据处理函数
-const processChartData = () => {
-  if (!props.ranks || props.ranks.length === 0) {
-    return {
-      labels: [],
-      datasets: [],
-    }
-  }
-
-  // 获取前10名用户的数据
-  const topUsers = props.ranks.slice(0, 10)
-
-  // 获取所有题目ID（从所有用户的submission_info中收集）
-  const allProblemIds = new Set<string>()
-  topUsers.forEach((rank) => {
-    Object.keys(rank.submission_info).forEach((problemId) => {
-      allProblemIds.add(problemId)
-    })
-  })
-
-  // 按题目ID排序
-  const problemIds = Array.from(allProblemIds).sort()
-
-  // 创建题目标签
-  const labels = problemIds.map((id) => {
-    if (props.problems) {
-      const problem = props.problems.find((p) => p.id.toString() === id)
-      return problem ? problem.title : `题目${id}`
-    }
-    return `题目${id}`
-  })
-
-  // 找到所有用户中最早的提交时间
-  let earliestTime = Infinity
-  topUsers.forEach((rank) => {
-    Object.values(rank.submission_info).forEach((submissionInfo) => {
-      if (submissionInfo.is_ac && submissionInfo.ac_time < earliestTime) {
-        earliestTime = submissionInfo.ac_time
-      }
-    })
-  })
-
-  // 如果没有找到任何通过记录，使用0作为基准
-  if (earliestTime === Infinity) {
-    earliestTime = 0
-  }
-
-  // 为每个用户创建数据集
-  const datasets = topUsers.map((rank, userIndex) => {
-    const userData = problemIds.map((problemId) => {
-      const submissionInfo = rank.submission_info[problemId]
-      if (!submissionInfo || !submissionInfo.is_ac) {
-        return null
-      }
-      return submissionInfo.ac_time - earliestTime
-    })
-
-    const actualRank = userIndex + 1
-    const colorIndex = userIndex % colorPalette.length
-    const color = colorPalette[colorIndex]
-
-    return {
-      label: `第${actualRank}名: ${rank.user.username}`,
-      data: userData,
-      borderColor: color,
-      backgroundColor: color + "20",
-      tension: 0.3,
-      fill: false,
-      pointRadius: 6,
-      pointHoverRadius: 8,
-      pointBackgroundColor: color,
-      pointBorderColor: "#fff",
-      pointBorderWidth: 2,
-      spanGaps: false,
-    }
-  })
-
-  return {
-    labels,
-    datasets,
-  }
+function formatTime(seconds: number): string {
+  const h = Math.floor(seconds / 3600)
+  const m = Math.floor((seconds % 3600) / 60)
+  if (h > 0) return `${h}h${m}m`
+  return `${m}m`
 }
 
-// 监听数据变化，重新处理
-watch(
-  () => [props.ranks, props.problems],
-  () => {
-    if (props.ranks && props.ranks.length > 0) {
-      // 数据变化时重新处理
-    }
-  },
-  { deep: true, immediate: true },
-)
+interface AcEvent {
+  time: number
+  userIndex: number
+  problemId: string
+}
 
 const chartData = computed(() => {
-  return processChartData()
+  if (!props.ranks || props.ranks.length === 0) {
+    return { labels: [], datasets: [] }
+  }
+
+  const topUsers = props.ranks.slice(0, 10)
+
+  // 收集所有AC事件并按时间排序
+  const events: AcEvent[] = []
+  topUsers.forEach((rank, userIndex) => {
+    Object.entries(rank.submission_info).forEach(([problemId, info]) => {
+      if (info.is_ac) {
+        events.push({ time: info.ac_time, userIndex, problemId })
+      }
+    })
+  })
+  events.sort((a, b) => a.time - b.time)
+
+  if (events.length === 0) {
+    return { labels: [], datasets: [] }
+  }
+
+  // 在每个时间点计算所有人的排名
+  // 状态: 每个用户当前已AC题数和罚时
+  const userState = topUsers.map(() => ({
+    solved: 0,
+    penalty: 0,
+  }))
+
+  // 用于记录每个用户每道题的错误次数
+  const userErrors: Map<string, number>[] = topUsers.map(() => new Map())
+  topUsers.forEach((rank, i) => {
+    Object.entries(rank.submission_info).forEach(([problemId, info]) => {
+      if (info.error_number > 0) {
+        userErrors[i].set(problemId, info.error_number)
+      }
+    })
+  })
+
+  function calcRanks(): number[] {
+    const indexed = userState.map((s, i) => ({ ...s, i }))
+    indexed.sort((a, b) => {
+      if (b.solved !== a.solved) return b.solved - a.solved
+      return a.penalty - b.penalty
+    })
+    const ranks = new Array(topUsers.length).fill(0)
+    indexed.forEach((item, pos) => {
+      ranks[item.i] = pos + 1
+    })
+    return ranks
+  }
+
+  // 时间轴上的数据点: [时间标签, 各用户排名]
+  const timePoints: number[] = [0]
+  const rankSnapshots: number[][] = [calcRanks()]
+
+  // 按时间处理事件（合并同一时刻的事件）
+  let i = 0
+  while (i < events.length) {
+    const currentTime = events[i].time
+    // 处理同一时刻的所有事件
+    while (i < events.length && events[i].time === currentTime) {
+      const ev = events[i]
+      userState[ev.userIndex].solved++
+      const errors = userErrors[ev.userIndex].get(ev.problemId) || 0
+      userState[ev.userIndex].penalty =
+        userState[ev.userIndex].penalty + ev.time + errors * PENALTY_SECONDS
+      i++
+    }
+    timePoints.push(currentTime)
+    rankSnapshots.push(calcRanks())
+  }
+
+  const labels = timePoints.map((t) => formatTime(t))
+
+  const datasets = topUsers.map((rank, userIndex) => {
+    const color = colorPalette[userIndex % colorPalette.length]
+    const finalRank = rankSnapshots[rankSnapshots.length - 1][userIndex]
+    return {
+      label: `#${finalRank} ${rank.user.username}`,
+      data: rankSnapshots.map((snapshot) => snapshot[userIndex]),
+      borderColor: color,
+      backgroundColor: color,
+      tension: 0.3,
+      fill: false,
+      pointRadius: 3,
+      pointHoverRadius: 6,
+      pointBackgroundColor: color,
+      pointBorderColor: "#fff",
+      pointBorderWidth: 1,
+      borderWidth: 2.5,
+    }
+  })
+
+  return { labels, datasets }
 })
 
 const chartOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
+  interaction: {
+    mode: "index" as const,
+    intersect: false,
+  },
   plugins: {
     legend: {
       display: true,
       position: "top" as const,
       maxHeight: 80,
       labels: {
-        boxWidth: 12,
-        boxHeight: 12,
-        padding: 8,
-        usePointStyle: true,
-        font: {
-          size: 11,
-        },
+        boxWidth: 14,
+        boxHeight: 3,
+        padding: 10,
+        font: { size: 12 },
       },
     },
     tooltip: {
       mode: "index" as const,
       intersect: false,
+      itemSort: (a: any, b: any) => a.parsed.y - b.parsed.y,
       callbacks: {
-        title: function (context: any) {
-          return `题目: ${context[0].label}`
-        },
-        label: function (context: any) {
-          const value = context.parsed.y
-          const label = context.dataset.label
-
-          if (value === null) {
-            return `${label}: 未通过`
-          }
-
-          const hours = Math.floor(value / 3600)
-          const minutes = Math.floor((value % 3600) / 60)
-          const seconds = Math.floor(value % 60)
-
-          let timeStr = ""
-          if (hours > 0) timeStr += `${hours}小时`
-          if (minutes > 0) timeStr += `${minutes}分钟`
-          if (seconds > 0 || timeStr === "") timeStr += `${seconds}秒`
-
-          return `${label}: +${timeStr}`
+        title: (context: any) => `比赛进行: ${context[0].label}`,
+        label: (context: any) => {
+          const rank = context.parsed.y
+          const name = context.dataset.label
+          return `  第${rank}名 — ${name}`
         },
       },
     },
   },
   scales: {
+    x: {
+      title: {
+        display: true,
+        text: "比赛时间",
+      },
+    },
     y: {
       title: {
         display: true,
-        text: "相对通过时间",
+        text: "排名",
       },
-      min: 0,
+      reverse: true,
+      min: 1,
+      max: 10,
       ticks: {
-        callback: function (value: any) {
-          const hours = Math.floor(value / 3600)
-          const minutes = Math.floor((value % 3600) / 60)
-          const seconds = Math.floor(value % 60)
-
-          if (hours > 0) return `+${hours}h${minutes}m`
-          if (minutes > 0) return `+${minutes}m${seconds}s`
-          return `+${seconds}s`
-        },
+        stepSize: 1,
+        callback: (value: any) => `第${value}名`,
       },
     },
   },
@@ -224,7 +224,7 @@ const chartOptions = computed(() => ({
 
 <style scoped>
 .chart {
-  height: 500px;
+  height: 420px;
   width: 100%;
   margin-bottom: 24px;
 }
