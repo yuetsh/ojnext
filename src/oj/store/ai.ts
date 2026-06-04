@@ -166,14 +166,12 @@ export const useAIStore = defineStore("ai", () => {
     if (!pinnedReport.value) return
     const text = pinnedReport.value.analysis
     mdContent.value = ""
-    loading.ai = true
     const CHUNK = 6
     const DELAY = 18
     await new Promise<void>((resolve) => {
       let i = 0
       function step() {
         if (i >= text.length) {
-          loading.ai = false
           resolve()
           return
         }
