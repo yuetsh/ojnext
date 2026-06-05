@@ -64,6 +64,7 @@ interface ReportItem {
 
 interface ReportDetail extends ReportItem {
   analysis: string
+  class_name: string | null
 }
 
 const reports = ref<ReportItem[]>([])
