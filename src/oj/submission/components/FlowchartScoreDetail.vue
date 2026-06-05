@@ -1,36 +1,45 @@
 <template>
   <n-grid v-if="submission" :cols="5" :x-gap="16">
     <!-- 左侧：流程图预览区域 -->
-    <n-gi :span="showLargeImage ? 5 : 3">
+    <n-gi :span="3">
       <n-card title="流程图预览">
         <template #header-extra>
           <n-button
             v-if="!renderError && submission?.mermaid_code"
             quaternary
             size="small"
-            @click="showLargeImage = !showLargeImage"
+            @click="showLargeImage = true"
           >
             <template #icon>
-              <Icon
-                :icon="
-                  showLargeImage ? 'mdi:fullscreen-exit' : 'mdi:fullscreen'
-                "
-              />
+              <Icon icon="mdi:fullscreen" />
             </template>
-            {{ showLargeImage ? "退出大图" : "查看大图" }}
+            查看大图
           </n-button>
         </template>
         <div class="flowchart">
           <n-alert v-if="renderError" type="error" title="流程图渲染失败">
             {{ renderError }}
           </n-alert>
-          <div class="flowchart" v-else ref="mermaidContainer"></div>
+          <Teleport v-else to="body" :disabled="!showLargeImage">
+            <div
+              :class="['flowchart', { 'flowchart-fullscreen': showLargeImage }]"
+              ref="mermaidContainer"
+            ></div>
+            <div v-if="showLargeImage" class="fullscreen-toolbar">
+              <n-button secondary round @click="showLargeImage = false">
+                <template #icon>
+                  <Icon icon="mdi:fullscreen-exit" />
+                </template>
+                退出大图
+              </n-button>
+            </div>
+          </Teleport>
         </div>
       </n-card>
     </n-gi>
 
     <!-- 右侧：评分详情区域 -->
-    <n-gi v-if="!showLargeImage" :span="2">
+    <n-gi :span="2">
       <!-- AI反馈 -->
       <n-card
         v-if="submission.ai_feedback"
@@ -137,6 +146,7 @@ function getPercentType(percent: number) {
 
 async function loadSubmission() {
   if (!props.submissionId) return
+  showLargeImage.value = false
   loading.value = true
   try {
     const { getFlowchartSubmission } = await import("oj/api")
@@ -169,6 +179,25 @@ watch(() => props.submissionId, loadSubmission, { immediate: true })
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* 全屏大图：覆盖整个视口，脱离弹框宽度限制 */
+.flowchart-fullscreen {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+  width: 100vw;
+  height: 100vh;
+  padding: 32px;
+  box-sizing: border-box;
+  background: #ffffff;
+}
+
+.fullscreen-toolbar {
+  position: fixed;
+  top: 16px;
+  right: 16px;
+  z-index: 4001;
 }
 
 /* 确保 SVG 图表占满容器 */
