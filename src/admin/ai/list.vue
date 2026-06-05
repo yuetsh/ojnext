@@ -19,7 +19,7 @@
         closable
         @close="togglePin(r)"
       >
-        {{ r.username }}{{ r.class_name ? `（${r.class_name}）` : "" }}
+        {{ r.username }}
       </n-tag>
     </n-flex>
   </n-alert>
@@ -58,7 +58,7 @@ interface ReportItem {
   id: number
   create_time: string
   username: string
-  class_name: string | null
+  analysis_excerpt: string
   is_pinned: boolean
 }
 
@@ -84,7 +84,11 @@ const columns: DataTableColumn<ReportItem>[] = [
     render: (row) =>
       h("span", { style: row.is_pinned ? "font-weight:600" : "" }, row.username),
   },
-  { title: "班级", key: "class_name", width: 150, render: (row) => row.class_name || "-" },
+  {
+    title: "AI 分析内容",
+    key: "analysis_excerpt",
+    render: (row) => row.analysis_excerpt || "-",
+  },
   {
     title: "生成时间",
     key: "create_time",
