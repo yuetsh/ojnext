@@ -96,6 +96,7 @@ async function listSubmissions() {
       myself: query.myself,
       offset,
       limit: query.limit,
+      today: query.today,
     })
     total.value = res.data.total
     flowcharts.value = res.data.results
@@ -114,7 +115,7 @@ async function listSubmissions() {
 }
 
 async function getTodayCount() {
-  const res = await getTodaySubmissionCount()
+  const res = await getTodaySubmissionCount(query.language)
   todayCount.value = res.data
 }
 
@@ -190,6 +191,14 @@ watch(
     query.today,
   ],
   listSubmissions,
+)
+
+// 切换语言时刷新今日提交数（流程图与代码分别统计）
+watch(
+  () => query.language,
+  () => {
+    if (route.name === "submissions") getTodayCount()
+  },
 )
 
 const columns = computed(() => {
@@ -449,14 +458,20 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
     preset="card"
     :style="{ maxWidth: isDesktop && '800px', maxHeight: '80vh' }"
     :content-style="{ overflow: 'auto' }"
-    :title="query.language === 'Flowchart' ? '流程图提交的统计' : '提交记录的统计'"
+    :title="
+      query.language === 'Flowchart' ? '流程图提交的统计' : '提交记录的统计'
+    "
   >
     <FlowchartStatisticsPanel
       v-if="query.language === 'Flowchart'"
       :problem="query.problem"
       :username="query.username"
     />
-    <StatisticsPanel v-else :problem="query.problem" :username="query.username" />
+    <StatisticsPanel
+      v-else
+      :problem="query.problem"
+      :username="query.username"
+    />
   </n-modal>
   <n-modal
     v-model:show="codePanel"

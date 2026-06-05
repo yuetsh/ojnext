@@ -105,8 +105,8 @@ export function getRankOfProblem(problem_id: string) {
   return http.get("user_problem_rank", { params: { problem_id: problem_id } })
 }
 
-export function getTodaySubmissionCount() {
-  return http.get("submissions/today_count")
+export function getTodaySubmissionCount(language?: string) {
+  return http.get("submissions/today_count", { params: { language } })
 }
 
 export function adminRejudge(id: string) {
@@ -353,6 +353,7 @@ export function getFlowchartSubmissions(params: {
   myself?: string
   offset?: number
   limit?: number
+  today?: string
 }) {
   return http.get("flowchart/submissions", { params })
 }
