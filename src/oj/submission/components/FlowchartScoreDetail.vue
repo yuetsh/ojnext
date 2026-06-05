@@ -191,6 +191,9 @@ watch(() => props.submissionId, loadSubmission, { immediate: true })
   padding: 32px;
   box-sizing: border-box;
   background: #ffffff;
+  /* 改为可滚动块布局，超出视口的大图可以滚动查看 */
+  display: block;
+  overflow: auto;
 }
 
 .fullscreen-toolbar {
@@ -203,6 +206,15 @@ watch(() => props.submissionId, loadSubmission, { immediate: true })
 /* 确保 SVG 图表占满容器 */
 :deep(.flowchart > svg) {
   height: 100%;
+}
+
+/* 全屏时按自然尺寸显示并水平居中，配合容器滚动 */
+:deep(.flowchart-fullscreen > svg) {
+  display: block;
+  margin: 0 auto;
+  width: auto;
+  height: auto;
+  max-width: none;
 }
 
 .loading-container {

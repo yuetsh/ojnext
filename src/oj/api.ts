@@ -320,6 +320,7 @@ export function getFlowchartSubmissions(params: {
   offset?: number
   limit?: number
   today?: string
+  grade?: string
 }) {
   return http.get("flowchart/submissions", { params })
 }

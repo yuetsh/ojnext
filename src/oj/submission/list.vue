@@ -79,6 +79,14 @@ const resultOptions: SelectOption[] = [
   { label: "运行时错误", value: "4" },
 ]
 
+const gradeOptions: SelectOption[] = [
+  { label: "全部", value: "" },
+  { label: "S级", value: "S" },
+  { label: "A级", value: "A" },
+  { label: "B级", value: "B" },
+  { label: "C级", value: "C" },
+]
+
 const languageOptions: SelectOption[] = [
   { label: "流程图", value: "Flowchart" },
   { label: "全部语言", value: "" },
@@ -97,6 +105,7 @@ async function listSubmissions() {
       offset,
       limit: query.limit,
       today: query.today,
+      grade: query.result,
     })
     total.value = res.data.total
     flowcharts.value = res.data.results
@@ -193,10 +202,11 @@ watch(
   listSubmissions,
 )
 
-// 切换语言时刷新今日提交数（流程图与代码分别统计）
+// 切换语言时重置过滤条件，刷新今日提交数
 watch(
   () => query.language,
   () => {
+    query.result = ""
     if (route.name === "submissions") getTodayCount()
   },
 )
@@ -364,12 +374,11 @@ const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
             :options="languageOptions"
           />
         </n-form-item>
-        <n-form-item label="状态">
+        <n-form-item :label="query.language === 'Flowchart' ? '等级' : '状态'">
           <n-select
-            :disabled="query.language === 'Flowchart'"
             class="select"
             v-model:value="query.result"
-            :options="resultOptions"
+            :options="query.language === 'Flowchart' ? gradeOptions : resultOptions"
           />
         </n-form-item>
       </n-form>
