@@ -521,19 +521,39 @@ watch(
       <n-flex v-if="classDetailData" vertical :size="12">
         <n-grid :cols="5" :x-gap="8" responsive="screen">
           <n-gi>
-            <n-statistic label="总AC数" :value="classDetailData.total_ac" size="large" />
+            <n-statistic label="总AC数" :value="classDetailData.total_ac" size="large" class="stat-total-ac">
+              <template #suffix>
+                <Icon icon="streamline-emojis:raised-fist-1" width="20" />
+              </template>
+            </n-statistic>
           </n-gi>
           <n-gi>
-            <n-statistic label="平均AC数" :value="classDetailData.avg_ac.toFixed(2)" size="large" />
+            <n-statistic label="平均AC数" :value="classDetailData.avg_ac.toFixed(2)" size="large" class="stat-avg-ac">
+              <template #suffix>
+                <Icon icon="streamline-emojis:chart" width="20" />
+              </template>
+            </n-statistic>
           </n-gi>
           <n-gi>
-            <n-statistic label="中位数AC" :value="classDetailData.median_ac.toFixed(2)" size="large" />
+            <n-statistic label="中位数AC数" :value="classDetailData.median_ac.toFixed(2)" size="large" class="stat-median-ac">
+              <template #suffix>
+                <Icon icon="streamline-emojis:target" width="20" />
+              </template>
+            </n-statistic>
           </n-gi>
           <n-gi>
-            <n-statistic label="总提交数" :value="classDetailData.total_submission" size="large" />
+            <n-statistic label="总提交数" :value="classDetailData.total_submission" size="large" class="stat-total-submission">
+              <template #suffix>
+                <Icon icon="streamline-emojis:paper" width="20" />
+              </template>
+            </n-statistic>
           </n-gi>
           <n-gi>
-            <n-statistic label="AC率" :value="classDetailData.ac_rate.toFixed(1) + '%'" size="large" />
+            <n-statistic label="AC率" :value="classDetailData.ac_rate.toFixed(1) + '%'" size="large" class="stat-ac-rate">
+              <template #suffix>
+                <Icon icon="streamline-emojis:check-mark" width="20" />
+              </template>
+            </n-statistic>
           </n-gi>
         </n-grid>
 
@@ -591,4 +611,49 @@ watch(
   </n-modal>
 </template>
 
-<style scoped></style>
+<style scoped>
+.stat-total-ac :deep(.n-statistic-value),
+.stat-total-ac :deep(.n-statistic-value__content),
+.stat-total-ac :deep(.n-number-animation),
+.stat-total-ac :deep(.n-statistic-value > *),
+.stat-total-ac :deep(.n-statistic-value span) {
+  color: #ff4d4f !important;
+  font-weight: 600;
+}
+
+.stat-avg-ac :deep(.n-statistic-value),
+.stat-avg-ac :deep(.n-statistic-value__content),
+.stat-avg-ac :deep(.n-number-animation),
+.stat-avg-ac :deep(.n-statistic-value > *),
+.stat-avg-ac :deep(.n-statistic-value span) {
+  color: #52c41a !important;
+  font-weight: 600;
+}
+
+.stat-median-ac :deep(.n-statistic-value),
+.stat-median-ac :deep(.n-statistic-value__content),
+.stat-median-ac :deep(.n-number-animation),
+.stat-median-ac :deep(.n-statistic-value > *),
+.stat-median-ac :deep(.n-statistic-value span) {
+  color: #fa8c16 !important;
+  font-weight: 600;
+}
+
+.stat-total-submission :deep(.n-statistic-value),
+.stat-total-submission :deep(.n-statistic-value__content),
+.stat-total-submission :deep(.n-number-animation),
+.stat-total-submission :deep(.n-statistic-value > *),
+.stat-total-submission :deep(.n-statistic-value span) {
+  color: #805ad5 !important;
+  font-weight: 600;
+}
+
+.stat-ac-rate :deep(.n-statistic-value),
+.stat-ac-rate :deep(.n-statistic-value__content),
+.stat-ac-rate :deep(.n-number-animation),
+.stat-ac-rate :deep(.n-statistic-value > *),
+.stat-ac-rate :deep(.n-statistic-value span) {
+  color: #00b894 !important;
+  font-weight: 600;
+}
+</style>
