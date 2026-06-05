@@ -449,16 +449,11 @@ const criteriaBarChartData = computed(() => {
   }
 })
 
-const barYMax = computed(() => {
-  const maxes = CRITERIA_ORDER.map((k) => data.criteria_averages[k]?.max ?? 0)
-  return Math.max(...maxes, 10)
-})
-
-const barOptions = computed(() => ({
+const barOptions = {
   responsive: true,
-  maintainAspectRatio: false,
+  aspectRatio: 1,
   scales: {
-    y: { beginAtZero: true, max: barYMax.value },
+    y: { beginAtZero: true },
   },
   plugins: {
     legend: { display: false },
@@ -473,7 +468,7 @@ const barOptions = computed(() => ({
       },
     },
   },
-}))
+}
 
 const WORD_COLORS = [
   "#2080f0",
