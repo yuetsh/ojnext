@@ -405,7 +405,9 @@ const flowchartColumns = computed(() => {
           <n-select
             class="select"
             v-model:value="query.result"
-            :options="query.language === 'Flowchart' ? gradeOptions : resultOptions"
+            :options="
+              query.language === 'Flowchart' ? gradeOptions : resultOptions
+            "
           />
         </n-form-item>
       </n-form>

@@ -437,31 +437,43 @@ const criteriaBarChartData = computed(() => {
       {
         label: "平均得分",
         data: labels.map((k) => data.criteria_averages[k]?.avg ?? 0),
-        backgroundColor: "rgba(32, 128, 240, 0.6)",
-        borderColor: "rgba(32, 128, 240, 1)",
+        backgroundColor: labels.map(
+          (_, i) => GRADE_COLORS[["S", "A", "B", "C"][i]].bg,
+        ),
+        borderColor: labels.map(
+          (_, i) => GRADE_COLORS[["S", "A", "B", "C"][i]].border,
+        ),
         borderWidth: 2,
-      },
-      {
-        label: "满分",
-        data: labels.map((k) => data.criteria_averages[k]?.max ?? 0),
-        backgroundColor: "rgba(200, 200, 200, 0.3)",
-        borderColor: "rgba(150, 150, 150, 0.8)",
-        borderWidth: 1,
       },
     ],
   }
 })
 
-const barOptions = {
+const barYMax = computed(() => {
+  const maxes = CRITERIA_ORDER.map((k) => data.criteria_averages[k]?.max ?? 0)
+  return Math.max(...maxes, 10)
+})
+
+const barOptions = computed(() => ({
   responsive: true,
   maintainAspectRatio: false,
   scales: {
-    y: { beginAtZero: true },
+    y: { beginAtZero: true, max: barYMax.value },
   },
   plugins: {
-    legend: { position: "bottom" as const },
+    legend: { display: false },
+    tooltip: {
+      callbacks: {
+        label(context: any) {
+          const key = context.label
+          const item = data.criteria_averages[key]
+          if (!item) return ""
+          return `${item.avg} / ${item.max}`
+        },
+      },
+    },
   },
-}
+}))
 
 const WORD_COLORS = [
   "#2080f0",
