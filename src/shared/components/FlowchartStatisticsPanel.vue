@@ -70,28 +70,36 @@
           <!-- 1. Grade pie chart -->
           <n-gi>
             <n-card title="等级分布">
-              <Doughnut :data="gradeChartData" :options="doughnutOptions" />
+              <div class="chart-container">
+                <Doughnut :data="gradeChartData" :options="doughnutOptions" />
+              </div>
             </n-card>
           </n-gi>
           <!-- 3. Completion doughnut -->
           <n-gi v-if="data.person_count > 0">
             <n-card title="班级完成度">
-              <Doughnut
-                :data="completionChartData"
-                :options="doughnutOptions"
-              />
+              <div class="chart-container">
+                <Doughnut
+                  :data="completionChartData"
+                  :options="doughnutOptions"
+                />
+              </div>
             </n-card>
           </n-gi>
           <!-- 2. Radar chart -->
           <n-gi v-if="hasRadarData">
             <n-card title="四维评分雷达图">
-              <Radar :data="radarChartData" :options="radarOptions" />
+              <div class="chart-container">
+                <Radar :data="radarChartData" :options="radarOptions" />
+              </div>
             </n-card>
           </n-gi>
           <!-- 4. Criteria bar chart (only when class exists, pairs with radar) -->
           <n-gi v-if="data.person_count > 0 && hasRadarData">
             <n-card title="各维度平均得分">
-              <Bar :data="criteriaBarChartData" :options="barOptions" />
+              <div class="chart-container">
+                <Bar :data="criteriaBarChartData" :options="barOptions" />
+              </div>
             </n-card>
           </n-gi>
           <!-- 4. Word cloud -->
@@ -488,7 +496,7 @@ function renderWordCloud() {
           label: "",
           data: words.map((w) => 10 + (w.count / maxCount) * 50),
           color: words.map((_, i) => WORD_COLORS[i % WORD_COLORS.length]),
-          rotate: words.map(() => 0),
+          rotate: 0,
         } as any,
       ],
     },
@@ -548,6 +556,11 @@ onUnmounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 4px;
+}
+
+.chart-container {
+  height: 280px;
+  position: relative;
 }
 
 .wordcloud-container {
