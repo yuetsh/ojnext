@@ -6,6 +6,7 @@ import {
   getFlowchartSubmissions,
   getSubmissions,
   getTodaySubmissionCount,
+  retryFlowchartSubmission,
 } from "oj/api"
 import { parseTime } from "utils/functions"
 import type {
@@ -147,6 +148,12 @@ function clear() {
 async function rejudge(submissionID: string) {
   await adminRejudge(submissionID)
   message.success("重新判分成功")
+  listSubmissions()
+}
+
+async function retryFlowchart(submissionId: string) {
+  await retryFlowchartSubmission(submissionId)
+  message.success("重新评分已提交")
   listSubmissions()
 }
 
@@ -300,61 +307,81 @@ const columns = computed(() => {
   return res
 })
 
-const flowchartColumns: DataTableColumn<FlowchartSubmissionListItem>[] = [
-  {
-    title: renderTableTitle("提交时间", "noto:seven-oclock"),
-    key: "create_time",
-    render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
-  },
-  {
-    title: renderTableTitle("提交编号", "fluent-emoji-flat:input-numbers"),
-    key: "id",
-    render: (row) =>
-      h(FlowchartLink, {
-        flowchart: row,
-        onShowDetail: (id: string) => showScoreDetail(id),
-      }),
-  },
-  {
-    title: renderTableTitle("题目", "streamline-emojis:blossom"),
-    key: "problem_title",
-    render: (row) =>
-      h(
-        ButtonWithSearch,
-        {
-          type: "题目",
-          onClick: () => problemClicked(row),
-          onSearch: () => (query.problem = row.problem),
-        },
-        () => `${row.problem} ${row.problem_title}`,
+const flowchartColumns = computed(() => {
+  const res: DataTableColumn<FlowchartSubmissionListItem>[] = [
+    {
+      title: renderTableTitle("提交时间", "noto:seven-oclock"),
+      key: "create_time",
+      render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
+    },
+    {
+      title: renderTableTitle("提交编号", "fluent-emoji-flat:input-numbers"),
+      key: "id",
+      render: (row) =>
+        h(FlowchartLink, {
+          flowchart: row,
+          onShowDetail: (id: string) => showScoreDetail(id),
+        }),
+    },
+    {
+      title: renderTableTitle("题目", "streamline-emojis:blossom"),
+      key: "problem_title",
+      render: (row) =>
+        h(
+          ButtonWithSearch,
+          {
+            type: "题目",
+            onClick: () => problemClicked(row),
+            onSearch: () => (query.problem = row.problem),
+          },
+          () => `${row.problem} ${row.problem_title}`,
+        ),
+    },
+    {
+      title: renderTableTitle("评分", "streamline-emojis:bar-chart"),
+      key: "ai_score",
+      render: (row) => h(Grade, { score: row.ai_score, grade: row.ai_grade }),
+    },
+    {
+      title: renderTableTitle(
+        "用户",
+        "streamline-emojis:smiling-face-with-sunglasses",
       ),
-  },
-  {
-    title: renderTableTitle("评分", "streamline-emojis:bar-chart"),
-    key: "ai_score",
-    render: (row) => h(Grade, { score: row.ai_score, grade: row.ai_grade }),
-  },
-  {
-    title: renderTableTitle(
-      "用户",
-      "streamline-emojis:smiling-face-with-sunglasses",
-    ),
-    key: "username",
-    minWidth: 200,
-    render: (row) =>
-      h(
-        ButtonWithSearch,
-        {
-          type: "用户",
-          username: row.username,
-          onClick: () => window.open("/user?name=" + row.username, "_blank"),
-          onSearch: () => (query.username = row.username),
-          onFilterClass: (classname: string) => (query.username = classname),
-        },
-        () => row.username,
-      ),
-  },
-]
+      key: "username",
+      minWidth: 200,
+      render: (row) =>
+        h(
+          ButtonWithSearch,
+          {
+            type: "用户",
+            username: row.username,
+            onClick: () => window.open("/user?name=" + row.username, "_blank"),
+            onSearch: () => (query.username = row.username),
+            onFilterClass: (classname: string) => (query.username = classname),
+          },
+          () => row.username,
+        ),
+    },
+  ]
+  if (!route.params.contestID && userStore.isTeacherOrAbove) {
+    res.push({
+      title: renderTableTitle("选项", "streamline-emojis:wrench"),
+      key: "retry",
+      render: (row) =>
+        h(
+          NButton,
+          {
+            quaternary: true,
+            size: "small",
+            type: "primary",
+            onClick: () => retryFlowchart(row.id),
+          },
+          () => "重新判题",
+        ),
+    })
+  }
+  return res
+})
 </script>
 <template>
   <n-flex vertical size="large">
