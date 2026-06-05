@@ -8,8 +8,14 @@
       style="width: 200px"
     />
   </n-flex>
-  <n-alert v-if="pinnedReports.length > 0" type="warning" :show-icon="true" style="margin-bottom: 12px">
-    以下 <strong>{{ pinnedReports.length }}</strong> 位用户的 AI 分析报告已被锁定，前台将固定显示该报告：
+  <n-alert
+    v-if="pinnedReports.length > 0"
+    type="warning"
+    :show-icon="true"
+    style="margin-bottom: 12px"
+  >
+    以下 <strong>{{ pinnedReports.length }}</strong> 位用户的 AI
+    分析报告已被锁定，前台将固定显示该报告：
     <n-flex style="margin-top: 8px" :wrap="true" :size="[8, 6]">
       <n-tag
         v-for="r in pinnedReports"
@@ -30,13 +36,24 @@
     v-model:page="query.page"
   />
 
-  <n-modal v-model:show="showModal" preset="card" title="分析报告详情" style="width: 800px; max-width: 95vw">
+  <n-modal
+    v-model:show="showModal"
+    preset="card"
+    title="分析报告详情"
+    style="width: 800px; max-width: 95vw"
+  >
     <n-spin :show="loadingDetail">
       <div v-if="detail" class="detail">
         <n-descriptions :column="2" bordered size="small" class="meta">
-          <n-descriptions-item label="用户">{{ detail.username }}</n-descriptions-item>
-          <n-descriptions-item label="班级">{{ detail.class_name || "-" }}</n-descriptions-item>
-          <n-descriptions-item label="时间" :span="2">{{ parseTime(detail.create_time, "YYYY-MM-DD HH:mm:ss") }}</n-descriptions-item>
+          <n-descriptions-item label="用户">{{
+            detail.username
+          }}</n-descriptions-item>
+          <n-descriptions-item label="班级">{{
+            detail.class_name || "-"
+          }}</n-descriptions-item>
+          <n-descriptions-item label="时间" :span="2">{{
+            parseTime(detail.create_time, "YYYY-MM-DD HH:mm:ss")
+          }}</n-descriptions-item>
         </n-descriptions>
         <n-scrollbar style="max-height: 60vh; margin-top: 12px">
           <MdPreview :model-value="detail.analysis" />
@@ -51,7 +68,12 @@ import { MdPreview } from "md-editor-v3"
 import "md-editor-v3/lib/preview.css"
 import Pagination from "shared/components/Pagination.vue"
 import { parseTime } from "utils/functions"
-import { getAIReportList, getAIReportDetail, pinAIReport, getPinnedAIReports } from "../api"
+import {
+  getAIReportList,
+  getAIReportDetail,
+  pinAIReport,
+  getPinnedAIReports,
+} from "../api"
 import { NButton, NTag } from "naive-ui"
 
 interface ReportItem {
@@ -83,7 +105,11 @@ const columns: DataTableColumn<ReportItem>[] = [
     key: "username",
     width: 150,
     render: (row) =>
-      h("span", { style: row.is_pinned ? "font-weight:600" : "" }, row.username),
+      h(
+        "span",
+        { style: row.is_pinned ? "font-weight:600" : "" },
+        row.username,
+      ),
   },
   {
     title: "AI 分析内容",
@@ -111,7 +137,11 @@ const columns: DataTableColumn<ReportItem>[] = [
     width: 160,
     render: (row) =>
       h("span", { style: "display:flex;gap:8px" }, [
-        h(NButton, { size: "small", type: "primary", onClick: () => openDetail(row.id) }, () => "查看"),
+        h(
+          NButton,
+          { size: "small", type: "primary", onClick: () => openDetail(row.id) },
+          () => "查看",
+        ),
         h(
           NButton,
           {
@@ -156,7 +186,10 @@ async function openDetail(id: number) {
 
 onMounted(() => Promise.all([listReports(), loadPinnedReports()]))
 watch(() => [query.page, query.limit], listReports)
-watchDebounced(() => query.username, listReports, { debounce: 500, maxWait: 1000 })
+watchDebounced(() => query.username, listReports, {
+  debounce: 500,
+  maxWait: 1000,
+})
 </script>
 
 <style scoped>

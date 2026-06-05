@@ -1,6 +1,11 @@
 import { DetailsData, DurationData } from "utils/types"
 import { consumeJSONEventStream } from "utils/stream"
-import { getAIDetailData, getAIDurationData, getAIHeatmapData, getAIPinnedReport } from "../api"
+import {
+  getAIDetailData,
+  getAIDurationData,
+  getAIHeatmapData,
+  getAIPinnedReport,
+} from "../api"
 import { getCSRFToken } from "utils/functions"
 
 export const useAIStore = defineStore("ai", () => {

@@ -1,4 +1,5 @@
 import http from "utils/http"
+import { toProblemListItem } from "admin/transforms"
 import type {
   AdminProblem,
   Announcement,
@@ -30,30 +31,21 @@ export async function getProblemList(
   contestID?: string,
 ) {
   const endpoint = !!contestID ? "admin/contest/problem" : "admin/problem"
-  const res = await http.get(endpoint, {
-    params: {
-      paging: true,
-      offset,
-      limit,
-      keyword,
-      author,
-      contest_id: contestID,
+  const res = await http.get<{ results: AdminProblem[]; total: number }>(
+    endpoint,
+    {
+      params: {
+        paging: true,
+        offset,
+        limit,
+        keyword,
+        author,
+        contest_id: contestID,
+      },
     },
-  })
+  )
   return {
-    results: res.data.results.map((result: AdminProblem) => ({
-      id: result.id,
-      _id: result._id,
-      title: result.title,
-      username: result.created_by.username,
-      create_time: result.create_time,
-      visible: result.visible,
-      difficulty: result.difficulty,
-      tags: result.tags,
-      has_ast_rules: result.has_ast_rules,
-      allow_flowchart: result.allow_flowchart,
-      show_flowchart: result.show_flowchart,
-    })),
+    results: res.data.results.map(toProblemListItem),
     total: res.data.total,
   }
 }
@@ -133,10 +125,10 @@ export function getContestList(offset = 0, limit = 10, keyword: string) {
 export async function uploadImage(file: File): Promise<string> {
   const form = new window.FormData()
   form.append("image", file)
-  const res: { success: boolean; file_path: string; msg: "Success" } =
-    await http.post("admin/upload_image", form, {
-      headers: { "content-type": "multipart/form-data" },
-    })
+  // 该端点不走 { error, data } 信封，直接返回上传结果
+  const res = (await http.post("admin/upload_image", form, {
+    headers: { "content-type": "multipart/form-data" },
+  })) as unknown as { success: boolean; file_path: string; msg: "Success" }
   return res.success ? res.file_path : ""
 }
 
@@ -244,17 +236,17 @@ export function deleteComment(id: number) {
 }
 
 export async function getTutorialList() {
-  const res = await http.get("admin/tutorial")
+  const res = await http.get<Tutorial[]>("admin/tutorial")
   return res.data
 }
 
 export async function getTutorial(id: number) {
-  const res = await http.get("admin/tutorial", { params: { id } })
+  const res = await http.get<Tutorial>("admin/tutorial", { params: { id } })
   return res.data
 }
 
 export async function createTutorial(data: Partial<Tutorial>) {
-  const res = await http.post("admin/tutorial", data)
+  const res = await http.post<Tutorial>("admin/tutorial", data)
   return res.data
 }
 
@@ -272,10 +264,10 @@ export function setTutorialVisibility(id: number, is_public: boolean) {
 }
 
 export async function getAdminExercises(tutorialId: number) {
-  const res = await http.get("admin/exercise", {
+  const res = await http.get<Exercise[]>("admin/exercise", {
     params: { tutorial_id: tutorialId },
   })
-  return res.data as Exercise[]
+  return res.data
 }
 
 export async function createExercise(data: {
@@ -284,8 +276,8 @@ export async function createExercise(data: {
   data: object
   order: number
 }) {
-  const res = await http.post("admin/exercise", data)
-  return res.data as Exercise
+  const res = await http.post<Exercise>("admin/exercise", data)
+  return res.data
 }
 
 export async function updateExercise(data: {

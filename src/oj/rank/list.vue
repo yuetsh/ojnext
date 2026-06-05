@@ -514,42 +514,71 @@ watch(
   <n-modal
     v-model:show="showClassDetailModal"
     preset="card"
-    :title="classDetailData ? `${classDetailData.class_name.slice(0, 2)}计算机${classDetailData.class_name.slice(2)}班` : '班级详情'"
+    :title="
+      classDetailData
+        ? `${classDetailData.class_name.slice(0, 2)}计算机${classDetailData.class_name.slice(2)}班`
+        : '班级详情'
+    "
     :style="{ width: '700px', maxWidth: '95vw' }"
   >
     <n-spin :show="classDetailLoading" style="min-height: 200px">
       <n-flex v-if="classDetailData" vertical :size="12">
         <n-grid :cols="5" :x-gap="8" responsive="screen">
           <n-gi>
-            <n-statistic label="总AC数" :value="classDetailData.total_ac" size="large" class="stat-total-ac">
+            <n-statistic
+              label="总AC数"
+              :value="classDetailData.total_ac"
+              size="large"
+              class="stat-total-ac"
+            >
               <template #suffix>
                 <Icon icon="streamline-emojis:raised-fist-1" width="20" />
               </template>
             </n-statistic>
           </n-gi>
           <n-gi>
-            <n-statistic label="平均AC数" :value="classDetailData.avg_ac.toFixed(2)" size="large" class="stat-avg-ac">
+            <n-statistic
+              label="平均AC数"
+              :value="classDetailData.avg_ac.toFixed(2)"
+              size="large"
+              class="stat-avg-ac"
+            >
               <template #suffix>
                 <Icon icon="streamline-emojis:chart" width="20" />
               </template>
             </n-statistic>
           </n-gi>
           <n-gi>
-            <n-statistic label="中位数AC数" :value="classDetailData.median_ac.toFixed(2)" size="large" class="stat-median-ac">
+            <n-statistic
+              label="中位数AC数"
+              :value="classDetailData.median_ac.toFixed(2)"
+              size="large"
+              class="stat-median-ac"
+            >
               <template #suffix>
                 <Icon icon="streamline-emojis:target" width="20" />
               </template>
             </n-statistic>
           </n-gi>
           <n-gi>
-            <n-statistic label="总提交数" :value="classDetailData.total_submission" size="large" class="stat-total-submission">
+            <n-statistic
+              label="总提交数"
+              :value="classDetailData.total_submission"
+              size="large"
+              class="stat-total-submission"
+            >
               <template #suffix>
                 <Icon icon="streamline-emojis:paper" width="20" />
               </template>
             </n-statistic>
           </n-gi>
           <n-gi>
-            <n-statistic label="AC率" :value="classDetailData.ac_rate.toFixed(1) + '%'" size="large" class="stat-ac-rate">
+            <n-statistic
+              label="AC率"
+              :value="classDetailData.ac_rate.toFixed(1) + '%'"
+              size="large"
+              class="stat-ac-rate"
+            >
               <template #suffix>
                 <Icon icon="streamline-emojis:check-mark" width="20" />
               </template>
@@ -559,43 +588,88 @@ watch(
 
         <n-divider style="margin: 12px 0" />
 
-        <n-descriptions bordered :column="2" size="small" label-placement="left">
+        <n-descriptions
+          bordered
+          :column="2"
+          size="small"
+          label-placement="left"
+        >
           <n-descriptions-item label="第一四分位数(Q1)">
-            <span style="color: #9254de; font-weight: 500">{{ classDetailData.q1_ac.toFixed(2) }}</span>
+            <span style="color: #9254de; font-weight: 500">{{
+              classDetailData.q1_ac.toFixed(2)
+            }}</span>
           </n-descriptions-item>
           <n-descriptions-item label="第三四分位数(Q3)">
-            <span style="color: #f759ab; font-weight: 500">{{ classDetailData.q3_ac.toFixed(2) }}</span>
+            <span style="color: #f759ab; font-weight: 500">{{
+              classDetailData.q3_ac.toFixed(2)
+            }}</span>
           </n-descriptions-item>
           <n-descriptions-item label="四分位距(IQR)">
-            <span style="color: #13c2c2; font-weight: 500">{{ classDetailData.iqr.toFixed(2) }}</span>
+            <span style="color: #13c2c2; font-weight: 500">{{
+              classDetailData.iqr.toFixed(2)
+            }}</span>
           </n-descriptions-item>
           <n-descriptions-item label="标准差">
-            <span style="color: #fa8c16; font-weight: 500">{{ classDetailData.std_dev.toFixed(2) }}</span>
+            <span style="color: #fa8c16; font-weight: 500">{{
+              classDetailData.std_dev.toFixed(2)
+            }}</span>
           </n-descriptions-item>
           <n-descriptions-item label="前10%均值">
-            <span style="color: #cf1322; font-weight: 600">{{ classDetailData.top_10_avg.toFixed(2) }}</span>
+            <span style="color: #cf1322; font-weight: 600">{{
+              classDetailData.top_10_avg.toFixed(2)
+            }}</span>
           </n-descriptions-item>
           <n-descriptions-item label="中间80%均值">
-            <span style="color: #389e0d; font-weight: 600">{{ classDetailData.middle_80_avg.toFixed(2) }}</span>
+            <span style="color: #389e0d; font-weight: 600">{{
+              classDetailData.middle_80_avg.toFixed(2)
+            }}</span>
           </n-descriptions-item>
           <n-descriptions-item label="后10%均值">
-            <span style="color: #096dd9; font-weight: 500">{{ classDetailData.bottom_10_avg.toFixed(2) }}</span>
+            <span style="color: #096dd9; font-weight: 500">{{
+              classDetailData.bottom_10_avg.toFixed(2)
+            }}</span>
           </n-descriptions-item>
           <n-descriptions-item label="人数">
-            <span style="color: #1890ff; font-weight: 600">{{ classDetailData.user_count }}</span>
+            <span style="color: #1890ff; font-weight: 600">{{
+              classDetailData.user_count
+            }}</span>
           </n-descriptions-item>
         </n-descriptions>
 
         <n-card size="small" title="比率统计" embedded style="margin-top: 12px">
           <n-space vertical :size="10">
-            <n-progress type="line" :percentage="classDetailData.excellent_rate" :show-indicator="true" :border-radius="4">
-              <template #default>优秀率: {{ classDetailData.excellent_rate.toFixed(1) }}%</template>
+            <n-progress
+              type="line"
+              :percentage="classDetailData.excellent_rate"
+              :show-indicator="true"
+              :border-radius="4"
+            >
+              <template #default
+                >优秀率:
+                {{ classDetailData.excellent_rate.toFixed(1) }}%</template
+              >
             </n-progress>
-            <n-progress type="line" :percentage="classDetailData.pass_rate" :show-indicator="true" :border-radius="4" status="success">
-              <template #default>及格率: {{ classDetailData.pass_rate.toFixed(1) }}%</template>
+            <n-progress
+              type="line"
+              :percentage="classDetailData.pass_rate"
+              :show-indicator="true"
+              :border-radius="4"
+              status="success"
+            >
+              <template #default
+                >及格率: {{ classDetailData.pass_rate.toFixed(1) }}%</template
+              >
             </n-progress>
-            <n-progress type="line" :percentage="classDetailData.active_rate" :show-indicator="true" :border-radius="4" status="info">
-              <template #default>参与度: {{ classDetailData.active_rate.toFixed(1) }}%</template>
+            <n-progress
+              type="line"
+              :percentage="classDetailData.active_rate"
+              :show-indicator="true"
+              :border-radius="4"
+              status="info"
+            >
+              <template #default
+                >参与度: {{ classDetailData.active_rate.toFixed(1) }}%</template
+              >
             </n-progress>
           </n-space>
         </n-card>
@@ -606,7 +680,11 @@ watch(
           </n-tag>
         </n-flex>
       </n-flex>
-      <n-empty v-else-if="!classDetailLoading" description="暂无数据" style="padding: 40px 0" />
+      <n-empty
+        v-else-if="!classDetailLoading"
+        description="暂无数据"
+        style="padding: 40px 0"
+      />
     </n-spin>
   </n-modal>
 </template>

@@ -101,16 +101,14 @@ const lineHtmlMap = computed<Record<number, string>>(() => {
 </script>
 
 <template>
-  <n-card
-    style="margin: 16px 0; border: 1.5px solid var(--n-border-color)"
-  >
+  <n-card style="margin: 16px 0; border: 1.5px solid var(--n-border-color)">
     <template #header>
-      <n-tag type="info" :bordered="false"
-        >练一练 · 代码排序</n-tag
-      >
+      <n-tag type="info" :bordered="false">练一练 · 代码排序</n-tag>
     </template>
 
-    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px">{{ data.question }}</p>
+    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px">
+      {{ data.question }}
+    </p>
 
     <n-space vertical :size="6">
       <div
@@ -157,11 +155,7 @@ const lineHtmlMap = computed<Record<number, string>>(() => {
     />
 
     <n-space style="margin-top: 12px" :size="8">
-      <n-button
-        type="info"
-        :disabled="submitted && allCorrect"
-        @click="submit"
-      >
+      <n-button type="info" :disabled="submitted && allCorrect" @click="submit">
         提交
       </n-button>
       <n-button @click="reset">重置</n-button>

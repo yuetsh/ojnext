@@ -63,9 +63,7 @@ function optionType(idx: number): "default" | "primary" | "success" {
 </script>
 
 <template>
-  <n-card
-    style="margin: 16px 0; border: 1.5px solid var(--n-border-color)"
-  >
+  <n-card style="margin: 16px 0; border: 1.5px solid var(--n-border-color)">
     <template #header>
       <n-space align="center" :size="8">
         <n-tag type="success" :bordered="false">
@@ -74,7 +72,9 @@ function optionType(idx: number): "default" | "primary" | "success" {
       </n-space>
     </template>
 
-    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px">{{ data.question }}</p>
+    <p style="font-weight: 500; font-size: 16px; margin-bottom: 12px">
+      {{ data.question }}
+    </p>
 
     <n-space vertical :size="8">
       <n-button

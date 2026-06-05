@@ -314,7 +314,11 @@ watch(() => [query.page, query.limit, query.type, query.orderBy], listUsers)
           <n-input v-model:value="password" />
         </n-form-item-gi>
         <n-form-item-gi
-          v-if="!create && (userEditing.admin_type === USER_TYPE.STUDENT_ADMIN || userEditing.admin_type === USER_TYPE.TEACHER_ADMIN)"
+          v-if="
+            !create &&
+            (userEditing.admin_type === USER_TYPE.STUDENT_ADMIN ||
+              userEditing.admin_type === USER_TYPE.TEACHER_ADMIN)
+          "
           :span="1"
           label="出题权限"
         >

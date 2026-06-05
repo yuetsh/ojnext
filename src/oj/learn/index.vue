@@ -1,7 +1,12 @@
 <template>
   <div class="learn-container">
     <!-- 桌面端布局 -->
-    <n-grid :cols="5" :x-gap="16" v-if="tutorial.id && isDesktop" class="learn-grid">
+    <n-grid
+      :cols="5"
+      :x-gap="16"
+      v-if="tutorial.id && isDesktop"
+      class="learn-grid"
+    >
       <n-gi :span="1" class="learn-col">
         <n-card title="教程目录" :bordered="false" size="small">
           <n-list hoverable clickable>
@@ -51,7 +56,11 @@
           class="code-card"
           content-style="height: calc(100% - 44px); padding: 0;"
         >
-          <CodeEditor language="Python3" v-model="tutorial.code" height="100%" />
+          <CodeEditor
+            language="Python3"
+            v-model="tutorial.code"
+            height="100%"
+          />
         </n-card>
       </n-gi>
     </n-grid>

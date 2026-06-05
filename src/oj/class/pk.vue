@@ -164,7 +164,8 @@ async function analyzeWithAI() {
   aiController = controller
 
   const timeRangeLabel =
-    timeRangeOptions.find((o) => o.value === duration.value)?.label ?? "全部时间"
+    timeRangeOptions.find((o) => o.value === duration.value)?.label ??
+    "全部时间"
 
   showAIModal.value = true
   aiContent.value = ""
@@ -195,7 +196,11 @@ async function analyzeWithAI() {
         if (event === "end" && !hasStarted) aiLoading.value = false
       },
       onMessage(payload) {
-        const parsed = payload as { type?: string; content?: string; message?: string }
+        const parsed = payload as {
+          type?: string
+          content?: string
+          message?: string
+        }
         if (parsed.type === "delta" && parsed.content) {
           if (!hasStarted) {
             hasStarted = true
@@ -1176,7 +1181,6 @@ const radarChartOptions = {
             </n-gi>
           </n-grid>
         </n-card>
-
       </template>
 
       <!-- 对比表格 -->
@@ -1185,10 +1189,7 @@ const radarChartOptions = {
         title="对比表格"
         style="margin-top: 20px"
       >
-        <n-data-table
-          :data="comparisons"
-          :columns="tableColumns"
-        />
+        <n-data-table :data="comparisons" :columns="tableColumns" />
       </n-card>
     </n-flex>
   </n-card>

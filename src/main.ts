@@ -65,9 +65,7 @@ router.beforeEach(async (to, from, next) => {
         next("/")
         return
       }
-    } else if (
-      to.matched.some((record) => record.meta.requiresTeacherAdmin)
-    ) {
+    } else if (to.matched.some((record) => record.meta.requiresTeacherAdmin)) {
       if (!userStore.isTeacherOrAbove) {
         next("/")
         return

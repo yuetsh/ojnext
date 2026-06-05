@@ -169,10 +169,7 @@ import {
   BarElement,
   CategoryScale,
 } from "chart.js"
-import {
-  WordCloudController,
-  WordElement,
-} from "chartjs-chart-wordcloud"
+import { WordCloudController, WordElement } from "chartjs-chart-wordcloud"
 
 ChartJS.register(
   ArcElement,
@@ -332,16 +329,16 @@ const gradeChartData = computed(() => {
 })
 
 const completionChartData = computed(() => {
-  const uncompleted = Math.max(0, adjustedPersonCount.value - data.completed_count)
+  const uncompleted = Math.max(
+    0,
+    adjustedPersonCount.value - data.completed_count,
+  )
   return {
     labels: ["已完成", "未完成"],
     datasets: [
       {
         data: [data.completed_count, uncompleted],
-        backgroundColor: [
-          "rgba(106, 176, 76, 0.6)",
-          "rgba(255, 159, 64, 0.6)",
-        ],
+        backgroundColor: ["rgba(106, 176, 76, 0.6)", "rgba(255, 159, 64, 0.6)"],
         borderColor: ["rgba(106, 176, 76, 1)", "rgba(255, 159, 64, 1)"],
         borderWidth: 2,
       },
@@ -490,9 +487,7 @@ function renderWordCloud() {
         {
           label: "",
           data: words.map((w) => 10 + (w.count / maxCount) * 50),
-          color: words.map(
-            (_, i) => WORD_COLORS[i % WORD_COLORS.length],
-          ),
+          color: words.map((_, i) => WORD_COLORS[i % WORD_COLORS.length]),
           rotate: words.map(() => 0),
         } as any,
       ],

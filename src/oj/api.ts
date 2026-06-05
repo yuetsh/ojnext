@@ -1,38 +1,12 @@
-import { DIFFICULTY } from "utils/constants"
-import { getACRate } from "utils/functions"
 import http from "utils/http"
-import {
+import { filterResult } from "oj/transforms"
+import type {
   Exercise,
   Problem,
   Submission,
   SubmissionListPayload,
   SubmitCodePayload,
 } from "utils/types"
-
-function filterResult(result: Problem) {
-  const newResult = {
-    id: result.id,
-    _id: result._id,
-    title: result.title,
-    difficulty: DIFFICULTY[result.difficulty],
-    tags: result.tags,
-    submission: result.submission_number,
-    rate: getACRate(result.accepted_number, result.submission_number),
-    status: "",
-    author: result.created_by.username,
-    allow_flowchart: result.allow_flowchart,
-    show_flowchart: result.show_flowchart,
-    has_ast_rules: result.has_ast_rules,
-  }
-  if (result.my_status === null || result.my_status === undefined) {
-    newResult.status = "not_test"
-  } else if (result.my_status === 0) {
-    newResult.status = "passed"
-  } else {
-    newResult.status = "failed"
-  }
-  return newResult
-}
 
 export function getWebsiteConfig() {
   return http.get("website")
@@ -43,17 +17,9 @@ export async function getProblemList(
   limit = 10,
   searchParams: any = {},
 ) {
-  let params: any = {
-    paging: true,
-    offset,
-    limit,
-  }
-  Object.keys(searchParams).forEach((element) => {
-    if (searchParams[element]) {
-      params[element] = searchParams[element]
-    }
+  const res = await http.get<{ results: Problem[]; total: number }>("problem", {
+    params: { paging: true, offset, limit, ...searchParams },
   })
-  const res = await http.get("problem", { params })
   return {
     results: res.data.results.map(filterResult),
     total: res.data.total,
@@ -203,7 +169,7 @@ export function checkContestPassword(contestID: string, password: string) {
 }
 
 export async function getContestProblems(contestID: string) {
-  const res = await http.get("contest/problem", {
+  const res = await http.get<Problem[]>("contest/problem", {
     params: { contest_id: contestID },
   })
   return res.data.map(filterResult)
@@ -460,7 +426,7 @@ export function getProblemSetUserProgress(
 }
 
 export async function getExercises(tutorialId: number): Promise<Exercise[]> {
-  const res = await http.get("exercises", {
+  const res = await http.get<Exercise[]>("exercises", {
     params: { tutorial_id: tutorialId },
   })
   return res.data
