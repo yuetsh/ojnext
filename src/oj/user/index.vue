@@ -28,7 +28,7 @@ const isDefaultAvatar = computed(
   () => profile.value?.avatar.endsWith("default.png") ?? true,
 )
 
-const problemsFlexRef = ref<HTMLElement | null>(null)
+const problemsFlexRef = useTemplateRef<HTMLElement>("problemsFlexRef")
 const itemsPerRow = ref(8)
 
 function updateItemsPerRow() {

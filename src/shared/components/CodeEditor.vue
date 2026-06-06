@@ -22,21 +22,19 @@ interface Props {
   placeholder?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  language: "Python3",
-  fontSize: 20,
-  height: "100%",
-  readonly: false,
-  placeholder: "",
-})
-
-const { readonly, placeholder, height, fontSize } = toRefs(props)
+const {
+  language = "Python3",
+  fontSize = 20,
+  height = "100%",
+  readonly = false,
+  placeholder = "",
+} = defineProps<Props>()
 const code = defineModel<string>("value")
 
 const isDark = useDark()
 
 const langExtension = computed(() => {
-  return ["Python2", "Python3"].includes(props.language) ? python() : cpp()
+  return ["Python2", "Python3"].includes(language) ? python() : cpp()
 })
 
 const extensions = computed(() => [
@@ -45,7 +43,7 @@ const extensions = computed(() => [
   bracketMatching(),
   closeBrackets(),
   autocompletion({
-    override: [enhanceCompletion(props.language), completeAnyWord],
+    override: [enhanceCompletion(language), completeAnyWord],
   }),
   isDark.value ? oneDark : smoothy,
 ])

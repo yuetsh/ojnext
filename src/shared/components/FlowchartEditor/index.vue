@@ -26,9 +26,7 @@ interface Props {
   height?: string
 }
 
-withDefaults(defineProps<Props>(), {
-  height: "calc(100vh - 133px)",
-})
+const { height = "calc(100vh - 133px)" } = defineProps<Props>()
 
 // Vue Flow 实例
 const { addEdges, removeNodes, removeEdges } = useVueFlow()

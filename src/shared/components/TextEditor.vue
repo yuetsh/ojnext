@@ -17,10 +17,7 @@ interface Props {
 const rawHtml = defineModel<string>("value")
 type InsertFnType = (url: string, alt: string, href: string) => void
 
-const props = withDefaults(defineProps<Props>(), {
-  minHeight: 0,
-  simple: false,
-})
+const { title, minHeight = 0, simple = false } = defineProps<Props>()
 
 const message = useMessage()
 
@@ -112,17 +109,17 @@ async function customUpload(file: File, insertFn: InsertFnType) {
 </script>
 
 <template>
-  <div class="title" v-if="props.title">{{ props.title }}</div>
+  <div class="title" v-if="title">{{ title }}</div>
   <div class="editorWrapper">
     <Toolbar
       class="toolbar"
       :editor="toolbarEditorRef"
-      :defaultConfig="props.simple ? toolbarConfigSimple : toolbarConfig"
+      :defaultConfig="simple ? toolbarConfigSimple : toolbarConfig"
       mode="simple"
     />
     <Editor
       @click="onClick"
-      :style="{ minHeight: props.minHeight + 'px' }"
+      :style="{ minHeight: minHeight + 'px' }"
       v-model="rawHtml"
       :defaultConfig="editorConfig"
       mode="simple"

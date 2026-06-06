@@ -31,9 +31,7 @@ interface Props {
   isConnected?: boolean // WebSocket 实际的连接状态（已建立/未建立）
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  isConnected: false,
-})
+const { storageKey, isConnected = false } = defineProps<Props>()
 
 // 注入同步状态
 const syncStatus = injectSyncStatus()
@@ -102,7 +100,7 @@ const reset = () => {
     problem.value!.template[codeStore.code.language] ||
       SOURCES[codeStore.code.language],
   )
-  storage.remove(props.storageKey)
+  storage.remove(storageKey)
   message.success("代码重置成功")
 }
 
@@ -228,7 +226,7 @@ onMounted(() => {
       />
 
       <!-- 同步状态标签 -->
-      <template v-if="props.isConnected">
+      <template v-if="isConnected">
         <n-tag v-if="syncStatus.otherUser.value" type="info">
           {{ SYNC_MESSAGES.SYNCING_WITH(syncStatus.otherUser.value.name) }}
         </n-tag>

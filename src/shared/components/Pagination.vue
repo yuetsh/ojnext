@@ -7,17 +7,14 @@ interface Props {
   page: number
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  limit: 10,
-  page: 1,
-})
+const { total, limit: initialLimit = 10, page: initialPage = 1 } = defineProps<Props>()
 
 const emit = defineEmits(["update:limit", "update:page"])
 
 const { isDesktop } = useBreakpoints()
 
-const limit = ref(props.limit)
-const page = ref(props.page)
+const limit = ref(initialLimit)
+const page = ref(initialPage)
 const sizes = [10, 30, 50]
 
 watch(limit, () => emit("update:limit", limit))
@@ -26,9 +23,9 @@ watch(page, () => emit("update:page", page))
 
 <template>
   <n-pagination
-    v-if="props.total"
+    v-if="total"
     class="right margin"
-    :item-count="props.total"
+    :item-count="total"
     v-model:page="page"
     v-model:page-size="limit"
     :page-sizes="sizes"

@@ -40,10 +40,7 @@ interface Props {
   problemSetId?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  contestID: "",
-  problemSetId: "",
-})
+const { problemID, contestID = "", problemSetId = "" } = defineProps<Props>()
 
 const errMsg = ref("无数据")
 const route = useRoute()
@@ -67,7 +64,7 @@ const tabOptions = computed(() => {
     options.push("editor")
   }
   options.push("info")
-  if (!props.contestID) {
+  if (!contestID) {
     options.push("comment")
   }
   if (myFlowchartStore.showing) {
@@ -110,7 +107,7 @@ watch(
 async function init() {
   screenModeStore.resetScreenMode()
   try {
-    const res = await getProblem(props.problemID, props.contestID)
+    const res = await getProblem(problemID, contestID)
     problem.value = res.data
   } catch (err: any) {
     problem.value = null
@@ -120,7 +117,7 @@ async function init() {
   }
 }
 onMounted(init)
-watch(() => props.problemID, init)
+watch(() => problemID, init)
 onBeforeUnmount(() => {
   problem.value = null
   errMsg.value = "无数据"
@@ -159,15 +156,15 @@ watch(isMobile, (value) => {
             <n-tab-pane
               name="info"
               tab="题目统计"
-              :disabled="!!props.problemSetId"
+              :disabled="!!problemSetId"
             >
               <ProblemInfo />
             </n-tab-pane>
             <n-tab-pane
-              v-if="!props.contestID"
+              v-if="!contestID"
               name="comment"
               tab="题目点评"
-              :disabled="!!props.problemSetId"
+              :disabled="!!problemSetId"
             >
               <ProblemComment />
             </n-tab-pane>
@@ -181,7 +178,7 @@ watch(isMobile, (value) => {
             <n-tab-pane
               name="submission"
               tab="我的提交"
-              :disabled="!!props.problemSetId"
+              :disabled="!!problemSetId"
             >
               <ProblemSubmission />
             </n-tab-pane>
@@ -215,15 +212,15 @@ watch(isMobile, (value) => {
           <n-tab-pane
             name="info"
             tab="题目统计"
-            :disabled="!!props.problemSetId"
+            :disabled="!!problemSetId"
           >
             <ProblemInfo />
           </n-tab-pane>
           <n-tab-pane
-            v-if="!props.contestID"
+            v-if="!contestID"
             name="comment"
             tab="题目点评"
-            :disabled="!!props.problemSetId"
+            :disabled="!!problemSetId"
           >
             <ProblemComment />
           </n-tab-pane>
@@ -237,7 +234,7 @@ watch(isMobile, (value) => {
           <n-tab-pane
             name="submission"
             tab="我的提交"
-            :disabled="!!props.problemSetId"
+            :disabled="!!problemSetId"
           >
             <ProblemSubmission />
           </n-tab-pane>
@@ -256,14 +253,14 @@ watch(isMobile, (value) => {
       <n-tab-pane name="editor" tab="代码">
         <component :is="inProblem ? ProblemEditor : ContestEditor" />
       </n-tab-pane>
-      <n-tab-pane name="info" tab="统计" :disabled="!!props.problemSetId">
+      <n-tab-pane name="info" tab="统计" :disabled="!!problemSetId">
         <ProblemInfo />
       </n-tab-pane>
       <n-tab-pane
-        v-if="!props.contestID"
+        v-if="!contestID"
         name="comment"
         tab="点评"
-        :disabled="!!props.problemSetId"
+        :disabled="!!problemSetId"
       >
         <ProblemComment />
       </n-tab-pane>
@@ -274,7 +271,7 @@ watch(isMobile, (value) => {
       >
         <MyFlowchartTab />
       </n-tab-pane>
-      <n-tab-pane name="submission" tab="提交" :disabled="!!props.problemSetId">
+      <n-tab-pane name="submission" tab="提交" :disabled="!!problemSetId">
         <ProblemSubmission />
       </n-tab-pane>
     </n-tabs>

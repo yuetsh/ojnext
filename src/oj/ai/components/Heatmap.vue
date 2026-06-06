@@ -60,7 +60,7 @@ import { useAIStore } from "oj/store/ai"
 import { parseTime } from "utils/functions"
 
 const aiStore = useAIStore()
-const containerRef = ref<HTMLElement>()
+const containerRef = useTemplateRef<HTMLElement>("containerRef")
 
 const CELL_SIZE = 12
 const CELL_GAP = 3

@@ -36,15 +36,15 @@ interface Props {
   placeholder?: string
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  language: "Python3",
-  fontSize: 20,
-  height: "100%",
-  readonly: false,
-  placeholder: "",
-})
-
-const { readonly, placeholder, height, fontSize } = toRefs(props)
+const {
+  sync,
+  problem,
+  language = "Python3",
+  fontSize = 20,
+  height = "100%",
+  readonly = false,
+  placeholder = "",
+} = defineProps<Props>()
 const code = defineModel<string>("value")
 
 const emit = defineEmits<{
@@ -57,7 +57,7 @@ const emit = defineEmits<{
 const { isDesktop } = useBreakpoints()
 
 const langExtension = computed((): Extension => {
-  return ["Python2", "Python3"].includes(props.language) ? python() : cpp()
+  return ["Python2", "Python3"].includes(language) ? python() : cpp()
 })
 
 const extensions = computed(() => [
@@ -67,7 +67,7 @@ const extensions = computed(() => [
   closeBrackets(),
   isDark.value ? oneDark : smoothy,
   autocompletion({
-    override: [enhanceCompletion(props.language), completeAnyWord],
+    override: [enhanceCompletion(language), completeAnyWord],
   }),
   getInitialExtension(),
 ])
@@ -85,12 +85,12 @@ const cleanupSyncResources = () => {
 }
 
 const initSync = async () => {
-  if (!editorView.value || !props.problem || !isDesktop.value) return
+  if (!editorView.value || !problem || !isDesktop.value) return
 
   cleanupSyncResources()
 
   cleanupSync = await startSync({
-    problemId: props.problem,
+    problemId: problem,
     editorView: editorView.value as EditorView,
     onStatusChange: (status) => {
       // 处理需要断开同步的情况
@@ -108,13 +108,13 @@ const initSync = async () => {
 
 const handleEditorReady = (payload: EditorReadyPayload) => {
   editorView.value = payload.view as EditorView
-  if (props.sync) {
+  if (sync) {
     initSync()
   }
 }
 
 watch(
-  () => props.sync,
+  () => sync,
   (shouldSync) => {
     if (shouldSync) {
       initSync()
@@ -125,9 +125,9 @@ watch(
 )
 
 watch(
-  () => props.problem,
+  () => problem,
   (newProblem, oldProblem) => {
-    if (newProblem !== oldProblem && props.sync) {
+    if (newProblem !== oldProblem && sync) {
       initSync()
     }
   },

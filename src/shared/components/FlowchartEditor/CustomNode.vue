@@ -78,7 +78,7 @@ const emit = defineEmits<Emits>()
 const isHovered = ref(false)
 const isEditing = ref(false)
 const editText = ref("")
-const editInput = ref<HTMLInputElement>()
+const editInput = useTemplateRef<HTMLInputElement>("editInput")
 
 // 定时器和事件处理器
 let hideTimeout: ReturnType<typeof setTimeout> | null = null

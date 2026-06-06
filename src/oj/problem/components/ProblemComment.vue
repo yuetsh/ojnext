@@ -67,7 +67,7 @@
           {{ content }}
         </n-form-item>
         <n-button
-          v-if="hasCommented && props.showStatistics"
+          v-if="hasCommented && showStatistics"
           type="primary"
           @click="getComments"
         >
@@ -77,7 +77,7 @@
           提交
         </n-button>
       </n-form>
-      <div v-if="props.showStatistics">
+      <div v-if="showStatistics">
         <n-descriptions
           class="list"
           v-if="count"
@@ -117,9 +117,7 @@ interface Props {
   showStatistics?: boolean
 }
 
-const props = withDefaults(defineProps<Props>(), {
-  showStatistics: true,
-})
+const { showStatistics = true } = defineProps<Props>()
 
 const userStore = useUserStore()
 const problemStore = useProblemStore()

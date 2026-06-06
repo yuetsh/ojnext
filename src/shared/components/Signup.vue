@@ -12,7 +12,7 @@ const {
   signupError: msg,
   captchaSrc,
 } = storeToRefs(authStore)
-const signupRef = ref()
+const signupRef = useTemplateRef("signupRef")
 
 const rules: FormRules = {
   username: [{ required: true, message: "用户名必填", trigger: "blur" }],

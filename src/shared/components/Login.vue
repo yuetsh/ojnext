@@ -17,7 +17,7 @@ const {
   loginLoading: isLoading,
   loginError: msg,
 } = storeToRefs(authStore)
-const loginRef = ref()
+const loginRef = useTemplateRef("loginRef")
 const classUserOptions = ref<SelectOption[]>([])
 const classUserLoading = ref(false)
 const isClassLogin = computed(() => Boolean(form.value.class))
