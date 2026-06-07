@@ -37,7 +37,8 @@ const total = ref(0)
 const problems = ref<AdminProblemFiltered[]>([])
 
 const nextDisplayID = computed(() => {
-  if (!isContestProblemList.value || problems.value.length === 0) return ""
+  if (!isContestProblemList.value) return ""
+  if (problems.value.length === 0) return "1"
   const ids = problems.value.map((p) => p._id)
   if (ids.every((id) => /^\d+$/.test(id))) {
     return String(Math.max(...ids.map((id) => parseInt(id))) + 1)
