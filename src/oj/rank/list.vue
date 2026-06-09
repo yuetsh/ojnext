@@ -9,7 +9,7 @@ import {
   getClassPK,
 } from "oj/api"
 import { useBreakpoints } from "shared/composables/breakpoints"
-import { getACRate } from "utils/functions"
+import { getACRate, getCSRFToken } from "utils/functions"
 import type { Rank } from "utils/types"
 import Pagination from "shared/components/Pagination.vue"
 import { ChartType } from "utils/constants"
@@ -18,6 +18,9 @@ import Chart from "./components/Chart.vue"
 import Index from "./components/Index.vue"
 import { useUserStore } from "shared/store/user"
 import { Icon } from "@iconify/vue"
+import { MdPreview } from "md-editor-v3"
+import "md-editor-v3/lib/preview.css"
+import { consumeJSONEventStream } from "utils/stream"
 
 const gradeOptions = [
   { label: "24年级", value: 24 },
@@ -57,6 +60,11 @@ const showClassDetailModal = ref(false)
 const classDetailData = ref<ClassComparison | null>(null)
 const classDetailLoading = ref(false)
 
+const classDetailAiLoading = ref(false)
+const classDetailAiContent = ref("")
+const showClassDetailAiModal = ref(false)
+let classDetailAiController: AbortController | null = null
+
 async function loadClassDetail(className: string) {
   showClassDetailModal.value = true
   classDetailLoading.value = true
@@ -68,6 +76,60 @@ async function loadClassDetail(className: string) {
     // ignore
   } finally {
     classDetailLoading.value = false
+  }
+}
+
+async function analyzeSingleClassWithAI() {
+  if (!classDetailData.value) return
+  if (classDetailAiController) classDetailAiController.abort()
+  const controller = new AbortController()
+  classDetailAiController = controller
+
+  showClassDetailModal.value = false
+  showClassDetailAiModal.value = true
+  classDetailAiContent.value = ""
+  classDetailAiLoading.value = true
+
+  const headers: Record<string, string> = { "Content-Type": "application/json" }
+  const csrfToken = getCSRFToken()
+  if (csrfToken) headers["X-CSRFToken"] = csrfToken
+
+  try {
+    const response = await fetch("/api/ai/class_single", {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ comparison: classDetailData.value }),
+      signal: controller.signal,
+    })
+    if (!response.ok) throw new Error("AI 分析生成失败")
+
+    let hasStarted = false
+    await consumeJSONEventStream(response, {
+      signal: controller.signal,
+      onEvent(event) {
+        if (event === "end" && !hasStarted) classDetailAiLoading.value = false
+      },
+      onMessage(payload) {
+        const parsed = payload as { type?: string; content?: string; message?: string }
+        if (parsed.type === "delta" && parsed.content) {
+          if (!hasStarted) {
+            hasStarted = true
+            classDetailAiLoading.value = false
+          }
+          classDetailAiContent.value += parsed.content
+        } else if (parsed.type === "error") {
+          throw new Error(parsed.message || "AI 服务异常")
+        } else if (parsed.type === "done" && !hasStarted) {
+          classDetailAiLoading.value = false
+        }
+      },
+    })
+  } catch (error: any) {
+    if (controller.signal.aborted) return
+    message.error(error?.message || "AI 分析失败，请稍后再试")
+    classDetailAiLoading.value = false
+  } finally {
+    if (classDetailAiController === controller) classDetailAiController = null
   }
 }
 
@@ -674,10 +736,21 @@ watch(
           </n-space>
         </n-card>
 
-        <n-flex justify="center" style="margin-top: 12px">
+        <n-flex justify="center" align="center" :size="12" style="margin-top: 12px">
           <n-tag type="success" size="large">
             综合分: {{ classDetailData.composite_score.toFixed(1) }}
           </n-tag>
+          <n-button
+            type="info"
+            size="small"
+            :loading="classDetailAiLoading"
+            @click="analyzeSingleClassWithAI"
+          >
+            <template #icon>
+              <Icon icon="mingcute:ai-line" />
+            </template>
+            AI分析
+          </n-button>
         </n-flex>
       </n-flex>
       <n-empty
@@ -685,6 +758,27 @@ watch(
         description="暂无数据"
         style="padding: 40px 0"
       />
+    </n-spin>
+  </n-modal>
+
+  <n-modal
+    v-model:show="showClassDetailAiModal"
+    preset="card"
+    title="AI 分析报告"
+    :style="{ width: '800px', maxWidth: '95vw' }"
+  >
+    <n-spin :show="classDetailAiLoading" :delay="50">
+      <div style="min-height: 200px">
+        <MdPreview v-if="classDetailAiContent" :model-value="classDetailAiContent" />
+        <n-flex
+          v-else-if="!classDetailAiLoading"
+          align="center"
+          justify="center"
+          style="min-height: 200px"
+        >
+          <n-empty description="暂无分析内容" />
+        </n-flex>
+      </div>
     </n-spin>
   </n-modal>
 </template>
