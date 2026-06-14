@@ -218,6 +218,15 @@ watch(
   },
 )
 
+// 登录状态变化后刷新提交列表，更新提交编号列的可点击状态
+watch(
+  () => userStore.isAuthed,
+  () => {
+    listSubmissions()
+    if (route.name === "submissions") getTodayCount()
+  },
+)
+
 const columns = computed(() => {
   const res: DataTableColumn<SubmissionListItem>[] = [
     {
