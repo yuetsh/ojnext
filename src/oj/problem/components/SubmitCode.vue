@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
 import { storeToRefs } from "pinia"
-import { getComment, submitCode, updateProblemSetProgress } from "oj/api"
+import {
+  formatCode,
+  getComment,
+  submitCode,
+  updateProblemSetProgress,
+} from "oj/api"
 import { useCodeStore } from "oj/store/code"
 import { useProblemStore } from "oj/store/problem"
 import { useFireworks } from "oj/problem/composables/useFireworks"
 import { useSubmissionMonitor } from "oj/problem/composables/useSubmissionMonitor"
-import { SubmissionStatus } from "utils/constants"
+import { LANGUAGE_FORMAT_VALUE, SubmissionStatus } from "utils/constants"
 import type { SubmitCodePayload } from "utils/types"
 import SubmissionResult from "./SubmissionResult.vue"
 import { useBreakpoints } from "shared/composables/breakpoints"
@@ -116,6 +121,25 @@ async function submit() {
     if (syntaxError) {
       message.warning(`第 ${syntaxError.line} 行存在语法错误，请修正后再提交`)
       return
+    }
+  }
+
+  // 0.5 提交前自动格式化（Python3 用 ruff，C/C++ 用 clang-format）
+  const formatLang = LANGUAGE_FORMAT_VALUE[codeStore.code.language]
+  if (["python", "c", "cpp"].includes(formatLang)) {
+    try {
+      const res = await formatCode({
+        code: codeStore.code.value,
+        language: formatLang,
+      })
+      codeStore.setCode(res.data.code)
+    } catch (e: any) {
+      if (e?.error === "format-error") {
+        // 仅 Python3 会出现：代码本身存在语法错误
+        message.warning(`代码格式化失败：${e.data}，请检查代码后重试`)
+        return
+      }
+      // server-error / 网络异常：格式化工具问题，静默降级，提交原代码
     }
   }
 
