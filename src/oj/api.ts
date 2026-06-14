@@ -62,6 +62,10 @@ export function submitCode(data: SubmitCodePayload) {
   return http.post("submission", data)
 }
 
+export function formatCode(data: { code: string; language: string }) {
+  return http.post<{ code: string }>("format_code", data)
+}
+
 export function getSubmissions(params: Partial<SubmissionListPayload>) {
   const endpoint = !!params.contest_id ? "contest_submissions" : "submissions"
   return http.get(endpoint, { params })
