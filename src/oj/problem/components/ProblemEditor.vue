@@ -7,7 +7,7 @@ import { SOURCES } from "utils/constants"
 import SyncCodeEditor from "shared/components/SyncCodeEditor.vue"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import storage from "utils/storage"
-import { LANGUAGE } from "utils/types"
+import type { LANGUAGE } from "utils/types"
 import Form from "./Form.vue"
 
 const FlowchartEditor = defineAsyncComponent(
@@ -50,6 +50,13 @@ function loadCode() {
 onMounted(loadCode)
 
 watch(() => problem.value?._id, loadCode)
+
+watch(
+  () => codeStore.code.value,
+  (v) => {
+    storage.set(storageKey.value, v)
+  },
+)
 
 const changeCode = (v: string) => {
   storage.set(storageKey.value, v)
