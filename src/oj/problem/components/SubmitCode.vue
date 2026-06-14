@@ -14,6 +14,7 @@ import { useSubmissionMonitor } from "oj/problem/composables/useSubmissionMonito
 import { LANGUAGE_FORMAT_VALUE, SubmissionStatus } from "utils/constants"
 import type { SubmitCodePayload } from "utils/types"
 import SubmissionResult from "./SubmissionResult.vue"
+import { getSubmitButtonState } from "./submitButtonState"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { useUserStore } from "shared/store/user"
 import { checkPythonSyntax } from "oj/problem/utils/pythonSyntaxCheck"
@@ -42,16 +43,12 @@ const { isDesktop } = useBreakpoints()
 const { celebrate } = useFireworks()
 
 // ==================== 判题监控 ====================
-const {
-  submission,
-  judging,
-  pending,
-  submitting,
-  isProcessing,
-  startMonitoring,
-} = useSubmissionMonitor()
+const { submission, judging, pending, submitting, startMonitoring } =
+  useSubmissionMonitor()
 
 const showResult = ref(false)
+const isFormatting = ref(false)
+const isSubmittingRequest = ref(false)
 
 // ==================== 提交冷却 ====================
 const { start: startCooldown, isPending: isCooldown } = useTimeout(5000, {
@@ -85,35 +82,20 @@ const { start: goToProblemSetDelayed } = useTimeoutFn(
 )
 
 // ==================== 计算属性 ====================
-// 按钮禁用逻辑
-const submitDisabled = computed(() => {
-  return (
-    !userStore.isAuthed ||
-    codeStore.code.value.trim() === "" ||
-    isProcessing.value ||
-    isCooldown.value
-  )
-})
-
-// 按钮文案
-const submitLabel = computed(() => {
-  if (!userStore.isAuthed) return "请先登录"
-  if (submitting.value) return "正在提交"
-  if (judging.value || pending.value) return "正在评分"
-  if (isCooldown.value) return "正在冷却"
-  return "提交代码"
-})
-
-// 按钮图标
-const submitIcon = computed(() => {
-  if (isProcessing.value) return "eos-icons:loading"
-  if (isCooldown.value) return "ph:lightbulb-fill"
-  return "ph:play-fill"
-})
+const buttonState = computed(() =>
+  getSubmitButtonState({
+    isAuthed: userStore.isAuthed,
+    hasCode: codeStore.code.value.trim() !== "",
+    isFormatting: isFormatting.value,
+    isSubmitting: isSubmittingRequest.value || submitting.value,
+    isJudging: judging.value || pending.value,
+    isCooldown: isCooldown.value,
+  }),
+)
 
 // ==================== 提交函数 ====================
 async function submit() {
-  if (!userStore.isAuthed) return
+  if (buttonState.value.disabled) return
 
   // 0. Python3 语法检测
   if (codeStore.code.language === "Python3") {
@@ -127,6 +109,7 @@ async function submit() {
   // 0.5 提交前自动格式化（Python3 用 ruff，C/C++ 用 clang-format）
   const formatLang = LANGUAGE_FORMAT_VALUE[codeStore.code.language]
   if (["python", "c", "cpp"].includes(formatLang)) {
+    isFormatting.value = true
     try {
       const res = await formatCode({
         code: codeStore.code.value,
@@ -140,6 +123,8 @@ async function submit() {
         return
       }
       // server-error / 网络异常：格式化工具问题，静默降级，提交原代码
+    } finally {
+      isFormatting.value = false
     }
   }
 
@@ -153,13 +138,18 @@ async function submit() {
     data.contest_id = parseInt(contestID)
   }
   // 2. 提交代码到后端
-  const res = await submitCode(data)
-  console.log(`[Submit] 代码已提交: ID=${res.data.submission_id}`)
+  isSubmittingRequest.value = true
+  try {
+    const res = await submitCode(data)
+    console.log(`[Submit] 代码已提交: ID=${res.data.submission_id}`)
 
-  // 3. 启动冷却 + 监控
-  startCooldown()
-  startMonitoring(res.data.submission_id)
-  showResult.value = true
+    // 3. 启动冷却 + 监控
+    startCooldown()
+    startMonitoring(res.data.submission_id)
+    showResult.value = true
+  } finally {
+    isSubmittingRequest.value = false
+  }
 }
 
 // ==================== 失败计数 ====================
@@ -237,15 +227,15 @@ watch(
       <n-button
         :size="isDesktop ? 'medium' : 'small'"
         type="primary"
-        :disabled="submitDisabled"
+        :disabled="buttonState.disabled"
         @click="submit"
       >
         <template #icon>
           <n-icon>
-            <Icon :icon="submitIcon" />
+            <Icon :icon="buttonState.icon" />
           </n-icon>
         </template>
-        {{ submitLabel }}
+        {{ buttonState.label }}
       </n-button>
     </template>
 
