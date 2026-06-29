@@ -55,7 +55,7 @@ const passwordFormVisible = computed(
         </n-tag>
         <Icon
           v-if="contestStore.isPrivate"
-          icon="streamline-emojis:locked-with-key"
+          icon="streamline-ultimate-color:shield-lock"
           :height="30"
         ></Icon>
         <h2 class="contestTitle">{{ contestStore.contest.title }}</h2>

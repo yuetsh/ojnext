@@ -10,7 +10,7 @@ const router = useRouter()
 const contestStore = useContestStore()
 const problemsColumns: DataTableColumn<ProblemFiltered>[] = [
   {
-    title: renderTableTitle("状态", "streamline-emojis:musical-note"),
+    title: renderTableTitle("状态", "streamline-ultimate-color:music-note-1"),
     key: "status",
     width: 100,
     render: (row) => h(ProblemStatus, { status: row.status }),

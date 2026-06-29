@@ -10,7 +10,7 @@ defineProps<{ contest: Contest }>()
     <Icon
       v-if="contest.contest_type === ContestType.private"
       :height="24"
-      icon="streamline-emojis:locked-with-key"
+      icon="streamline-ultimate-color:shield-lock"
     ></Icon>
     <span>{{ contest.title }}</span>
   </n-flex>

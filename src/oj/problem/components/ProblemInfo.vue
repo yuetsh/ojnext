@@ -49,7 +49,7 @@ const data = computed(() => {
 const numbers = computed(() => {
   return [
     {
-      icon: "streamline-emojis:scroll",
+      icon: "streamline-ultimate-color:checklist",
       title: problem.value?.submission_number ?? 0,
       content: "总提交",
       int: true,

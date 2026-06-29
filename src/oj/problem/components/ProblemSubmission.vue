@@ -79,7 +79,7 @@ const columns: DataTableColumn<Submission>[] = [
   {
     title: renderTableTitle(
       "语言",
-      "streamline-emojis:globe-showing-europe-africa",
+      "streamline-ultimate-color:earth-pin-2",
     ),
     key: "language",
     width: 100,

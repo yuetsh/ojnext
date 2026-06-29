@@ -269,7 +269,7 @@ const columns = computed(() => {
     {
       title: renderTableTitle(
         "语言",
-        "streamline-emojis:globe-showing-europe-africa",
+        "streamline-ultimate-color:earth-pin-2",
       ),
       key: "language",
       minWidth: 120,
@@ -347,7 +347,7 @@ const flowchartColumns = computed(() => {
         ),
     },
     {
-      title: renderTableTitle("评分", "streamline-emojis:bar-chart"),
+      title: renderTableTitle("评分", "streamline-ultimate-color:analytics-bars-3d"),
       key: "ai_score",
       render: (row) => h(Grade, { score: row.ai_score, grade: row.ai_grade }),
     },

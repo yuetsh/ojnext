@@ -179,7 +179,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的主页",
     key: "home",
-    icon: renderIcon("streamline-emojis:newspaper"),
+    icon: renderIcon("streamline-ultimate-color:newspaper-fold"),
     props: {
       onClick: () => router.push("/user"),
     },
@@ -196,7 +196,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "我的提交",
     key: "status",
-    icon: renderIcon("streamline-emojis:bar-chart"),
+    icon: renderIcon("streamline-ultimate-color:analytics-bars-3d"),
     props: {
       onClick: () => router.push("/submission?myself=1"),
     },
@@ -221,7 +221,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
   {
     label: "退出",
     key: "logout",
-    icon: renderIcon("streamline-emojis:hot-beverage-2"),
+    icon: renderIcon("streamline-ultimate-color:coffee-cold"),
     props: { onClick: handleLogout },
   },
 ]

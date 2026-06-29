@@ -871,7 +871,7 @@ const radarChartOptions = {
                     class="stat-avg-ac"
                   >
                     <template #suffix>
-                      <Icon icon="streamline-emojis:chart" width="20" />
+                      <Icon icon="streamline-ultimate-color:analytics-pie-2" width="20" />
                     </template>
                   </n-statistic>
                 </n-gi>
@@ -883,7 +883,7 @@ const radarChartOptions = {
                     class="stat-median-ac"
                   >
                     <template #suffix>
-                      <Icon icon="streamline-emojis:target" width="20" />
+                      <Icon icon="streamline-ultimate-color:cursor-target-1" width="20" />
                     </template>
                   </n-statistic>
                 </n-gi>
@@ -895,7 +895,7 @@ const radarChartOptions = {
                     class="stat-total-submission"
                   >
                     <template #suffix>
-                      <Icon icon="streamline-emojis:paper" width="20" />
+                      <Icon icon="streamline-ultimate-color:common-file-text" width="20" />
                     </template>
                   </n-statistic>
                 </n-gi>

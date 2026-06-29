@@ -221,13 +221,13 @@ const columns: DataTableColumn<Rank>[] = [
     align: "center",
   },
   {
-    title: renderTableTitle("提交数", "streamline-emojis:rocket"),
+    title: renderTableTitle("提交数", "streamline-ultimate-color:space-rocket-earth"),
     key: "submission_number",
     width: 120,
     align: "center",
   },
   {
-    title: renderTableTitle("正确率", "streamline-emojis:wrapped-gift-1"),
+    title: renderTableTitle("正确率", "streamline-ultimate-color:gift-box-1"),
     key: "rate",
     width: 120,
     align: "center",
@@ -606,7 +606,7 @@ watch(
               class="stat-avg-ac"
             >
               <template #suffix>
-                <Icon icon="streamline-emojis:chart" width="20" />
+                <Icon icon="streamline-ultimate-color:analytics-pie-2" width="20" />
               </template>
             </n-statistic>
           </n-gi>
@@ -618,7 +618,7 @@ watch(
               class="stat-median-ac"
             >
               <template #suffix>
-                <Icon icon="streamline-emojis:target" width="20" />
+                <Icon icon="streamline-ultimate-color:cursor-target-1" width="20" />
               </template>
             </n-statistic>
           </n-gi>
@@ -630,7 +630,7 @@ watch(
               class="stat-total-submission"
             >
               <template #suffix>
-                <Icon icon="streamline-emojis:paper" width="20" />
+                <Icon icon="streamline-ultimate-color:common-file-text" width="20" />
               </template>
             </n-statistic>
           </n-gi>

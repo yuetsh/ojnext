@@ -259,7 +259,7 @@ function type(status: ProblemStatus) {
     </n-flex>
     <p class="title" :style="style">
       <n-flex align="center">
-        <Icon icon="streamline-emojis:scroll"></Icon>
+        <Icon icon="streamline-ultimate-color:checklist"></Icon>
         描述
       </n-flex>
     </p>
@@ -271,7 +271,7 @@ function type(status: ProblemStatus) {
 
     <p class="title" :style="style">
       <n-flex align="center">
-        <Icon icon="streamline-emojis:e-mail-1"></Icon>
+        <Icon icon="streamline-ultimate-color:envelope-back-front"></Icon>
         输入
       </n-flex>
     </p>
@@ -283,7 +283,7 @@ function type(status: ProblemStatus) {
 
     <p class="title" :style="style">
       <n-flex align="center">
-        <Icon icon="streamline-emojis:postbox"></Icon>
+        <Icon icon="streamline-ultimate-color:mailbox-post"></Icon>
         输出
       </n-flex>
     </p>
@@ -311,7 +311,7 @@ function type(status: ProblemStatus) {
     <div v-if="astRulesForDisplay.length > 0">
       <p class="title" :style="style">
         <n-flex align="center">
-          <Icon icon="streamline-emojis:ballot-box-with-check"></Icon>
+          <Icon icon="streamline-ultimate-color:check-button"></Icon>
           要求
         </n-flex>
       </p>
@@ -382,7 +382,7 @@ function type(status: ProblemStatus) {
     <div v-if="problem.source">
       <p class="title" :style="style">
         <n-flex align="center">
-          <Icon icon="streamline-emojis:open-book"></Icon>
+          <Icon icon="streamline-ultimate-color:book-open-bookmark"></Icon>
           来源
         </n-flex>
       </p>
@@ -398,7 +398,7 @@ function type(status: ProblemStatus) {
       <n-divider />
       <p class="title" :style="style">
         <n-flex align="center">
-          <Icon icon="streamline-emojis:thumbs-up-1"></Icon>
+          <Icon icon="streamline-ultimate-color:like"></Icon>
           相似题目推荐
         </n-flex>
       </p>

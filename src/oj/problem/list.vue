@@ -160,12 +160,12 @@ const baseColumns: DataTableColumn<ProblemFiltered>[] = [
     render: (row) => h(ProblemStatus, { status: row.status }),
   },
   {
-    title: renderTableTitle("编号", "streamline-emojis:game-dice"),
+    title: renderTableTitle("编号", "streamline-ultimate-color:board-game-dice-1"),
     key: "_id",
     width: 100,
   },
   {
-    title: renderTableTitle("题目", "streamline-emojis:watermelon-2"),
+    title: renderTableTitle("题目", "streamline-ultimate-color:fruit-watermelon"),
     key: "title",
     minWidth: 200,
     render: (row) => h(ProblemListTitle, { problem: row }),
@@ -178,7 +178,7 @@ const baseColumns: DataTableColumn<ProblemFiltered>[] = [
       h(NTag, { type: getTagColor(row.difficulty) }, () => row.difficulty),
   },
   {
-    title: renderTableTitle("标签", "streamline-emojis:paperclip"),
+    title: renderTableTitle("标签", "streamline-ultimate-color:attachment"),
     key: "tags",
     width: 260,
     render: (row) =>
@@ -190,7 +190,7 @@ const baseColumns: DataTableColumn<ProblemFiltered>[] = [
     width: 130,
   },
   {
-    title: renderTableTitle("提交数", "streamline-emojis:writing-hand-2"),
+    title: renderTableTitle("提交数", "streamline-ultimate-color:paper-write"),
     key: "submission",
     align: "center",
     width: 100,

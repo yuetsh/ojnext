@@ -75,7 +75,7 @@ const columns = ref<DataTableColumn<ContestRank>[]>([
   {
     title: renderTableTitle(
       "正确数/总提交",
-      "streamline-emojis:artist-palette",
+      "streamline-ultimate-color:color-palette",
     ),
     key: "submission",
     width: 140,
