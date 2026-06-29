@@ -57,7 +57,7 @@ function handleJoin() {
         <n-h2 style="margin: 0">{{ problemSet.title }}</n-h2>
         <n-tooltip trigger="hover" v-if="problemSet.description">
           <template #trigger>
-            <Icon width="20" icon="emojione:information" />
+            <Icon width="20" icon="fluent-emoji:information" />
           </template>
           {{ problemSet.description }}
         </n-tooltip>

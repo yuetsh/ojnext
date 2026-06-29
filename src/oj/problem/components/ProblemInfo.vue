@@ -63,7 +63,7 @@ const numbers = computed(() => {
       suffix: "",
     },
     {
-      icon: "emojione:chart-increasing",
+      icon: "fluent-emoji:chart-increasing",
       title: getACRateNumber(
         problem.value?.accepted_number ?? 0,
         problem.value?.submission_number ?? 0,

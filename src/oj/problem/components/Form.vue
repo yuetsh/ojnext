@@ -204,8 +204,8 @@ onMounted(() => {
       <IconButton
         :icon="
           syncEnabled
-            ? 'ph:wifi-slash'
-            : 'ph:wifi-high'
+            ? 'streamline-ultimate-color:wifi-off'
+            : 'streamline-ultimate-color:wifi-signal-2'
         "
         :tip="syncEnabled ? SYNC_MESSAGES.SYNC_ON : SYNC_MESSAGES.SYNC_OFF"
         :type="syncEnabled ? 'warning' : 'default'"

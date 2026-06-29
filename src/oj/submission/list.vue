@@ -230,7 +230,7 @@ watch(
 const columns = computed(() => {
   const res: DataTableColumn<SubmissionListItem>[] = [
     {
-      title: renderTableTitle("提交时间", "noto:seven-oclock"),
+      title: renderTableTitle("提交时间", "fluent-emoji:seven-oclock"),
       key: "create_time",
       minWidth: 200,
       render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
@@ -319,7 +319,7 @@ const columns = computed(() => {
 const flowchartColumns = computed(() => {
   const res: DataTableColumn<FlowchartSubmissionListItem>[] = [
     {
-      title: renderTableTitle("提交时间", "noto:seven-oclock"),
+      title: renderTableTitle("提交时间", "fluent-emoji:seven-oclock"),
       key: "create_time",
       render: (row) => parseTime(row.create_time, "YYYY-MM-DD HH:mm:ss"),
     },

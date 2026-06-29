@@ -18,7 +18,7 @@
         >
           <Icon
             v-if="hasCommented"
-            icon="noto:star"
+            icon="fluent-emoji:star"
             :width="24"
             v-for="(_, i) in description_rating"
             :key="i"
@@ -35,7 +35,7 @@
         >
           <Icon
             v-if="hasCommented"
-            icon="noto:star"
+            icon="fluent-emoji:star"
             :width="24"
             v-for="(_, i) in difficulty_rating"
             :key="i"
@@ -50,7 +50,7 @@
         >
           <Icon
             v-if="hasCommented"
-            icon="noto:star"
+            icon="fluent-emoji:star"
             :width="24"
             v-for="(_, i) in difficulty_rating"
             :key="i"

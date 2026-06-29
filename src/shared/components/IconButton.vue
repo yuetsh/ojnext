@@ -1,7 +1,7 @@
 <template>
   <n-tooltip>
     <template #trigger>
-      <n-button circle :type="type ?? 'default'" @click="$emit('click')">
+      <n-button round :type="type ?? 'default'" @click="$emit('click')">
         <template #icon>
           <Icon :icon="icon" />
         </template>

@@ -120,47 +120,47 @@ const menus = computed<MenuOption[]>(() => [
   {
     label: () => h(RouterLink, { to: "/learn/01" }, { default: () => "自学" }),
     key: "learn",
-    icon: renderIcon("twemoji:books"),
+    icon: renderIcon("fluent-emoji:books"),
   },
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "题目" }),
     key: "problem",
-    icon: renderIcon("twemoji:memo"),
+    icon: renderIcon("fluent-emoji:memo"),
   },
   {
     label: () =>
       h(RouterLink, { to: "/problemset" }, { default: () => "题单" }),
     key: "problemset",
-    icon: renderIcon("twemoji:clipboard"),
+    icon: renderIcon("fluent-emoji:clipboard"),
   },
   {
     label: () =>
       h(RouterLink, { to: "/submission" }, { default: () => "提交" }),
     key: "submission",
-    icon: renderIcon("twemoji:inbox-tray"),
+    icon: renderIcon("fluent-emoji:inbox-tray"),
     show: userStore.showSubmissions,
   },
   {
     label: () => h(RouterLink, { to: "/contest" }, { default: () => "比赛" }),
     key: "contest",
-    icon: renderIcon("twemoji:chequered-flag"),
+    icon: renderIcon("fluent-emoji:chequered-flag"),
   },
   {
     label: () => h(RouterLink, { to: "/rank" }, { default: () => "排名" }),
     key: "rank",
-    icon: renderIcon("twemoji:trophy"),
+    icon: renderIcon("fluent-emoji:trophy"),
   },
   {
     label: () => h(RouterLink, { to: "/class/pk" }, { default: () => "班级" }),
     show: false,
     key: "class",
-    icon: renderIcon("twemoji:crossed-swords"),
+    icon: renderIcon("fluent-emoji:crossed-swords"),
   },
   {
     label: () =>
       h(RouterLink, { to: "/announcement" }, { default: () => "公告" }),
     key: "announcement",
-    icon: renderIcon("twemoji:loudspeaker"),
+    icon: renderIcon("fluent-emoji:loudspeaker"),
   },
   {
     label: () =>
@@ -171,7 +171,7 @@ const menus = computed<MenuOption[]>(() => [
       ),
     show: userStore.isAdminRole,
     key: "admin",
-    icon: renderIcon("twemoji:gear"),
+    icon: renderIcon("fluent-emoji:gear"),
   },
 ])
 
@@ -263,7 +263,7 @@ function handleMenuSelect(key: string) {
         @select="handleMenuSelect"
       >
         <n-button>
-          <Icon icon="twemoji:artist-palette" height="20"></Icon>
+          <Icon icon="fluent-emoji:artist-palette" height="20"></Icon>
           <span style="padding-left: 8px">菜单</span>
         </n-button>
       </n-dropdown>
@@ -304,8 +304,8 @@ function handleMenuSelect(key: string) {
       </div>
       <n-button :bordered="false" circle @click="toggleDark">
         <template #icon>
-          <Icon v-if="isDark" icon="twemoji:sun-behind-small-cloud"></Icon>
-          <Icon v-else icon="twemoji:cloud-with-lightning-and-rain"></Icon>
+          <Icon v-if="isDark" icon="fluent-emoji:sun-behind-small-cloud"></Icon>
+          <Icon v-else icon="fluent-emoji:cloud-with-lightning-and-rain"></Icon>
         </template>
       </n-button>
     </n-flex>

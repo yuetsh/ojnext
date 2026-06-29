@@ -642,7 +642,7 @@ watch(
               class="stat-ac-rate"
             >
               <template #suffix>
-                <Icon icon="streamline-emojis:check-mark" width="20" />
+                <Icon icon="fluent-emoji:check-mark-button" width="20" />
               </template>
             </n-statistic>
           </n-gi>

@@ -40,7 +40,7 @@ function handleProblemClick(problemId: string) {
             <Icon
               style="margin-right: 10px"
               width="48"
-              icon="noto:check-mark-button"
+              icon="fluent-emoji:check-mark-button"
               v-if="problemSetProblem.is_completed"
             />
 
