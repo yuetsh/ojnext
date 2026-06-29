@@ -531,6 +531,7 @@ const flowchartColumns = computed(() => {
       :problemID="problemDisplayID"
       :submissionID="submissionID"
       hideList
+      @copied="toggleCodePanel(false)"
     />
   </n-modal>
   <n-modal

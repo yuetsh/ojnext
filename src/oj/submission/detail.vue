@@ -10,11 +10,12 @@ import {
   submissionMemoryFormat,
   submissionTimeFormat,
   utoa,
-  copyToClipboard,
 } from "utils/functions"
 import { Submission } from "utils/types"
 import SubmissionResultTag from "shared/components/SubmissionResultTag.vue"
 import { useBreakpoints } from "shared/composables/breakpoints"
+import { useCodeStore } from "oj/store/code"
+import storage from "utils/storage"
 
 const props = defineProps<{
   submissionID: string
@@ -23,9 +24,12 @@ const props = defineProps<{
   hideList?: boolean
 }>()
 
+// 在弹框中使用时，父组件监听此事件关闭弹框，否则弹框会挡住已更新的编辑器
+const emit = defineEmits<{ copied: [] }>()
+
 const route = useRoute()
 const router = useRouter()
-const message = useMessage()
+const codeStore = useCodeStore()
 
 const { isMobile, isDesktop } = useBreakpoints()
 
@@ -72,43 +76,37 @@ function copyToCat() {
   window.open(url, "_blank")
 }
 
-async function copyToProblem() {
-  const success = await copyToClipboard(submission.value!.code)
-  if (success) {
-    message.success("代码复制成功，需要手动粘贴到题目")
-  } else {
-    message.error("代码复制失败")
-  }
+function copyToProblem() {
+  const { code, language, contest } = submission.value!
+  // 编辑器的 storageKey 用 display id（problem._id），等于 props.problemID，
+  // 而非 submission.problem（内部数字 id）
+  const contestIDForKey = contest || null
+  const storageKey = `problem_${props.problemID}_contest_${contestIDForKey}_lang_${language}`
+  storage.set(storageKey, code)
+  // 设置语言 + 代码：localStorage 覆盖全新挂载的编辑器，
+  // setCode 覆盖已挂载（同页 modal）的编辑器
+  codeStore.setLanguage(language)
+  codeStore.setCode(code)
 
-  const contestID = submission.value!.contest
   const problemSetId = (route.params.problemSetId as string) ?? ""
-  if (contestID) {
-    // 竞赛题目
+  if (contest) {
     router.push({
       name: "contest problem",
-      params: {
-        contestID: String(contestID),
-        problemID: props.problemID,
-      },
+      params: { contestID: String(contest), problemID: props.problemID },
     })
   } else if (problemSetId) {
-    // 题单题目
     router.push({
       name: "problemset problem",
-      params: {
-        problemSetId: problemSetId,
-        problemID: props.problemID,
-      },
+      params: { problemSetId, problemID: props.problemID },
     })
   } else {
-    // 普通题目
     router.push({
       name: "problem",
-      params: {
-        problemID: props.problemID,
-      },
+      params: { problemID: props.problemID },
     })
   }
+
+  emit("copied")
 }
 
 onMounted(init)

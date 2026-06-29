@@ -313,6 +313,7 @@ onMounted(loadData)
         :problemID="currentSubmission.problem_display_id"
         :submissionID="currentSubmission.id"
         hideList
+        @copied="toggleCodePanel(false)"
       />
     </n-modal>
   </n-flex>

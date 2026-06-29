@@ -334,6 +334,7 @@ watch(query, listSubmissions)
       :problemID="problemID"
       :submissionID="submissionID"
       hideList
+      @copied="toggleCodePanel(false)"
     />
   </n-modal>
 </template>
