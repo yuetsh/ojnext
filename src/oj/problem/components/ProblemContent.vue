@@ -259,7 +259,7 @@ function type(status: ProblemStatus) {
     </n-flex>
     <p class="title" :style="style">
       <n-flex align="center">
-        <Icon icon="streamline-emojis:sparkles"></Icon>
+        <Icon icon="streamline-emojis:scroll"></Icon>
         描述
       </n-flex>
     </p>
@@ -271,7 +271,7 @@ function type(status: ProblemStatus) {
 
     <p class="title" :style="style">
       <n-flex align="center">
-        <Icon icon="streamline-emojis:four-leaf-clover"></Icon>
+        <Icon icon="streamline-emojis:e-mail-1"></Icon>
         输入
       </n-flex>
     </p>
@@ -283,7 +283,7 @@ function type(status: ProblemStatus) {
 
     <p class="title" :style="style">
       <n-flex align="center">
-        <Icon icon="streamline-emojis:herb"></Icon>
+        <Icon icon="streamline-emojis:postbox"></Icon>
         输出
       </n-flex>
     </p>
@@ -296,7 +296,7 @@ function type(status: ProblemStatus) {
     <div v-if="problem.hint">
       <p class="title" :style="style">
         <n-flex align="center">
-          <Icon icon="streamline-emojis:seedling"></Icon>
+          <Icon icon="streamline-emojis:man-tipping-hand-1"></Icon>
           提示
         </n-flex>
       </p>
@@ -311,7 +311,7 @@ function type(status: ProblemStatus) {
     <div v-if="astRulesForDisplay.length > 0">
       <p class="title" :style="style">
         <n-flex align="center">
-          <Icon icon="streamline-emojis:open-book"></Icon>
+          <Icon icon="streamline-emojis:ballot-box-with-check"></Icon>
           要求
         </n-flex>
       </p>
@@ -336,7 +336,12 @@ function type(status: ProblemStatus) {
 
     <div v-for="(sample, index) of samples" :key="index">
       <n-flex align="center">
-        <p class="title" :style="style">例子 {{ index + 1 }}</p>
+        <p class="title" :style="style">
+          <n-flex align="center">
+            <Icon icon="streamline-emojis:microscope"></Icon>
+            例子 {{ index + 1 }}
+          </n-flex>
+        </p>
         <n-button
           size="small"
           :type="type(sample.status)"
@@ -375,7 +380,12 @@ function type(status: ProblemStatus) {
     </div>
 
     <div v-if="problem.source">
-      <p class="title" :style="style">来源</p>
+      <p class="title" :style="style">
+        <n-flex align="center">
+          <Icon icon="streamline-emojis:open-book"></Icon>
+          来源
+        </n-flex>
+      </p>
       <MdPreview
         preview-theme="vuepress"
         :model-value="problem.source"
@@ -388,7 +398,7 @@ function type(status: ProblemStatus) {
       <n-divider />
       <p class="title" :style="style">
         <n-flex align="center">
-          <Icon icon="fluent-emoji-flat:light-bulb"></Icon>
+          <Icon icon="streamline-emojis:thumbs-up-1"></Icon>
           相似题目推荐
         </n-flex>
       </p>

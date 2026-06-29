@@ -49,7 +49,7 @@ const codeStore = useCodeStore()
 const problemStore = useProblemStore()
 const { problem, languages } = storeToRefs(problemStore)
 
-const { isMobile, isDesktop } = useBreakpoints()
+const { isDesktop } = useBreakpoints()
 
 const syncEnabled = ref(false) // 用户点击按钮后的意图状态（想要开启/关闭）
 const statisticPanel = ref(false)
@@ -64,12 +64,6 @@ const showSyncFeature = computed(
     codeStore.code.language !== "Flowchart" &&
     !isContestMode.value,
 )
-
-const menu = computed<DropdownOption[]>(() => [
-  { label: "去自测猫", key: "goTestCat", show: isMobile.value },
-  { label: "复制代码", key: "copy" },
-  { label: "重置代码", key: "reset" },
-])
 
 const showGoSubmissionButton = computed(() => {
   if (isContestMode.value) return true
@@ -133,15 +127,6 @@ const goEdit = () => {
   window.open(router.resolve(url).href, "_blank")
 }
 
-const handleMenuSelect = (key: string) => {
-  const actions: Record<string, () => void> = {
-    reset,
-    copy,
-    goTestCat,
-  }
-  actions[key]?.()
-}
-
 const toggleSync = () => {
   syncEnabled.value = !syncEnabled.value
   emit("toggleSync", syncEnabled.value)
@@ -174,41 +159,43 @@ onMounted(() => {
 
     <SubmitCode v-else />
 
-    <n-button
+    <IconButton
       v-if="showGoSubmissionButton"
-      :size="buttonSize"
+      icon="streamline-ultimate-color:task-list-text-1"
+      tip="提交信息"
       @click="goSubmissions"
-    >
-      提交信息
-    </n-button>
+    />
 
-    <n-button
+    <IconButton
       v-if="userStore.isTeacherOrAbove"
-      :size="buttonSize"
+      icon="streamline-ultimate-color:analytics-pie-2"
+      tip="统计信息"
       @click="statisticPanel = true"
-    >
-      {{ isDesktop ? "统计信息" : "统计" }}
-    </n-button>
+    />
 
-    <n-button
-      v-if="isDesktop && codeStore.code.language !== 'Flowchart'"
-      @click="goTestCat"
-    >
-      自测猫
-    </n-button>
+    <template v-if="codeStore.code.language !== 'Flowchart'">
+      <IconButton
+        icon="streamline-ultimate-color:business-lucky-cat"
+        tip="自测猫"
+        @click="goTestCat"
+      />
 
-    <n-dropdown
-      v-if="codeStore.code.language !== 'Flowchart'"
-      size="large"
-      :options="menu"
-      @select="handleMenuSelect"
-    >
-      <n-button :size="buttonSize">操作</n-button>
-    </n-dropdown>
+      <IconButton
+        icon="streamline-ultimate-color:copy-paste-1"
+        tip="复制代码"
+        @click="copy"
+      />
+
+      <IconButton
+        icon="streamline-ultimate-color:synchronize-arrow"
+        tip="重置代码"
+        @click="reset"
+      />
+    </template>
 
     <IconButton
       v-if="isDesktop && userStore.isSuperAdmin"
-      icon="streamline-ultimate-color:file-code-edit"
+      icon="streamline-ultimate-color:common-file-edit"
       tip="编辑题目"
       @click="goEdit"
     />
@@ -217,8 +204,8 @@ onMounted(() => {
       <IconButton
         :icon="
           syncEnabled
-            ? 'streamline-ultimate-color:flash-off'
-            : 'streamline-ultimate-color:monitor-flash'
+            ? 'ph:wifi-slash'
+            : 'ph:wifi-high'
         "
         :tip="syncEnabled ? SYNC_MESSAGES.SYNC_ON : SYNC_MESSAGES.SYNC_OFF"
         :type="syncEnabled ? 'warning' : 'default'"

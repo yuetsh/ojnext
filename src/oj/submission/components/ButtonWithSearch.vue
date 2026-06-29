@@ -40,7 +40,7 @@ function filterClass() {
       <template #trigger>
         <n-button text @click="filterClass">
           <template #icon>
-            <Icon icon="openmoji:filter"></Icon>
+            <Icon icon="ph:funnel"></Icon>
           </template>
         </n-button>
       </template>

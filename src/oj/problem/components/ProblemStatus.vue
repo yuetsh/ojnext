@@ -16,8 +16,8 @@ const color = computed(() => {
 
 <template>
   <n-icon v-if="showIcon" :color="color">
-    <Icon icon="ep:select" v-if="status === 'passed'"></Icon>
-    <Icon icon="ep:semi-select" v-if="status === 'failed'"></Icon>
+    <Icon icon="ph:check" v-if="status === 'passed'"></Icon>
+    <Icon icon="ph:minus" v-if="status === 'failed'"></Icon>
   </n-icon>
 </template>
 

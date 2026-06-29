@@ -747,7 +747,7 @@ watch(
             @click="analyzeSingleClassWithAI"
           >
             <template #icon>
-              <Icon icon="mingcute:ai-line" />
+              <Icon icon="ph:sparkle" />
             </template>
             AI分析
           </n-button>

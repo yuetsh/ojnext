@@ -11,7 +11,7 @@
             @click="showLargeImage = true"
           >
             <template #icon>
-              <Icon icon="mdi:fullscreen" />
+              <Icon icon="ph:corners-out" />
             </template>
             查看大图
           </n-button>
@@ -28,7 +28,7 @@
             <div v-if="showLargeImage" class="fullscreen-toolbar">
               <n-button secondary round @click="showLargeImage = false">
                 <template #icon>
-                  <Icon icon="mdi:fullscreen-exit" />
+                  <Icon icon="ph:corners-in" />
                 </template>
                 退出大图
               </n-button>

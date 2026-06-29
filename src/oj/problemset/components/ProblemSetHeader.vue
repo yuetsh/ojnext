@@ -99,7 +99,7 @@ function handleJoin() {
         </n-button>
         <n-tag v-else type="success" size="large">
           <template #icon>
-            <Icon icon="material-symbols:check-circle" />
+            <Icon icon="ph:check-circle-fill" />
           </template>
           已加入
         </n-tag>

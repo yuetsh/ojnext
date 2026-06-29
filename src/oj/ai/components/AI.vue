@@ -15,7 +15,7 @@
           @click="handleAnalyze"
         >
           <template #icon>
-            <Icon icon="mingcute:ai-line" />
+            <Icon icon="ph:sparkle" />
           </template>
           开始分析
         </n-button>
