@@ -6,12 +6,11 @@ import { useProblemStore } from "oj/store/problem"
 import { useScreenModeStore } from "shared/store/screenMode"
 import { useMyFlowchartStore } from "shared/store/myFlowchart"
 
-const ProblemEditor = defineAsyncComponent(
-  () => import("./components/ProblemEditor.vue"),
-)
-const ContestEditor = defineAsyncComponent(
-  () => import("./components/ContestEditor.vue"),
-)
+// 抽成具名 loader，便于进页面时与接口并行预取编辑器 chunk
+const loadProblemEditor = () => import("./components/ProblemEditor.vue")
+const loadContestEditor = () => import("./components/ContestEditor.vue")
+const ProblemEditor = defineAsyncComponent(loadProblemEditor)
+const ContestEditor = defineAsyncComponent(loadContestEditor)
 const EditorForTest = defineAsyncComponent(
   () => import("./components/EditorForTest.vue"),
 )
@@ -106,6 +105,9 @@ watch(
 
 async function init() {
   screenModeStore.resetScreenMode()
+  // 并行预取右侧编辑器 chunk（CodeMirror ~370K+），
+  // 避免等 getProblem 返回后才串行下载，编辑器才迟迟出现
+  ;(inProblem.value ? loadProblemEditor : loadContestEditor)()
   try {
     const res = await getProblem(problemID, contestID)
     problem.value = res.data
@@ -153,11 +155,7 @@ watch(isMobile, (value) => {
             >
               <ProblemFlowchart />
             </n-tab-pane>
-            <n-tab-pane
-              name="info"
-              tab="题目统计"
-              :disabled="!!problemSetId"
-            >
+            <n-tab-pane name="info" tab="题目统计" :disabled="!!problemSetId">
               <ProblemInfo />
             </n-tab-pane>
             <n-tab-pane
@@ -209,11 +207,7 @@ watch(isMobile, (value) => {
           >
             <ProblemFlowchart />
           </n-tab-pane>
-          <n-tab-pane
-            name="info"
-            tab="题目统计"
-            :disabled="!!problemSetId"
-          >
+          <n-tab-pane name="info" tab="题目统计" :disabled="!!problemSetId">
             <ProblemInfo />
           </n-tab-pane>
           <n-tab-pane
