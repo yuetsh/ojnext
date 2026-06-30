@@ -304,8 +304,8 @@ function handleMenuSelect(key: string) {
       </div>
       <n-button :bordered="false" circle @click="toggleDark">
         <template #icon>
-          <Icon v-if="isDark" icon="fluent-emoji:sun-behind-small-cloud"></Icon>
-          <Icon v-else icon="fluent-emoji:cloud-with-lightning-and-rain"></Icon>
+          <Icon v-if="isDark" icon="fluent-emoji:sun"></Icon>
+          <Icon v-else icon="fluent-emoji:full-moon"></Icon>
         </template>
       </n-button>
     </n-flex>
