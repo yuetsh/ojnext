@@ -627,10 +627,53 @@ export interface ExerciseFillData {
   code: string
 }
 
+export interface ExerciseMatchData {
+  question: string
+  left: string[]
+  right: string[]
+  answer: number[]
+}
+
+export interface ExercisePredictData {
+  question: string
+  code: string
+  answer: string[]
+}
+
+export interface ExerciseDebugData {
+  question: string
+  lines: string[]
+  answer: number[]
+  explanation?: string
+}
+
+export interface ExerciseGroupData {
+  question: string
+  buckets: string[]
+  items: string[]
+  answer: number[]
+}
+
+export type ExerciseType =
+  | "mcq"
+  | "sort"
+  | "fill"
+  | "match"
+  | "predict"
+  | "debug"
+  | "group"
+
 export interface Exercise {
   id: number
-  type: "mcq" | "sort" | "fill"
-  data: ExerciseMcqData | ExerciseSortData | ExerciseFillData
+  type: ExerciseType
+  data:
+    | ExerciseMcqData
+    | ExerciseSortData
+    | ExerciseFillData
+    | ExerciseMatchData
+    | ExercisePredictData
+    | ExerciseDebugData
+    | ExerciseGroupData
   order: number
 }
 

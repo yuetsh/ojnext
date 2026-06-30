@@ -8,6 +8,7 @@ import type {
   BlankProblem,
   Contest,
   Exercise,
+  ExerciseType,
   Server,
   TestcaseUploadedReturns,
   Tutorial,
@@ -272,7 +273,7 @@ export async function getAdminExercises(tutorialId: number) {
 
 export async function createExercise(data: {
   tutorial_id: number
-  type: "mcq" | "sort" | "fill"
+  type: ExerciseType
   data: object
   order: number
 }) {
@@ -282,7 +283,7 @@ export async function createExercise(data: {
 
 export async function updateExercise(data: {
   id: number
-  type: "mcq" | "sort" | "fill"
+  type: ExerciseType
   data: object
   order: number
 }) {
