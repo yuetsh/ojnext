@@ -198,6 +198,10 @@ watch(
         problem.value.sql_config = { mode: "query", order_sensitive: false }
       }
       currentActiveAnswer.value = "SQL"
+      // 代码规则检查基于 Python/C 的 AST 解析，对 SQL 没有意义，清空避免脏数据
+      if (problem.value.ast_rules) {
+        problem.value.ast_rules = null
+      }
     } else if (problem.value.sql_config) {
       problem.value.sql_config = null
     }
@@ -754,7 +758,7 @@ watch(
     </n-gi>
   </n-grid>
 
-  <n-grid :cols="2">
+  <n-grid v-if="!isSQLProblem" :cols="2">
     <n-gi :span="1">
       <AstRulesEditor
         v-model="problem.ast_rules!"
