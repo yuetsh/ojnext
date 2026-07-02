@@ -133,10 +133,13 @@ export async function uploadImage(file: File): Promise<string> {
   return res.success ? res.file_path : ""
 }
 
-// 上传测试用例
-export function uploadTestcases(file: File) {
+// 上传测试用例；SQL 题的压缩包是 1.sql..N.sql（每个文件一个测试点的建表+数据脚本）
+export function uploadTestcases(file: File, options: { sql?: boolean } = {}) {
   const form = new window.FormData()
   form.append("file", file)
+  if (options.sql) {
+    form.append("sql", "1")
+  }
   return http.post<TestcaseUploadedReturns>("admin/test_case", form, {
     headers: { "content-type": "multipart/form-data" },
   })

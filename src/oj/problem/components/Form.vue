@@ -140,7 +140,8 @@ defineExpose({
 
 onMounted(() => {
   if (!languages.value.includes(codeStore.code.language)) {
-    codeStore.code.language = "Python3"
+    // 回退到题目支持的第一种语言（如 SQL 题只有 "SQL"，硬编码 Python3 会被后端拒绝）
+    codeStore.code.language = languages.value[0] ?? "Python3"
   }
 })
 </script>
@@ -175,6 +176,7 @@ onMounted(() => {
 
     <template v-if="codeStore.code.language !== 'Flowchart'">
       <IconButton
+        v-if="codeStore.code.language !== 'SQL'"
         icon="streamline-ultimate-color:business-lucky-cat"
         tip="自测猫"
         @click="goTestCat"

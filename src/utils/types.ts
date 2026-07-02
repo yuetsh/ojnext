@@ -65,6 +65,12 @@ export type LANGUAGE =
   | "JavaScript"
   | "Golang"
   | "Flowchart"
+  | "SQL"
+
+export interface SQLConfig {
+  mode: "query" | "modify"
+  order_sensitive: boolean
+}
 
 export type LANGUAGE_SHOW_LABEL =
   (typeof LANGUAGE_SHOW_VALUE)[keyof typeof LANGUAGE_SHOW_VALUE]
@@ -164,6 +170,9 @@ export interface Problem {
     }[]
   } | null
   has_ast_rules?: boolean
+
+  // SQL 题配置（非 SQL 题为 null）
+  sql_config?: SQLConfig | null
 }
 
 export type AdminProblem = Problem & AlterProblem

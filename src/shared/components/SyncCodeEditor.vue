@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
+import { sql, SQLite } from "@codemirror/lang-sql"
 import { bracketMatching } from "@codemirror/language"
 import { EditorView } from "@codemirror/view"
 import { Codemirror } from "vue-codemirror"
@@ -57,6 +58,8 @@ const emit = defineEmits<{
 const { isDesktop } = useBreakpoints()
 
 const langExtension = computed((): Extension => {
+  if (language === "SQL")
+    return sql({ dialect: SQLite, upperCaseKeywords: true })
   return ["Python2", "Python3"].includes(language) ? python() : cpp()
 })
 

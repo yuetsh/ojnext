@@ -127,7 +127,13 @@ onMounted(init)
         </n-flex>
       </n-alert>
       <n-flex :vertical="isDesktop" justify="center">
-        <n-button secondary @click="copyToCat">复制到自测猫</n-button>
+        <n-button
+          v-if="submission.language !== 'SQL'"
+          secondary
+          @click="copyToCat"
+        >
+          复制到自测猫
+        </n-button>
         <n-button secondary @click="copyToProblem">复制回到题目</n-button>
       </n-flex>
     </n-flex>

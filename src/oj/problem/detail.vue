@@ -130,6 +130,16 @@ onBeforeUnmount(() => {
 watch(isMobile, (value) => {
   if (value) screenModeStore.resetScreenMode()
 })
+
+// SQL 题不支持"自测"模式（外部代码运行器无法执行 SQL），切到该屏时自动跳到下一模式
+watch(
+  () => screenModeStore.isCodeOnlyMode,
+  (codeOnly) => {
+    if (codeOnly && problem.value?.languages.includes("SQL")) {
+      screenModeStore.switchScreenMode()
+    }
+  },
+)
 </script>
 
 <template>

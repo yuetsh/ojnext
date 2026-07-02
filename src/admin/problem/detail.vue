@@ -10,7 +10,13 @@ import {
 } from "utils/constants"
 import download from "utils/download"
 import { unique } from "utils/functions"
-import type { BlankProblem, LANGUAGE, Tag, Testcase } from "utils/types"
+import type {
+  BlankProblem,
+  LANGUAGE,
+  SQLConfig,
+  Tag,
+  Testcase,
+} from "utils/types"
 import {
   createContestProblem,
   createProblem,
@@ -89,6 +95,7 @@ const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
   flowchart_hint: "",
   show_flowchart: false,
   ast_rules: null as { [key: string]: any[] } | null,
+  sql_config: null as SQLConfig | null,
 })
 
 // 从服务器来的tag列表
@@ -171,7 +178,32 @@ const languageOptions = [
   { label: LANGUAGE_SHOW_VALUE["Python3"], value: "Python3" },
   { label: LANGUAGE_SHOW_VALUE["C"], value: "C" },
   { label: LANGUAGE_SHOW_VALUE["C++"], value: "C++" },
+  { label: LANGUAGE_SHOW_VALUE["SQL"], value: "SQL" },
 ]
+
+const isSQLProblem = computed(() => !!problem.value?.languages.includes("SQL"))
+
+// SQL 题联动：SQL 必须是唯一语言（后端强校验），不需要预制代码，自动初始化 sql_config
+watch(
+  () => problem.value?.languages,
+  (langs) => {
+    if (!langs) return
+    if (langs.includes("SQL")) {
+      if (langs.length > 1) {
+        problem.value.languages = ["SQL"]
+        return
+      }
+      needTemplate.value = false
+      if (!problem.value.sql_config) {
+        problem.value.sql_config = { mode: "query", order_sensitive: false }
+      }
+      currentActiveAnswer.value = "SQL"
+    } else if (problem.value.sql_config) {
+      problem.value.sql_config = null
+    }
+  },
+  { immediate: true },
+)
 
 async function getProblemDetail() {
   if (!props.problemID) {
@@ -211,6 +243,7 @@ async function getProblemDetail() {
     problem.value.flowchart_hint = data.flowchart_hint ?? ""
     problem.value.flowchart_data = data.flowchart_data
     problem.value.ast_rules = data.ast_rules ?? null
+    problem.value.sql_config = data.sql_config ?? null
     if (data.answers && data.answers.length) {
       problem.value.answers = data.answers
     } else {
@@ -262,7 +295,7 @@ function resetTemplate(language: LANGUAGE) {
 
 async function handleUploadTestcases({ file }: UploadCustomRequestOptions) {
   try {
-    const res = await uploadTestcases(file.file!)
+    const res = await uploadTestcases(file.file!, { sql: isSQLProblem.value })
     // @ts-ignore
     if (res.error) {
       message.error("上传测试用例失败")
@@ -330,6 +363,19 @@ async function validateProblem() {
     hasErrors = true
   } else if (problem.value.languages.length === 0) {
     message.error("编程语言没有选择")
+    hasErrors = true
+  }
+  // SQL 题验证
+  else if (isSQLProblem.value && !problem.value.sql_config?.mode) {
+    message.error("SQL 题需要选择题型（查询题/增删改题）")
+    hasErrors = true
+  } else if (
+    isSQLProblem.value &&
+    !problem.value.answers.find(
+      (ans) => ans.language === "SQL" && ans.code.trim() !== "",
+    )
+  ) {
+    message.error("SQL 题必须填写标准答案（判题时用它生成期望结果）")
     hasErrors = true
   }
   // 流程图验证
@@ -611,7 +657,7 @@ watch(
         </n-flex>
       </n-checkbox-group>
     </n-form-item>
-    <n-form-item>
+    <n-form-item v-if="!isSQLProblem">
       <n-checkbox
         v-model:checked="needTemplate"
         label="预制代码（显示在编辑器中，帮助快速上手）"
@@ -630,10 +676,37 @@ watch(
     </n-form-item>
   </n-form>
 
+  <n-form
+    v-if="isSQLProblem && problem.sql_config"
+    inline
+    label-placement="left"
+  >
+    <n-form-item label="SQL 题型">
+      <n-radio-group v-model:value="problem.sql_config.mode">
+        <n-radio-button value="query">查询题（比对查询结果）</n-radio-button>
+        <n-radio-button value="modify">
+          增删改题（比对执行后的表数据）
+        </n-radio-button>
+      </n-radio-group>
+    </n-form-item>
+    <n-form-item label="严格比对行顺序">
+      <n-switch v-model:value="problem.sql_config.order_sensitive" />
+      <n-text depth="3" style="margin-left: 12px">
+        题目要求 ORDER BY 时开启；关闭则按无序集合比对
+      </n-text>
+    </n-form-item>
+  </n-form>
+
   <n-grid :cols="2" x-gap="20">
     <n-gi>
       <n-form>
-        <n-form-item label="本题参考答案（选填，用于 AI 分析，不会泄露）">
+        <n-form-item
+          :label="
+            isSQLProblem
+              ? '标准答案（必填，判题依据：每个测试点会运行它生成期望结果）'
+              : '本题参考答案（选填，用于 AI 分析，不会泄露）'
+          "
+        >
           <n-tabs
             type="segment"
             default-value="Python3"
@@ -695,7 +768,7 @@ watch(
   <h2 class="title">测试用例区域</h2>
 
   <n-flex align="center" style="margin-bottom: 12px">
-    <div>
+    <div v-if="!isSQLProblem">
       <n-button type="success" @click="showGeneratorModal = true">
         （新）直接生成
       </n-button>
@@ -706,14 +779,23 @@ watch(
         accept=".zip"
         :custom-request="handleUploadTestcases"
       >
-        <n-button type="info">（老）手动上传</n-button>
+        <n-button type="info">
+          {{ isSQLProblem ? "上传数据脚本压缩包" : "（老）手动上传" }}
+        </n-button>
       </n-upload>
     </div>
     <n-tooltip placement="right">
       <template #trigger>
         <n-button text>温馨提醒</n-button>
       </template>
-      【测试用例】最好要有10个，要考虑边界情况，且不要跟【测试样例】一模一样
+      <template v-if="isSQLProblem">
+        压缩包内放 1.sql、2.sql…（每个文件是一个测试点的建表+插入数据脚本，
+        判题时对每个测试点分别运行标准答案和学生 SQL 比对结果）。 建议至少 2-3
+        个数据不同的测试点，防止学生硬编码答案
+      </template>
+      <template v-else>
+        【测试用例】最好要有10个，要考虑边界情况，且不要跟【测试样例】一模一样
+      </template>
     </n-tooltip>
   </n-flex>
 

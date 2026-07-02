@@ -175,6 +175,7 @@ export const SOURCES = {
   JavaScript: "",
   Golang: "",
   Flowchart: "",
+  SQL: "",
 } as const
 
 export const LANGUAGE_ID = {
@@ -186,6 +187,7 @@ export const LANGUAGE_ID = {
   JavaScript: 0,
   Golang: 0,
   Flowchart: 0,
+  SQL: 0,
 } as const
 
 export const LANGUAGE_FORMAT_VALUE = {
@@ -197,6 +199,7 @@ export const LANGUAGE_FORMAT_VALUE = {
   JavaScript: "javascript",
   Golang: "go",
   Flowchart: "flowchart",
+  SQL: "sql",
 } as const
 
 export const LANGUAGE_SHOW_VALUE = {
@@ -208,6 +211,7 @@ export const LANGUAGE_SHOW_VALUE = {
   Python3: "Python",
   JavaScript: "JS",
   Golang: "Go",
+  SQL: "SQL",
 } as const
 
 export const ICON_SET = {
@@ -219,6 +223,7 @@ export const ICON_SET = {
   Java: "devicon:java",
   JavaScript: "devicon:javascript",
   Golang: "devicon:go",
+  SQL: "devicon:sqlite",
 } as const
 
 const cTemplate = `//TEMPLATE BEGIN
@@ -256,6 +261,7 @@ export const CODE_TEMPLATES = {
   JavaScript: blankTemplate,
   Golang: blankTemplate,
   Flowchart: blankTemplate,
+  SQL: blankTemplate,
 } as const
 
 export enum ScreenMode {
