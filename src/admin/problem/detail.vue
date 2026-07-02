@@ -202,6 +202,9 @@ watch(
       if (problem.value.ast_rules) {
         problem.value.ast_rules = null
       }
+      // 流程图依赖 Python 答案生成，对 SQL 没有意义
+      problem.value.allow_flowchart = false
+      problem.value.show_flowchart = false
     } else if (problem.value.sql_config) {
       problem.value.sql_config = null
     }
@@ -844,48 +847,50 @@ watch(
     />
   </n-modal>
 
-  <n-divider />
+  <template v-if="!isSQLProblem">
+    <n-divider />
 
-  <h2 class="title">流程图区域</h2>
+    <h2 class="title">流程图区域</h2>
 
-  <!-- 流程图相关设置 -->
-  <n-form inline label-placement="left" :show-feedback="false">
-    <n-form-item label="根据上面的【Python答案】智能生成 Mermaid 代码">
-      <n-button
-        type="primary"
-        size="small"
-        :disabled="
-          !problem.answers.filter((a) => a.language === 'Python3')[0].code
-            .length
-        "
-        :loading="isAIGenerating"
-        @click="generateMermaid"
-      >
-        AI 生成
-      </n-button>
-    </n-form-item>
-    <n-form-item label="允许提交流程图">
-      <n-switch v-model:value="problem.allow_flowchart" />
-    </n-form-item>
-    <n-form-item label="显示标准流程图">
-      <n-switch v-model:value="problem.show_flowchart" />
-    </n-form-item>
-  </n-form>
+    <!-- 流程图相关设置 -->
+    <n-form inline label-placement="left" :show-feedback="false">
+      <n-form-item label="根据上面的【Python答案】智能生成 Mermaid 代码">
+        <n-button
+          type="primary"
+          size="small"
+          :disabled="
+            !problem.answers.filter((a) => a.language === 'Python3')[0]?.code
+              .length
+          "
+          :loading="isAIGenerating"
+          @click="generateMermaid"
+        >
+          AI 生成
+        </n-button>
+      </n-form-item>
+      <n-form-item label="允许提交流程图">
+        <n-switch v-model:value="problem.allow_flowchart" />
+      </n-form-item>
+      <n-form-item label="显示标准流程图">
+        <n-switch v-model:value="problem.show_flowchart" />
+      </n-form-item>
+    </n-form>
 
-  <n-form>
-    <n-form-item>
-      <MermaidEditor
-        v-model="problem.mermaid_code"
-        @render-success="onMermaidRenderSuccess"
-      />
-    </n-form-item>
-    <n-form-item label="流程图提示信息（选填）">
-      <n-input
-        v-model:value="problem.flowchart_hint"
-        placeholder="请输入流程图相关的提示信息，帮助学生理解题目要求"
-      />
-    </n-form-item>
-  </n-form>
+    <n-form>
+      <n-form-item>
+        <MermaidEditor
+          v-model="problem.mermaid_code"
+          @render-success="onMermaidRenderSuccess"
+        />
+      </n-form-item>
+      <n-form-item label="流程图提示信息（选填）">
+        <n-input
+          v-model:value="problem.flowchart_hint"
+          placeholder="请输入流程图相关的提示信息，帮助学生理解题目要求"
+        />
+      </n-form-item>
+    </n-form>
+  </template>
   <n-flex style="margin-bottom: 120px" align="center" justify="end">
     <n-button type="primary" @click="submit">提交</n-button>
   </n-flex>
