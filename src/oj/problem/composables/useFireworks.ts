@@ -1,4 +1,5 @@
 import confetti from "canvas-confetti"
+import { getCurrentScope, onScopeDispose } from "vue"
 
 // 表情图标取自 @iconify 的 streamline-emojis 图标集，与项目内 <Icon icon="streamline-emojis:..."> 用法保持一致
 const EMOJI_SVGS = [
@@ -67,6 +68,31 @@ export function useFireworks() {
   // 提前预加载表情包位图，避免首次触发效果8时出现解码延迟
   loadEmojiShapes()
 
+  // 动画期间创建的定时器，组件卸载时统一清理，避免离开页面后动画继续
+  const timers = new Set<ReturnType<typeof setTimeout>>()
+  let disposed = false
+
+  function stopTimer(id: ReturnType<typeof setTimeout>) {
+    clearInterval(id)
+    timers.delete(id)
+  }
+
+  function runLater(fn: () => void, ms: number) {
+    const id = setTimeout(() => {
+      timers.delete(id)
+      fn()
+    }, ms)
+    timers.add(id)
+  }
+
+  if (getCurrentScope()) {
+    onScopeDispose(() => {
+      disposed = true
+      timers.forEach((id) => clearInterval(id))
+      timers.clear()
+    })
+  }
+
   /**
    * 触发随机烟花效果
    */
@@ -80,12 +106,11 @@ export function useFireworks() {
           startVelocity: 30,
           spread: 360,
           ticks: 60,
-          zIndex: 0,
         }
 
-        const interval: any = setInterval(() => {
+        const interval = setInterval(() => {
           const timeLeft = animationEnd - Date.now()
-          if (timeLeft <= 0) return clearInterval(interval)
+          if (timeLeft <= 0) return stopTimer(interval)
 
           const particleCount = 50 * (timeLeft / duration)
           confetti({
@@ -101,30 +126,30 @@ export function useFireworks() {
             colors: ["#ff6b6b", "#ffd93d", "#6bcf7f", "#4ecdc4", "#a29bfe"],
           })
         }, 250)
+        timers.add(interval)
       },
 
       // 效果2: 星星雨
       () => {
-        const count = 10
-        const defaults = {
-          origin: { y: 0.7 },
-          shapes: ["star"],
-          colors: ["#FFD700", "#FFA500", "#FFFF00", "#FF69B4", "#00CED1"],
-        }
+        const animationEnd = Date.now() + 2000
 
-        function fire(particleRatio: number, opts: any) {
+        const interval = setInterval(() => {
+          if (Date.now() >= animationEnd) return stopTimer(interval)
+
           confetti({
-            ...defaults,
-            ...opts,
-            particleCount: Math.floor(200 * particleRatio),
+            particleCount: 12,
+            spread: 100,
+            startVelocity: 12,
+            gravity: 0.6,
+            decay: 0.96,
+            ticks: 200,
+            scalar: 1.2,
+            shapes: ["star"],
+            origin: { x: Math.random(), y: -0.1 },
+            colors: ["#FFD700", "#FFA500", "#FFFF00", "#FF69B4", "#00CED1"],
           })
-        }
-
-        fire(0.25, { spread: 26, startVelocity: 55 })
-        fire(0.2, { spread: 60 })
-        fire(0.35, { spread: 100, decay: 0.91, scalar: 0.8 })
-        fire(0.1, { spread: 120, startVelocity: 25, decay: 0.92, scalar: 1.2 })
-        fire(0.1, { spread: 120, startVelocity: 45 })
+        }, 150)
+        timers.add(interval)
       },
 
       // 效果3: 爆炸波浪
@@ -134,7 +159,7 @@ export function useFireworks() {
         }
 
         for (let i = 0; i < 5; i++) {
-          setTimeout(() => {
+          runLater(() => {
             confetti({
               angle: randomInRange(55, 125),
               spread: randomInRange(50, 70),
@@ -150,7 +175,14 @@ export function useFireworks() {
       () => {
         const end = Date.now() + 2000
 
-        const colors = ["#bb0000", "#ffffff"]
+        const colors = [
+          "#ff595e",
+          "#ff924c",
+          "#ffca3a",
+          "#8ac926",
+          "#1982c4",
+          "#6a4c93",
+        ]
 
         const frame = () => {
           confetti({
@@ -168,7 +200,7 @@ export function useFireworks() {
             colors: colors,
           })
 
-          if (Date.now() < end) {
+          if (Date.now() < end && !disposed) {
             requestAnimationFrame(frame)
           }
         }
@@ -181,9 +213,9 @@ export function useFireworks() {
         const duration = 2500
         const animationEnd = Date.now() + duration
 
-        const interval: any = setInterval(() => {
+        const interval = setInterval(() => {
           const timeLeft = animationEnd - Date.now()
-          if (timeLeft <= 0) return clearInterval(interval)
+          if (timeLeft <= 0) return stopTimer(interval)
 
           const particleCount = 50
           confetti({
@@ -205,6 +237,7 @@ export function useFireworks() {
             ],
           })
         }, 200)
+        timers.add(interval)
       },
 
       // 效果6: 炮竹齐鸣
@@ -270,11 +303,11 @@ export function useFireworks() {
           })
         }
 
-        setTimeout(shoot, 0)
-        setTimeout(shoot, 100)
-        setTimeout(shoot, 200)
-        setTimeout(shoot, 300)
-        setTimeout(shoot, 400)
+        runLater(shoot, 0)
+        runLater(shoot, 100)
+        runLater(shoot, 200)
+        runLater(shoot, 300)
+        runLater(shoot, 400)
       },
 
       // 效果8: 表情包烟花
@@ -298,7 +331,7 @@ export function useFireworks() {
         const colors = ["#ff9a9e", "#fad0c4", "#fbc2eb", "#a18cd1", "#fad961"]
 
         for (let angle = 0; angle < 360; angle += 30) {
-          setTimeout(
+          runLater(
             () => {
               confetti({
                 particleCount: 15,
