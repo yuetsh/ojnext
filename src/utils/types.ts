@@ -34,10 +34,7 @@ export interface Profile {
 }
 
 export type UserAdminType =
-  | "Regular User"
-  | "Student Admin"
-  | "Teacher Admin"
-  | "Super Admin"
+  "Regular User" | "Student Admin" | "Teacher Admin" | "Super Admin"
 
 export interface User {
   id: number
@@ -72,23 +69,37 @@ export interface SQLConfig {
   order_sensitive: boolean
 }
 
+export interface SQLDisplayColumn {
+  name: string
+  type?: string
+}
+
+export interface SQLDisplayTable {
+  name: string
+  columns: SQLDisplayColumn[]
+  rows: (string | number | null)[][]
+  total_rows: number
+  truncated: boolean
+  dropped?: boolean
+}
+
+export interface SQLDisplay {
+  tables: SQLDisplayTable[]
+  expected:
+    | {
+        columns: string[]
+        rows: (string | number | null)[][]
+        total_rows: number
+        truncated: boolean
+      }
+    | { changed_tables: SQLDisplayTable[] }
+}
+
 export type LANGUAGE_SHOW_LABEL =
   (typeof LANGUAGE_SHOW_VALUE)[keyof typeof LANGUAGE_SHOW_VALUE]
 
 export type SUBMISSION_RESULT =
-  | -2
-  | -1
-  | 0
-  | 1
-  | 2
-  | 3
-  | 4
-  | 5
-  | 6
-  | 7
-  | 8
-  | 9
-  | 10
+  -2 | -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10
 
 export type ProblemStatus = "passed" | "failed" | "not_test"
 
@@ -173,6 +184,9 @@ export interface Problem {
 
   // SQL 题配置（非 SQL 题为 null）
   sql_config?: SQLConfig | null
+
+  // SQL 题展示数据（后端保存题目时自动生成）
+  sql_display?: SQLDisplay | null
 }
 
 export type AdminProblem = Problem & AlterProblem
@@ -664,13 +678,7 @@ export interface ExerciseGroupData {
 }
 
 export type ExerciseType =
-  | "mcq"
-  | "sort"
-  | "fill"
-  | "match"
-  | "predict"
-  | "debug"
-  | "group"
+  "mcq" | "sort" | "fill" | "match" | "predict" | "debug" | "group"
 
 export interface Exercise {
   id: number

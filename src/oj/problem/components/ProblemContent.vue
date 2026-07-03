@@ -12,6 +12,7 @@ import { useDark } from "@vueuse/core"
 import { MdPreview } from "md-editor-v3"
 import "md-editor-v3/lib/preview.css"
 import { getSimilarProblems } from "oj/api"
+import SQLDataTable from "./SQLDataTable.vue"
 
 type Sample = Problem["samples"][number] & {
   id: number
@@ -29,6 +30,18 @@ const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 
 const problemSetId = computed(() => route.params.problemSetId)
+
+// SQL 题：隐藏输入/输出/例子，改为渲染数据表与期望结果
+const isSQL = computed(() => !!problem.value?.sql_config)
+const sqlDisplay = computed(() => problem.value?.sql_display ?? null)
+const sqlExpectedQuery = computed(() => {
+  const exp = sqlDisplay.value?.expected
+  return exp && "columns" in exp ? exp : null
+})
+const sqlChangedTables = computed(() => {
+  const exp = sqlDisplay.value?.expected
+  return exp && "changed_tables" in exp ? exp.changed_tables : []
+})
 
 const router = useRouter()
 
@@ -269,29 +282,79 @@ function type(status: ProblemStatus) {
       :theme="isDark ? 'dark' : 'light'"
     />
 
-    <p class="title" :style="style">
-      <n-flex align="center">
-        <Icon icon="streamline-ultimate-color:envelope-back-front"></Icon>
-        输入
-      </n-flex>
-    </p>
-    <MdPreview
-      preview-theme="vuepress"
-      :model-value="problem.input_description"
-      :theme="isDark ? 'dark' : 'light'"
-    />
+    <template v-if="!isSQL">
+      <p class="title" :style="style">
+        <n-flex align="center">
+          <Icon icon="streamline-ultimate-color:envelope-back-front"></Icon>
+          输入
+        </n-flex>
+      </p>
+      <MdPreview
+        preview-theme="vuepress"
+        :model-value="problem.input_description"
+        :theme="isDark ? 'dark' : 'light'"
+      />
 
-    <p class="title" :style="style">
-      <n-flex align="center">
-        <Icon icon="streamline-ultimate-color:mailbox-post"></Icon>
-        输出
-      </n-flex>
-    </p>
-    <MdPreview
-      preview-theme="vuepress"
-      :model-value="problem.output_description"
-      :theme="isDark ? 'dark' : 'light'"
-    />
+      <p class="title" :style="style">
+        <n-flex align="center">
+          <Icon icon="streamline-ultimate-color:mailbox-post"></Icon>
+          输出
+        </n-flex>
+      </p>
+      <MdPreview
+        preview-theme="vuepress"
+        :model-value="problem.output_description"
+        :theme="isDark ? 'dark' : 'light'"
+      />
+    </template>
+
+    <template v-if="isSQL && sqlDisplay">
+      <p class="title" :style="style">
+        <n-flex align="center">
+          <Icon icon="devicon:sqlite"></Icon>
+          数据表
+        </n-flex>
+      </p>
+      <div v-for="t in sqlDisplay.tables" :key="t.name">
+        <p class="sqlTableName">{{ t.name }}</p>
+        <SQLDataTable
+          :columns="t.columns"
+          :rows="t.rows"
+          :total-rows="t.total_rows"
+          :truncated="t.truncated"
+        />
+      </div>
+
+      <p class="title" :style="style">
+        <n-flex align="center">
+          <Icon icon="streamline-ultimate-color:check-button"></Icon>
+          期望结果
+        </n-flex>
+      </p>
+      <template v-if="sqlExpectedQuery">
+        <SQLDataTable
+          :columns="sqlExpectedQuery.columns.map((name) => ({ name }))"
+          :rows="sqlExpectedQuery.rows"
+          :total-rows="sqlExpectedQuery.total_rows"
+          :truncated="sqlExpectedQuery.truncated"
+        />
+        <p v-if="!problem.sql_config?.order_sensitive" class="sqlNote">
+          结果顺序不限
+        </p>
+      </template>
+      <div v-for="t in sqlChangedTables" :key="t.name">
+        <p class="sqlTableName">
+          {{ t.dropped ? `${t.name} 表已被删除` : `执行后的 ${t.name} 表` }}
+        </p>
+        <SQLDataTable
+          v-if="!t.dropped"
+          :columns="t.columns"
+          :rows="t.rows"
+          :total-rows="t.total_rows"
+          :truncated="t.truncated"
+        />
+      </div>
+    </template>
 
     <div v-if="problem.hint">
       <p class="title" :style="style">
@@ -334,50 +397,52 @@ function type(status: ProblemStatus) {
       </div>
     </div>
 
-    <div v-for="(sample, index) of samples" :key="index">
-      <n-flex align="center">
-        <p class="title" :style="style">
-          <n-flex align="center">
-            <Icon icon="streamline-emojis:microscope"></Icon>
-            例子 {{ index + 1 }}
-          </n-flex>
-        </p>
-        <n-button
-          size="small"
-          :type="type(sample.status)"
-          @click="test(sample, index)"
+    <template v-if="!isSQL">
+      <div v-for="(sample, index) of samples" :key="index">
+        <n-flex align="center">
+          <p class="title" :style="style">
+            <n-flex align="center">
+              <Icon icon="streamline-emojis:microscope"></Icon>
+              例子 {{ index + 1 }}
+            </n-flex>
+          </p>
+          <n-button
+            size="small"
+            :type="type(sample.status)"
+            @click="test(sample, index)"
+          >
+            {{ label(sample.status, sample.loading) }}
+          </n-button>
+        </n-flex>
+        <n-descriptions
+          bordered
+          :column="2"
+          label-style="width: 50%; min-width: 100px"
         >
-          {{ label(sample.status, sample.loading) }}
-        </n-button>
-      </n-flex>
-      <n-descriptions
-        bordered
-        :column="2"
-        label-style="width: 50%; min-width: 100px"
-      >
-        <n-descriptions-item>
-          <template #label>
-            <n-flex>
-              <span>输入</span>
-              <Copy :value="sample.input" />
-            </n-flex>
-          </template>
-          <div class="testcase">{{ sample.input }}</div>
-        </n-descriptions-item>
-        <n-descriptions-item>
-          <template #label>
-            <n-flex>
-              <span>输出</span>
-              <Copy :value="sample.output" />
-            </n-flex>
-          </template>
-          <div class="testcase">{{ sample.output }}</div>
-        </n-descriptions-item>
-        <n-descriptions-item label="运行结果" v-if="sample.msg">
-          <div class="testcase">{{ sample.msg }}</div>
-        </n-descriptions-item>
-      </n-descriptions>
-    </div>
+          <n-descriptions-item>
+            <template #label>
+              <n-flex>
+                <span>输入</span>
+                <Copy :value="sample.input" />
+              </n-flex>
+            </template>
+            <div class="testcase">{{ sample.input }}</div>
+          </n-descriptions-item>
+          <n-descriptions-item>
+            <template #label>
+              <n-flex>
+                <span>输出</span>
+                <Copy :value="sample.output" />
+              </n-flex>
+            </template>
+            <div class="testcase">{{ sample.output }}</div>
+          </n-descriptions-item>
+          <n-descriptions-item label="运行结果" v-if="sample.msg">
+            <div class="testcase">{{ sample.msg }}</div>
+          </n-descriptions-item>
+        </n-descriptions>
+      </div>
+    </template>
 
     <div v-if="problem.source">
       <p class="title" :style="style">
@@ -469,5 +534,17 @@ function type(status: ProblemStatus) {
 .rule-message {
   font-size: 13px;
   opacity: 0.65;
+}
+
+.sqlTableName {
+  font-weight: 600;
+  margin: 8px 0 4px;
+  font-family: "Monaco";
+}
+
+.sqlNote {
+  font-size: 13px;
+  opacity: 0.65;
+  margin: 0 0 8px;
 }
 </style>
