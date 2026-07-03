@@ -26,14 +26,24 @@ const hljsInstance = ref<any>(null)
 const loadHighlightJS = async () => {
   if (hljsInstance.value) return hljsInstance.value
 
-  const hljs = (await import("highlight.js/lib/core")).default
-  const c = (await import("highlight.js/lib/languages/c")).default
-  const cpp = (await import("highlight.js/lib/languages/cpp")).default
-  const python = (await import("highlight.js/lib/languages/python")).default
+  const [hljs, c, cpp, python, java, javascript, go, sql] = await Promise.all([
+    import("highlight.js/lib/core"),
+    import("highlight.js/lib/languages/c"),
+    import("highlight.js/lib/languages/cpp"),
+    import("highlight.js/lib/languages/python"),
+    import("highlight.js/lib/languages/java"),
+    import("highlight.js/lib/languages/javascript"),
+    import("highlight.js/lib/languages/go"),
+    import("highlight.js/lib/languages/sql"),
+  ]).then((modules) => modules.map((m) => m.default))
 
   hljs.registerLanguage("c", c)
   hljs.registerLanguage("python", python)
   hljs.registerLanguage("cpp", cpp)
+  hljs.registerLanguage("java", java)
+  hljs.registerLanguage("javascript", javascript)
+  hljs.registerLanguage("go", go)
+  hljs.registerLanguage("sql", sql)
 
   hljsInstance.value = hljs
   return hljs
