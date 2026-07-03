@@ -791,7 +791,7 @@ watch(
         </n-button>
       </n-upload>
     </div>
-    <n-tooltip placement="right">
+    <n-tooltip placement="right" style="max-width: 320px; white-space: normal">
       <template #trigger>
         <n-button text>温馨提醒</n-button>
       </template>
