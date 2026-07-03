@@ -8,6 +8,7 @@ import type { EditorView } from "@codemirror/view"
 import type { LANGUAGE } from "utils/types"
 import { c } from "./c"
 import { python } from "./python"
+import { sql } from "./sql"
 
 type ChineseCompletion = Pick<
   Completion,
@@ -18,6 +19,7 @@ type ChineseCompletion = Pick<
 const chineseAnnotations: Record<string, ChineseCompletion[]> = {
   python,
   c,
+  sql,
 }
 
 export function enhanceCompletion(language: LANGUAGE): CompletionSource {
@@ -27,10 +29,12 @@ export function enhanceCompletion(language: LANGUAGE): CompletionSource {
     const word = context.matchBefore(/\w+/)
     if (!word && !context.explicit) return null
 
-    // SQL 没有中文注释提示，关键字补全由 @codemirror/lang-sql 提供
-    if (language === "SQL") return null
-
-    const trulyLanguage = language.startsWith("Python") ? "python" : "c"
+    const trulyLanguage =
+      language === "SQL"
+        ? "sql"
+        : language.startsWith("Python")
+          ? "python"
+          : "c"
     const completions: Completion[] = (
       chineseAnnotations[trulyLanguage] || []
     ).map((completion) => {

@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { cpp } from "@codemirror/lang-cpp"
 import { python } from "@codemirror/lang-python"
+import { sql, SQLite } from "@codemirror/lang-sql"
 import { bracketMatching } from "@codemirror/language"
 import { Codemirror } from "vue-codemirror"
 import {
@@ -34,6 +35,8 @@ const code = defineModel<string>("value")
 const isDark = useDark()
 
 const langExtension = computed(() => {
+  if (language === "SQL")
+    return sql({ dialect: SQLite, upperCaseKeywords: true })
   return ["Python2", "Python3"].includes(language) ? python() : cpp()
 })
 
