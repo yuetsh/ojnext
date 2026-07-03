@@ -11,7 +11,7 @@ import {
   submissionTimeFormat,
   utoa,
 } from "utils/functions"
-import { Submission } from "utils/types"
+import type { Submission } from "utils/types"
 import SubmissionResultTag from "shared/components/SubmissionResultTag.vue"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { useCodeStore } from "oj/store/code"

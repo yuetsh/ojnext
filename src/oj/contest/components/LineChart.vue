@@ -15,7 +15,7 @@ import {
   Tooltip,
   Legend,
 } from "chart.js"
-import { ContestRank } from "utils/types"
+import type { ContestRank } from "utils/types"
 
 ChartJS.register(
   CategoryScale,

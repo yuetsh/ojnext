@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProblemFiltered } from "utils/types"
+import type { ProblemFiltered } from "utils/types"
 import ProblemStatus from "oj/problem/components/ProblemStatus.vue"
 import { useContestStore } from "oj/store/contest"
 import { renderTableTitle } from "utils/renders"

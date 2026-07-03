@@ -36,7 +36,7 @@
 <script lang="ts" setup>
 import { NButton, NTooltip } from "naive-ui"
 import TagTitle from "./TagTitle.vue"
-import { FlowchartSummary, SolvedProblem } from "utils/types"
+import type { FlowchartSummary, SolvedProblem } from "utils/types"
 import { useAIStore } from "oj/store/ai"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { parseTime } from "utils/functions"

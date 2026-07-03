@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { CreateProblemSetData, EditProblemSetData } from "utils/types"
+import type { CreateProblemSetData, EditProblemSetData } from "utils/types"
 import { getProblemSetDetail, createProblemSet, editProblemSet } from "../api"
 
 const route = useRoute()

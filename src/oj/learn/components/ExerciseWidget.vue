@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Exercise } from "utils/types"
+import type { Exercise } from "utils/types"
 
 const ExerciseMcq = defineAsyncComponent(() => import("./ExerciseMcq.vue"))
 const ExerciseSort = defineAsyncComponent(() => import("./ExerciseSort.vue"))

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { NTabPane, NTabs, NButton, NFlex } from "naive-ui"
-import {
+import type {
   ProblemSet,
   ProblemSetProblem,
   ProblemSetBadge,

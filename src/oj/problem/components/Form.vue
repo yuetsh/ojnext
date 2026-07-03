@@ -15,7 +15,7 @@ import {
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { useUserStore } from "shared/store/user"
 import storage from "utils/storage"
-import { LANGUAGE } from "utils/types"
+import type { LANGUAGE } from "utils/types"
 import StatisticsPanel from "shared/components/StatisticsPanel.vue"
 import IconButton from "shared/components/IconButton.vue"
 import { Icon } from "@iconify/vue"

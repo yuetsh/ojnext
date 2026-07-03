@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { Contest } from "utils/types"
+import type { Contest } from "utils/types"
 import { cloneContest } from "../../api"
 
 interface Props {

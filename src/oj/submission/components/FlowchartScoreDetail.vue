@@ -109,7 +109,7 @@
 
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
-import { FlowchartSubmission } from "utils/types"
+import type { FlowchartSubmission } from "utils/types"
 import { useMermaid } from "shared/composables/useMermaid"
 
 interface Props {

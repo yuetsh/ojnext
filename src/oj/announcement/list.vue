@@ -5,7 +5,7 @@ import Pagination from "shared/components/Pagination.vue"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { parseTime } from "utils/functions"
 import { renderTableTitle } from "utils/renders"
-import { Announcement } from "utils/types"
+import type { Announcement } from "utils/types"
 import TitleWithTag from "./components/TitleWithTag.vue"
 
 const total = ref(0)

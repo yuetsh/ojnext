@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProblemSetBadge } from "utils/types"
+import type { ProblemSetBadge } from "utils/types"
 
 interface Props {
   show: boolean

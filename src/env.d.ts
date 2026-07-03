@@ -1,4 +1,4 @@
-/// <reference types="@rsbuild/core/types" />
+/// <reference types="vite/client" />
 
 interface ImportMetaEnv {
   readonly PUBLIC_ENV: string
@@ -13,12 +13,4 @@ interface ImportMetaEnv {
 
 interface ImportMeta {
   readonly env: ImportMetaEnv
-}
-
-interface Document {
-  startViewTransition?: (callback: () => void | Promise<void>) => {
-    ready: Promise<void>
-    finished: Promise<void>
-    updateCallbackDone: Promise<void>
-  }
 }

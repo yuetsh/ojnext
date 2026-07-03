@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Exercise, ExercisePredictData } from "utils/types"
+import type { Exercise, ExercisePredictData } from "utils/types"
 import { highlight } from "../composables/useCodeHighlight"
 import "./exercise-highlight.css"
 

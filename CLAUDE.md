@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-**ojnext** is the frontend for an Online Judge platform. Built with Vue 3 + TypeScript using Rsbuild (Rust-based bundler), Naive UI component library, Pinia for state management, and Vue Router.
+**ojnext** is the frontend for an Online Judge platform. Built with Vue 3 + TypeScript using Vite (Rolldown-based bundler), Naive UI component library, Pinia for state management, and Vue Router.
 
 ## Commands
 

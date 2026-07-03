@@ -2,7 +2,7 @@
 import hljs from "highlight.js/lib/core"
 import python from "highlight.js/lib/languages/python"
 import c from "highlight.js/lib/languages/c"
-import { Exercise, ExerciseSortData } from "utils/types"
+import type { Exercise, ExerciseSortData } from "utils/types"
 
 hljs.registerLanguage("python", python)
 hljs.registerLanguage("c", c)

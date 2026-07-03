@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { h } from "vue"
-import { ProblemSetBadge } from "utils/types"
+import type { ProblemSetBadge } from "utils/types"
 import { NButton, NImage } from "naive-ui"
 
 interface Props {

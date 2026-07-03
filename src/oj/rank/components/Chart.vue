@@ -11,7 +11,7 @@ import {
   Colors,
 } from "chart.js"
 import { ChartType } from "utils/constants"
-import { Rank } from "utils/types"
+import type { Rank } from "utils/types"
 
 // 仅注册柱状图所需的 Chart.js 组件
 ChartJS.register(

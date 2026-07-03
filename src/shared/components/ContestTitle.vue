@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
 import { ContestType } from "utils/constants"
-import { Contest } from "utils/types"
+import type { Contest } from "utils/types"
 
 defineProps<{ contest: Contest }>()
 </script>

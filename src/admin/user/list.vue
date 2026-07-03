@@ -3,7 +3,7 @@ import { DataTableRowKey, SelectOption } from "naive-ui"
 import Pagination from "shared/components/Pagination.vue"
 import { usePagination } from "shared/composables/pagination"
 import { parseTime } from "utils/functions"
-import { User } from "utils/types"
+import type { User } from "utils/types"
 import {
   deleteUsers,
   editUser,

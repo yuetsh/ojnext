@@ -2,6 +2,9 @@
   "extends": "@vue/tsconfig/tsconfig.dom.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
+    // Vite(oxc) 遵守 verbatimModuleSyntax，会保留未写 type 的纯类型导入导致构建报错；
+    // 关掉以让转换器自动消除类型导入（与原 Rsbuild 行为一致）
+    "verbatimModuleSyntax": false,
     "paths": {
       "utils/*": ["./src/utils/*"],
       "oj/*": ["./src/oj/*"],

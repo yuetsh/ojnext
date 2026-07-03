@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import CodeEditor from "shared/components/CodeEditor.vue"
 import MarkdownEditor from "shared/components/MarkdownEditor.vue"
-import { Tutorial } from "utils/types"
+import type { Tutorial } from "utils/types"
 import { createTutorial, getTutorial, updateTutorial } from "../api"
 import ExerciseManager from "./components/ExerciseManager.vue"
 

@@ -1,4 +1,4 @@
-import { Exercise } from "utils/types"
+import type { Exercise } from "utils/types"
 
 type Segment =
   | { type: "md"; content: string }

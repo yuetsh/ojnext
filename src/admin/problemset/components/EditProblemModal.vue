@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ProblemSetProblem } from "utils/types"
+import type { ProblemSetProblem } from "utils/types"
 
 interface Props {
   show: boolean

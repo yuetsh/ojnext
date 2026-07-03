@@ -23,7 +23,7 @@
 </template>
 
 <script setup lang="ts">
-import { UserBadge } from "utils/types"
+import type { UserBadge } from "utils/types"
 import { parseTime } from "utils/functions"
 interface Props {
   badge: UserBadge

@@ -5,7 +5,7 @@ import {
   joinProblemSet,
   getUserBadges,
 } from "../api"
-import {
+import type {
   ProblemSet,
   ProblemSetProblem,
   UserBadge as UserBadgeType,

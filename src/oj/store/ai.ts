@@ -1,4 +1,4 @@
-import { DetailsData, DurationData } from "utils/types"
+import type { DetailsData, DurationData } from "utils/types"
 import { consumeJSONEventStream } from "utils/stream"
 import {
   getAIDetailData,

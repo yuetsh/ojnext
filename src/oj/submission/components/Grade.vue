@@ -5,7 +5,7 @@
   </n-text>
 </template>
 <script setup lang="ts">
-import { Grade } from "utils/types"
+import type { Grade } from "utils/types"
 defineProps<{
   score: number
   grade: Grade

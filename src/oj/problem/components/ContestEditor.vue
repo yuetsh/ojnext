@@ -7,7 +7,7 @@ import CodeEditor from "shared/components/CodeEditor.vue"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { provideSyncStatus } from "oj/composables/syncStatus"
 import storage from "utils/storage"
-import { LANGUAGE } from "utils/types"
+import type { LANGUAGE } from "utils/types"
 import Form from "./Form.vue"
 
 const route = useRoute()

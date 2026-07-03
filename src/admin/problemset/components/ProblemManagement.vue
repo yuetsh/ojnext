@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { h } from "vue"
 import { NDataTable, NButton, NFlex } from "naive-ui"
-import { ProblemSetProblem } from "utils/types"
+import type { ProblemSetProblem } from "utils/types"
 
 interface Props {
   problems: ProblemSetProblem[]

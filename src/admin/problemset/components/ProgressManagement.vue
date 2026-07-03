@@ -2,7 +2,7 @@
 import { h } from "vue"
 import { NDataTable, NButton, NFlex } from "naive-ui"
 import { parseTime } from "utils/functions"
-import { ProblemSetProgress } from "utils/types"
+import type { ProblemSetProgress } from "utils/types"
 
 interface Props {
   progress: ProblemSetProgress[]

@@ -6,7 +6,7 @@ import { getRank } from "oj/api"
 import Pagination from "shared/components/Pagination.vue"
 import { useUserStore } from "shared/store/user"
 import { getACRate } from "utils/functions"
-import { Rank } from "utils/types"
+import type { Rank } from "utils/types"
 import { getBaseInfo, randomUser10 } from "../api"
 
 const userCount = ref(0)

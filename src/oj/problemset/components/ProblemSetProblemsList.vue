@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
-import { ProblemSetProblem } from "utils/types"
+import type { ProblemSetProblem } from "utils/types"
 import { DIFFICULTY } from "utils/constants"
 import { getTagColor } from "utils/functions"
 import { useBreakpoints } from "shared/composables/breakpoints"

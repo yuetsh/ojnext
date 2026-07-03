@@ -1,7 +1,7 @@
 import { defineStore } from "pinia"
 import { STORAGE_KEY } from "utils/constants"
 import storage from "utils/storage"
-import { Code, LANGUAGE } from "utils/types"
+import type { Code, LANGUAGE } from "utils/types"
 
 /**
  * 代码编辑器状态管理 Store

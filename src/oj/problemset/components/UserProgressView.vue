@@ -2,7 +2,7 @@
 import { h, computed, ref, onMounted, watch } from "vue"
 import { watchDebounced } from "@vueuse/core"
 import { parseTime } from "utils/functions"
-import { ProblemSetProgress } from "utils/types"
+import type { ProblemSetProgress } from "utils/types"
 import { getProblemSetUserProgress } from "../../api"
 import { NFlex, NTag } from "naive-ui"
 import { usePagination } from "shared/composables/pagination"

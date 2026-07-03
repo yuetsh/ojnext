@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { Icon } from "@iconify/vue"
-import { ProblemSet, UserBadge as UserBadgeType } from "utils/types"
+import type { ProblemSet, UserBadge as UserBadgeType } from "utils/types"
 import UserBadge from "shared/components/UserBadge.vue"
 import { useUserStore } from "shared/store/user"
 

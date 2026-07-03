@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { Exercise, ExerciseGroupData } from "utils/types"
+import type { Exercise, ExerciseGroupData } from "utils/types"
 
 const props = defineProps<{ exercise: Exercise; lang?: string }>()
 const data = computed(() => props.exercise.data as ExerciseGroupData)
