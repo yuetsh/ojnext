@@ -106,9 +106,9 @@ async function submit() {
     }
   }
 
-  // 0.5 提交前自动格式化（Python3 用 ruff，C/C++ 用 clang-format）
+  // 0.5 提交前自动格式化（Python3 用 ruff，C/C++ 用 clang-format，SQL 用 sqlparse）
   const formatLang = LANGUAGE_FORMAT_VALUE[codeStore.code.language]
-  if (["python", "c", "cpp"].includes(formatLang)) {
+  if (["python", "c", "cpp", "sql"].includes(formatLang)) {
     isFormatting.value = true
     try {
       const res = await formatCode({
