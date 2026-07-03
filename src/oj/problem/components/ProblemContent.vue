@@ -539,7 +539,7 @@ function type(status: ProblemStatus) {
 .sqlTableName {
   font-weight: 600;
   margin: 8px 0 4px;
-  font-family: "Monaco";
+  font-family: Monaco, Consolas, monospace;
 }
 
 .sqlNote {
