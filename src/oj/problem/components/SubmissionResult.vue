@@ -175,7 +175,7 @@ const columns: DataTableColumn<Submission["info"]["data"][number]>[] = [
             <n-icon
               :color="rule.passed ? theme.successColor : theme.errorColor"
             >
-              <Icon :icon="rule.passed ? 'ph:check' : 'ph:x-bold'" />
+              <Icon :icon="rule.passed ? 'ph:check-bold' : 'ph:x-bold'" />
             </n-icon>
             <span>{{ rule.description }}</span>
           </n-flex>
