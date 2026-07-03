@@ -344,19 +344,20 @@ async function validateProblem() {
   // 题目
   else if (
     !problem.value.description ||
-    !problem.value.input_description ||
-    !problem.value.output_description
+    (!isSQLProblem.value &&
+      (!problem.value.input_description || !problem.value.output_description))
   ) {
     message.error("题目或输入或输出没有填写")
     hasErrors = true
   }
   // 样例
-  else if (problem.value.samples.length == 0) {
+  else if (!isSQLProblem.value && problem.value.samples.length == 0) {
     message.error("样例没有填写")
     hasErrors = true
   }
   // 样例是空的
   else if (
+    !isSQLProblem.value &&
     problem.value.samples.some(
       (sample) => sample.output === "" || sample.input === "",
     )
@@ -432,12 +433,18 @@ function filterAnswers() {
   )
 }
 
+function filterSamplesForSQL() {
+  // SQL 题不展示样例；后端 CreateSampleSerializer 也不接受空字符串样例
+  if (isSQLProblem.value) problem.value.samples = []
+}
+
 async function submit() {
   const hasValidationErrors = await validateProblem()
   if (hasValidationErrors) return
   filterHint()
   getTemplate()
   filterAnswers()
+  filterSamplesForSQL()
   syncProblemTags()
   const api = {
     "admin problem create": createProblem,
@@ -592,45 +599,47 @@ watch(
     :min-height="300"
   />
   <TextEditor
-    v-if="ready"
+    v-if="ready && !isSQLProblem"
     v-model:value="problem.input_description"
     title="输入的描述"
   />
   <TextEditor
-    v-if="ready"
+    v-if="ready && !isSQLProblem"
     v-model:value="problem.output_description"
     title="输出的描述"
   />
-  <div class="box" v-for="(sample, index) in problem.samples" :key="index">
-    <n-flex justify="space-between" align="center">
-      <strong>测试样例 {{ index + 1 }}</strong>
-      <n-button
-        tertiary
-        type="warning"
-        size="small"
-        @click="removeSample(index)"
-      >
-        删除 {{ index + 1 }}
-      </n-button>
-    </n-flex>
-    <n-grid x-gap="20" cols="2">
-      <n-gi span="1">
-        <n-flex vertical>
-          <span>输入样例</span>
-          <n-input type="textarea" v-model:value="sample.input" />
-        </n-flex>
-      </n-gi>
-      <n-gi span="1">
-        <n-flex vertical>
-          <span>输出样例</span>
-          <n-input type="textarea" v-model:value="sample.output" />
-        </n-flex>
-      </n-gi>
-    </n-grid>
-  </div>
-  <n-button class="addSamples box" tertiary type="primary" @click="addSample">
-    添加用例
-  </n-button>
+  <template v-if="!isSQLProblem">
+    <div class="box" v-for="(sample, index) in problem.samples" :key="index">
+      <n-flex justify="space-between" align="center">
+        <strong>测试样例 {{ index + 1 }}</strong>
+        <n-button
+          tertiary
+          type="warning"
+          size="small"
+          @click="removeSample(index)"
+        >
+          删除 {{ index + 1 }}
+        </n-button>
+      </n-flex>
+      <n-grid x-gap="20" cols="2">
+        <n-gi span="1">
+          <n-flex vertical>
+            <span>输入样例</span>
+            <n-input type="textarea" v-model:value="sample.input" />
+          </n-flex>
+        </n-gi>
+        <n-gi span="1">
+          <n-flex vertical>
+            <span>输出样例</span>
+            <n-input type="textarea" v-model:value="sample.output" />
+          </n-flex>
+        </n-gi>
+      </n-grid>
+    </div>
+    <n-button class="addSamples box" tertiary type="primary" @click="addSample">
+      添加用例
+    </n-button>
+  </template>
   <TextEditor v-if="ready" v-model:value="problem.hint" title="提示（选填）" />
   <n-form>
     <n-form-item label="题目的来源（选填）">
