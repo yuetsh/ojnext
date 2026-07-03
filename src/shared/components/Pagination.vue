@@ -7,7 +7,11 @@ interface Props {
   page: number
 }
 
-const { total, limit: initialLimit = 10, page: initialPage = 1 } = defineProps<Props>()
+const {
+  total,
+  limit: initialLimit = 10,
+  page: initialPage = 1,
+} = defineProps<Props>()
 
 const emit = defineEmits(["update:limit", "update:page"])
 

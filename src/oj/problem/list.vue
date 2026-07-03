@@ -160,12 +160,18 @@ const baseColumns: DataTableColumn<ProblemFiltered>[] = [
     render: (row) => h(ProblemStatus, { status: row.status }),
   },
   {
-    title: renderTableTitle("编号", "streamline-ultimate-color:board-game-dice-1"),
+    title: renderTableTitle(
+      "编号",
+      "streamline-ultimate-color:board-game-dice-1",
+    ),
     key: "_id",
     width: 100,
   },
   {
-    title: renderTableTitle("题目", "streamline-ultimate-color:fruit-watermelon"),
+    title: renderTableTitle(
+      "题目",
+      "streamline-ultimate-color:fruit-watermelon",
+    ),
     key: "title",
     minWidth: 200,
     render: (row) => h(ProblemListTitle, { problem: row }),

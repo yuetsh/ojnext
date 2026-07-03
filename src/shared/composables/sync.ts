@@ -23,27 +23,26 @@ export const SYNC_ERROR_CODES = {
 // 界面和通知文案
 export const SYNC_MESSAGES = {
   // 超管离开
-  SUPER_ADMIN_LEFT: (name: string) => `👋 超管 ${name} 已离开`,
+  SUPER_ADMIN_LEFT: (name: string) => `超管 ${name} 已离开`,
 
   // 缺少超管
-  MISSING_SUPER_ADMIN: "⚠️ 协同编辑需要超管",
+  MISSING_SUPER_ADMIN: "协同编辑需要超管",
 
   // 连接成功
-  SYNC_ACTIVE: "✅ 协同编辑已激活！",
+  SYNC_ACTIVE: "协同编辑已激活！",
 
   // 连接断开
-  CONNECTION_LOST: "⚠️ 协同编辑已断开",
+  CONNECTION_LOST: "协同编辑已断开",
 
   // 等待相关
-  WAITING_STUDENT: "⏳ 正在等待学生加入...",
-  WAITING_ADMIN: "⏳ 正在等待超管加入...",
+  WAITING_STUDENT: "正在等待学生加入...",
+  WAITING_ADMIN: "正在等待超管加入...",
 
   // Form.vue 界面文案
   SYNC_ON: "断开同步",
   SYNC_OFF: "开启同步",
-  SYNCING_WITH: (name: string) => `🔗 与 ${name} 同步中`,
-  STUDENT_LEFT: (name?: string) =>
-    name ? `💡 ${name}已离开` : "💡 可以关闭同步",
+  SYNCING_WITH: (name: string) => `与 ${name} 同步中`,
+  STUDENT_LEFT: (name?: string) => (name ? `${name}已离开` : "可以关闭同步"),
 } as const
 
 // 类型定义

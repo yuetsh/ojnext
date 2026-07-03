@@ -77,10 +77,7 @@ const columns: DataTableColumn<Submission>[] = [
     render: (row) => h(SubmissionResultTag, { result: row.result }),
   },
   {
-    title: renderTableTitle(
-      "语言",
-      "streamline-ultimate-color:earth-pin-2",
-    ),
+    title: renderTableTitle("语言", "streamline-ultimate-color:earth-pin-2"),
     key: "language",
     width: 100,
     render: (row) => LANGUAGE_SHOW_VALUE[row.language],

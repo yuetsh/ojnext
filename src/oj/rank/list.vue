@@ -110,7 +110,11 @@ async function analyzeSingleClassWithAI() {
         if (event === "end" && !hasStarted) classDetailAiLoading.value = false
       },
       onMessage(payload) {
-        const parsed = payload as { type?: string; content?: string; message?: string }
+        const parsed = payload as {
+          type?: string
+          content?: string
+          message?: string
+        }
         if (parsed.type === "delta" && parsed.content) {
           if (!hasStarted) {
             hasStarted = true
@@ -221,7 +225,10 @@ const columns: DataTableColumn<Rank>[] = [
     align: "center",
   },
   {
-    title: renderTableTitle("提交数", "streamline-ultimate-color:space-rocket-earth"),
+    title: renderTableTitle(
+      "提交数",
+      "streamline-ultimate-color:space-rocket-earth",
+    ),
     key: "submission_number",
     width: 120,
     align: "center",
@@ -606,7 +613,10 @@ watch(
               class="stat-avg-ac"
             >
               <template #suffix>
-                <Icon icon="streamline-ultimate-color:analytics-pie-2" width="20" />
+                <Icon
+                  icon="streamline-ultimate-color:analytics-pie-2"
+                  width="20"
+                />
               </template>
             </n-statistic>
           </n-gi>
@@ -618,7 +628,10 @@ watch(
               class="stat-median-ac"
             >
               <template #suffix>
-                <Icon icon="streamline-ultimate-color:cursor-target-1" width="20" />
+                <Icon
+                  icon="streamline-ultimate-color:cursor-target-1"
+                  width="20"
+                />
               </template>
             </n-statistic>
           </n-gi>
@@ -630,7 +643,10 @@ watch(
               class="stat-total-submission"
             >
               <template #suffix>
-                <Icon icon="streamline-ultimate-color:common-file-text" width="20" />
+                <Icon
+                  icon="streamline-ultimate-color:common-file-text"
+                  width="20"
+                />
               </template>
             </n-statistic>
           </n-gi>
@@ -736,7 +752,12 @@ watch(
           </n-space>
         </n-card>
 
-        <n-flex justify="center" align="center" :size="12" style="margin-top: 12px">
+        <n-flex
+          justify="center"
+          align="center"
+          :size="12"
+          style="margin-top: 12px"
+        >
           <n-tag type="success" size="large">
             综合分: {{ classDetailData.composite_score.toFixed(1) }}
           </n-tag>
@@ -769,7 +790,10 @@ watch(
   >
     <n-spin :show="classDetailAiLoading" :delay="50">
       <div style="min-height: 200px">
-        <MdPreview v-if="classDetailAiContent" :model-value="classDetailAiContent" />
+        <MdPreview
+          v-if="classDetailAiContent"
+          :model-value="classDetailAiContent"
+        />
         <n-flex
           v-else-if="!classDetailAiLoading"
           align="center"

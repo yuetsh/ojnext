@@ -4,10 +4,7 @@ import { ref, onUnmounted, type Ref } from "vue"
  * WebSocket 连接状态
  */
 export type ConnectionStatus =
-  | "disconnected"
-  | "connecting"
-  | "connected"
-  | "error"
+  "disconnected" | "connecting" | "connected" | "error"
 
 /**
  * WebSocket 消息类型

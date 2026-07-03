@@ -1,8 +1,7 @@
 import type { Exercise } from "utils/types"
 
 type Segment =
-  | { type: "md"; content: string }
-  | { type: "exercise"; exercise: Exercise }
+  { type: "md"; content: string } | { type: "exercise"; exercise: Exercise }
 
 export function parseExercises(
   content: string,

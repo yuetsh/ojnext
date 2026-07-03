@@ -195,13 +195,6 @@ onMounted(() => {
       />
     </template>
 
-    <IconButton
-      v-if="isDesktop && userStore.isSuperAdmin"
-      icon="streamline-ultimate-color:common-file-edit"
-      tip="编辑题目"
-      @click="goEdit"
-    />
-
     <template v-if="showSyncFeature">
       <IconButton
         :icon="
@@ -231,6 +224,13 @@ onMounted(() => {
         </n-tag>
       </template>
     </template>
+
+    <IconButton
+      v-if="isDesktop && userStore.isSuperAdmin"
+      icon="streamline-ultimate-color:common-file-edit"
+      tip="编辑题目"
+      @click="goEdit"
+    />
   </n-flex>
 
   <n-modal
