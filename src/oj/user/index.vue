@@ -98,15 +98,12 @@ async function init() {
     const res = await getProfile(route.query.name as string)
     profile.value = res.data
     const acm = res.data.acm_problems_status.problems || {}
-    const oi = res.data.oi_problems_status.problems || {}
     const ac: string[] = []
-    for (let problems of [acm, oi]) {
-      Object.keys(problems).forEach((id) => {
-        if (problems[id]["status"] === 0) {
-          ac.push(problems[id]["_id"])
-        }
-      })
-    }
+    Object.keys(acm).forEach((id) => {
+      if (acm[id]["status"] === 0) {
+        ac.push(acm[id]["_id"])
+      }
+    })
     ac.sort()
     problems.value = ac
     const promises: Promise<{ data: any }>[] = []

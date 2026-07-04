@@ -12,15 +12,6 @@ export interface Profile {
       }
     }
   }
-  oi_problems_status: {
-    problems: {
-      [key: string]: {
-        _id: string
-        score: number
-        status: number
-      }
-    }
-  }
   avatar: string
   blog: null
   mood: string
@@ -29,7 +20,6 @@ export interface Profile {
   major: string
   language: string
   accepted_number: number
-  total_score: number
   submission_number: number
 }
 
@@ -492,7 +482,6 @@ export interface Rank {
       }
     }
   }
-  oi_problems_status: {}
   real_name: null | string
   avatar: string
   blog: null
@@ -502,7 +491,6 @@ export interface Rank {
   major: null | string
   language: null | string
   accepted_number: number
-  total_score: number
   submission_number: number
 }
 
