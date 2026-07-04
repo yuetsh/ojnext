@@ -10,6 +10,7 @@ import type {
   Exercise,
   ExerciseType,
   Server,
+  SQLDisplay,
   TestcaseUploadedReturns,
   Tutorial,
   User,
@@ -143,6 +144,23 @@ export function uploadTestcases(file: File, options: { sql?: boolean } = {}) {
   return http.post<TestcaseUploadedReturns>("admin/test_case", form, {
     headers: { "content-type": "multipart/form-data" },
   })
+}
+
+// SQL 题测试点预览：后端跑一遍初始化脚本+标准答案，返回数据表和期望结果展示数据
+export function previewSQLTestcase(data: {
+  init_sql: string
+  ref_sql: string
+  mode: "query" | "modify"
+}) {
+  return http.post<SQLDisplay>("admin/sql_test_case_preview", data)
+}
+
+// 回显已上传的 SQL 测试点脚本内容（按 1.sql, 2.sql... 排序）
+export function getSQLTestcaseScripts(problemId: number) {
+  return http.get<{ name: string; content: string }[]>(
+    "admin/sql_test_case_scripts",
+    { params: { problem_id: problemId } },
+  )
 }
 
 export function createProblem(problem: BlankProblem) {
