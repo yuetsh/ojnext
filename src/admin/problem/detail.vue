@@ -79,16 +79,10 @@ const problem = useLocalStorage<BlankProblem>(STORAGE_KEY.ADMIN_PROBLEM, {
   ],
   test_case_id: "",
   test_case_score: [] as Testcase[],
-  rule_type: "ACM",
   hint: "",
   source: "",
   prompt: "",
   answers: [] as { language: LANGUAGE; code: string }[],
-  io_mode: {
-    io_mode: "Standard IO",
-    input: "input.txt",
-    output: "output.txt",
-  },
   contest_id: "",
   allow_flowchart: false,
   mermaid_code: "",
@@ -240,7 +234,6 @@ async function getProblemDetail() {
     problem.value.samples = data.samples
     problem.value.test_case_id = data.test_case_id
     problem.value.test_case_score = data.test_case_score
-    problem.value.rule_type = data.rule_type
     problem.value.hint = data.hint
     problem.value.source = data.source
     problem.value.prompt = data.prompt
@@ -260,7 +253,6 @@ async function getProblemDetail() {
         code: "",
       }))
     }
-    problem.value.io_mode = data.io_mode
     if (problem.value.contest_id) {
       problem.value.contest_id = problem.value.contest_id
     }

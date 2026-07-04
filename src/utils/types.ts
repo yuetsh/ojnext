@@ -145,17 +145,10 @@ export interface Problem {
   last_update_time: null
   time_limit: number
   memory_limit: number
-  io_mode: {
-    input: string
-    output: string
-    io_mode: string
-  }
-  rule_type: string
   difficulty: "Low" | "Mid" | "High"
   source: string
   prompt: string
   answers: { language: LANGUAGE; code: string }[]
-  total_score: number
   submission_number: number
   accepted_number: number
   statistic_info: { [key: string]: number }
@@ -207,7 +200,6 @@ type ExcludeKeys =
   | "statistic_info"
   | "accepted_number"
   | "submission_number"
-  | "total_score"
 
 export type BlankProblem = Omit<Problem, ExcludeKeys> &
   AlterProblem & { id?: number }
