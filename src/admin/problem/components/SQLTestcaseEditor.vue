@@ -3,6 +3,7 @@ import { downloadZip } from "client-zip"
 import type { LANGUAGE, SQLDisplay, Testcase } from "utils/types"
 import SQLDataTable from "oj/problem/components/SQLDataTable.vue"
 import {
+  generateSQLTestcase,
   getSQLTestcaseScripts,
   previewSQLTestcase,
   uploadTestcases,
@@ -35,7 +36,7 @@ function blankEntry(): ScriptEntry {
   return { id: nextId++, sql: "", display: null, error: "", stale: false }
 }
 
-const scripts = ref<ScriptEntry[]>([blankEntry(), blankEntry()])
+const scripts = ref<ScriptEntry[]>([blankEntry(), blankEntry(), blankEntry()])
 
 const refSQL = computed(
   () =>
@@ -45,8 +46,10 @@ const refSQL = computed(
 
 const isPreviewing = ref(false)
 const isUploading = ref(false)
+const isGenerating = ref(false)
 
 const hasAnyScript = computed(() => scripts.value.some((s) => s.sql.trim()))
+const hasBlankScript = computed(() => scripts.value.some((s) => !s.sql.trim()))
 
 const canUpload = computed(() => {
   const filled = scripts.value.filter((s) => s.sql.trim())
@@ -83,7 +86,7 @@ function remove(index: number) {
 }
 
 function reset() {
-  scripts.value = [blankEntry(), blankEntry()]
+  scripts.value = [blankEntry(), blankEntry(), blankEntry()]
 }
 
 function expectedQuery(d: SQLDisplay) {
@@ -92,6 +95,28 @@ function expectedQuery(d: SQLDisplay) {
 
 function changedTables(d: SQLDisplay) {
   return "changed_tables" in d.expected ? d.expected.changed_tables : []
+}
+
+async function generate() {
+  const blanks = scripts.value.filter((s) => !s.sql.trim())
+  if (!blanks.length) return
+  isGenerating.value = true
+  await Promise.all(
+    blanks.map(async (s) => {
+      try {
+        const res = await generateSQLTestcase({
+          ref_sql: refSQL.value,
+          mode: props.mode,
+        })
+        s.sql = res.data.sql
+      } catch (err) {
+        const data = (err as { data?: unknown })?.data
+        message.error(typeof data === "string" ? data : "AI 生成失败")
+      }
+    }),
+  )
+  isGenerating.value = false
+  await preview()
 }
 
 async function preview() {
@@ -168,15 +193,33 @@ async function upload() {
       还没有填写 SQL 标准答案，请先在上方"本题参考答案"中填写，再来编写测试点
     </n-alert>
     <n-flex align="center" wrap>
-      <n-button :disabled="isPreviewing" @click="reset">清空</n-button>
-      <n-button :disabled="isPreviewing" @click="add">+1</n-button>
+      <n-button :disabled="isPreviewing || isGenerating" @click="reset">
+        清空
+      </n-button>
+      <n-button :disabled="isPreviewing || isGenerating" @click="add">
+        +1
+      </n-button>
+      <n-tooltip :disabled="!!refSQL && hasBlankScript">
+        <template #trigger>
+          <span>
+            <n-button
+              :loading="isGenerating"
+              :disabled="!refSQL || !hasBlankScript || isPreviewing"
+              @click="generate"
+            >
+              AI 生成
+            </n-button>
+          </span>
+        </template>
+        {{ !refSQL ? "请先填写 SQL 标准答案" : "所有脚本都写好了，无需生成" }}
+      </n-tooltip>
       <n-tooltip :disabled="!!refSQL && hasAnyScript">
         <template #trigger>
           <span>
             <n-button
               type="success"
               :loading="isPreviewing"
-              :disabled="!refSQL || !hasAnyScript"
+              :disabled="!refSQL || !hasAnyScript || isGenerating"
               @click="preview"
             >
               预览验证
@@ -191,7 +234,7 @@ async function upload() {
             <n-button
               type="primary"
               :loading="isUploading"
-              :disabled="!canUpload"
+              :disabled="!canUpload || isGenerating"
               @click="upload"
             >
               上传
@@ -207,7 +250,7 @@ async function upload() {
         <strong>{{ index + 1 }}.sql</strong>
         <n-button
           size="small"
-          :disabled="scripts.length === 1 || isPreviewing"
+          :disabled="scripts.length === 1 || isPreviewing || isGenerating"
           @click="remove(index)"
         >
           删除

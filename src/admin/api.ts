@@ -163,6 +163,14 @@ export function getSQLTestcaseScripts(problemId: number) {
   )
 }
 
+// AI 根据标准答案生成一个 SQL 测试点初始化脚本
+export function generateSQLTestcase(data: {
+  ref_sql: string
+  mode: "query" | "modify"
+}) {
+  return http.post<{ sql: string }>("admin/sql_test_case_ai_gen", data)
+}
+
 export function createProblem(problem: BlankProblem) {
   return http.post("admin/problem", problem)
 }

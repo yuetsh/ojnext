@@ -784,10 +784,10 @@ watch(
 
   <h2 class="title">测试用例区域</h2>
 
-  <n-flex align="center" style="margin-bottom: 12px">
+  <n-flex v-if="!isSQLProblem" align="center" style="margin-bottom: 12px">
     <div>
       <n-button type="success" @click="showGeneratorModal = true">
-        {{ isSQLProblem ? "（新）在线编写" : "（新）直接生成" }}
+        （新）直接生成
       </n-button>
     </div>
     <div>
@@ -796,25 +796,24 @@ watch(
         accept=".zip"
         :custom-request="handleUploadTestcases"
       >
-        <n-button type="info">
-          {{ isSQLProblem ? "上传数据脚本压缩包" : "（老）手动上传" }}
-        </n-button>
+        <n-button type="info">（老）手动上传</n-button>
       </n-upload>
     </div>
     <n-tooltip placement="right" style="max-width: 320px; white-space: normal">
       <template #trigger>
         <n-button text>温馨提醒</n-button>
       </template>
-      <template v-if="isSQLProblem">
-        压缩包内放 1.sql、2.sql…（每个文件是一个测试点的建表+插入数据脚本，
-        判题时对每个测试点分别运行标准答案和学生 SQL 比对结果）。 建议至少 2-3
-        个数据不同的测试点，防止学生硬编码答案
-      </template>
-      <template v-else>
-        【测试用例】最好要有10个，要考虑边界情况，且不要跟【测试样例】一模一样
-      </template>
+      【测试用例】最好要有10个，要考虑边界情况，且不要跟【测试样例】一模一样
     </n-tooltip>
   </n-flex>
+
+  <SQLTestcaseEditor
+    v-if="isSQLProblem"
+    :answers="problem.answers"
+    :mode="problem.sql_config?.mode ?? 'query'"
+    :problem-id="problem.id"
+    @uploaded="handleTestcasesGenerated"
+  />
 
   <n-alert
     class="box"
@@ -845,20 +844,12 @@ watch(
   <n-modal
     v-model:show="showGeneratorModal"
     preset="card"
-    :title="isSQLProblem ? 'SQL 测试点编辑器' : '测试用例生成器'"
+    title="测试用例生成器"
     style="width: 80vw; max-width: 900px"
     :mask-closable="false"
     display-directive="show"
   >
-    <SQLTestcaseEditor
-      v-if="isSQLProblem"
-      :answers="problem.answers"
-      :mode="problem.sql_config?.mode ?? 'query'"
-      :problem-id="problem.id"
-      @uploaded="handleTestcasesGenerated"
-    />
     <TestcaseGenerator
-      v-else
       :answers="problem.answers"
       :samples="problem.samples"
       @uploaded="handleTestcasesGenerated"
@@ -909,7 +900,7 @@ watch(
       </n-form-item>
     </n-form>
   </template>
-  <n-flex style="margin-bottom: 120px" align="center" justify="end">
+  <n-flex style="margin: 16px 0 120px" align="center" justify="end">
     <n-button type="primary" @click="submit">提交</n-button>
   </n-flex>
 </template>
