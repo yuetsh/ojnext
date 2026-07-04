@@ -2,6 +2,7 @@
 import { getProblemTagList } from "shared/api"
 import TextEditor from "shared/components/TextEditor.vue"
 import TestcaseGenerator from "./components/TestcaseGenerator.vue"
+import SQLTestcaseEditor from "./components/SQLTestcaseEditor.vue"
 import AstRulesEditor from "./components/AstRulesEditor.vue"
 import {
   CODE_TEMPLATES,
@@ -784,9 +785,9 @@ watch(
   <h2 class="title">测试用例区域</h2>
 
   <n-flex align="center" style="margin-bottom: 12px">
-    <div v-if="!isSQLProblem">
+    <div>
       <n-button type="success" @click="showGeneratorModal = true">
-        （新）直接生成
+        {{ isSQLProblem ? "（新）在线编写" : "（新）直接生成" }}
       </n-button>
     </div>
     <div>
@@ -844,12 +845,20 @@ watch(
   <n-modal
     v-model:show="showGeneratorModal"
     preset="card"
-    title="测试用例生成器"
+    :title="isSQLProblem ? 'SQL 测试点编辑器' : '测试用例生成器'"
     style="width: 80vw; max-width: 900px"
     :mask-closable="false"
     display-directive="show"
   >
+    <SQLTestcaseEditor
+      v-if="isSQLProblem"
+      :answers="problem.answers"
+      :mode="problem.sql_config?.mode ?? 'query'"
+      :problem-id="problem.id"
+      @uploaded="handleTestcasesGenerated"
+    />
     <TestcaseGenerator
+      v-else
       :answers="problem.answers"
       :samples="problem.samples"
       @uploaded="handleTestcasesGenerated"
