@@ -288,9 +288,7 @@ INSERT INTO ...;"
           <p class="previewTitle">期望结果</p>
           <SQLDataTable
             v-if="expectedQuery(s.display)"
-            :columns="
-              expectedQuery(s.display)!.columns.map((name) => ({ name }))
-            "
+            :columns="expectedQuery(s.display)!.columns"
             :rows="expectedQuery(s.display)!.rows"
             :total-rows="expectedQuery(s.display)!.total_rows"
             :truncated="expectedQuery(s.display)!.truncated"

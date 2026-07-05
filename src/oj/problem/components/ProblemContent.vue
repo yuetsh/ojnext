@@ -333,7 +333,7 @@ function type(status: ProblemStatus) {
       </p>
       <template v-if="sqlExpectedQuery">
         <SQLDataTable
-          :columns="sqlExpectedQuery.columns.map((name) => ({ name }))"
+          :columns="sqlExpectedQuery.columns"
           :rows="sqlExpectedQuery.rows"
           :total-rows="sqlExpectedQuery.total_rows"
           :truncated="sqlExpectedQuery.truncated"

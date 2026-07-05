@@ -77,7 +77,7 @@ export interface SQLDisplay {
   tables: SQLDisplayTable[]
   expected:
     | {
-        columns: string[]
+        columns: SQLDisplayColumn[]
         rows: (string | number | null)[][]
         total_rows: number
         truncated: boolean
