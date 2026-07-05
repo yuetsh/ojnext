@@ -5,6 +5,7 @@ import type {
   CompletionSource,
 } from "@codemirror/autocomplete"
 import type { EditorView } from "@codemirror/view"
+import { useProblemStore } from "oj/store/problem"
 import type { LANGUAGE } from "utils/types"
 import { c } from "./c"
 import { python } from "./python"
@@ -20,6 +21,30 @@ const chineseAnnotations: Record<string, ChineseCompletion[]> = {
   python,
   c,
   sql,
+}
+
+// SQL 题：当前题目的表名和字段名补全，数据来自 sql_display
+function sqlSchemaCompletions(): Completion[] {
+  const tables = useProblemStore().problem?.sql_display?.tables ?? []
+  return tables.flatMap((table) => [
+    {
+      label: table.name,
+      detail: "数据表",
+      type: "class",
+      info: `字段：${table.columns
+        .map((col) => (col.type ? `${col.name} ${col.type}` : col.name))
+        .join(", ")}`,
+      boost: 110,
+    },
+    ...table.columns.map((col) => ({
+      label: col.name,
+      detail: col.type
+        ? `${table.name} 的字段 · ${col.type}`
+        : `${table.name} 的字段`,
+      type: "property",
+      boost: 105,
+    })),
+  ])
 }
 
 export function enhanceCompletion(language: LANGUAGE): CompletionSource {
@@ -68,6 +93,10 @@ export function enhanceCompletion(language: LANGUAGE): CompletionSource {
 
       return completion
     })
+
+    if (trulyLanguage === "sql") {
+      completions.push(...sqlSchemaCompletions())
+    }
 
     return {
       from: word ? word.from : context.pos,

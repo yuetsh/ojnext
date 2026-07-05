@@ -51,11 +51,16 @@ const isGenerating = ref(false)
 const hasAnyScript = computed(() => scripts.value.some((s) => s.sql.trim()))
 const hasBlankScript = computed(() => scripts.value.some((s) => !s.sql.trim()))
 
+const filledCount = computed(
+  () => scripts.value.filter((s) => s.sql.trim()).length,
+)
+
 const canUpload = computed(() => {
   const filled = scripts.value.filter((s) => s.sql.trim())
   return (
     !isPreviewing.value &&
-    filled.length > 0 &&
+    // 至少 2 个数据不同的测试点，防止学生对照题目页的期望结果硬编码
+    filled.length >= 2 &&
     filled.every((s) => s.display && !s.error && !s.stale)
   )
 })
@@ -241,7 +246,11 @@ async function upload() {
             </n-button>
           </span>
         </template>
-        所有脚本预览验证通过后才能上传
+        {{
+          filledCount < 2
+            ? "SQL 题至少需要 2 个数据不同的测试点，防止硬编码期望结果"
+            : "所有脚本预览验证通过后才能上传"
+        }}
       </n-tooltip>
     </n-flex>
 
