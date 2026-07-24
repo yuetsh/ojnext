@@ -72,6 +72,57 @@ const showGoSubmissionButton = computed(() => {
   else return false
 })
 
+// 移动端把「提交信息 / 统计信息 / 复制代码 / 重置代码」收进下拉菜单，节省横向空间
+const renderIcon = (icon: string) => () => h(Icon, { icon, width: 18 })
+
+const mobileMenuOptions = computed<DropdownOption[]>(() => {
+  const options: DropdownOption[] = []
+  if (showGoSubmissionButton.value) {
+    options.push({
+      label: "提交信息",
+      key: "submissions",
+      icon: renderIcon("streamline-ultimate-color:task-list-text-1"),
+    })
+  }
+  if (userStore.isTeacherOrAbove) {
+    options.push({
+      label: "统计信息",
+      key: "statistics",
+      icon: renderIcon("streamline-ultimate-color:analytics-pie-2"),
+    })
+  }
+  if (codeStore.code.language !== "Flowchart") {
+    options.push({
+      label: "复制代码",
+      key: "copy",
+      icon: renderIcon("streamline-ultimate-color:copy-paste-1"),
+    })
+    options.push({
+      label: "重置代码",
+      key: "reset",
+      icon: renderIcon("streamline-ultimate-color:synchronize-arrow"),
+    })
+  }
+  return options
+})
+
+const handleMobileSelect = (key: string) => {
+  switch (key) {
+    case "submissions":
+      goSubmissions()
+      break
+    case "statistics":
+      statisticPanel.value = true
+      break
+    case "copy":
+      copy()
+      break
+    case "reset":
+      reset()
+      break
+  }
+}
+
 const languageOptions: DropdownOption[] = languages.value.map((it) => ({
   label: () =>
     h(NFlex, { align: "center" }, () => [
@@ -161,14 +212,14 @@ onMounted(() => {
     <SubmitCode v-else />
 
     <IconButton
-      v-if="showGoSubmissionButton"
+      v-if="isDesktop && showGoSubmissionButton"
       icon="streamline-ultimate-color:task-list-text-1"
       tip="提交信息"
       @click="goSubmissions"
     />
 
     <IconButton
-      v-if="userStore.isTeacherOrAbove"
+      v-if="isDesktop && userStore.isTeacherOrAbove"
       icon="streamline-ultimate-color:analytics-pie-2"
       tip="统计信息"
       @click="statisticPanel = true"
@@ -183,17 +234,34 @@ onMounted(() => {
       />
 
       <IconButton
+        v-if="isDesktop"
         icon="streamline-ultimate-color:copy-paste-1"
         tip="复制代码"
         @click="copy"
       />
 
       <IconButton
+        v-if="isDesktop"
         icon="streamline-ultimate-color:synchronize-arrow"
         tip="重置代码"
         @click="reset"
       />
     </template>
+
+    <!-- 移动端：提交信息 / 统计信息 / 复制代码 / 重置代码 收进下拉菜单 -->
+    <n-dropdown
+      v-if="!isDesktop && mobileMenuOptions.length"
+      trigger="click"
+      :options="mobileMenuOptions"
+      @select="handleMobileSelect"
+    >
+      <n-button round size="small">
+        更多
+        <template #icon>
+          <Icon icon="streamline-ultimate-color:navigation-menu-vertical" />
+        </template>
+      </n-button>
+    </n-dropdown>
 
     <template v-if="showSyncFeature">
       <IconButton

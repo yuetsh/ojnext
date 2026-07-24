@@ -207,8 +207,11 @@ watch(
 </script>
 
 <style scoped>
-.learn-container {
-  height: calc(100vh - 138px);
+/* 桌面端固定高度，让目录/内容/代码三栏各自内部滚动；移动端不限高，交给页面整体滚动 */
+@media (min-width: 769px) {
+  .learn-container {
+    height: calc(100vh - 138px);
+  }
 }
 
 .learn-grid {
