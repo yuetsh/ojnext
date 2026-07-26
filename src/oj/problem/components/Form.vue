@@ -71,21 +71,30 @@ const showGoSubmissionButton = computed(() => {
   else return false
 })
 
-const mobileMenuOptions = computed<DropdownOption[]>(() => {
+const menuOptions = computed<DropdownOption[]>(() => {
   const options: DropdownOption[] = []
-  if (showGoSubmissionButton.value) {
-    options.push({
-      label: "提交信息",
-      key: "submissions",
-    })
-  }
-  if (userStore.isTeacherOrAbove) {
-    options.push({
-      label: "统计信息",
-      key: "statistics",
-    })
+  // 移动端额外收纳桌面端常驻的两项
+  if (!isDesktop.value) {
+    if (showGoSubmissionButton.value) {
+      options.push({
+        label: "提交信息",
+        key: "submissions",
+      })
+    }
+    if (userStore.isTeacherOrAbove) {
+      options.push({
+        label: "统计信息",
+        key: "statistics",
+      })
+    }
   }
   if (codeStore.code.language !== "Flowchart") {
+    if (codeStore.code.language !== "SQL") {
+      options.push({
+        label: "自测猫",
+        key: "testcat",
+      })
+    }
     options.push({
       label: "复制代码",
       key: "copy",
@@ -95,10 +104,16 @@ const mobileMenuOptions = computed<DropdownOption[]>(() => {
       key: "reset",
     })
   }
+  if (isDesktop.value && userStore.isSuperAdmin) {
+    options.push({
+      label: "编辑题目",
+      key: "edit",
+    })
+  }
   return options
 })
 
-const handleMobileSelect = (key: string) => {
+const handleMenuSelect = (key: string) => {
   switch (key) {
     case "submissions":
       goSubmissions()
@@ -106,11 +121,17 @@ const handleMobileSelect = (key: string) => {
     case "statistics":
       statisticPanel.value = true
       break
+    case "testcat":
+      goTestCat()
+      break
     case "copy":
       copy()
       break
     case "reset":
       reset()
+      break
+    case "edit":
+      goEdit()
       break
   }
 }
@@ -219,32 +240,14 @@ onMounted(() => {
       统计信息
     </n-button>
 
-    <template v-if="codeStore.code.language !== 'Flowchart'">
-      <n-button
-        v-if="codeStore.code.language !== 'SQL'"
-        :size="buttonSize"
-        @click="goTestCat"
-      >
-        自测猫
-      </n-button>
-
-      <n-button v-if="isDesktop" :size="buttonSize" @click="copy">
-        复制代码
-      </n-button>
-
-      <n-button v-if="isDesktop" :size="buttonSize" @click="reset">
-        重置代码
-      </n-button>
-    </template>
-
-    <!-- 移动端：提交信息 / 统计信息 / 复制代码 / 重置代码 收进下拉菜单 -->
+    <!-- 自测猫 / 复制代码 / 重置代码 / 编辑题目 收进下拉菜单；移动端再加上提交信息 / 统计信息 -->
     <n-dropdown
-      v-if="!isDesktop && mobileMenuOptions.length"
+      v-if="menuOptions.length"
       trigger="click"
-      :options="mobileMenuOptions"
-      @select="handleMobileSelect"
+      :options="menuOptions"
+      @select="handleMenuSelect"
     >
-      <n-button size="small">更多</n-button>
+      <n-button :size="buttonSize">更多</n-button>
     </n-dropdown>
 
     <template v-if="showSyncFeature">
@@ -273,14 +276,6 @@ onMounted(() => {
         </n-tag>
       </template>
     </template>
-
-    <n-button
-      v-if="isDesktop && userStore.isSuperAdmin"
-      :size="buttonSize"
-      @click="goEdit"
-    >
-      编辑题目
-    </n-button>
   </n-flex>
 
   <n-modal
