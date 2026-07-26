@@ -91,7 +91,7 @@ const menuOptions = computed<DropdownOption[]>(() => {
   if (codeStore.code.language !== "Flowchart") {
     if (codeStore.code.language !== "SQL") {
       options.push({
-        label: "自测猫",
+        label: "去自测猫",
         key: "testcat",
       })
     }
@@ -247,7 +247,7 @@ onMounted(() => {
       :options="menuOptions"
       @select="handleMenuSelect"
     >
-      <n-button :size="buttonSize">更多</n-button>
+      <n-button :size="buttonSize">更多操作</n-button>
     </n-dropdown>
 
     <template v-if="showSyncFeature">
