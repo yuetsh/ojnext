@@ -10,13 +10,14 @@
   >
     <n-flex justify="center" align="center" :size="isMobile ? 4 : 'small'">
       <n-text>{{ copyrightText }}</n-text>
-      <!-- 移动端隐藏 CC 链接，腾出空间让备案号挤进一行 -->
-      <n-button v-if="!isMobile" text @click="goCC">CC BY-NC 4.0</n-button>
+      <n-button text @click="goCC">CC BY-NC 4.0</n-button>
     </n-flex>
-    <n-button text @click="goICP">浙ICP备2023044109号-1</n-button>
-    <n-button text @click="goPublicSecurity">
-      浙公网安备33100402331786号
-    </n-button>
+    <template v-if="!isMobile">
+      <n-button text @click="goICP">浙ICP备2023044109号-1</n-button>
+      <n-button text @click="goPublicSecurity">
+        浙公网安备33100402331786号
+      </n-button>
+    </template>
   </n-flex>
 </template>
 <script lang="ts" setup>
@@ -28,13 +29,9 @@ const hiddenICP = computed(() =>
   ["problem", "contest problem"].includes(route.name as string),
 )
 
-// 移动端精简版权文案，配合小号字体挤进一行；结束年份取当前年份
+
 const currentYear = new Date().getFullYear()
-const copyrightText = computed(() =>
-  isMobile.value
-    ? `© ${currentYear} 判题狗`
-    : `© 2022 - ${currentYear} 判题狗 保留所有权利`,
-)
+const copyrightText = `© 2022 - ${currentYear} 判题狗 保留所有权利`
 
 function goICP() {
   window.open("https://beian.miit.gov.cn", "_blank")
@@ -59,7 +56,7 @@ function goPublicSecurity() {
   margin: 12px 0;
 }
 
-/* 移动端：单行 + 小号字体，超宽时容器内部横向滚动，不撑破页面 */
+
 .beian--mobile {
   font-size: 12px;
   max-width: 100%;
