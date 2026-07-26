@@ -227,7 +227,7 @@ const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
     },
   },
   {
-    label: userStore.demoMode ? "退出学生视角" : "学生视角",
+    label: userStore.demoMode ? "退出演示" : "学生视角",
     key: "demo-mode",
     show: userStore.canToggleDemoMode,
     icon: renderIcon("fluent-emoji:graduation-cap"),
