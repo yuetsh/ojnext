@@ -83,7 +83,7 @@ const menuOptions = computed<DropdownOption[]>(() => {
     }
     if (userStore.isTeacherOrAbove) {
       options.push({
-        label: "统计信息",
+        label: "课堂统计",
         key: "statistics",
       })
     }
@@ -237,10 +237,10 @@ onMounted(() => {
       :size="buttonSize"
       @click="statisticPanel = true"
     >
-      统计信息
+      课堂统计
     </n-button>
 
-    <!-- 自测猫 / 复制代码 / 重置代码 / 编辑题目 收进下拉菜单；移动端再加上提交信息 / 统计信息 -->
+    <!-- 自测猫 / 复制代码 / 重置代码 / 编辑题目 收进下拉菜单；移动端再加上提交信息 / 课堂统计 -->
     <n-dropdown
       v-if="menuOptions.length"
       trigger="click"
