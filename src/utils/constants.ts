@@ -150,6 +150,7 @@ export const STORAGE_KEY = {
   LEARN_CURRENT_STEP: "learnStep",
   ADMIN_PROBLEM: "adminProblem",
   ADMIN_PROBLEM_TAGS: "adminProblemTags",
+  DEMO_MODE: "demoMode",
 }
 
 export const DIFFICULTY = {

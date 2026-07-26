@@ -112,6 +112,15 @@ async function handleLogout() {
   router.replace("/")
 }
 
+function handleToggleDemoMode() {
+  const entering = !userStore.demoMode
+  userStore.toggleDemoMode()
+  // 进入演示模式时若正停在后台页面，当前界面已经失去权限，必须主动退出去
+  if (entering && route.path.startsWith("/admin")) {
+    router.push("/")
+  }
+}
+
 function renderIcon(icon: string) {
   return () => h(Icon, { icon, width: 20 })
 }
@@ -175,7 +184,7 @@ const menus = computed<MenuOption[]>(() => [
   },
 ])
 
-const options: Array<DropdownOption | DropdownDividerOption> = [
+const options = computed<Array<DropdownOption | DropdownDividerOption>>(() => [
   {
     label: "我的主页",
     key: "home",
@@ -217,6 +226,13 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
       onClick: () => router.push("/ai-analysis"),
     },
   },
+  {
+    label: userStore.demoMode ? "退出演示" : "进入演示",
+    key: "demo-mode",
+    show: userStore.canToggleDemoMode,
+    icon: renderIcon("fluent-emoji:graduation-cap"),
+    props: { onClick: handleToggleDemoMode },
+  },
   { type: "divider" },
   {
     label: "退出",
@@ -224,7 +240,7 @@ const options: Array<DropdownOption | DropdownDividerOption> = [
     icon: renderIcon("streamline-ultimate-color:coffee-cold"),
     props: { onClick: handleLogout },
   },
-]
+])
 
 function goHome() {
   router.push("/")

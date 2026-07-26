@@ -56,7 +56,7 @@ function toggleDemoMode() {
 |---|---|
 | `src/utils/constants.ts` | `STORAGE_KEY` 增加 `DEMO_MODE: "demoMode"` |
 | `src/shared/store/user.ts` | 新增 `demoMode`、`realIsSuperAdmin`、`canToggleDemoMode`、`toggleDemoMode`；6 个角色 getter 加 `!demoMode.value &&` 前缀；导出新成员 |
-| `src/shared/components/Header.vue` | 用户下拉菜单 `options` 增加一项「学生视角 / 退出学生视角」 |
+| `src/shared/components/Header.vue` | 用户下拉菜单 `options` 增加一项「进入演示 / 退出演示」 |
 
 **不改**：`src/main.ts` 路由守卫、`src/utils/permissions.ts`、以及所有页面级的 `v-if` 判断。它们读的都是上述 getter，自动跟随。
 
@@ -65,7 +65,7 @@ function toggleDemoMode() {
 **入口**：右上角用户头像下拉菜单，与「我的主页」「我的提交」并列。
 
 - 显示条件：`userStore.canToggleDemoMode`
-- 文案随状态翻转：未开启显示「学生视角」，已开启显示「退出学生视角」
+- 文案随状态翻转：未开启显示「进入演示」，已开启显示「退出演示」
 - 该文案本身就是状态指示器，不额外加横幅或角标
 
 **点击行为**：
@@ -92,11 +92,11 @@ function toggleDemoMode() {
 
 手工验证（本项目不写测试）：
 
-1. 超管登录 → 下拉菜单出现「学生视角」
-2. 点击 → 顶栏「后台」消失，菜单文案变为「退出学生视角」
+1. 超管登录 → 下拉菜单出现「进入演示」
+2. 点击 → 顶栏「后台」消失，菜单文案变为「退出演示」
 3. 停在 `/admin/problem/list` 时点击 → 跳回首页
 4. 地址栏直接输 `/admin` → 弹回首页
 5. 刷新页面 → 仍是学生界面
-6. 点「退出学生视角」→ 后台入口恢复
+6. 点「退出演示」→ 后台入口恢复
 7. 退出登录再登录 → 演示模式已重置为关闭
 8. 用教师管理员账号登录 → 菜单中无此项

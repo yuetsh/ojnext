@@ -29,7 +29,6 @@ const hiddenICP = computed(() =>
   ["problem", "contest problem"].includes(route.name as string),
 )
 
-
 const currentYear = new Date().getFullYear()
 const copyrightText = `© 2022 - ${currentYear} 判题狗 保留所有权利`
 
@@ -55,7 +54,6 @@ function goPublicSecurity() {
 .beian {
   margin: 12px 0;
 }
-
 
 .beian--mobile {
   font-size: 12px;
