@@ -11,29 +11,48 @@ export const useUserStore = defineStore("user", () => {
   const [isFinished] = useToggle(false)
   const user = computed<User | null>(() => profile.value?.user ?? null)
   const isAuthed = computed(() => !!user.value?.email)
+
+  // 演示模式：超管临时把界面伪装成普通学生，方便上课投屏
+  const demoMode = ref<boolean>(storage.get(STORAGE_KEY.DEMO_MODE) ?? false)
+
+  // 不受伪装影响的真实身份，只用于判断能否切换演示模式。
+  // 若这里用被伪装后的 isSuperAdmin，一进入演示模式入口就消失了，退不出来。
+  const realIsSuperAdmin = computed(
+    () => user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
+  )
+
   const isAdminRole = computed(
     () =>
-      user.value?.admin_type === USER_TYPE.STUDENT_ADMIN ||
-      user.value?.admin_type === USER_TYPE.TEACHER_ADMIN ||
-      user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
+      !demoMode.value &&
+      (user.value?.admin_type === USER_TYPE.STUDENT_ADMIN ||
+        user.value?.admin_type === USER_TYPE.TEACHER_ADMIN ||
+        user.value?.admin_type === USER_TYPE.SUPER_ADMIN),
   )
   const isStudentAdmin = computed(
-    () => user.value?.admin_type === USER_TYPE.STUDENT_ADMIN,
+    () => !demoMode.value && user.value?.admin_type === USER_TYPE.STUDENT_ADMIN,
   )
   const isTeacherAdmin = computed(
-    () => user.value?.admin_type === USER_TYPE.TEACHER_ADMIN,
+    () => !demoMode.value && user.value?.admin_type === USER_TYPE.TEACHER_ADMIN,
   )
   const isTeacherOrAbove = computed(
     () =>
-      user.value?.admin_type === USER_TYPE.TEACHER_ADMIN ||
-      user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
+      !demoMode.value &&
+      (user.value?.admin_type === USER_TYPE.TEACHER_ADMIN ||
+        user.value?.admin_type === USER_TYPE.SUPER_ADMIN),
   )
-  const isSuperAdmin = computed(
-    () => user.value?.admin_type === USER_TYPE.SUPER_ADMIN,
-  )
+  const isSuperAdmin = computed(() => !demoMode.value && realIsSuperAdmin.value)
   const hasProblemPermission = computed(
-    () => user.value?.problem_permission !== PROBLEM_PERMISSION.NONE,
+    () =>
+      !demoMode.value &&
+      user.value?.problem_permission !== PROBLEM_PERMISSION.NONE,
   )
+
+  const canToggleDemoMode = computed(() => realIsSuperAdmin.value)
+
+  function toggleDemoMode() {
+    demoMode.value = !demoMode.value
+    storage.set(STORAGE_KEY.DEMO_MODE, demoMode.value)
+  }
 
   const showSubmissions = computed(() => {
     let flag = configStore.config.submission_list_show_all
@@ -51,6 +70,7 @@ export const useUserStore = defineStore("user", () => {
 
   function clearProfile() {
     profile.value = null
+    demoMode.value = false
     storage.clear()
   }
   return {
@@ -63,6 +83,9 @@ export const useUserStore = defineStore("user", () => {
     isTeacherOrAbove,
     isSuperAdmin,
     hasProblemPermission,
+    demoMode,
+    canToggleDemoMode,
+    toggleDemoMode,
     isAuthed,
     showSubmissions,
     getMyProfile,
