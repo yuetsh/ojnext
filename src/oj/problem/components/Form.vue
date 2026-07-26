@@ -17,7 +17,6 @@ import { useUserStore } from "shared/store/user"
 import storage from "utils/storage"
 import type { LANGUAGE } from "utils/types"
 import StatisticsPanel from "shared/components/StatisticsPanel.vue"
-import IconButton from "shared/components/IconButton.vue"
 import { Icon } from "@iconify/vue"
 import { NFlex } from "naive-ui"
 import SubmitCode from "./SubmitCode.vue"
@@ -72,35 +71,28 @@ const showGoSubmissionButton = computed(() => {
   else return false
 })
 
-// 移动端把「提交信息 / 统计信息 / 复制代码 / 重置代码」收进下拉菜单，节省横向空间
-const renderIcon = (icon: string) => () => h(Icon, { icon, width: 18 })
-
 const mobileMenuOptions = computed<DropdownOption[]>(() => {
   const options: DropdownOption[] = []
   if (showGoSubmissionButton.value) {
     options.push({
       label: "提交信息",
       key: "submissions",
-      icon: renderIcon("streamline-ultimate-color:task-list-text-1"),
     })
   }
   if (userStore.isTeacherOrAbove) {
     options.push({
       label: "统计信息",
       key: "statistics",
-      icon: renderIcon("streamline-ultimate-color:analytics-pie-2"),
     })
   }
   if (codeStore.code.language !== "Flowchart") {
     options.push({
       label: "复制代码",
       key: "copy",
-      icon: renderIcon("streamline-ultimate-color:copy-paste-1"),
     })
     options.push({
       label: "重置代码",
       key: "reset",
-      icon: renderIcon("streamline-ultimate-color:synchronize-arrow"),
     })
   }
   return options
@@ -211,41 +203,38 @@ onMounted(() => {
 
     <SubmitCode v-else />
 
-    <IconButton
+    <n-button
       v-if="isDesktop && showGoSubmissionButton"
-      icon="streamline-ultimate-color:task-list-text-1"
-      tip="提交信息"
+      :size="buttonSize"
       @click="goSubmissions"
-    />
+    >
+      提交信息
+    </n-button>
 
-    <IconButton
+    <n-button
       v-if="isDesktop && userStore.isTeacherOrAbove"
-      icon="streamline-ultimate-color:analytics-pie-2"
-      tip="统计信息"
+      :size="buttonSize"
       @click="statisticPanel = true"
-    />
+    >
+      统计信息
+    </n-button>
 
     <template v-if="codeStore.code.language !== 'Flowchart'">
-      <IconButton
+      <n-button
         v-if="codeStore.code.language !== 'SQL'"
-        icon="streamline-ultimate-color:business-lucky-cat"
-        tip="自测猫"
+        :size="buttonSize"
         @click="goTestCat"
-      />
+      >
+        自测猫
+      </n-button>
 
-      <IconButton
-        v-if="isDesktop"
-        icon="streamline-ultimate-color:copy-paste-1"
-        tip="复制代码"
-        @click="copy"
-      />
+      <n-button v-if="isDesktop" :size="buttonSize" @click="copy">
+        复制代码
+      </n-button>
 
-      <IconButton
-        v-if="isDesktop"
-        icon="streamline-ultimate-color:synchronize-arrow"
-        tip="重置代码"
-        @click="reset"
-      />
+      <n-button v-if="isDesktop" :size="buttonSize" @click="reset">
+        重置代码
+      </n-button>
     </template>
 
     <!-- 移动端：提交信息 / 统计信息 / 复制代码 / 重置代码 收进下拉菜单 -->
@@ -255,25 +244,17 @@ onMounted(() => {
       :options="mobileMenuOptions"
       @select="handleMobileSelect"
     >
-      <n-button round size="small">
-        更多
-        <template #icon>
-          <Icon icon="streamline-ultimate-color:navigation-menu-vertical" />
-        </template>
-      </n-button>
+      <n-button size="small">更多</n-button>
     </n-dropdown>
 
     <template v-if="showSyncFeature">
-      <IconButton
-        :icon="
-          syncEnabled
-            ? 'streamline-ultimate-color:wifi-off'
-            : 'streamline-ultimate-color:wifi-signal-2'
-        "
-        :tip="syncEnabled ? SYNC_MESSAGES.SYNC_ON : SYNC_MESSAGES.SYNC_OFF"
+      <n-button
+        :size="buttonSize"
         :type="syncEnabled ? 'warning' : 'default'"
         @click="toggleSync"
-      />
+      >
+        {{ syncEnabled ? SYNC_MESSAGES.SYNC_ON : SYNC_MESSAGES.SYNC_OFF }}
+      </n-button>
 
       <!-- 同步状态标签 -->
       <template v-if="isConnected">
@@ -293,12 +274,13 @@ onMounted(() => {
       </template>
     </template>
 
-    <IconButton
+    <n-button
       v-if="isDesktop && userStore.isSuperAdmin"
-      icon="streamline-ultimate-color:common-file-edit"
-      tip="编辑题目"
+      :size="buttonSize"
       @click="goEdit"
-    />
+    >
+      编辑题目
+    </n-button>
   </n-flex>
 
   <n-modal
