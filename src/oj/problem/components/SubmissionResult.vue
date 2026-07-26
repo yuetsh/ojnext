@@ -35,10 +35,12 @@ const msg = computed(() => {
   let msg = ""
   const result = props.submission.result
 
-  // 编译错误或运行时错误时给出提示
+  // 编译错误或运行时错误时给出提示；
+  // SQL 题的运行错误多半是"查询题里写了增删改"这类被判题拒绝的语句，err_info 已说明原因，不套这句
   if (
-    result === SubmissionStatus.compile_error ||
-    result === SubmissionStatus.runtime_error
+    (result === SubmissionStatus.compile_error ||
+      result === SubmissionStatus.runtime_error) &&
+    props.submission.language !== "SQL"
   ) {
     msg += "请仔细检查，看看代码的格式是不是写错了！\n\n"
   }
