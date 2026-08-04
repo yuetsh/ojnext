@@ -759,6 +759,10 @@ export interface PendingAchievement {
   description: string
   icon: string
   rarity: AchievementRarity
+  // 弹窗队列里混着两种东西：全站成就和题单奖章。它们的 id 来自两张不同的表，
+  // 数值会重叠，所以去重和标记已读都必须带上 kind 一起判断。
+  // pending 接口只返回成就，不带这个字段，缺省按 achievement 处理。
+  kind?: "achievement" | "badge"
 }
 
 export interface AchievementSummary {
