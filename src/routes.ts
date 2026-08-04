@@ -302,6 +302,14 @@ export const admins: RouteRecordRaw = {
       meta: { requiresTeacherAdmin: true },
     },
     {
+      path: "achievement/list",
+      name: "admin achievement list",
+      // 后端 admin 接口是 super_admin_required，这里必须跟着用
+      // requiresSuperAdmin，否则教师能进页面但每个请求都 403
+      component: () => import("admin/achievement/list.vue"),
+      meta: { requiresSuperAdmin: true },
+    },
+    {
       path: "problemset/create",
       name: "admin problemset create",
       component: () => import("admin/problemset/edit.vue"),

@@ -145,6 +145,15 @@ const options = computed<MenuOption[]>(() => {
         label: () =>
           h(
             RouterLink,
+            { to: "/admin/achievement/list" },
+            { default: () => "成就" },
+          ),
+        key: "admin achievement list",
+      },
+      {
+        label: () =>
+          h(
+            RouterLink,
             { to: "/admin/ai/reports" },
             { default: () => "AI报告" },
           ),
