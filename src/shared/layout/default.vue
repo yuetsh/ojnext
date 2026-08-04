@@ -4,6 +4,23 @@ import Header from "../components/Header.vue"
 import Login from "../components/Login.vue"
 import Signup from "../components/Signup.vue"
 import LoginSummaryModal from "../components/LoginSummaryModal.vue"
+import AchievementToast from "../components/AchievementToast.vue"
+import { useAchievementStore } from "shared/store/achievement"
+import { useUserStore } from "shared/store/user"
+
+const achievementStore = useAchievementStore()
+const userStore = useUserStore()
+const route = useRoute()
+
+// 拉取才是主通道：WebSocket 不是常驻连接（只在问题页且有提交监听时建连），
+// 所以任何页面、任何时刻解锁的成就都靠这里补上
+watch(
+  () => route.path,
+  () => {
+    if (userStore.isAuthed) achievementStore.fetchPending()
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
@@ -19,6 +36,7 @@ import LoginSummaryModal from "../components/LoginSummaryModal.vue"
     <Login />
     <Signup />
     <LoginSummaryModal />
+    <AchievementToast />
     <Beian />
   </n-layout>
 </template>
