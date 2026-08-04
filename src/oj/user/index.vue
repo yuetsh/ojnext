@@ -4,7 +4,12 @@ import { NH2, NH3 } from "naive-ui"
 import { getProfile } from "shared/api"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { durationToDays, parseTime } from "utils/functions"
-import type { Profile, UserBadge as UserBadgeType } from "utils/types"
+import type {
+  AchievementSummary,
+  Profile,
+  UserBadge as UserBadgeType,
+} from "utils/types"
+import { getAchievementSummary } from "oj/achievement/api"
 import { getMetrics, getUserBadges } from "../api"
 import GroupedUserBadge from "shared/components/GroupedUserBadge.vue"
 import { useUserStore } from "shared/store/user"
@@ -19,6 +24,7 @@ const latestSubmissionAt = ref("")
 const toLatestAt = ref("")
 const learnDuration = ref("")
 const userBadges = ref<GroupedBadge[]>([])
+const achievementSummary = ref<AchievementSummary | null>(null)
 const [loading, toggle] = useToggle()
 const [show, toggleShow] = useToggle(false)
 
@@ -142,6 +148,19 @@ async function init() {
   }
 }
 
+// 单独取，不塞进上面的 promises 数组：那里是按位置取 results[0]/[1] 的，
+// 插一项进去会打乱既有索引。成就摘要取不到也不该影响整个个人主页
+async function loadAchievementSummary() {
+  try {
+    const res = await getAchievementSummary(
+      (route.query.name as string) || undefined,
+    )
+    achievementSummary.value = res.data
+  } catch {
+    achievementSummary.value = null
+  }
+}
+
 const metrics = computed(() => {
   if (loading.value) return []
   return [
@@ -180,7 +199,10 @@ const metrics = computed(() => {
   ]
 })
 
-onMounted(init)
+onMounted(() => {
+  init()
+  loadAchievementSummary()
+})
 </script>
 <template>
   <n-flex
@@ -243,6 +265,48 @@ onMounted(init)
       </n-card>
     </n-gi>
   </n-grid>
+
+  <!-- 成就摘要 -->
+  <n-card
+    v-if="!loading && profile && achievementSummary"
+    class="wrapper"
+    hoverable
+  >
+    <n-flex align="center" justify="space-between">
+      <n-flex align="center" :size="12">
+        <span class="achievement-title">
+          成就 {{ achievementSummary.unlocked }} /
+          {{ achievementSummary.total }}
+        </span>
+        <n-tag size="small" type="info">
+          {{ achievementSummary.percent }}%
+        </n-tag>
+      </n-flex>
+      <n-button
+        text
+        type="primary"
+        @click="
+          router.push({
+            path: '/achievement',
+            query: route.query.name ? { name: route.query.name } : {},
+          })
+        "
+      >
+        查看全部
+      </n-button>
+    </n-flex>
+    <n-flex align="center" :size="10" class="achievement-recent">
+      <n-tooltip v-for="a in achievementSummary.recent" :key="a.id">
+        <template #trigger>
+          <span class="achievement-icon">{{ a.icon }}</span>
+        </template>
+        {{ a.name }}
+      </n-tooltip>
+      <n-text v-if="!achievementSummary.recent.length" depth="3">
+        还没有获得成就
+      </n-text>
+    </n-flex>
+  </n-card>
 
   <!-- 徽章展示卡片 -->
   <n-card
@@ -320,5 +384,15 @@ h2 {
   margin: 0 auto;
   word-wrap: break-word;
   max-width: 100%;
+}
+.achievement-title {
+  font-weight: 600;
+}
+.achievement-recent {
+  margin-top: 10px;
+}
+.achievement-icon {
+  font-size: 24px;
+  cursor: default;
 }
 </style>
