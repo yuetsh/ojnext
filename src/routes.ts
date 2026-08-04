@@ -83,6 +83,12 @@ export const ojs: RouteRecordRaw = {
       meta: { requiresAuth: true },
     },
     {
+      path: "achievement",
+      name: "achievement",
+      component: () => import("oj/achievement/index.vue"),
+      meta: { requiresAuth: true },
+    },
+    {
       path: "setting",
       component: () => import("oj/user/setting.vue"),
       meta: { requiresAuth: true },

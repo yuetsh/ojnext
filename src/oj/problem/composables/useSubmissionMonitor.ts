@@ -2,7 +2,8 @@ import { ref, computed, watch, onUnmounted } from "vue"
 import { useIntervalFn, useTimeoutFn } from "@vueuse/core"
 import { getSubmission } from "oj/api"
 import { SubmissionStatus } from "utils/constants"
-import type { Submission } from "utils/types"
+import type { PendingAchievement, Submission } from "utils/types"
+import { useAchievementStore } from "shared/store/achievement"
 import {
   useSubmissionWebSocket,
   type SubmissionUpdate,
@@ -45,6 +46,20 @@ export function useSubmissionMonitor() {
 
   // ==================== WebSocket 处理 ====================
   const handleSubmissionUpdate = (data: SubmissionUpdate) => {
+    // push_to_user 复用了 submission_update 这个 channel handler，
+    // 其他类型的消息会走同一条 WebSocket 帧进来，必须先分流
+    const frame = data as unknown as {
+      type: string
+      achievements?: PendingAchievement[]
+    }
+    if (frame.type === "achievement_unlocked") {
+      useAchievementStore().enqueue(frame.achievements ?? [])
+      return
+    }
+    if (frame.type !== "submission_update") {
+      return
+    }
+
     console.log("[SubmissionMonitor] 收到WebSocket更新:", data)
 
     if (data.submission_id !== submissionId.value) {
