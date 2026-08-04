@@ -22,7 +22,7 @@ function playNext() {
   visible.value = true
   timer = setTimeout(async () => {
     visible.value = false
-    await store.markRead(item.id)
+    await store.markRead(item)
     gapTimer = setTimeout(playNext, 400)
   }, 3000)
 }
@@ -49,7 +49,9 @@ onUnmounted(() => {
     >
       <div class="icon">{{ current.icon }}</div>
       <div class="body">
-        <div class="label">成就解锁</div>
+        <div class="label">
+          {{ current.kind === "badge" ? "获得奖章" : "成就解锁" }}
+        </div>
         <div class="name">{{ current.name }}</div>
         <div class="desc">{{ current.description }}</div>
       </div>
