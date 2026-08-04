@@ -45,6 +45,12 @@ export function useSubmissionMonitor() {
 
   // ==================== WebSocket 处理 ====================
   const handleSubmissionUpdate = (data: SubmissionUpdate) => {
+    // push_to_user 复用了 submission_update 这个 channel handler，
+    // 其他类型的消息（如成就通知）会走同一条 WebSocket 帧进来，必须先挡掉
+    if (data.type !== "submission_update") {
+      return
+    }
+
     console.log("[SubmissionMonitor] 收到WebSocket更新:", data)
 
     if (data.submission_id !== submissionId.value) {

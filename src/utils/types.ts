@@ -723,3 +723,49 @@ export interface DetailsData {
 }
 
 export type Grade = "S" | "A" | "B" | "C"
+
+// ==================== 成就相关类型 ====================
+
+export type AchievementRarity = "bronze" | "silver" | "gold" | "platinum"
+
+export interface Achievement {
+  id: number
+  name: string
+  description: string
+  icon: string
+  rarity: AchievementRarity
+  hidden: boolean
+  // 隐藏成就未解锁时，后端已做掩码处理，以下四个字段为 null
+  metric: string | null
+  operator: "gte" | "lte" | null
+  threshold: number | null
+  unlocked: boolean
+  unlock_time: string | null
+  backfilled: boolean
+  progress: number | null
+  unlock_rate: number
+}
+
+export interface AchievementRarityStat {
+  rarity: AchievementRarity
+  label: string
+  total: number
+  unlocked: number
+}
+
+export interface PendingAchievement {
+  id: number
+  name: string
+  description: string
+  icon: string
+  rarity: AchievementRarity
+}
+
+export interface AchievementSummary {
+  username: string
+  total: number
+  unlocked: number
+  percent: number
+  rarity: AchievementRarityStat[]
+  recent: PendingAchievement[]
+}
