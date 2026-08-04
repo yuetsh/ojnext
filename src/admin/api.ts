@@ -531,3 +531,48 @@ export function pinAIReport(id: number) {
 export function getPinnedAIReports() {
   return http.get("admin/ai/reports", { params: { pinned_only: "true" } })
 }
+
+// ==================== 成就 ====================
+
+export interface AdminAchievement {
+  id: number
+  name: string
+  description: string
+  icon: string
+  rarity: string
+  hidden: boolean
+  metric: string
+  metric_name: string
+  operator: "gte" | "lte"
+  threshold: number
+  visible: boolean
+  unlock_count: number
+  order: number
+  create_time: string
+}
+
+export interface MetricOption {
+  key: string
+  name: string
+  help_text: string
+}
+
+export function getAdminAchievements() {
+  return http.get<AdminAchievement[]>("admin/achievement")
+}
+
+export function getMetricOptions() {
+  return http.get<MetricOption[]>("admin/achievement/metrics")
+}
+
+export function createAchievement(data: Partial<AdminAchievement>) {
+  return http.post<AdminAchievement>("admin/achievement", data)
+}
+
+export function updateAchievement(data: Partial<AdminAchievement>) {
+  return http.put<AdminAchievement>("admin/achievement", data)
+}
+
+export function deleteAchievement(id: number) {
+  return http.delete("admin/achievement", { params: { id } })
+}

@@ -198,17 +198,30 @@ const columns: DataTableColumn<Rank>[] = [
       "streamline-emojis:smiling-face-with-sunglasses",
     ),
     key: "username",
-    width: 200,
+    width: 240,
     render: (row) =>
-      h(
-        NButton,
-        {
-          text: true,
-          type: "info",
-          onClick: () => router.push("/user?name=" + row.user.username),
-        },
-        () => row.user.username,
-      ),
+      h("div", { style: "display:flex;align-items:center;gap:6px" }, [
+        h(
+          NButton,
+          {
+            text: true,
+            type: "info",
+            onClick: () => router.push("/user?name=" + row.user.username),
+          },
+          () => row.user.username,
+        ),
+        h(
+          NButton,
+          {
+            text: true,
+            size: "tiny",
+            title: "查看成就",
+            onClick: () =>
+              router.push("/achievement?name=" + row.user.username),
+          },
+          () => "🏆",
+        ),
+      ]),
   },
   {
     title: renderTableTitle(
@@ -378,32 +391,44 @@ const myClassColumns: DataTableColumn<UserRank>[] = [
   {
     title: "用户名",
     key: "username",
-    width: 200,
+    width: 240,
     render: (row) =>
-      h(
-        NButton,
-        {
-          text: true,
-          type: "info",
-          onClick: () => router.push("/user?name=" + row.username),
-        },
-        () =>
-          row.rank === myRank.value
-            ? h(
-                NFlex,
-                { align: "flex-end" },
-                {
-                  default: () => [
-                    h("span", {}, row.username),
-                    h(Icon, {
-                      width: 20,
-                      icon: "fluent-emoji:person-raising-hand",
-                    }),
-                  ],
-                },
-              )
-            : row.username,
-      ),
+      h("div", { style: "display:flex;align-items:center;gap:6px" }, [
+        h(
+          NButton,
+          {
+            text: true,
+            type: "info",
+            onClick: () => router.push("/user?name=" + row.username),
+          },
+          () =>
+            row.rank === myRank.value
+              ? h(
+                  NFlex,
+                  { align: "flex-end" },
+                  {
+                    default: () => [
+                      h("span", {}, row.username),
+                      h(Icon, {
+                        width: 20,
+                        icon: "fluent-emoji:person-raising-hand",
+                      }),
+                    ],
+                  },
+                )
+              : row.username,
+        ),
+        h(
+          NButton,
+          {
+            text: true,
+            size: "tiny",
+            title: "查看成就",
+            onClick: () => router.push("/achievement?name=" + row.username),
+          },
+          () => "🏆",
+        ),
+      ]),
   },
   {
     title: "已解决",
