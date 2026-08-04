@@ -40,9 +40,10 @@ async function load() {
       getAchievementSummary(name.value),
       getUserBadges(name.value),
     ])
-    achievements.value = list.achievements
-    summary.value = sum
-    badges.value = (badgeRes ?? []) as UserBadge[]
+    // http 客户端返回 ApiResponse<T>，真实载荷在 .data 里
+    achievements.value = list.data.achievements
+    summary.value = sum.data
+    badges.value = (badgeRes.data ?? []) as UserBadge[]
   } finally {
     loading.value = false
   }
