@@ -4,15 +4,10 @@ import { NH2, NH3 } from "naive-ui"
 import { getProfile } from "shared/api"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { durationToDays, parseTime } from "utils/functions"
-import type {
-  AchievementSummary,
-  Profile,
-  UserBadge as UserBadgeType,
-} from "utils/types"
+import type { AchievementSummary, Profile } from "utils/types"
 import { getAchievementSummary } from "oj/achievement/api"
-import { getMetrics, getUserBadges } from "../api"
+import { getMetrics } from "../api"
 import AchievementIcon from "shared/components/AchievementIcon.vue"
-import GroupedUserBadge from "shared/components/GroupedUserBadge.vue"
 import { useUserStore } from "shared/store/user"
 
 const route = useRoute()
@@ -24,7 +19,6 @@ const firstSubmissionAt = ref("")
 const latestSubmissionAt = ref("")
 const toLatestAt = ref("")
 const learnDuration = ref("")
-const userBadges = ref<GroupedBadge[]>([])
 const achievementSummary = ref<AchievementSummary | null>(null)
 const [loading, toggle] = useToggle()
 const [show, toggleShow] = useToggle(false)
@@ -65,40 +59,6 @@ const hasMoreProblems = computed(
   () => problems.value.length > itemsPerRow.value * 3,
 )
 
-// 分组徽章接口
-interface GroupedBadge {
-  icon: string
-  count: number
-  badges: UserBadgeType[]
-  latestEarnedTime: Date
-}
-
-// 按图标分组徽章
-function groupBadgesByIcon(badges: UserBadgeType[]): GroupedBadge[] {
-  const grouped = new Map<string, UserBadgeType[]>()
-
-  // 按图标分组
-  badges.forEach((badge) => {
-    const icon = badge.badge.icon
-    if (!grouped.has(icon)) {
-      grouped.set(icon, [])
-    }
-    grouped.get(icon)!.push(badge)
-  })
-
-  // 转换为数组并排序
-  return Array.from(grouped.entries())
-    .map(([icon, badgeList]) => ({
-      icon,
-      count: badgeList.length,
-      badges: badgeList,
-      latestEarnedTime: new Date(
-        Math.max(...badgeList.map((b) => new Date(b.earned_time).getTime())),
-      ),
-    }))
-    .sort((a, b) => a.icon.localeCompare(b.icon))
-}
-
 async function init() {
   toggle(true)
   try {
@@ -113,23 +73,9 @@ async function init() {
     })
     ac.sort()
     problems.value = ac
-    const promises: Promise<{ data: any }>[] = []
 
     if (profile.value.submission_number > 0) {
-      promises.push(getMetrics(profile.value.user.id))
-    }
-
-    if (route.query.name) {
-      promises.push(getUserBadges(route.query.name as string))
-    } else {
-      promises.push(getUserBadges())
-    }
-
-    const results = await Promise.all(promises)
-
-    // 处理 metrics 结果
-    if (profile.value.submission_number > 0) {
-      const metricsRes = results[0]
+      const metricsRes = await getMetrics(profile.value.user.id)
       firstSubmissionAt.value = parseTime(metricsRes.data.first)
       latestSubmissionAt.value = parseTime(metricsRes.data.latest)
       toLatestAt.value = durationToDays(
@@ -141,9 +87,6 @@ async function init() {
         metricsRes.data.latest,
       )
     }
-
-    // 处理 badges 结果
-    userBadges.value = groupBadgesByIcon(results[1].data)
   } finally {
     toggle(false)
   }
@@ -297,6 +240,9 @@ onMounted(() => {
       </n-button>
     </n-flex>
     <n-flex align="center" :size="10" class="achievement-recent">
+      <n-text v-if="achievementSummary.recent.length" depth="3">
+        最近获得
+      </n-text>
       <n-tooltip v-for="a in achievementSummary.recent" :key="a.id">
         <template #trigger>
           <span class="achievement-icon">
@@ -308,24 +254,6 @@ onMounted(() => {
       <n-text v-if="!achievementSummary.recent.length" depth="3">
         还没有获得成就
       </n-text>
-    </n-flex>
-  </n-card>
-
-  <!-- 徽章展示卡片 -->
-  <n-card
-    v-if="!loading && profile && userBadges.length > 0"
-    class="wrapper"
-    hoverable
-  >
-    <template #header>
-      <n-h4 style="margin: 0">获得的徽章</n-h4>
-    </template>
-    <n-flex wrap>
-      <GroupedUserBadge
-        v-for="groupedBadge in userBadges"
-        :key="groupedBadge.icon"
-        :grouped-badge="groupedBadge"
-      />
     </n-flex>
   </n-card>
 
