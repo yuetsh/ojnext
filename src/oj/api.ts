@@ -254,8 +254,8 @@ export function getTutorial(id: number) {
   return http.get("tutorial", { params: { id } })
 }
 
-export function getTutorials() {
-  return http.get("tutorials")
+export function getTutorials(type: "python" | "c") {
+  return http.get("tutorials", { params: { type } })
 }
 
 export function getAIDetailData(start: string, end: string, username?: string) {
