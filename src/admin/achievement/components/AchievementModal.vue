@@ -101,17 +101,17 @@ async function save() {
       </n-form-item>
       <n-form-item label="图标">
         <n-flex vertical :size="4" style="flex: 1">
-          <n-flex align="center" :size="10">
+          <n-flex align="center" :size="10" :wrap="false">
+            <div class="icon-preview">
+              <AchievementIcon :icon="form.icon" :size="28" />
+            </div>
             <n-input
               v-model:value="form.icon"
               placeholder="iconify 图标名，例如 noto:owl"
             />
-            <div class="icon-preview">
-              <AchievementIcon :icon="form.icon" :size="28" />
-            </div>
           </n-flex>
           <n-text depth="3" style="font-size: 12px">
-            填 iconify 图标名（推荐 noto: 开头的彩色 emoji 图标），右侧是实时
+            填 iconify 图标名（推荐 noto: 开头的彩色 emoji 图标），左侧是实时
             预览；预览不出来说明名字写错了。图标名可在 icon-sets.iconify.design
             搜索。
           </n-text>
