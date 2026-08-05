@@ -182,6 +182,8 @@ watch(name, load)
 .rarity {
   flex: 1;
   min-width: 240px;
+  /* 卡片有 1100px 宽，不封顶的话 6px 高的细条会被拉到近 900px，读起来很空 */
+  max-width: 420px;
   display: grid;
   /* 固定单列，四条各占一行：折成两列会让进度条短得看不出差别 */
   grid-template-columns: 1fr;
