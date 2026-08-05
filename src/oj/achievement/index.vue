@@ -221,7 +221,4 @@ watch(name, load)
   text-decoration: underline;
   text-underline-offset: 2px;
 }
-.source a:hover {
-  color: var(--n-text-color);
-}
 </style>
