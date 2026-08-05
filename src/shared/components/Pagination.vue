@@ -21,8 +21,20 @@ const limit = ref(initialLimit)
 const page = ref(initialPage)
 const sizes = [10, 30, 50]
 
-watch(limit, () => emit("update:limit", limit))
-watch(page, () => emit("update:page", page))
+// 必须 emit 数值：emit ref 对象时，父组件用普通 ref 接会拿不到数字，
+// 而且每次 emit 的都是同一个对象，父组件那边察觉不到变化
+watch(limit, (value) => emit("update:limit", value))
+watch(page, (value) => emit("update:page", value))
+
+// 父组件改页码 / 每页条数（比如换搜索条件后重置到第一页）时同步回来
+watch(
+  () => initialLimit,
+  (value) => (limit.value = value),
+)
+watch(
+  () => initialPage,
+  (value) => (page.value = value),
+)
 </script>
 
 <template>
