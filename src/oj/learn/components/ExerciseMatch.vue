@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Exercise, ExerciseMatchData } from "utils/types"
+import { shuffle } from "../composables/useShuffle"
 
 const props = defineProps<{ exercise: Exercise; lang?: string }>()
 const data = computed(() => props.exercise.data as ExerciseMatchData)
@@ -19,15 +20,6 @@ const rightOrder = ref<number[]>([]) // 显示顺序里的 right 原始下标
 const pairs = ref<(number | null)[]>([]) // pairs[leftIdx] = 配对的 right 原始下标
 const selectedLeft = ref<number | null>(null)
 const submitted = ref(false)
-
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}
 
 function init() {
   const n = data.value.right.length

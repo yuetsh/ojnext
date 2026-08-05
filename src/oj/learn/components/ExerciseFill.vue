@@ -1,11 +1,7 @@
 <script setup lang="ts">
-import hljs from "highlight.js/lib/core"
-import python from "highlight.js/lib/languages/python"
-import c from "highlight.js/lib/languages/c"
 import type { Exercise, ExerciseFillData } from "utils/types"
-
-hljs.registerLanguage("python", python)
-hljs.registerLanguage("c", c)
+import { highlight } from "../composables/useCodeHighlight"
+import "./exercise-highlight.css"
 
 const props = defineProps<{ exercise: Exercise; lang?: string }>()
 const data = computed(() => props.exercise.data as ExerciseFillData)
@@ -14,10 +10,6 @@ type CodeSeg = { type: "code"; html: string }
 type BlankSeg = { type: "blank"; answers: string[]; index: number }
 type Segment = CodeSeg | BlankSeg
 
-function escapeHtml(s: string): string {
-  return s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
-}
-
 const segments = computed<Segment[]>(() => {
   const blanks: string[][] = []
   const markedCode = data.value.code.replace(/\{\{([^}]+)\}\}/g, (_, inner) => {
@@ -25,18 +17,7 @@ const segments = computed<Segment[]>(() => {
     return `____${blanks.length - 1}____`
   })
 
-  const lang =
-    props.lang === "python" ? "python" : props.lang === "c" ? "c" : null
-  let highlighted: string
-  if (lang) {
-    try {
-      highlighted = hljs.highlight(markedCode, { language: lang }).value
-    } catch {
-      highlighted = escapeHtml(markedCode)
-    }
-  } else {
-    highlighted = escapeHtml(markedCode)
-  }
+  const highlighted = highlight(markedCode, props.lang)
 
   const parts = highlighted.split(/____(\d+)____/)
   const result: Segment[] = []
