@@ -2,6 +2,7 @@
 import { NButton, NFlex, NInput } from "naive-ui"
 import type { AdminTag } from "utils/types"
 import { deleteTag, getTagAdminList, renameTag } from "../api"
+import TagProblemsModal from "./components/TagProblemsModal.vue"
 
 const message = useMessage()
 const dialog = useDialog()
@@ -10,6 +11,14 @@ const tags = ref<AdminTag[]>([])
 const keyword = ref("")
 const editingId = ref<number | null>(null)
 const editingName = ref("")
+
+const activeTag = ref<AdminTag | null>(null)
+const [showTagProblems, toggleTagProblems] = useToggle(false)
+
+function openTagProblems(tag: AdminTag) {
+  activeTag.value = tag
+  toggleTagProblems(true)
+}
 
 const columns: DataTableColumn<AdminTag>[] = [
   { title: "ID", key: "id", width: 80 },
@@ -30,9 +39,27 @@ const columns: DataTableColumn<AdminTag>[] = [
               if (e.key === "Escape") cancelEdit()
             },
           })
-        : row.name,
+        : h(
+            NButton,
+            {
+              text: true,
+              type: "primary",
+              onClick: () => openTagProblems(row),
+            },
+            () => row.name,
+          ),
   },
-  { title: "题目数", key: "problem_count", width: 100 },
+  {
+    title: "题目数",
+    key: "problem_count",
+    width: 100,
+    render: (row) =>
+      h(
+        NButton,
+        { text: true, type: "primary", onClick: () => openTagProblems(row) },
+        () => String(row.problem_count),
+      ),
+  },
   {
     title: "选项",
     key: "actions",
@@ -140,6 +167,12 @@ watchDebounced(keyword, listTags, { debounce: 500, maxWait: 1000 })
     />
   </n-flex>
   <n-data-table striped :columns="columns" :data="tags" />
+  <TagProblemsModal
+    v-model:show="showTagProblems"
+    :tag-id="activeTag?.id ?? 0"
+    :tag-name="activeTag?.name ?? ''"
+    @changed="listTags"
+  />
 </template>
 
 <style scoped>
