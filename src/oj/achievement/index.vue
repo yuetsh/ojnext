@@ -183,8 +183,9 @@ watch(name, load)
   flex: 1;
   min-width: 240px;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 10px 28px;
+  /* 固定单列，四条各占一行：折成两列会让进度条短得看不出差别 */
+  grid-template-columns: 1fr;
+  gap: 8px;
 }
 .rarity-item {
   display: flex;
