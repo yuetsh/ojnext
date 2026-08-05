@@ -17,7 +17,10 @@ import SubmissionResult from "./SubmissionResult.vue"
 import { getSubmitButtonState } from "./submitButtonState"
 import { useBreakpoints } from "shared/composables/breakpoints"
 import { useUserStore } from "shared/store/user"
-import { checkPythonSyntax } from "oj/problem/utils/pythonSyntaxCheck"
+import {
+  checkPythonSyntax,
+  prefetchPythonSyntaxChecker,
+} from "oj/problem/utils/pythonSyntaxCheck"
 
 // ==================== 异步组件 ====================
 const ProblemComment = defineAsyncComponent(
@@ -49,6 +52,16 @@ const { submission, judging, pending, submitting, startMonitoring } =
 const showResult = ref(false)
 const isFormatting = ref(false)
 const isSubmittingRequest = ref(false)
+
+// ==================== Python 语法检测器预取 ====================
+// 选中 Python3 时就把 Skulpt 拉下来，避免点提交时才开始下载
+watch(
+  () => codeStore.code.language,
+  (language) => {
+    if (language === "Python3") prefetchPythonSyntaxChecker()
+  },
+  { immediate: true },
+)
 
 // ==================== 提交冷却 ====================
 const { start: startCooldown, isPending: isCooldown } = useTimeout(5000, {
@@ -99,7 +112,7 @@ async function submit() {
 
   // 0. Python3 语法检测
   if (codeStore.code.language === "Python3") {
-    const syntaxError = checkPythonSyntax(codeStore.code.value)
+    const syntaxError = await checkPythonSyntax(codeStore.code.value)
     if (syntaxError) {
       message.warning(`第 ${syntaxError.line} 行存在语法错误，请修正后再提交`)
       return

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { downloadZip } from "client-zip"
 import type { LANGUAGE, SQLDisplay, Testcase } from "utils/types"
+import { createZipBlob } from "utils/functions"
 import SQLDataTable from "oj/problem/components/SQLDataTable.vue"
 import {
   generateSQLTestcase,
@@ -156,15 +156,13 @@ async function preview() {
 async function upload() {
   isUploading.value = true
   try {
-    const now = new Date()
     const data = scripts.value
       .filter((s) => s.sql.trim())
       .map((s, i) => ({
         name: `${i + 1}.sql`,
-        input: s.sql,
-        lastModified: now,
+        content: s.sql,
       }))
-    const blob = await downloadZip(data).blob()
+    const blob = createZipBlob(data)
     const file = new File([blob], "testcase.zip", { type: "application/zip" })
 
     const res = await uploadTestcases(file, { sql: true })

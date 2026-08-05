@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { downloadZip } from "client-zip"
 import type { LANGUAGE, Testcase } from "utils/types"
+import { createZipBlob } from "utils/functions"
 import { createTestSubmission } from "utils/judge"
 import { uploadTestcases } from "../../api"
 
@@ -158,15 +158,14 @@ async function run() {
 async function upload() {
   isUploading.value = true
   try {
-    const now = new Date()
     const data = files.value
       .filter((f) => f.in.trim() && f.out && !f.error)
       .flatMap((f, i) => [
-        { name: `${i + 1}.in`, input: f.in, lastModified: now },
-        { name: `${i + 1}.out`, input: f.out, lastModified: now },
+        { name: `${i + 1}.in`, content: f.in },
+        { name: `${i + 1}.out`, content: f.out },
       ])
 
-    const blob = await downloadZip(data).blob()
+    const blob = createZipBlob(data)
     const file = new File([blob], "testcase.zip", { type: "application/zip" })
 
     const res = await uploadTestcases(file)

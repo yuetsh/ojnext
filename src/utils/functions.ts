@@ -1,7 +1,14 @@
 import { getTime, intervalToDuration, parseISO, type Duration } from "date-fns"
 import { User } from "./types"
 import { USER_TYPE } from "./constants"
-import { strFromU8, strToU8, unzlibSync, zlibSync } from "fflate"
+import {
+  strFromU8,
+  strToU8,
+  unzlibSync,
+  zipSync,
+  zlibSync,
+  type Zippable,
+} from "fflate"
 import copyTextFallback from "copy-text-to-clipboard"
 import { customAlphabet } from "nanoid"
 
@@ -206,6 +213,22 @@ export function atou(base64: string): string {
   const buffer = strToU8(binary, true)
   const unzipped = unzlibSync(buffer)
   return strFromU8(unzipped)
+}
+
+/**
+ * 把若干文本文件打包成 zip Blob
+ * @param files 文件名和文本内容
+ * @param mtime 归档内的修改时间，默认当前时间
+ */
+export function createZipBlob(
+  files: { name: string; content: string }[],
+  mtime: Date = new Date(),
+): Blob {
+  const entries: Zippable = {}
+  for (const f of files) {
+    entries[f.name] = strToU8(f.content)
+  }
+  return new Blob([zipSync(entries, { mtime })], { type: "application/zip" })
 }
 
 /**
