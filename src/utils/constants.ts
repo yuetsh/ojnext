@@ -1,4 +1,4 @@
-import type { SUBMISSION_RESULT } from "./types"
+import type { AchievementRarity, SUBMISSION_RESULT } from "./types"
 
 export enum SubmissionStatus {
   compile_error = -2,
@@ -274,6 +274,42 @@ export enum ScreenMode {
 export enum ChartType {
   Rank,
   Activity,
+}
+
+// 成就稀有度
+export const RARITY_LABEL: Record<AchievementRarity, string> = {
+  bronze: "青铜",
+  silver: "白银",
+  gold: "黄金",
+  platinum: "白金",
+}
+
+// 边框、色块用的原色：饱和度够高，明暗底上都醒目
+export const RARITY_COLOR: Record<AchievementRarity, string> = {
+  bronze: "#b87333",
+  silver: "#9fa6b2",
+  gold: "#e0a300",
+  platinum: "#7dd3fc",
+}
+
+// 文字要另配一套。上面那组是照深色底调的，搬到白底上白金只有 1.7:1、
+// 黄金 2.2:1，12px 的稀有度标签根本看不清。取色见 useRarityColor
+export const RARITY_TEXT_COLOR: Record<
+  "dark" | "light",
+  Record<AchievementRarity, string>
+> = {
+  dark: {
+    bronze: "#d18d4f",
+    silver: "#b6bcc7",
+    gold: "#e0a300",
+    platinum: "#7dd3fc",
+  },
+  light: {
+    bronze: "#9a5b25",
+    silver: "#6b7280",
+    gold: "#a37500",
+    platinum: "#0284c7",
+  },
 }
 
 // 时间范围配置

@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getAchievements, getAchievementSummary } from "oj/achievement/api"
 import { getUserBadges } from "oj/api"
+import { useRarityColor } from "shared/composables/rarity"
 import type { Achievement, AchievementSummary } from "utils/types"
 import AchievementCard from "./components/AchievementCard.vue"
 
@@ -18,27 +19,8 @@ interface UserBadge {
 const route = useRoute()
 const name = computed(() => (route.query.name as string) || undefined)
 
-// 稀有度配色分明暗两套：AchievementCard 那组原色是照着深色底调的，
-// 直接拿到白底上，白金只有 1.7:1、黄金 2.2:1，小字根本看不清
-const isDark = useDark()
-
-const RARITY_COLOR_DARK: Record<string, string> = {
-  bronze: "#d18d4f",
-  silver: "#b6bcc7",
-  gold: "#e0a300",
-  platinum: "#7dd3fc",
-}
-
-const RARITY_COLOR_LIGHT: Record<string, string> = {
-  bronze: "#9a5b25",
-  silver: "#6b7280",
-  gold: "#a37500",
-  platinum: "#0284c7",
-}
-
-const rarityColor = computed(() =>
-  isDark.value ? RARITY_COLOR_DARK : RARITY_COLOR_LIGHT,
-)
+// 标签和进度条同色，整行读作一个单位
+const rarityColor = useRarityColor()
 
 const achievements = ref<Achievement[]>([])
 const summary = ref<AchievementSummary | null>(null)

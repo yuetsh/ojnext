@@ -7,6 +7,12 @@ import {
   type MetricOption,
 } from "admin/api"
 import AchievementIcon from "shared/components/AchievementIcon.vue"
+import { RARITY_LABEL } from "utils/constants"
+
+const rarityOptions = Object.entries(RARITY_LABEL).map(([value, label]) => ({
+  label,
+  value,
+}))
 
 const props = defineProps<{
   show: boolean
@@ -118,15 +124,7 @@ async function save() {
         </n-flex>
       </n-form-item>
       <n-form-item label="稀有度">
-        <n-select
-          v-model:value="form.rarity"
-          :options="[
-            { label: '青铜', value: 'bronze' },
-            { label: '白银', value: 'silver' },
-            { label: '黄金', value: 'gold' },
-            { label: '白金', value: 'platinum' },
-          ]"
-        />
+        <n-select v-model:value="form.rarity" :options="rarityOptions" />
       </n-form-item>
       <n-form-item label="指标" required>
         <n-select

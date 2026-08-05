@@ -1,22 +1,13 @@
 <script setup lang="ts">
 import AchievementIcon from "shared/components/AchievementIcon.vue"
+import { useRarityColor } from "shared/composables/rarity"
+import { RARITY_COLOR, RARITY_LABEL } from "utils/constants"
 import type { Achievement } from "utils/types"
 
 const props = defineProps<{ achievement: Achievement }>()
 
-const RARITY_COLOR: Record<string, string> = {
-  bronze: "#b87333",
-  silver: "#9fa6b2",
-  gold: "#e0a300",
-  platinum: "#7dd3fc",
-}
-
-const RARITY_LABEL: Record<string, string> = {
-  bronze: "青铜",
-  silver: "白银",
-  gold: "黄金",
-  platinum: "白金",
-}
+// 边框用原色，tag 里的文字用跟主题走的那套
+const rarityTextColor = useRarityColor()
 
 // 隐藏且未解锁：后端已把名称/描述/图标和条件三件套都遮成 ??? 和 null，
 // 这里只负责不要把 null 渲染出来，也不要画出会泄露门槛的进度条
@@ -78,7 +69,7 @@ const unlockDate = computed(() => {
             size="tiny"
             :color="{
               borderColor: RARITY_COLOR[achievement.rarity],
-              textColor: RARITY_COLOR[achievement.rarity],
+              textColor: rarityTextColor[achievement.rarity],
             }"
           >
             {{ RARITY_LABEL[achievement.rarity] }}

@@ -7,6 +7,7 @@ import {
 } from "admin/api"
 import AchievementIcon from "shared/components/AchievementIcon.vue"
 import AchievementModal from "./components/AchievementModal.vue"
+import { RARITY_LABEL } from "utils/constants"
 
 const message = useMessage()
 const dialog = useDialog()
@@ -15,13 +16,6 @@ const list = ref<AdminAchievement[]>([])
 const loading = ref(false)
 const showModal = ref(false)
 const editing = ref<AdminAchievement | null>(null)
-
-const RARITY_LABEL: Record<string, string> = {
-  bronze: "青铜",
-  silver: "白银",
-  gold: "黄金",
-  platinum: "白金",
-}
 
 // 下架的只在有的时候才提，全部上架时标题不啰嗦
 const title = computed(() => {

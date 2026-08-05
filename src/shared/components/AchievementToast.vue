@@ -1,17 +1,11 @@
 <script setup lang="ts">
 import AchievementIcon from "shared/components/AchievementIcon.vue"
 import { useAchievementStore } from "shared/store/achievement"
+import { RARITY_COLOR } from "utils/constants"
 
 const store = useAchievementStore()
 const { current, queue } = storeToRefs(store)
 const visible = ref(false)
-
-const RARITY_COLOR: Record<string, string> = {
-  bronze: "#b87333",
-  silver: "#9fa6b2",
-  gold: "#e0a300",
-  platinum: "#7dd3fc",
-}
 
 let timer: ReturnType<typeof setTimeout> | null = null
 let gapTimer: ReturnType<typeof setTimeout> | null = null
