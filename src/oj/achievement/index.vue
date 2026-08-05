@@ -225,6 +225,41 @@ watch(name, load)
   font-size: 13px;
   opacity: 0.9;
 }
+/* 移动端抬头挤成一行：圆环缩小、间距收窄，稀有度条不再被挤到第二行 */
+@media (max-width: 768px) {
+  .overview-row {
+    flex-wrap: nowrap;
+    gap: 16px;
+  }
+  .percent {
+    /* 宽度交给底下那行"已获得 x / y"，圆环缩小后不至于把文字挤出去 */
+    width: auto;
+  }
+  .percent :deep(.n-progress) {
+    width: 76px;
+  }
+  .ring-percent {
+    font-size: 16px;
+  }
+  .sub {
+    margin-top: 6px;
+    font-size: 11px;
+  }
+  .rarity {
+    min-width: 0;
+  }
+  .rarity-label {
+    width: auto;
+    font-size: 12px;
+  }
+  .rarity-count {
+    font-size: 11px;
+  }
+  .rarity-count b {
+    font-size: 12px;
+  }
+}
+
 .tabs {
   margin: 16px 0;
 }
