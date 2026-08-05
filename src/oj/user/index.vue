@@ -188,14 +188,14 @@ onMounted(() => {
   <n-grid
     v-if="profile && profile.submission_number > 0"
     class="wrapper"
-    :cols="2"
+    :cols="isDesktop ? 2 : 1"
     :x-gap="10"
     :y-gap="10"
   >
     <n-gi v-for="item in metrics" :key="item.content">
       <n-card hoverable>
         <n-flex align="center">
-          <Icon v-if="isDesktop" :icon="item.icon" width="50" />
+          <Icon :icon="item.icon" :width="isDesktop ? 50 : 40" />
           <div>
             <Component :is="isDesktop ? NH2 : NH3" class="number">
               <n-number-animation v-if="item.animate" :to="item.title" />
