@@ -58,13 +58,14 @@ const unlockDate = computed(() => {
     :class="{ locked: !achievement.unlocked, rare: isRare }"
     :style="{ borderColor: RARITY_COLOR[achievement.rarity] }"
   >
-    <div class="row">
-      <div class="icon">
+    <n-thing>
+      <template #avatar>
         <AchievementIcon :icon="achievement.icon" :size="32" />
-      </div>
-      <div class="body">
-        <div class="title">
-          <span class="name">{{ achievement.name }}</span>
+      </template>
+
+      <template #header>
+        <n-flex align="center" :size="8">
+          <n-text strong>{{ achievement.name }}</n-text>
           <n-tag
             size="tiny"
             :color="{
@@ -74,80 +75,53 @@ const unlockDate = computed(() => {
           >
             {{ RARITY_LABEL[achievement.rarity] }}
           </n-tag>
-        </div>
-        <div class="desc">{{ achievement.description }}</div>
+        </n-flex>
+      </template>
 
-        <div v-if="achievement.unlocked" class="meta">
-          <span>{{ unlockDate }}</span>
-          <span class="rate">仅 {{ achievement.unlock_rate }}% 的人获得</span>
-        </div>
+      <template #description>
+        <n-text depth="3">{{ achievement.description }}</n-text>
+      </template>
 
-        <div v-else-if="showProgressBar" class="meta">
+      <n-flex align="center" :size="8" :wrap="false">
+        <template v-if="achievement.unlocked">
+          <n-text depth="3" class="nowrap">{{ unlockDate }}</n-text>
+          <n-text depth="3" class="nowrap">
+            仅 {{ achievement.unlock_rate }}% 的人获得
+          </n-text>
+        </template>
+
+        <template v-else-if="showProgressBar">
           <n-progress
+            style="flex: 1"
             type="line"
             :percentage="percent"
             :height="6"
             :show-indicator="false"
           />
-          <span class="progress-text">
+          <n-text depth="3" class="nowrap">
             {{ achievement.progress ?? 0 }} / {{ achievement.threshold }}
-          </span>
-        </div>
+          </n-text>
+        </template>
 
-        <div v-else-if="showBestSoFar" class="meta">
-          <span class="progress-text">
+        <template v-else-if="showBestSoFar">
+          <n-text depth="3" class="nowrap">
             目标 ≤ {{ achievement.threshold }}
-          </span>
-          <span v-if="achievement.progress !== null" class="rate">
+          </n-text>
+          <n-text v-if="achievement.progress !== null" depth="3" class="nowrap">
             当前最好 {{ achievement.progress }}
-          </span>
-        </div>
+          </n-text>
+        </template>
 
-        <div v-else class="meta">
-          <span class="rate">仅 {{ achievement.unlock_rate }}% 的人获得</span>
-        </div>
-      </div>
-    </div>
+        <n-text v-else depth="3" class="nowrap">
+          仅 {{ achievement.unlock_rate }}% 的人获得
+        </n-text>
+      </n-flex>
+    </n-thing>
   </n-card>
 </template>
 
 <style scoped>
-.row {
-  display: flex;
-  gap: 12px;
-  align-items: flex-start;
-}
-.icon {
-  font-size: 32px;
-  line-height: 1;
-}
-.body {
-  flex: 1;
-  min-width: 0;
-}
-.title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-weight: 600;
-}
-.desc {
-  margin-top: 4px;
-  font-size: 13px;
-  opacity: 0.75;
-}
-.meta {
-  margin-top: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  opacity: 0.65;
-}
-.meta :deep(.n-progress) {
-  flex: 1;
-}
-.progress-text {
+.nowrap {
   white-space: nowrap;
 }
 .locked {

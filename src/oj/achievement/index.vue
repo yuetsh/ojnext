@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { getAchievements, getAchievementSummary } from "oj/achievement/api"
 import { getUserBadges } from "oj/api"
+import { useBreakpoints } from "shared/composables/breakpoints"
 import { useRarityColor } from "shared/composables/rarity"
 import type {
   Achievement,
@@ -43,6 +44,7 @@ const rarities = computed(() =>
   ),
 )
 const badges = ref<UserBadge[]>([])
+const { isDesktop } = useBreakpoints()
 const tab = ref("all")
 const loading = ref(true)
 
@@ -77,74 +79,98 @@ watch(name, load)
 
 <template>
   <div class="hall">
-    <n-spin :show="loading">
-      <n-card v-if="summary" class="overview">
-        <div class="overview-row">
-          <div class="percent">
+    <n-card v-if="summary">
+      <!-- 窄屏也不折行：圆环缩小，间距收窄，抬头始终一行 -->
+      <n-flex align="center" :wrap="false" :size="isDesktop ? 32 : 16">
+        <n-flex vertical align="center" :size="6">
+          <n-progress
+            type="circle"
+            :percentage="summary.percent"
+            :stroke-width="8"
+            :style="{ width: isDesktop ? '110px' : '76px' }"
+          />
+          <n-text depth="3" class="nowrap">
+            已获得 {{ summary.unlocked }} / {{ summary.total }}
+          </n-text>
+        </n-flex>
+
+        <n-flex vertical :size="8" class="rarity">
+          <n-flex
+            v-for="r in rarities"
+            :key="r.rarity"
+            align="center"
+            :wrap="false"
+            :size="10"
+          >
+            <n-text strong :style="{ color: rarityColor[r.rarity] }">
+              {{ r.label }}
+            </n-text>
             <n-progress
-              type="circle"
-              :percentage="summary.percent"
-              :stroke-width="8"
-            >
-              <div class="ring-text">
-                <div class="ring-percent">{{ summary.percent }}%</div>
-              </div>
-            </n-progress>
-            <div class="sub">
-              已获得 {{ summary.unlocked }} / {{ summary.total }}
-            </div>
-          </div>
+              style="flex: 1"
+              type="line"
+              :percentage="r.total ? (r.unlocked / r.total) * 100 : 0"
+              :height="6"
+              :border-radius="3"
+              :fill-border-radius="3"
+              :color="rarityColor[r.rarity]"
+              :show-indicator="false"
+            />
+            <n-text depth="3" class="nowrap">
+              {{ r.unlocked }} / {{ r.total }}
+            </n-text>
+          </n-flex>
+        </n-flex>
+      </n-flex>
+    </n-card>
 
-          <div class="rarity">
-            <div v-for="r in rarities" :key="r.rarity" class="rarity-item">
-              <span
-                class="rarity-label"
-                :style="{ color: rarityColor[r.rarity] }"
-              >
-                {{ r.label }}
-              </span>
-              <span class="rarity-bar">
-                <span
-                  class="rarity-fill"
-                  :style="{
-                    width: r.total ? (r.unlocked / r.total) * 100 + '%' : '0%',
-                    background: rarityColor[r.rarity],
-                  }"
+    <n-tabs v-model:value="tab" type="line" class="tabs">
+      <n-tab name="all">全部</n-tab>
+      <n-tab name="unlocked">已获得</n-tab>
+      <n-tab name="locked">未获得</n-tab>
+      <n-tab name="badges">题单奖章</n-tab>
+    </n-tabs>
+
+    <template v-if="tab !== 'badges'">
+      <n-grid
+        v-if="filtered.length"
+        responsive="screen"
+        cols="1 s:2 l:3"
+        :x-gap="12"
+        :y-gap="12"
+      >
+        <n-gi v-for="a in filtered" :key="a.id">
+          <AchievementCard :achievement="a" />
+        </n-gi>
+      </n-grid>
+      <!-- 加载中不显示空态，不然首屏会闪一下"什么都没有" -->
+      <n-empty v-else-if="!loading" description="这里还什么都没有" />
+    </template>
+
+    <template v-else>
+      <n-grid
+        v-if="badges.length"
+        responsive="screen"
+        cols="1 s:2 l:3"
+        :x-gap="12"
+        :y-gap="12"
+      >
+        <n-gi v-for="b in badges" :key="b.id">
+          <n-card size="small">
+            <n-thing :title="b.badge?.name" :description="b.badge?.description">
+              <template #avatar v-if="b.badge?.icon">
+                <n-avatar
+                  :size="40"
+                  :src="b.badge.icon"
+                  color="transparent"
+                  object-fit="contain"
                 />
-              </span>
-              <span class="rarity-count">
-                <b>{{ r.unlocked }}</b> / {{ r.total }}
-              </span>
-            </div>
-          </div>
-        </div>
-      </n-card>
-
-      <n-tabs v-model:value="tab" type="line" class="tabs">
-        <n-tab name="all">全部</n-tab>
-        <n-tab name="unlocked">已获得</n-tab>
-        <n-tab name="locked">未获得</n-tab>
-        <n-tab name="badges">题单奖章</n-tab>
-      </n-tabs>
-
-      <div v-if="tab !== 'badges'" class="grid">
-        <AchievementCard v-for="a in filtered" :key="a.id" :achievement="a" />
-        <n-empty v-if="!filtered.length" description="这里还什么都没有" />
-      </div>
-
-      <div v-else class="grid">
-        <n-card v-for="b in badges" :key="b.id" size="small">
-          <div class="badge-row">
-            <img v-if="b.badge?.icon" :src="b.badge.icon" class="badge-icon" />
-            <div>
-              <div class="badge-name">{{ b.badge?.name }}</div>
-              <div class="badge-desc">{{ b.badge?.description }}</div>
-            </div>
-          </div>
-        </n-card>
-        <n-empty v-if="!badges.length" description="还没有获得任何题单奖章" />
-      </div>
-    </n-spin>
+              </template>
+            </n-thing>
+          </n-card>
+        </n-gi>
+      </n-grid>
+      <n-empty v-else-if="!loading" description="还没有获得任何题单奖章" />
+    </template>
   </div>
 </template>
 
@@ -154,135 +180,15 @@ watch(name, load)
   margin: 0 auto;
   padding: 16px;
 }
-.overview-row {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  flex-wrap: wrap;
-}
-.percent {
-  flex: none;
-  width: 110px;
-  text-align: center;
-}
-.percent :deep(.n-progress) {
-  width: 110px;
-}
-.ring-percent {
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1;
-}
-.sub {
-  margin-top: 8px;
-  font-size: 12px;
-  opacity: 0.65;
-  white-space: nowrap;
-}
+/* 卡片有 1100px 宽，不封顶的话 6px 高的细条会被拉到近 900px，读起来很空 */
 .rarity {
   flex: 1;
-  min-width: 240px;
-  /* 卡片有 1100px 宽，不封顶的话 6px 高的细条会被拉到近 900px，读起来很空 */
   max-width: 420px;
-  display: grid;
-  /* 固定单列，四条各占一行：折成两列会让进度条短得看不出差别 */
-  grid-template-columns: 1fr;
-  gap: 8px;
 }
-.rarity-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.rarity-label {
-  flex: none;
-  width: 30px;
-  font-size: 13px;
-  font-weight: 600;
-}
-.rarity-bar {
-  flex: 1;
-  height: 6px;
-  min-width: 40px;
-  border-radius: 3px;
-  overflow: hidden;
-  background: rgba(128, 128, 128, 0.2); /* 灰底在明暗两套主题下都成立 */
-}
-.rarity-fill {
-  display: block;
-  height: 100%;
-  border-radius: 3px;
-  transition: width 0.4s ease;
-}
-.rarity-count {
-  flex: none;
-  font-size: 12px;
-  opacity: 0.7;
+.nowrap {
   white-space: nowrap;
-  font-variant-numeric: tabular-nums;
 }
-.rarity-count b {
-  font-size: 13px;
-  opacity: 0.9;
-}
-/* 移动端抬头挤成一行：圆环缩小、间距收窄，稀有度条不再被挤到第二行 */
-@media (max-width: 768px) {
-  .overview-row {
-    flex-wrap: nowrap;
-    gap: 16px;
-  }
-  .percent {
-    /* 宽度交给底下那行"已获得 x / y"，圆环缩小后不至于把文字挤出去 */
-    width: auto;
-  }
-  .percent :deep(.n-progress) {
-    width: 76px;
-  }
-  .ring-percent {
-    font-size: 16px;
-  }
-  .sub {
-    margin-top: 6px;
-    font-size: 11px;
-  }
-  .rarity {
-    min-width: 0;
-  }
-  .rarity-label {
-    width: auto;
-    font-size: 12px;
-  }
-  .rarity-count {
-    font-size: 11px;
-  }
-  .rarity-count b {
-    font-size: 12px;
-  }
-}
-
 .tabs {
   margin: 16px 0;
-}
-.grid {
-  display: grid;
-  /* min() 兜住窄屏：不加的话 300px 的下限会把 320 宽的手机撑出横向滚动 */
-  grid-template-columns: repeat(auto-fill, minmax(min(300px, 100%), 1fr));
-  gap: 12px;
-}
-.badge-row {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-}
-.badge-icon {
-  width: 40px;
-  height: 40px;
-}
-.badge-name {
-  font-weight: 600;
-}
-.badge-desc {
-  font-size: 12px;
-  opacity: 0.7;
 }
 </style>
