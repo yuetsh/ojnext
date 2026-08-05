@@ -2,6 +2,7 @@ import http from "utils/http"
 import { toProblemListItem } from "admin/transforms"
 import type {
   AdminProblem,
+  AdminTag,
   Announcement,
   AnnouncementEdit,
   BlankContest,
@@ -82,6 +83,35 @@ export function getProblem(id: string | number) {
 
 export function getContestProblem(id: number) {
   return http.get("admin/contest/problem", { params: { id } })
+}
+
+// 标签管理
+export function getTagAdminList(keyword = "") {
+  return http.get<AdminTag[]>("admin/problem/tag", { params: { keyword } })
+}
+
+export function renameTag(id: number, name: string) {
+  return http.put<{
+    merged: boolean
+    id: number
+    name: string
+    affected_count: number
+  }>("admin/problem/tag", { id, name })
+}
+
+export function deleteTag(id: number) {
+  return http.delete("admin/problem/tag", { params: { id } })
+}
+
+export function batchTagProblems(
+  problemIds: number[],
+  tagNames: string[],
+  action: "add" | "remove",
+) {
+  return http.post<{ problem_count: number; tag_count: number }>(
+    "admin/problem/batch_tag",
+    { problem_ids: problemIds, tag_names: tagNames, action },
+  )
 }
 
 // 用户列表

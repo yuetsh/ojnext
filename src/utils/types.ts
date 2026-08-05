@@ -104,6 +104,12 @@ export interface Tag {
   name: string
 }
 
+export interface AdminTag {
+  id: number
+  name: string
+  problem_count: number
+}
+
 export interface TestcaseUploadedReturns {
   id: string
   info: Testcase[]
