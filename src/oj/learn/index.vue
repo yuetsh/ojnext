@@ -57,7 +57,7 @@
           content-style="height: calc(100% - 44px); padding: 0;"
         >
           <CodeEditor
-            language="Python3"
+            :language="editorLanguage"
             v-model="tutorial.code"
             height="100%"
           />
@@ -102,7 +102,7 @@
         </n-tab-pane>
 
         <n-tab-pane name="code" tab="示例代码" v-if="tutorial.code">
-          <CodeEditor language="Python3" v-model="tutorial.code" />
+          <CodeEditor :language="editorLanguage" v-model="tutorial.code" />
         </n-tab-pane>
       </n-tabs>
 
@@ -128,16 +128,23 @@
         </n-button>
       </n-flex>
     </template>
+
+    <n-empty
+      v-if="isEmpty"
+      description="该教程还没有公开"
+      style="margin-top: 80px"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import { MdPreview } from "md-editor-v3"
 import "md-editor-v3/lib/preview.css"
-import type { Tutorial, Exercise } from "utils/types"
+import type { Tutorial, Exercise, LANGUAGE } from "utils/types"
 import { getTutorial, getTutorials, getExercises } from "../api"
 import { parseExercises } from "./composables/useExerciseParse"
 import { useBreakpoints } from "shared/composables/breakpoints"
+import { useLearnProgress } from "shared/composables/learnProgress"
 
 const ExerciseWidget = defineAsyncComponent(
   () => import("./components/ExerciseWidget.vue"),
@@ -150,11 +157,17 @@ const isDark = useDark()
 const route = useRoute()
 const router = useRouter()
 const { isDesktop } = useBreakpoints()
+const { learnStep } = useLearnProgress()
 
 const step = computed(() => {
-  if (!route.params.step || !route.params.step.length) return 1
-  return parseInt(route.params.step[0])
+  const value = route.params.step as string | undefined
+  if (!value) return 1
+  return parseInt(value)
 })
+
+const type = computed<"python" | "c">(() =>
+  route.params.type === "c" ? "c" : "python",
+)
 
 const tutorial = ref<Partial<Tutorial>>({
   id: 0,
@@ -162,9 +175,14 @@ const tutorial = ref<Partial<Tutorial>>({
   content: "",
   code: "",
 })
+
+const editorLanguage = computed<LANGUAGE>(() =>
+  tutorial.value.type === "c" ? "C" : "Python3",
+)
 const titles = ref<{ id: number; title: string }[]>([])
 const exercises = ref<Exercise[]>([])
 const activeTab = ref("content")
+const isEmpty = ref(false)
 
 const segments = computed(() =>
   parseExercises(tutorial.value.content ?? "", exercises.value),
@@ -175,7 +193,9 @@ const isLastLesson = computed(() => step.value === titles.value.length)
 
 function goToLesson(lessonNumber: number) {
   activeTab.value = "content"
-  router.push("/learn/" + lessonNumber.toString().padStart(2, "0"))
+  router.push(
+    `/learn/${type.value}/${lessonNumber.toString().padStart(2, "0")}`,
+  )
 }
 function goToPrevLesson() {
   if (step.value > 1) goToLesson(step.value - 1)
@@ -185,9 +205,10 @@ function goToNextLesson() {
 }
 
 async function init() {
-  const res1 = await getTutorials()
+  const res1 = await getTutorials(type.value)
   titles.value = res1.data
-  if (titles.value.length === 0) return
+  isEmpty.value = titles.value.length === 0
+  if (isEmpty.value) return
   const id = titles.value[step.value - 1].id
   const [res2, exs] = await Promise.allSettled([
     getTutorial(id),
@@ -195,10 +216,11 @@ async function init() {
   ])
   if (res2.status === "fulfilled") tutorial.value = res2.value.data
   exercises.value = exs.status === "fulfilled" ? exs.value : []
+  learnStep.value[type.value] = step.value
 }
 
 watch(
-  () => route.params.step,
+  () => [route.params.type, route.params.step],
   async () => {
     if (route.name === "learn") init()
   },

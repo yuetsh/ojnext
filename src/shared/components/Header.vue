@@ -2,6 +2,7 @@
 import { Icon } from "@iconify/vue"
 import { RouterLink } from "vue-router"
 import { useBreakpoints } from "shared/composables/breakpoints"
+import { useLearnProgress } from "shared/composables/learnProgress"
 import { useAuthModalStore } from "shared/store/authModal"
 import { useScreenModeStore } from "shared/store/screenMode"
 import { logout } from "../api"
@@ -17,6 +18,7 @@ const route = useRoute()
 const router = useRouter()
 
 const { isMobile, isDesktop } = useBreakpoints()
+const { learnStep } = useLearnProgress()
 
 const isDark = useDark()
 
@@ -125,11 +127,31 @@ function renderIcon(icon: string) {
   return () => h(Icon, { icon, width: 20 })
 }
 
+function learnLink(type: "python" | "c") {
+  return `/learn/${type}/${learnStep.value[type].toString().padStart(2, "0")}`
+}
+
 const menus = computed<MenuOption[]>(() => [
   {
-    label: () => h(RouterLink, { to: "/learn/01" }, { default: () => "自学" }),
+    label: "自学",
     key: "learn",
     icon: renderIcon("fluent-emoji:books"),
+    children: [
+      {
+        label: () =>
+          h(
+            RouterLink,
+            { to: learnLink("python") },
+            { default: () => "Python" },
+          ),
+        key: "learn-python",
+      },
+      {
+        label: () =>
+          h(RouterLink, { to: learnLink("c") }, { default: () => "C语言" }),
+        key: "learn-c",
+      },
+    ],
   },
   {
     label: () => h(RouterLink, { to: "/" }, { default: () => "题目" }),
