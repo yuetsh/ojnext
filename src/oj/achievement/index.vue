@@ -19,6 +19,11 @@ interface UserBadge {
     description: string
     icon: string
   }
+  // 奖章来自哪个题单，接口在 UserBadgeSerializer 里带出来
+  problemset: {
+    id: number
+    title: string
+  } | null
 }
 
 const route = useRoute()
@@ -43,6 +48,17 @@ const rarities = computed(() =>
     (a, b) => RARITY_RANK[a.rarity] - RARITY_RANK[b.rarity],
   ),
 )
+
+// 数据是异步来的，卡片挂上去时百分比就是终值，CSS 过渡不会触发。
+// 先按 0 渲染一帧，下一帧再填真值，圆环和进度条才有"长出来"的动画
+const grown = ref(false)
+const percent = computed(() =>
+  grown.value ? (summary.value?.percent ?? 0) : 0,
+)
+function rarityPercent(r: { unlocked: number; total: number }) {
+  if (!grown.value || !r.total) return 0
+  return (r.unlocked / r.total) * 100
+}
 const badges = ref<UserBadge[]>([])
 const { isDesktop } = useBreakpoints()
 const tab = ref("all")
@@ -58,6 +74,7 @@ const filtered = computed(() => {
 
 async function load() {
   loading.value = true
+  grown.value = false
   try {
     const [list, sum, badgeRes] = await Promise.all([
       getAchievements(name.value),
@@ -71,6 +88,9 @@ async function load() {
   } finally {
     loading.value = false
   }
+  // 等卡片以 0 渲染完这一帧，再切到真值
+  await nextTick()
+  requestAnimationFrame(() => requestAnimationFrame(() => (grown.value = true)))
 }
 
 onMounted(load)
@@ -84,10 +104,17 @@ watch(name, load)
         <n-flex vertical align="center" :size="6">
           <n-progress
             type="circle"
-            :percentage="summary.percent"
+            :percentage="percent"
             :stroke-width="8"
+            class="grow"
           >
-            <n-text strong>{{ summary.percent }}%</n-text>
+            <n-text strong>
+              <n-number-animation
+                :from="0"
+                :to="summary.percent"
+                :duration="900"
+              />%
+            </n-text>
           </n-progress>
           <n-text depth="3" class="nowrap">
             已获得 {{ summary.unlocked }} / {{ summary.total }}
@@ -107,8 +134,9 @@ watch(name, load)
             </n-text>
             <n-progress
               style="flex: 1"
+              class="grow"
               type="line"
-              :percentage="r.total ? (r.unlocked / r.total) * 100 : 0"
+              :percentage="rarityPercent(r)"
               :height="6"
               :border-radius="3"
               :fill-border-radius="3"
@@ -165,6 +193,17 @@ watch(name, load)
                   object-fit="contain"
                 />
               </template>
+              <n-text v-if="b.problemset" depth="3" class="source">
+                来自题单
+                <router-link
+                  :to="{
+                    name: 'problemset',
+                    params: { problemSetId: b.problemset.id },
+                  }"
+                >
+                  {{ b.problemset.title }}
+                </router-link>
+              </n-text>
             </n-thing>
           </n-card>
         </n-gi>
@@ -189,5 +228,38 @@ watch(name, load)
 }
 .tabs {
   margin: 16px 0;
+}
+.source {
+  display: block;
+  margin-top: 6px;
+  font-size: 13px;
+}
+.source a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.source a:hover {
+  color: var(--n-text-color);
+}
+
+/* naive 自带过渡，但圆环 stroke-dasharray 只有 .3s、线条 max-width 只有 .2s，
+   配合 0 → 真值那一下太快看不出来，这里拉长 */
+.grow :deep(.n-progress-graph-circle-fill) {
+  transition:
+    opacity 0.3s var(--n-bezier),
+    stroke 0.3s var(--n-bezier),
+    stroke-dasharray 0.9s cubic-bezier(0.25, 1, 0.5, 1);
+}
+.grow :deep(.n-progress-graph-line-fill) {
+  transition:
+    background-color 0.3s var(--n-bezier),
+    max-width 0.9s cubic-bezier(0.25, 1, 0.5, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  .grow :deep(.n-progress-graph-circle-fill),
+  .grow :deep(.n-progress-graph-line-fill) {
+    transition: none;
+  }
 }
 </style>
