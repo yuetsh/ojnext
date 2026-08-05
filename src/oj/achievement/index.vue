@@ -18,6 +18,14 @@ interface UserBadge {
 const route = useRoute()
 const name = computed(() => (route.query.name as string) || undefined)
 
+// 和 AchievementCard 的边框配色保持一致
+const RARITY_COLOR: Record<string, string> = {
+  bronze: "#b87333",
+  silver: "#9fa6b2",
+  gold: "#e0a300",
+  platinum: "#7dd3fc",
+}
+
 const achievements = ref<Achievement[]>([])
 const summary = ref<AchievementSummary | null>(null)
 const badges = ref<UserBadge[]>([])
@@ -59,19 +67,44 @@ watch(name, load)
       <n-card v-if="summary" class="overview">
         <div class="overview-row">
           <div class="percent">
-            <div class="big">{{ summary.percent }}%</div>
+            <n-progress
+              type="circle"
+              :percentage="summary.percent"
+              :stroke-width="8"
+            >
+              <div class="ring-text">
+                <div class="ring-percent">{{ summary.percent }}%</div>
+              </div>
+            </n-progress>
             <div class="sub">
-              {{ summary.unlocked }} / {{ summary.total }} 已获得
+              已获得 {{ summary.unlocked }} / {{ summary.total }}
             </div>
           </div>
+
           <div class="rarity">
             <div
               v-for="r in summary.rarity"
               :key="r.rarity"
               class="rarity-item"
             >
-              <div class="rarity-label">{{ r.label }}</div>
-              <div class="rarity-count">{{ r.unlocked }} / {{ r.total }}</div>
+              <span
+                class="rarity-label"
+                :style="{ color: RARITY_COLOR[r.rarity] }"
+              >
+                {{ r.label }}
+              </span>
+              <span class="rarity-bar">
+                <span
+                  class="rarity-fill"
+                  :style="{
+                    width: r.total ? (r.unlocked / r.total) * 100 + '%' : '0%',
+                    background: RARITY_COLOR[r.rarity],
+                  }"
+                />
+              </span>
+              <span class="rarity-count">
+                <b>{{ r.unlocked }}</b> / {{ r.total }}
+              </span>
             </div>
           </div>
         </div>
@@ -114,34 +147,70 @@ watch(name, load)
 .overview-row {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 24px;
+  gap: 32px;
   flex-wrap: wrap;
 }
-.big {
-  font-size: 40px;
+.percent {
+  flex: none;
+  width: 110px;
+  text-align: center;
+}
+.percent :deep(.n-progress) {
+  width: 110px;
+}
+.ring-percent {
+  font-size: 22px;
   font-weight: 700;
   line-height: 1;
 }
 .sub {
-  margin-top: 6px;
-  font-size: 13px;
-  opacity: 0.7;
+  margin-top: 8px;
+  font-size: 12px;
+  opacity: 0.65;
+  white-space: nowrap;
 }
 .rarity {
-  display: flex;
-  gap: 20px;
+  flex: 1;
+  min-width: 240px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 10px 28px;
 }
 .rarity-item {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 .rarity-label {
-  font-size: 12px;
-  opacity: 0.7;
+  flex: none;
+  width: 30px;
+  font-size: 13px;
+  font-weight: 600;
+}
+.rarity-bar {
+  flex: 1;
+  height: 6px;
+  min-width: 40px;
+  border-radius: 3px;
+  overflow: hidden;
+  background: rgba(128, 128, 128, 0.2); /* 灰底在明暗两套主题下都成立 */
+}
+.rarity-fill {
+  display: block;
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.4s ease;
 }
 .rarity-count {
-  font-weight: 600;
-  margin-top: 2px;
+  flex: none;
+  font-size: 12px;
+  opacity: 0.7;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.rarity-count b {
+  font-size: 13px;
+  opacity: 0.9;
 }
 .tabs {
   margin: 16px 0;
