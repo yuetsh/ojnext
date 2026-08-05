@@ -284,11 +284,13 @@ export const RARITY_LABEL: Record<AchievementRarity, string> = {
   platinum: "白金",
 }
 
-// 边框、色块用的原色：饱和度够高，明暗底上都醒目
+// 边框、色块用的原色：饱和度够高，明暗底上都醒目。
+// 青铜往红偏（色相 23），黄金往纯黄推（色相 47），中间隔开两档亮度，
+// 不然两个都落在橙棕区，扫一眼分不出来
 export const RARITY_COLOR: Record<AchievementRarity, string> = {
-  bronze: "#b87333",
+  bronze: "#c2703d",
   silver: "#9fa6b2",
-  gold: "#e0a300",
+  gold: "#f2c012",
   platinum: "#7dd3fc",
 }
 
@@ -299,16 +301,16 @@ export const RARITY_TEXT_COLOR: Record<
   Record<AchievementRarity, string>
 > = {
   dark: {
-    bronze: "#d18d4f",
+    bronze: "#e08d63",
     silver: "#b6bcc7",
-    gold: "#e0a300",
+    gold: "#f2c012",
     platinum: "#7dd3fc",
   },
   light: {
-    bronze: "#9a5b25",
+    bronze: "#a13d1e",
     silver: "#6b7280",
-    gold: "#a37500",
-    platinum: "#0284c7",
+    gold: "#8f6f00",
+    platinum: "#0369a1",
   },
 }
 
