@@ -18,13 +18,27 @@ interface UserBadge {
 const route = useRoute()
 const name = computed(() => (route.query.name as string) || undefined)
 
-// 和 AchievementCard 的边框配色保持一致
-const RARITY_COLOR: Record<string, string> = {
-  bronze: "#b87333",
-  silver: "#9fa6b2",
+// 稀有度配色分明暗两套：AchievementCard 那组原色是照着深色底调的，
+// 直接拿到白底上，白金只有 1.7:1、黄金 2.2:1，小字根本看不清
+const isDark = useDark()
+
+const RARITY_COLOR_DARK: Record<string, string> = {
+  bronze: "#d18d4f",
+  silver: "#b6bcc7",
   gold: "#e0a300",
   platinum: "#7dd3fc",
 }
+
+const RARITY_COLOR_LIGHT: Record<string, string> = {
+  bronze: "#9a5b25",
+  silver: "#6b7280",
+  gold: "#a37500",
+  platinum: "#0284c7",
+}
+
+const rarityColor = computed(() =>
+  isDark.value ? RARITY_COLOR_DARK : RARITY_COLOR_LIGHT,
+)
 
 const achievements = ref<Achievement[]>([])
 const summary = ref<AchievementSummary | null>(null)
@@ -89,7 +103,7 @@ watch(name, load)
             >
               <span
                 class="rarity-label"
-                :style="{ color: RARITY_COLOR[r.rarity] }"
+                :style="{ color: rarityColor[r.rarity] }"
               >
                 {{ r.label }}
               </span>
@@ -98,7 +112,7 @@ watch(name, load)
                   class="rarity-fill"
                   :style="{
                     width: r.total ? (r.unlocked / r.total) * 100 + '%' : '0%',
-                    background: RARITY_COLOR[r.rarity],
+                    background: rarityColor[r.rarity],
                   }"
                 />
               </span>
