@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { Exercise, ExerciseGroupData } from "utils/types"
+import { shuffle } from "../composables/useShuffle"
 
 const props = defineProps<{ exercise: Exercise; lang?: string }>()
 const data = computed(() => props.exercise.data as ExerciseGroupData)
@@ -8,15 +9,6 @@ const order = ref<number[]>([]) // item 的稳定展示顺序（初始乱序）
 const placement = ref<number[]>([]) // placement[itemIdx] = 桶下标，-1 表示在池中
 const dragIdx = ref<number | null>(null)
 const submitted = ref(false)
-
-function shuffle<T>(arr: T[]): T[] {
-  const a = [...arr]
-  for (let i = a.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[a[i], a[j]] = [a[j], a[i]]
-  }
-  return a
-}
 
 function init() {
   order.value = shuffle(data.value.items.map((_, i) => i))
