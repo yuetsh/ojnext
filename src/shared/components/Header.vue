@@ -22,12 +22,10 @@ const { learnStep } = useLearnProgress()
 
 const isDark = useDark()
 
-function toggleDark(event: MouseEvent) {
-  const { clientX: x, clientY: y } = event
-  const radius = Math.hypot(
-    Math.max(x, window.innerWidth - x),
-    Math.max(y, window.innerHeight - y),
-  )
+function toggleDark() {
+  const x = window.innerWidth / 2
+  const y = window.innerHeight / 2
+  const radius = Math.hypot(x, y)
   if (!document.startViewTransition) {
     isDark.value = !isDark.value
     return
