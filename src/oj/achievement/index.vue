@@ -88,7 +88,12 @@ watch(name, load)
             :percentage="summary.percent"
             :stroke-width="8"
             :style="{ width: isDesktop ? '110px' : '76px' }"
-          />
+          >
+            <!-- 自带指示器字号是固定的，76px 的圆环里会撑出来 -->
+            <n-text strong :style="{ fontSize: isDesktop ? '22px' : '15px' }">
+              {{ summary.percent }}%
+            </n-text>
+          </n-progress>
           <n-text depth="3" class="nowrap">
             已获得 {{ summary.unlocked }} / {{ summary.total }}
           </n-text>
