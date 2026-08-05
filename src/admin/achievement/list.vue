@@ -23,6 +23,15 @@ const RARITY_LABEL: Record<string, string> = {
   platinum: "白金",
 }
 
+// 下架的只在有的时候才提，全部上架时标题不啰嗦
+const title = computed(() => {
+  if (!list.value.length) return "成就管理"
+  const offline = list.value.filter((a) => !a.visible).length
+  return offline
+    ? `成就管理（${list.value.length} 条，${offline} 条下架）`
+    : `成就管理（${list.value.length} 条）`
+})
+
 async function load() {
   loading.value = true
   try {
@@ -115,7 +124,7 @@ onMounted(load)
 </script>
 
 <template>
-  <n-card title="成就管理">
+  <n-card :title="title">
     <template #header-extra>
       <n-button type="primary" @click="create">新建成就</n-button>
     </template>
