@@ -32,6 +32,7 @@ export async function getProblemList(
   keyword: string,
   author?: string,
   contestID?: string,
+  tagId?: number,
 ) {
   const endpoint = !!contestID ? "admin/contest/problem" : "admin/problem"
   const res = await http.get<{ results: AdminProblem[]; total: number }>(
@@ -44,6 +45,7 @@ export async function getProblemList(
         keyword,
         author,
         contest_id: contestID,
+        tag_id: tagId,
       },
     },
   )
