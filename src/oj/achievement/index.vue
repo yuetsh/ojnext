@@ -9,7 +9,6 @@ import type {
   AchievementSummary,
 } from "utils/types"
 import AchievementCard from "./components/AchievementCard.vue"
-import { NH2, NH4 } from "naive-ui"
 
 interface UserBadge {
   id: number
@@ -88,9 +87,7 @@ watch(name, load)
             :percentage="summary.percent"
             :stroke-width="8"
           >
-            <component :is="isDesktop ? NH2 : NH4">
-              {{ summary.percent }}%
-            </component>
+            <n-text strong>{{ summary.percent }}%</n-text>
           </n-progress>
           <n-text depth="3" class="nowrap">
             已获得 {{ summary.unlocked }} / {{ summary.total }}
