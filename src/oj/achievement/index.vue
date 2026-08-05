@@ -92,7 +92,12 @@ watch(name, load)
             :percentage="summary.percent"
             :stroke-width="8"
           >
-            <n-text strong>{{ summary.percent }}%</n-text>
+            <n-text
+              strong
+              :style="{ fontSize: isDesktop ? '20px' : '14px' }"
+            >
+              {{ summary.percent }}%
+            </n-text>
           </n-progress>
           <n-text depth="3" class="nowrap">
             已获得 {{ summary.unlocked }} / {{ summary.total }}
