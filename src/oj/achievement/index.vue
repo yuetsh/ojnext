@@ -84,114 +84,117 @@ watch(name, load)
 
 <template>
   <div class="hall">
-    <n-card v-if="summary">
-      <n-flex align="center" :wrap="false" :size="isDesktop ? 32 : 16">
-        <n-flex vertical align="center" :size="6">
-          <n-progress
-            type="circle"
-            :percentage="summary.percent"
-            :stroke-width="8"
-          >
-            <n-text
-              strong
-              :style="{ fontSize: isDesktop ? '20px' : '14px' }"
-            >
-              {{ summary.percent }}%
-            </n-text>
-          </n-progress>
-          <n-text depth="3" class="nowrap">
-            已获得 {{ summary.unlocked }} / {{ summary.total }}
-          </n-text>
-        </n-flex>
-
-        <n-flex vertical :size="8" class="rarity">
-          <n-flex
-            v-for="r in rarities"
-            :key="r.rarity"
-            align="center"
-            :wrap="false"
-            :size="10"
-          >
-            <n-text strong :style="{ color: rarityColor[r.rarity] }">
-              {{ r.label }}
-            </n-text>
+    <!-- delay 50ms：缓存命中时数据几乎立刻回来，不闪一下转圈 -->
+    <n-spin :show="loading" :delay="50" style="min-height: 240px">
+      <n-card v-if="summary">
+        <n-flex align="center" :wrap="false" :size="isDesktop ? 32 : 16">
+          <n-flex vertical align="center" :size="6">
             <n-progress
-              style="flex: 1"
-              type="line"
-              :percentage="r.total ? (r.unlocked / r.total) * 100 : 0"
-              :height="6"
-              :border-radius="3"
-              :fill-border-radius="3"
-              :color="rarityColor[r.rarity]"
-              :show-indicator="false"
-            />
+              type="circle"
+              :percentage="summary.percent"
+              :stroke-width="8"
+            >
+              <n-text strong :style="{ fontSize: isDesktop ? '20px' : '14px' }">
+                {{ summary.percent }}%
+              </n-text>
+            </n-progress>
             <n-text depth="3" class="nowrap">
-              {{ r.unlocked }} / {{ r.total }}
+              已获得 {{ summary.unlocked }} / {{ summary.total }}
             </n-text>
           </n-flex>
-        </n-flex>
-      </n-flex>
-    </n-card>
 
-    <n-tabs v-model:value="tab" type="line" class="tabs">
-      <n-tab name="all">全部</n-tab>
-      <n-tab name="unlocked">已获得</n-tab>
-      <n-tab name="locked">未获得</n-tab>
-      <n-tab name="badges">题单奖章</n-tab>
-    </n-tabs>
-
-    <template v-if="tab !== 'badges'">
-      <n-grid
-        v-if="filtered.length"
-        responsive="screen"
-        cols="1 s:2 l:3"
-        :x-gap="12"
-        :y-gap="12"
-      >
-        <n-gi v-for="a in filtered" :key="a.id">
-          <AchievementCard :achievement="a" />
-        </n-gi>
-      </n-grid>
-      <!-- 加载中不显示空态，不然首屏会闪一下"什么都没有" -->
-      <n-empty v-else-if="!loading" description="这里还什么都没有" />
-    </template>
-
-    <template v-else>
-      <n-grid
-        v-if="badges.length"
-        responsive="screen"
-        cols="1 s:2 l:3"
-        :x-gap="12"
-        :y-gap="12"
-      >
-        <n-gi v-for="b in badges" :key="b.id">
-          <n-card size="small">
-            <n-thing :title="b.badge?.name" :description="b.badge?.description">
-              <template #avatar v-if="b.badge?.icon">
-                <n-avatar
-                  :size="40"
-                  :src="b.badge.icon"
-                  color="transparent"
-                  object-fit="contain"
-                />
-              </template>
-              <n-text v-if="b.problemset" depth="3" class="source">
-                来自题单
-                <router-link
-                  :to="{
-                    name: 'problemset',
-                    params: { problemSetId: b.problemset.id },
-                  }"
-                >
-                  {{ b.problemset.title }}
-                </router-link>
+          <n-flex vertical :size="8" class="rarity">
+            <n-flex
+              v-for="r in rarities"
+              :key="r.rarity"
+              align="center"
+              :wrap="false"
+              :size="10"
+            >
+              <n-text strong :style="{ color: rarityColor[r.rarity] }">
+                {{ r.label }}
               </n-text>
-            </n-thing>
-          </n-card>
-        </n-gi>
-      </n-grid>
-      <n-empty v-else-if="!loading" description="还没有获得任何题单奖章" />
-    </template>
+              <n-progress
+                style="flex: 1"
+                type="line"
+                :percentage="r.total ? (r.unlocked / r.total) * 100 : 0"
+                :height="6"
+                :border-radius="3"
+                :fill-border-radius="3"
+                :color="rarityColor[r.rarity]"
+                :show-indicator="false"
+              />
+              <n-text depth="3" class="nowrap">
+                {{ r.unlocked }} / {{ r.total }}
+              </n-text>
+            </n-flex>
+          </n-flex>
+        </n-flex>
+      </n-card>
+
+      <n-tabs v-model:value="tab" type="line" class="tabs">
+        <n-tab name="all">全部</n-tab>
+        <n-tab name="unlocked">已获得</n-tab>
+        <n-tab name="locked">未获得</n-tab>
+        <n-tab name="badges">题单奖章</n-tab>
+      </n-tabs>
+
+      <template v-if="tab !== 'badges'">
+        <n-grid
+          v-if="filtered.length"
+          responsive="screen"
+          cols="1 s:2 l:3"
+          :x-gap="12"
+          :y-gap="12"
+        >
+          <n-gi v-for="a in filtered" :key="a.id">
+            <AchievementCard :achievement="a" />
+          </n-gi>
+        </n-grid>
+        <!-- 加载中不显示空态，不然首屏会闪一下"什么都没有" -->
+        <n-empty v-else-if="!loading" description="这里还什么都没有" />
+      </template>
+
+      <template v-else>
+        <n-grid
+          v-if="badges.length"
+          responsive="screen"
+          cols="1 s:2 l:3"
+          :x-gap="12"
+          :y-gap="12"
+        >
+          <n-gi v-for="b in badges" :key="b.id">
+            <n-card size="small">
+              <n-thing
+                :title="b.badge?.name"
+                :description="b.badge?.description"
+              >
+                <template #avatar v-if="b.badge?.icon">
+                  <n-avatar
+                    :size="40"
+                    :src="b.badge.icon"
+                    color="transparent"
+                    object-fit="contain"
+                  />
+                </template>
+                <n-text v-if="b.problemset" depth="3" class="source">
+                  来自题单
+                  <router-link
+                    :to="{
+                      name: 'problemset',
+                      params: { problemSetId: b.problemset.id },
+                    }"
+                  >
+                    {{ b.problemset.title }}
+                  </router-link>
+                </n-text>
+              </n-thing>
+            </n-card>
+          </n-gi>
+        </n-grid>
+        <n-empty v-else-if="!loading" description="还没有获得任何题单奖章" />
+      </template>
+    </n-spin>
   </div>
 </template>
 
