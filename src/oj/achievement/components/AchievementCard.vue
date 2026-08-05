@@ -55,15 +55,10 @@ const unlockDate = computed(() => {
 <template>
   <n-card
     size="small"
-    :class="{ rare: isRare }"
-    :style="{
-      borderColor: RARITY_COLOR[achievement.rarity],
-      // 1px 的描边在卡片背景上几乎看不出稀有度，加粗一档
-      borderWidth: '2px',
-    }"
+    :class="{ locked: !achievement.unlocked, rare: isRare }"
+    :style="{ borderColor: RARITY_COLOR[achievement.rarity] }"
   >
-    <!-- 置灰只作用在内容上：套在整张卡上会把稀有度边框也一并洗成灰色 -->
-    <n-thing :class="{ locked: !achievement.unlocked }">
+    <n-thing>
       <template #avatar>
         <AchievementIcon :icon="achievement.icon" :size="32" />
       </template>
