@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AchievementIcon from "shared/components/AchievementIcon.vue"
 import type { Achievement } from "utils/types"
 
 const props = defineProps<{ achievement: Achievement }>()
@@ -67,7 +68,9 @@ const unlockDate = computed(() => {
     :style="{ borderColor: RARITY_COLOR[achievement.rarity] }"
   >
     <div class="row">
-      <div class="icon">{{ achievement.icon }}</div>
+      <div class="icon">
+        <AchievementIcon :icon="achievement.icon" :size="32" />
+      </div>
       <div class="body">
         <div class="title">
           <span class="name">{{ achievement.name }}</span>

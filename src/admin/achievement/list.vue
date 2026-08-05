@@ -5,6 +5,7 @@ import {
   getAdminAchievements,
   type AdminAchievement,
 } from "admin/api"
+import AchievementIcon from "shared/components/AchievementIcon.vue"
 import AchievementModal from "./components/AchievementModal.vue"
 
 const message = useMessage()
@@ -57,7 +58,12 @@ function remove(row: AdminAchievement) {
 }
 
 const columns: DataTableColumn<AdminAchievement>[] = [
-  { title: "图标", key: "icon", width: 60 },
+  {
+    title: "图标",
+    key: "icon",
+    width: 60,
+    render: (row) => h(AchievementIcon, { icon: row.icon, size: 24 }),
+  },
   { title: "名称", key: "name" },
   {
     title: "稀有度",

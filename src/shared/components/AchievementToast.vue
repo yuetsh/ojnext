@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import AchievementIcon from "shared/components/AchievementIcon.vue"
 import { useAchievementStore } from "shared/store/achievement"
 
 const store = useAchievementStore()
@@ -47,7 +48,9 @@ onUnmounted(() => {
       class="toast"
       :style="{ borderColor: RARITY_COLOR[current.rarity] }"
     >
-      <div class="icon">{{ current.icon }}</div>
+      <div class="icon">
+        <AchievementIcon :icon="current.icon" :size="34" />
+      </div>
       <div class="body">
         <div class="label">
           {{ current.kind === "badge" ? "获得奖章" : "成就解锁" }}

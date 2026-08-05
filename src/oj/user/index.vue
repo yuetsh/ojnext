@@ -11,6 +11,7 @@ import type {
 } from "utils/types"
 import { getAchievementSummary } from "oj/achievement/api"
 import { getMetrics, getUserBadges } from "../api"
+import AchievementIcon from "shared/components/AchievementIcon.vue"
 import GroupedUserBadge from "shared/components/GroupedUserBadge.vue"
 import { useUserStore } from "shared/store/user"
 
@@ -298,7 +299,9 @@ onMounted(() => {
     <n-flex align="center" :size="10" class="achievement-recent">
       <n-tooltip v-for="a in achievementSummary.recent" :key="a.id">
         <template #trigger>
-          <span class="achievement-icon">{{ a.icon }}</span>
+          <span class="achievement-icon">
+            <AchievementIcon :icon="a.icon" :size="24" />
+          </span>
         </template>
         {{ a.name }}
       </n-tooltip>
@@ -392,6 +395,8 @@ h2 {
   margin-top: 10px;
 }
 .achievement-icon {
+  display: inline-flex;
+  align-items: center;
   font-size: 24px;
   cursor: default;
 }

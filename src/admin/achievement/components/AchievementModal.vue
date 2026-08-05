@@ -6,6 +6,7 @@ import {
   type AdminAchievement,
   type MetricOption,
 } from "admin/api"
+import AchievementIcon from "shared/components/AchievementIcon.vue"
 
 const props = defineProps<{
   show: boolean
@@ -21,7 +22,7 @@ function emptyForm() {
   return {
     name: "",
     description: "",
-    icon: "🏆",
+    icon: "noto:trophy",
     rarity: "bronze",
     hidden: false,
     metric: "",
@@ -99,7 +100,22 @@ async function save() {
         />
       </n-form-item>
       <n-form-item label="图标">
-        <n-input v-model:value="form.icon" placeholder="emoji，例如 🦉" />
+        <n-flex vertical :size="4" style="flex: 1">
+          <n-flex align="center" :size="10">
+            <n-input
+              v-model:value="form.icon"
+              placeholder="iconify 图标名，例如 noto:owl"
+            />
+            <div class="icon-preview">
+              <AchievementIcon :icon="form.icon" :size="28" />
+            </div>
+          </n-flex>
+          <n-text depth="3" style="font-size: 12px">
+            填 iconify 图标名（推荐 noto: 开头的彩色 emoji 图标），右侧是实时
+            预览；预览不出来说明名字写错了。图标名可在 icon-sets.iconify.design
+            搜索。
+          </n-text>
+        </n-flex>
       </n-form-item>
       <n-form-item label="稀有度">
         <n-select
@@ -158,3 +174,14 @@ async function save() {
     </template>
   </n-modal>
 </template>
+
+<style scoped>
+.icon-preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 34px;
+  flex: none;
+}
+</style>
