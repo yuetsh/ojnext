@@ -11,6 +11,8 @@ import Actions from "./components/Actions.vue"
 import Modal from "./components/Modal.vue"
 import { useRouteQuery } from "@vueuse/router"
 import AuthorSelect from "shared/components/AuthorSelect.vue"
+import type { DataTableRowKey } from "naive-ui"
+import BatchTagModal from "./components/BatchTagModal.vue"
 
 interface Props {
   contestID?: string
@@ -36,6 +38,30 @@ const { count, inc } = useCounter(0)
 const total = ref(0)
 const problems = ref<AdminProblemFiltered[]>([])
 
+const selectedRowKeys = ref<DataTableRowKey[]>([])
+const batchTagAction = ref<"add" | "remove">("add")
+const [showBatchTag, toggleBatchTag] = useToggle(false)
+
+const selectedProblemIds = computed(() =>
+  selectedRowKeys.value.map((key) => Number(key)),
+)
+
+const rowKey = (row: AdminProblemFiltered) => row.id
+
+function chooseProblems(rowKeys: DataTableRowKey[]) {
+  selectedRowKeys.value = rowKeys
+}
+
+function openBatchTag(action: "add" | "remove") {
+  batchTagAction.value = action
+  toggleBatchTag(true)
+}
+
+function onBatchTagDone() {
+  selectedRowKeys.value = []
+  listProblems()
+}
+
 const nextDisplayID = computed(() => {
   if (!isContestProblemList.value) return ""
   if (problems.value.length === 0) return "1"
@@ -57,7 +83,7 @@ const { query, clearQuery } = usePagination<ProblemQuery>({
   author: useRouteQuery("author", "").value,
 })
 
-const columns: DataTableColumn<AdminProblemFiltered>[] = [
+const baseColumns: DataTableColumn<AdminProblemFiltered>[] = [
   { title: "ID", key: "id", width: 100 },
   { title: "显示编号", key: "_id", width: 100 },
   { title: "标题", key: "title", minWidth: 200 },
@@ -141,6 +167,12 @@ const columns: DataTableColumn<AdminProblemFiltered>[] = [
   },
 ]
 
+const columns = computed<DataTableColumn<AdminProblemFiltered>[]>(() =>
+  isContestProblemList.value
+    ? baseColumns
+    : [{ type: "selection" }, ...baseColumns],
+)
+
 async function listProblems() {
   if (query.page < 1) query.page = 1
   const offset = (query.page - 1) * query.limit
@@ -212,8 +244,20 @@ watch(() => [query.page, query.limit, query.author], listProblems)
       >
         年度趋势
       </n-button>
+      <n-button
+        v-if="!isContestProblemList"
+        @click="$router.push({ name: 'admin tag list' })"
+      >
+        标签管理
+      </n-button>
     </n-flex>
     <n-flex>
+      <template v-if="!isContestProblemList && selectedProblemIds.length">
+        <n-button type="primary" @click="openBatchTag('add')">
+          添加标签（{{ selectedProblemIds.length }}）
+        </n-button>
+        <n-button @click="openBatchTag('remove')">移除标签</n-button>
+      </template>
       <n-button v-if="isContestProblemList" @click="createContestProblem">
         新建比赛题目
       </n-button>
@@ -238,7 +282,13 @@ watch(() => [query.page, query.limit, query.author], listProblems)
       </div>
     </n-flex>
   </n-flex>
-  <n-data-table striped :columns="columns" :data="problems" />
+  <n-data-table
+    striped
+    :columns="columns"
+    :data="problems"
+    :row-key="rowKey"
+    @update:checked-row-keys="chooseProblems"
+  />
   <Pagination
     :total="total"
     v-model:limit="query.limit"
@@ -249,6 +299,12 @@ watch(() => [query.page, query.limit, query.author], listProblems)
     :count="count"
     :next-display-id="nextDisplayID"
     @change="listProblems"
+  />
+  <BatchTagModal
+    v-model:show="showBatchTag"
+    :problem-ids="selectedProblemIds"
+    :action="batchTagAction"
+    @done="onBatchTagDone"
   />
 </template>
 
