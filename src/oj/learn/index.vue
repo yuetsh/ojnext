@@ -144,6 +144,7 @@ import type { Tutorial, Exercise, LANGUAGE } from "utils/types"
 import { getTutorial, getTutorials, getExercises } from "../api"
 import { parseExercises } from "./composables/useExerciseParse"
 import { useBreakpoints } from "shared/composables/breakpoints"
+import { useLearnProgress } from "shared/composables/learnProgress"
 
 const ExerciseWidget = defineAsyncComponent(
   () => import("./components/ExerciseWidget.vue"),
@@ -156,6 +157,7 @@ const isDark = useDark()
 const route = useRoute()
 const router = useRouter()
 const { isDesktop } = useBreakpoints()
+const { learnStep } = useLearnProgress()
 
 const step = computed(() => {
   const value = route.params.step as string | undefined
@@ -214,6 +216,7 @@ async function init() {
   ])
   if (res2.status === "fulfilled") tutorial.value = res2.value.data
   exercises.value = exs.status === "fulfilled" ? exs.value : []
+  learnStep.value[type.value] = step.value
 }
 
 watch(
