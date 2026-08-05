@@ -173,6 +173,7 @@ const active = computed(() => {
   if (path.startsWith("/admin/config")) return "admin config"
   if (path.startsWith("/admin/problemset")) return "admin problemset list"
   if (path.startsWith("/admin/problem/stuck")) return "admin stuck problems"
+  if (path.startsWith("/admin/problem/tags")) return "admin problem list"
   if (path.startsWith("/admin/problem")) return "admin problem list"
   if (path.startsWith("/admin/contest")) return "admin contest list"
   if (path.startsWith("/admin/user")) return "admin user list"

@@ -172,6 +172,12 @@ export const admins: RouteRecordRaw = {
       meta: { requiresProblemPermission: true },
     },
     {
+      path: "problem/tags",
+      name: "admin tag list",
+      component: () => import("admin/problem/tags.vue"),
+      meta: { requiresProblemPermission: true },
+    },
+    {
       path: "problem/create",
       name: "admin problem create",
       component: () => import("admin/problem/detail.vue"),
