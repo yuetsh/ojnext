@@ -123,7 +123,7 @@ watch(name, load)
       </n-flex>
     </n-card>
 
-    <n-tabs v-model:value="tab" animated type="line" class="tabs">
+    <n-tabs v-model:value="tab" type="line" class="tabs">
       <n-tab name="all">全部</n-tab>
       <n-tab name="unlocked">已获得</n-tab>
       <n-tab name="locked">未获得</n-tab>
