@@ -614,6 +614,7 @@ export interface ReactionStatsRow extends ReactionCounts {
   pid: string
   title: string
   users: number
+  last_time: string
 }
 
 export interface Tutorial {

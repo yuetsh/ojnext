@@ -119,7 +119,7 @@ const options = computed<MenuOption[]>(() => {
           h(
             RouterLink,
             { to: "/admin/reaction/list" },
-            { default: () => "题目反馈" },
+            { default: () => "反馈" },
           ),
         key: "admin reaction list",
       },

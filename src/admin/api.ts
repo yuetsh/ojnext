@@ -287,14 +287,9 @@ export function createAnnouncement(announcement: AnnouncementEdit) {
   return http.post("admin/announcement", announcement)
 }
 
-export function getReactionStats(
-  offset = 0,
-  limit = 10,
-  problem: string,
-  ordering: string,
-) {
+export function getReactionStats(offset = 0, limit = 10, problem: string) {
   return http.get("admin/reaction", {
-    params: { offset, limit, problem, ordering },
+    params: { offset, limit, problem },
   })
 }
 

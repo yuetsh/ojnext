@@ -9,14 +9,7 @@
       />
     </div>
   </n-flex>
-  <n-data-table
-    striped
-    :columns="columns"
-    :data="rows"
-    :scroll-x="1100"
-    remote
-    @update:sorter="handleSorter"
-  />
+  <n-data-table striped :columns="columns" :data="rows" />
   <Pagination
     :total="total"
     v-model:limit="query.limit"
@@ -29,6 +22,7 @@ import { Icon } from "@iconify/vue"
 import { NButton, NFlex } from "naive-ui"
 import Pagination from "shared/components/Pagination.vue"
 import { REACTIONS } from "utils/constants"
+import { parseTime } from "utils/functions"
 import type { ReactionStatsRow } from "utils/types"
 import { getReactionStats } from "../api"
 
@@ -38,7 +32,6 @@ const query = reactive({
   limit: 10,
   page: 1,
   problem: "",
-  ordering: "-users",
 })
 
 const columns: DataTableColumn<ReactionStatsRow>[] = [
@@ -58,8 +51,8 @@ const columns: DataTableColumn<ReactionStatsRow>[] = [
         () => row.pid,
       ),
   },
-  { title: "标题", key: "title", minWidth: 180, ellipsis: true },
-  { title: "表态人数", key: "users", width: 110, sorter: true },
+  { title: "标题", key: "title", minWidth: 180 },
+  { title: "表态人数", key: "users", width: 120 },
   ...REACTIONS.map((item) => ({
     title: () =>
       h(NFlex, { align: "center", size: 4, wrap: false }, () => [
@@ -67,35 +60,25 @@ const columns: DataTableColumn<ReactionStatsRow>[] = [
         item.label,
       ]),
     key: item.key,
-    width: 110,
-    sorter: true,
+    width: 120,
   })),
+  {
+    title: "时间",
+    key: "last_time",
+    width: 180,
+    render: (row) => parseTime(row.last_time, "YYYY-MM-DD HH:mm:ss"),
+  },
 ]
-
-function handleSorter(sorter: { columnKey: string; order: string | false }) {
-  if (!sorter || !sorter.order) {
-    query.ordering = "-users"
-  } else {
-    query.ordering =
-      (sorter.order === "descend" ? "-" : "") + String(sorter.columnKey)
-  }
-  query.page = 1
-}
 
 async function listStats() {
   const offset = (query.page - 1) * query.limit
-  const res = await getReactionStats(
-    offset,
-    query.limit,
-    query.problem,
-    query.ordering,
-  )
+  const res = await getReactionStats(offset, query.limit, query.problem)
   rows.value = res.data.results
   total.value = res.data.total
 }
 
 onMounted(listStats)
-watch(() => [query.page, query.limit, query.ordering], listStats)
+watch(() => [query.page, query.limit], listStats)
 watchDebounced(() => query.problem, listStats, {
   debounce: 500,
   maxWait: 1000,
