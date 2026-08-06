@@ -35,7 +35,6 @@ export interface User {
   problem_permission: string
   create_time: Date
   last_login: Date
-  two_factor_auth: boolean
   open_api: boolean
   is_disabled: boolean
   password?: string

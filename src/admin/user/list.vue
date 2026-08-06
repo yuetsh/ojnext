@@ -172,7 +172,6 @@ function createNewUser() {
     problem_permission: "None",
     create_time: new Date(),
     last_login: new Date(),
-    two_factor_auth: false,
     open_api: false,
     is_disabled: false,
     password: "",
