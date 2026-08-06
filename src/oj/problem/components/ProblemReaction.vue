@@ -3,17 +3,19 @@
   <div v-else ref="container" class="reactions">
     <n-tooltip v-for="item in REACTIONS" :key="item.key" trigger="hover">
       <template #trigger>
-        <n-button
-          size="small"
-          :disabled="isDisabled(item.key)"
-          :type="mine.includes(item.key) ? 'primary' : 'default'"
-          :ghost="mine.includes(item.key)"
-          @click="toggle(item.key)"
-        >
-          <Icon :icon="item.icon" :width="18" />
-          <span v-if="showLabel" class="label">{{ item.label }}</span>
-          <span v-if="counts" class="count">{{ counts[item.key] }}</span>
-        </n-button>
+        <span class="reaction-trigger">
+          <n-button
+            size="small"
+            :disabled="isDisabled(item.key)"
+            :type="mine.includes(item.key) ? 'primary' : 'default'"
+            :ghost="mine.includes(item.key)"
+            @click="toggle(item.key)"
+          >
+            <Icon :icon="item.icon" :width="18" />
+            <span v-if="showLabel" class="label">{{ item.label }}</span>
+            <span v-if="counts" class="count">{{ counts[item.key] }}</span>
+          </n-button>
+        </span>
       </template>
       {{ tooltipOf(item.key, item.label) }}
     </n-tooltip>
@@ -105,6 +107,10 @@ onMounted(() => {
   flex-wrap: nowrap;
   gap: 8px;
   overflow-x: auto;
+}
+.reaction-trigger {
+  display: inline-flex;
+  flex-shrink: 0;
 }
 .label {
   margin-left: 4px;

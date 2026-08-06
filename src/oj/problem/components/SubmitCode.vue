@@ -259,7 +259,7 @@ watch(
   <!-- 评价弹窗 -->
   <n-modal
     preset="card"
-    title="恭喜你成功提交，请对该题进行评价（一星差评，五星好评）"
+    title="恭喜你成功提交，说说你对这道题的感受吧"
     :mask-closable="false"
     :style="{ maxWidth: isDesktop && '50vw', maxHeight: '80vh' }"
     v-model:show="commentPanel"
