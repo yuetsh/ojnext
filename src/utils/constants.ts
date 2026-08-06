@@ -368,5 +368,3 @@ export const REACTIONS: {
   { key: "interesting", label: "有意思", icon: "fluent-emoji:star-struck" },
   { key: "want_explain", label: "想听讲解", icon: "fluent-emoji:books" },
 ]
-
-export const MAX_REACTIONS = 3

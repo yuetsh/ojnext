@@ -1,9 +1,10 @@
-import http from "utils/http"
+import http, { type ApiResponse } from "utils/http"
 import { filterResult } from "oj/transforms"
 import type {
   Exercise,
   Problem,
   ReactionKey,
+  ReactionState,
   Submission,
   SubmissionListPayload,
   SubmitCodePayload,
@@ -225,11 +226,43 @@ export function getMessageList(offset = 0, limit = 10) {
 }
 
 export function getReaction(problemID: number) {
-  return http.get("reaction", { params: { problem_id: problemID } })
+  return http
+    .get<ReactionWireState>("reaction", {
+      params: { problem_id: problemID },
+    })
+    .then(normalizeReactionResponse)
 }
 
-export function setReaction(problemID: number, types: ReactionKey[]) {
-  return http.post("reaction", { problem_id: problemID, types })
+interface ReactionWireState {
+  mine: ReactionKey[] | ReactionKey | null
+  mine_type?: ReactionKey | null
+  counts: ReactionState["counts"]
+}
+
+function normalizeReactionResponse(
+  res: ApiResponse<ReactionWireState>,
+): ApiResponse<ReactionState> {
+  const legacyMine = Array.isArray(res.data.mine)
+    ? (res.data.mine[0] ?? null)
+    : res.data.mine
+  return {
+    ...res,
+    data: {
+      mine: res.data.mine_type ?? legacyMine,
+      counts: res.data.counts,
+    },
+  }
+}
+
+export function setReaction(problemID: number, type: ReactionKey) {
+  return http
+    .post<ReactionWireState>("reaction", {
+      problem_id: problemID,
+      type,
+      // 过渡期同时发送旧字段：新前端先上线时，旧后端也能接受单选提交。
+      types: [type],
+    })
+    .then(normalizeReactionResponse)
 }
 
 // TODO: 这个API有问题

@@ -606,7 +606,7 @@ export type ReactionKey =
 export type ReactionCounts = Record<ReactionKey, number>
 
 export interface ReactionState {
-  mine: ReactionKey[]
+  mine: ReactionKey | null
   counts: ReactionCounts | null
 }
 

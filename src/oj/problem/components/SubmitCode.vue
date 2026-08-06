@@ -40,6 +40,11 @@ const router = useRouter()
 const [commentPanel] = useToggle()
 const message = useMessage()
 
+// 评价提交后停一下让用户看到选中态，再收起弹窗
+function closeCommentPanel() {
+  setTimeout(() => (commentPanel.value = false), 800)
+}
+
 const { isDesktop } = useBreakpoints()
 
 // ==================== 烟花效果 ====================
@@ -73,7 +78,7 @@ const { start: startCooldown, isPending: isCooldown } = useTimeout(5000, {
 const { start: showCommentPanelDelayed } = useTimeoutFn(
   async () => {
     const res = await getReaction(problem.value!.id)
-    if (res.data.mine.length === 0) {
+    if (res.data.mine === null) {
       commentPanel.value = true
     }
   },
@@ -264,6 +269,6 @@ watch(
     :style="{ maxWidth: isDesktop && '50vw', maxHeight: '80vh' }"
     v-model:show="commentPanel"
   >
-    <ProblemReaction />
+    <ProblemReaction @submitted="closeCommentPanel" />
   </n-modal>
 </template>
