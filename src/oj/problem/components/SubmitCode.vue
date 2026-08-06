@@ -23,8 +23,8 @@ import {
 } from "oj/problem/utils/pythonSyntaxCheck"
 
 // ==================== 异步组件 ====================
-const ProblemComment = defineAsyncComponent(
-  () => import("./ProblemComment.vue"),
+const ProblemReaction = defineAsyncComponent(
+  () => import("./ProblemReaction.vue"),
 )
 
 // ==================== 基础状态 ====================
@@ -264,6 +264,6 @@ watch(
     :style="{ maxWidth: isDesktop && '50vw', maxHeight: '80vh' }"
     v-model:show="commentPanel"
   >
-    <ProblemComment :showStatistics="false" />
+    <ProblemReaction />
   </n-modal>
 </template>

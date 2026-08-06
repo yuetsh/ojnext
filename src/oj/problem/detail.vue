@@ -23,8 +23,8 @@ const ProblemInfo = defineAsyncComponent(
 const ProblemSubmission = defineAsyncComponent(
   () => import("./components/ProblemSubmission.vue"),
 )
-const ProblemComment = defineAsyncComponent(
-  () => import("./components/ProblemComment.vue"),
+const ProblemReaction = defineAsyncComponent(
+  () => import("./components/ProblemReaction.vue"),
 )
 const ProblemFlowchart = defineAsyncComponent(
   () => import("./components/ProblemFlowchart.vue"),
@@ -174,7 +174,7 @@ watch(
               tab="题目点评"
               :disabled="!!problemSetId"
             >
-              <ProblemComment />
+              <ProblemReaction />
             </n-tab-pane>
             <n-tab-pane
               v-if="myFlowchartStore.showing"
@@ -226,7 +226,7 @@ watch(
             tab="题目点评"
             :disabled="!!problemSetId"
           >
-            <ProblemComment />
+            <ProblemReaction />
           </n-tab-pane>
           <n-tab-pane
             v-if="myFlowchartStore.showing"
@@ -266,7 +266,7 @@ watch(
         tab="点评"
         :disabled="!!problemSetId"
       >
-        <ProblemComment />
+        <ProblemReaction />
       </n-tab-pane>
       <n-tab-pane
         v-if="myFlowchartStore.showing"
