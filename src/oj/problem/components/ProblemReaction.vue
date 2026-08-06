@@ -16,7 +16,6 @@ const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 const message = useMessage()
 const theme = useThemeVars()
-const headingId = useId()
 
 const mine = ref<ReactionKey | null>(null)
 const counts = ref<ReactionCounts | null>(null)
@@ -84,47 +83,13 @@ const solved = computed(() => problem.value?.my_status === 0)
 const locked = computed(() => mine.value !== null)
 const canInteract = computed(
   () =>
+    userStore.isAuthed &&
     !!problem.value &&
     solved.value &&
     !locked.value &&
     !loading.value &&
     !submitting.value,
 )
-const selectedLabel = computed(
-  () => REACTIONS.find((item) => item.key === mine.value)?.label ?? "",
-)
-const totalCount = computed(() => {
-  if (!counts.value) return 0
-  return Object.values(counts.value).reduce((sum, count) => sum + count, 0)
-})
-
-const heading = computed(() => {
-  if (!solved.value) return "通关后，再回来聊聊这道题"
-  if (locked.value) return "你的第一印象，已经记下来了"
-  return "这道题给你什么感觉？"
-})
-
-const description = computed(() => {
-  if (!solved.value) return "先专注完成解题，判题通过后点评入口会自动开放。"
-  if (locked.value) return "看看大家的感受，也许你们对这道题有相同的判断。"
-  return "选出最贴切的一项，反馈会帮助老师继续优化题目。"
-})
-
-const state = computed(() => {
-  if (loading.value) return { icon: "ph:spinner-gap-bold", label: "读取中" }
-  if (submitting.value) return { icon: "ph:spinner-gap-bold", label: "记录中" }
-  if (!solved.value) return { icon: "ph:lock-key-bold", label: "完成后开放" }
-  if (locked.value) return { icon: "ph:check-circle-fill", label: "已提交" }
-  return { icon: "ph:cursor-click-bold", label: "等待选择" }
-})
-
-const statusText = computed(() => {
-  if (loading.value) return "正在读取点评记录"
-  if (!solved.value) return "判题结果通过后即可参与点评"
-  if (locked.value) return `你选择了「${selectedLabel.value}」`
-  if (submitting.value) return "正在记录你的点评"
-  return "点击即提交，点评提交后不能修改"
-})
 
 const wheelCenter = computed(() => {
   if (loading.value) {
@@ -152,6 +117,15 @@ const wheelCenter = computed(() => {
       icon: "ph:check-bold",
       eyebrow: "你的选择",
       label: item?.label ?? "已提交",
+      spinning: false,
+    }
+  }
+
+  if (!userStore.isAuthed) {
+    return {
+      icon: "ph:user-circle-dashed",
+      eyebrow: "登录后开放",
+      label: "登录后点评",
       spinning: false,
     }
   }
@@ -187,17 +161,13 @@ const wheelCenter = computed(() => {
 const reactionStyle = computed(() => ({
   "--reaction-accent": theme.value.primaryColor,
   "--reaction-card": theme.value.cardColor,
-  "--reaction-canvas": theme.value.bodyColor,
   "--reaction-action": theme.value.actionColor,
   "--reaction-hover": theme.value.hoverColor,
   "--reaction-border": theme.value.borderColor,
   "--reaction-rail": theme.value.railColor,
   "--reaction-shadow": theme.value.boxShadow1,
   "--reaction-text": theme.value.textColor1,
-  "--reaction-text-muted": theme.value.textColor2,
   "--reaction-text-faint": theme.value.textColor3,
-  "--reaction-divider": theme.value.dividerColor,
-  "--reaction-success": theme.value.successColor,
 }))
 
 function optionAriaLabel(key: ReactionKey, label: string) {
@@ -318,63 +288,23 @@ watch(
 </script>
 
 <template>
-  <section
-    class="reaction-panel"
-    :style="reactionStyle"
-    :aria-labelledby="headingId"
-  >
-    <header class="reaction-header">
-      <div class="reaction-heading">
-        <div class="reaction-kicker">
-          <span class="kicker-icon" aria-hidden="true">
-            <Icon icon="ph:chat-circle-text-fill" />
-          </span>
-          <span>题目点评</span>
-          <span v-if="counts" class="response-total">
-            {{ totalCount }} 次反馈
-          </span>
-        </div>
-        <h2 :id="headingId">{{ heading }}</h2>
-        <p>{{ description }}</p>
-      </div>
-
-      <div class="state-chip" :class="{ 'is-complete': locked }">
-        <Icon
-          :icon="state.icon"
-          :class="{ 'is-spinning': loading || !!submitting }"
-          aria-hidden="true"
-        />
-        <span>{{ state.label }}</span>
-      </div>
-    </header>
-
-    <div v-if="!userStore.isAuthed" class="signed-out-state">
-      <span class="signed-out-icon" aria-hidden="true">
-        <Icon icon="ph:user-circle-dashed" />
-      </span>
-      <div>
-        <strong>登录后参与点评</strong>
-        <p>完成题目后，你可以留下自己的第一印象。</p>
-      </div>
-    </div>
-
-    <template v-else>
-      <div class="wheel-stage">
-        <div
-          ref="wheelRef"
-          class="reaction-wheel"
-          :class="{
-            'has-selection': locked,
-            'is-disabled': !canInteract,
-            'is-keyboard-active': keyboardActive,
-          }"
-          role="group"
-          aria-label="选择一项题目点评，点击后立即提交"
-          :aria-busy="loading || !!submitting"
-          @pointermove="onWheelPointerMove"
-          @pointerleave="clearPreview"
-          @click="onWheelClick"
-        >
+  <section class="reaction-panel" :style="reactionStyle" aria-label="题目点评">
+    <div class="wheel-stage">
+      <div
+        ref="wheelRef"
+        class="reaction-wheel"
+        :class="{
+          'has-selection': locked,
+          'is-disabled': !canInteract,
+          'is-keyboard-active': keyboardActive,
+        }"
+        role="group"
+        aria-label="选择一项题目点评，点击后立即提交"
+        :aria-busy="loading || !!submitting"
+        @pointermove="onWheelPointerMove"
+        @pointerleave="clearPreview"
+        @click="onWheelClick"
+      >
           <span
             v-for="item in wheelItems"
             :key="`${item.key}-face`"
@@ -398,7 +328,7 @@ watch(
               'is-selected': mine === item.key,
               'is-submitting': submitting === item.key,
               'is-muted': locked && mine !== item.key,
-              'is-unavailable': !solved || loading,
+              'is-unavailable': !userStore.isAuthed || !solved || loading,
             }"
             :style="item.style"
             :disabled="!canInteract"
@@ -436,23 +366,8 @@ watch(
               <strong class="core-label">{{ wheelCenter.label }}</strong>
             </div>
           </div>
-        </div>
       </div>
-
-      <footer class="reaction-status" aria-live="polite">
-        <Icon
-          :icon="
-            locked
-              ? 'ph:check-circle-bold'
-              : solved
-                ? 'ph:info-bold'
-                : 'ph:lock-simple-bold'
-          "
-          aria-hidden="true"
-        />
-        <span>{{ statusText }}</span>
-      </footer>
-    </template>
+    </div>
   </section>
 </template>
 
@@ -461,91 +376,9 @@ watch(
   width: min(100%, 880px);
   box-sizing: border-box;
   container-type: inline-size;
-  margin: clamp(16px, 3vw, 32px) auto;
+  margin: 0 auto;
   padding: clamp(16px, 3.5vw, 32px);
   color: var(--reaction-text);
-}
-
-.reaction-header {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-
-.reaction-heading {
-  min-width: 0;
-}
-
-.reaction-kicker {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  color: var(--reaction-accent);
-  font-size: 13px;
-  font-weight: 650;
-}
-
-.kicker-icon {
-  display: grid;
-  width: 28px;
-  height: 28px;
-  place-items: center;
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--reaction-accent) 12%, transparent);
-  font-size: 17px;
-}
-
-.response-total {
-  padding-left: 8px;
-  border-left: 1px solid var(--reaction-divider);
-  color: var(--reaction-text-faint);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
-}
-
-.reaction-heading h2 {
-  margin: 0;
-  color: var(--reaction-text);
-  font-size: clamp(22px, 4.5cqi, 30px);
-  font-weight: 720;
-  line-height: 1.25;
-  text-wrap: balance;
-}
-
-.reaction-heading p {
-  max-width: 54ch;
-  margin: 9px 0 0;
-  color: var(--reaction-text-muted);
-  font-size: 14px;
-  line-height: 1.75;
-  text-wrap: pretty;
-}
-
-.state-chip {
-  display: inline-flex;
-  min-height: 32px;
-  flex: 0 0 auto;
-  align-items: center;
-  gap: 6px;
-  box-sizing: border-box;
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: color-mix(in srgb, var(--reaction-text-faint) 8%, transparent);
-  color: var(--reaction-text-muted);
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.state-chip.is-complete {
-  background: color-mix(in srgb, var(--reaction-success) 12%, transparent);
-  color: var(--reaction-success);
-}
-
-.state-chip svg {
-  font-size: 15px;
 }
 
 .wheel-stage {
@@ -728,7 +561,8 @@ watch(
 
 .option-count {
   color: var(--reaction-text-faint);
-  font-size: 10px;
+  font-size: 12px;
+  font-weight: 600;
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
   transform: scale(1);
@@ -804,78 +638,12 @@ watch(
   transition-duration: 0.01ms;
 }
 
-.reaction-status {
-  display: flex;
-  min-height: 24px;
-  align-items: center;
-  gap: 7px;
-  margin-top: 16px;
-  color: var(--reaction-text-faint);
-  font-size: 12px;
-  line-height: 1.6;
-}
-
-.reaction-status svg {
-  flex: 0 0 auto;
-  font-size: 15px;
-}
-
-.signed-out-state {
-  display: flex;
-  min-height: 128px;
-  align-items: center;
-  gap: 16px;
-  box-sizing: border-box;
-  padding: 22px;
-  border-radius: 12px;
-  background: color-mix(
-    in srgb,
-    var(--reaction-text-faint) 6%,
-    var(--reaction-card)
-  );
-  box-shadow: inset 0 0 0 1px var(--reaction-divider);
-}
-
-.signed-out-icon {
-  display: grid;
-  width: 48px;
-  height: 48px;
-  flex: 0 0 48px;
-  place-items: center;
-  border-radius: 12px;
-  background: var(--reaction-canvas);
-  color: var(--reaction-text-muted);
-  font-size: 28px;
-}
-
-.signed-out-state strong {
-  display: block;
-  margin-bottom: 4px;
-  color: var(--reaction-text);
-  font-size: 15px;
-}
-
-.signed-out-state p {
-  margin: 0;
-  color: var(--reaction-text-muted);
-  font-size: 13px;
-  line-height: 1.7;
-}
 
 .is-spinning {
   animation: reaction-spin 850ms linear infinite;
 }
 
 @container (max-width: 440px) {
-  .reaction-header {
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .state-chip {
-    align-self: flex-start;
-  }
-
   .wheel-stage {
     padding-top: 0;
   }
@@ -920,7 +688,7 @@ watch(
   }
 
   .option-count {
-    font-size: 9px;
+    font-size: 11px;
   }
 
   .wheel-core {
