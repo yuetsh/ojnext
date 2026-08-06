@@ -1,11 +1,11 @@
 <script setup lang="ts">
-import { NFlex, NSwitch, NTag } from "naive-ui"
+import { NFlex, NSwitch, NTag, NTooltip } from "naive-ui"
 import { Icon } from "@iconify/vue"
 import Pagination from "shared/components/Pagination.vue"
 import { usePagination } from "shared/composables/pagination"
 import { getTagColor, parseTime } from "utils/functions"
 import type { AdminProblemFiltered } from "utils/types"
-import { DIFFICULTY } from "utils/constants"
+import { DIFFICULTY, REACTIONS } from "utils/constants"
 import { getProblemList, toggleProblemVisible } from "../api"
 import Actions from "./components/Actions.vue"
 import Modal from "./components/Modal.vue"
@@ -135,6 +135,21 @@ const baseColumns: DataTableColumn<AdminProblemFiltered>[] = [
           : null,
       ]),
   },
+  {
+    title: "反馈",
+    key: "top_reaction",
+    width: 60,
+    render: (row) => {
+      const top = row.top_reaction
+      if (!top) return null
+      const reaction = REACTIONS.find((it) => it.key === top.type)
+      if (!reaction) return null
+      return h(NTooltip, null, {
+        trigger: () => h(Icon, { width: 18, icon: reaction.icon }),
+        default: () => `${reaction.label} ${top.count} 人`,
+      })
+    },
+  },
   { title: "出题人", key: "username", width: 120 },
   {
     title: "创建时间",
@@ -167,9 +182,10 @@ const baseColumns: DataTableColumn<AdminProblemFiltered>[] = [
   },
 ]
 
+// 比赛题目接口不返回 top_reaction，这一列只在普通题目列表里显示
 const columns = computed<DataTableColumn<AdminProblemFiltered>[]>(() =>
   isContestProblemList.value
-    ? baseColumns
+    ? baseColumns.filter((it) => !("key" in it) || it.key !== "top_reaction")
     : [{ type: "selection" }, ...baseColumns],
 )
 

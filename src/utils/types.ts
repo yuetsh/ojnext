@@ -226,6 +226,8 @@ export interface AdminProblemFiltered {
   has_ast_rules: boolean
   allow_flowchart: boolean
   show_flowchart: boolean
+  // 比赛题目列表接口不返回这个字段
+  top_reaction?: { type: ReactionKey; count: number } | null
 }
 
 // 题单相关类型
@@ -608,13 +610,6 @@ export type ReactionCounts = Record<ReactionKey, number>
 export interface ReactionState {
   mine: ReactionKey | null
   counts: ReactionCounts | null
-}
-
-export interface ReactionStatsRow extends ReactionCounts {
-  pid: string
-  title: string
-  users: number
-  last_time: string
 }
 
 export interface Tutorial {

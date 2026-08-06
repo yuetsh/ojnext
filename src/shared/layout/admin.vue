@@ -118,15 +118,6 @@ const options = computed<MenuOption[]>(() => {
         label: () =>
           h(
             RouterLink,
-            { to: "/admin/reaction/list" },
-            { default: () => "反馈" },
-          ),
-        key: "admin reaction list",
-      },
-      {
-        label: () =>
-          h(
-            RouterLink,
             { to: "/admin/announcement/list" },
             { default: () => "公告" },
           ),

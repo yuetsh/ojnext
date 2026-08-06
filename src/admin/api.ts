@@ -287,12 +287,6 @@ export function createAnnouncement(announcement: AnnouncementEdit) {
   return http.post("admin/announcement", announcement)
 }
 
-export function getReactionStats(offset = 0, limit = 10, problem: string) {
-  return http.get("admin/reaction", {
-    params: { offset, limit, problem },
-  })
-}
-
 export async function getTutorialList() {
   const res = await http.get<Tutorial[]>("admin/tutorial")
   return res.data

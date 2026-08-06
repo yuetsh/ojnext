@@ -138,6 +138,7 @@ export function useFireworks() {
 
           confetti({
             particleCount: 12,
+            angle: 270,
             spread: 100,
             startVelocity: 12,
             gravity: 0.6,
@@ -145,7 +146,7 @@ export function useFireworks() {
             ticks: 200,
             scalar: 1.2,
             shapes: ["star"],
-            origin: { x: Math.random(), y: -0.1 },
+            origin: { x: Math.random(), y: 0 },
             colors: ["#FFD700", "#FFA500", "#FFFF00", "#FF69B4", "#00CED1"],
           })
         }, 150)
@@ -285,29 +286,32 @@ export function useFireworks() {
 
       // 效果7: 螺旋上升
       () => {
-        const defaults = {
-          spread: 360,
-          ticks: 100,
-          gravity: 0,
-          decay: 0.94,
-          startVelocity: 30,
-        }
+        const steps = 16
+        const colors = ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
 
-        function shoot() {
-          confetti({
-            ...defaults,
-            particleCount: 50,
-            scalar: 1.2,
-            shapes: ["circle", "square"],
-            colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
-          })
-        }
+        for (let step = 0; step < steps; step++) {
+          runLater(() => {
+            const progress = step / (steps - 1)
+            const phase = step * (Math.PI / 4)
 
-        runLater(shoot, 0)
-        runLater(shoot, 100)
-        runLater(shoot, 200)
-        runLater(shoot, 300)
-        runLater(shoot, 400)
+            confetti({
+              particleCount: 7,
+              angle: 90 + Math.cos(phase) * 18,
+              spread: 25,
+              startVelocity: 16,
+              gravity: 0.25,
+              decay: 0.94,
+              ticks: 100,
+              scalar: 0.9,
+              shapes: ["circle", "square"],
+              origin: {
+                x: 0.5 + Math.sin(phase) * 0.14,
+                y: 0.85 - progress * 0.55,
+              },
+              colors,
+            })
+          }, step * 65)
+        }
       },
 
       // 效果8: 表情包烟花
@@ -315,6 +319,7 @@ export function useFireworks() {
         loadEmojiShapes().then((emojiShapes) => {
           confetti({
             shapes: emojiShapes,
+            flat: true,
             scalar: 6,
             particleCount: 18,
             spread: 360,
@@ -349,16 +354,28 @@ export function useFireworks() {
 
       // 效果10: 礼花瀑布
       () => {
-        confetti({
-          particleCount: 150,
-          spread: 180,
-          startVelocity: 0,
-          gravity: 1.2,
-          decay: 0.95,
-          ticks: 300,
-          origin: { x: 0.5, y: 0 },
-          colors: ["#f6d365", "#fda085", "#fbc2eb", "#a6c1ee", "#84fab0"],
-        })
+        const animationEnd = Date.now() + 1800
+        const colors = ["#f6d365", "#fda085", "#fbc2eb", "#a6c1ee", "#84fab0"]
+
+        const interval = setInterval(() => {
+          if (Date.now() >= animationEnd) return stopTimer(interval)
+
+          for (let column = 0; column < 6; column++) {
+            confetti({
+              particleCount: 2,
+              angle: 270,
+              spread: 30,
+              startVelocity: 5,
+              gravity: 1,
+              decay: 0.96,
+              ticks: 240,
+              scalar: 1.1,
+              origin: { x: (column + Math.random()) / 6, y: 0 },
+              colors,
+            })
+          }
+        }, 120)
+        timers.add(interval)
       },
     ]
 
