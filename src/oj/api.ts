@@ -224,24 +224,6 @@ export function getMessageList(offset = 0, limit = 10) {
   return http.get("message", { params: { limit, offset } })
 }
 
-export function createComment(data: {
-  problem_id: number
-  description_rating: number
-  difficulty_rating: number
-  comprehensive_rating: number
-  content: string
-}) {
-  return http.post("comment", data)
-}
-
-export function getComment(problemID: number) {
-  return http.get("comment", { params: { problem_id: problemID } })
-}
-
-export function getCommentStatistics(problemID: number) {
-  return http.get("comment/statistics", { params: { problem_id: problemID } })
-}
-
 export function getReaction(problemID: number) {
   return http.get("reaction", { params: { problem_id: problemID } })
 }

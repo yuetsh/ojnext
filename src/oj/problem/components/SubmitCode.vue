@@ -3,7 +3,7 @@ import { Icon } from "@iconify/vue"
 import { storeToRefs } from "pinia"
 import {
   formatCode,
-  getComment,
+  getReaction,
   submitCode,
   updateProblemSetProgress,
 } from "oj/api"
@@ -72,8 +72,8 @@ const { start: startCooldown, isPending: isCooldown } = useTimeout(5000, {
 // ==================== AC后显示评论框 ====================
 const { start: showCommentPanelDelayed } = useTimeoutFn(
   async () => {
-    const res = await getComment(problem.value!.id)
-    if (!res.data) {
+    const res = await getReaction(problem.value!.id)
+    if (res.data.mine.length === 0) {
       commentPanel.value = true
     }
   },

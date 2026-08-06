@@ -594,18 +594,6 @@ export interface CreateMessage {
   message: string
 }
 
-export interface Comment {
-  id: number
-  problem: string
-  submission: string
-  content: string
-  description_rating: 1 | 2 | 3 | 4 | 5
-  difficulty_rating: 1 | 2 | 3 | 4 | 5
-  comprehensive_rating: 1 | 2 | 3 | 4 | 5
-  create_time: Date
-  user: SampleUser
-}
-
 export type ReactionKey =
   | "too_easy"
   | "too_hard"

@@ -287,16 +287,6 @@ export function createAnnouncement(announcement: AnnouncementEdit) {
   return http.post("admin/announcement", announcement)
 }
 
-export function getCommentList(offset = 0, limit = 10, problem: string) {
-  return http.get("admin/comment", {
-    params: { offset, limit, problem },
-  })
-}
-
-export function deleteComment(id: number) {
-  return http.delete("admin/comment", { params: { id } })
-}
-
 export function getReactionStats(
   offset = 0,
   limit = 10,

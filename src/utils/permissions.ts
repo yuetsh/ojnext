@@ -12,7 +12,6 @@ export function usePermissions() {
 
     canManageUsers: computed(() => userStore.isSuperAdmin),
     canManageAnnouncements: computed(() => userStore.isSuperAdmin),
-    canManageComments: computed(() => userStore.isSuperAdmin),
     canManageTutorials: computed(() => userStore.isSuperAdmin),
     canManageSystemConfig: computed(() => userStore.isSuperAdmin),
     canSendMessages: computed(() => userStore.isSuperAdmin),
@@ -65,7 +64,6 @@ export function checkRoutePermission(routeName: string): boolean {
     "admin announcement list",
     "admin announcement create",
     "admin announcement edit",
-    "admin comment list",
     "admin message list",
     "admin tutorial list",
     "admin tutorial create",
