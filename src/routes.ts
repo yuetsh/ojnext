@@ -258,9 +258,9 @@ export const admins: RouteRecordRaw = {
       meta: { requiresSuperAdmin: true },
     },
     {
-      path: "comment/list",
-      name: "admin comment list",
-      component: () => import("admin/communication/comments.vue"),
+      path: "reaction/list",
+      name: "admin reaction list",
+      component: () => import("admin/communication/reactions.vue"),
       meta: { requiresSuperAdmin: true },
     },
     {
