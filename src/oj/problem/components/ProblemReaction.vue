@@ -1,20 +1,34 @@
 <template>
   <n-alert v-if="!userStore.isAuthed" type="error" title="请先登录" />
-  <div v-else class="reactions">
-    <n-tooltip v-for="item in REACTIONS" :key="item.key" trigger="hover">
-      <template #trigger>
-        <button
-          class="reaction-button"
-          :class="{ active: mine.includes(item.key) }"
-          :disabled="isDisabled(item.key)"
-          @click="toggle(item.key)"
-        >
-          <Icon :icon="item.icon" :width="28" />
-          <span v-if="counts" class="count">×{{ counts[item.key] }}</span>
-        </button>
-      </template>
-      {{ tooltipOf(item.key, item.label) }}
-    </n-tooltip>
+  <div v-else>
+    <div class="reactions">
+      <n-tooltip v-for="item in REACTIONS" :key="item.key" trigger="hover">
+        <template #trigger>
+          <button
+            class="reaction-button"
+            :class="{ active: selected.includes(item.key) }"
+            :disabled="isDisabled(item.key)"
+            @click="toggle(item.key)"
+          >
+            <Icon :icon="item.icon" :width="28" />
+            <span v-if="counts" class="count">×{{ counts[item.key] }}</span>
+          </button>
+        </template>
+        {{ tooltipOf(item.key, item.label) }}
+      </n-tooltip>
+    </div>
+    <n-flex v-if="solved && !locked" align="center" class="footer">
+      <n-button
+        type="primary"
+        size="small"
+        :disabled="!selected.length"
+        :loading="submitting"
+        @click="submit"
+      >
+        提交评价
+      </n-button>
+      <span class="hint">最多选 {{ MAX_REACTIONS }} 个，提交后不能修改</span>
+    </n-flex>
   </div>
 </template>
 
@@ -32,58 +46,55 @@ const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 const message = useMessage()
 
-const mine = ref<ReactionKey[]>([])
+// selected 是本地待提交的选择，提交成功后就是 mine，之后不可再改
+const selected = ref<ReactionKey[]>([])
 const counts = ref<ReactionCounts | null>(null)
+const submitting = ref(false)
 
 const solved = computed(() => problem.value?.my_status === 0)
+// 评价一次定终身：后端已存在记录就锁死，只剩查看
+const locked = ref(false)
 
 function isDisabled(key: ReactionKey) {
-  if (!solved.value) return true
-  if (mine.value.includes(key)) return false
-  return mine.value.length >= MAX_REACTIONS
+  if (!solved.value || locked.value || submitting.value) return true
+  if (selected.value.includes(key)) return false
+  return selected.value.length >= MAX_REACTIONS
 }
 
 function tooltipOf(key: ReactionKey, label: string) {
   if (!solved.value) return "完成本题后可以评价"
+  if (locked.value) return `${label}（已评价，不能修改）`
   if (isDisabled(key)) return `最多选 ${MAX_REACTIONS} 个，先取消一个`
   return label
 }
 
-// 连续点击不做防抖、不禁用按钮，靠请求代号保证后到的旧响应不会覆盖新状态：
-// 每次点击自增一次，只有仍是最新请求时才把结果写回本地状态
-let requestSeq = 0
+function toggle(key: ReactionKey) {
+  selected.value = selected.value.includes(key)
+    ? selected.value.filter((k) => k !== key)
+    : [...selected.value, key]
+}
 
-async function toggle(key: ReactionKey) {
-  if (!problem.value) return
-  const prevMine = [...mine.value]
-  const prevCounts = counts.value ? { ...counts.value } : null
-  const selected = mine.value.includes(key)
-  const next = selected
-    ? mine.value.filter((k) => k !== key)
-    : [...mine.value, key]
-
-  mine.value = next
-  if (counts.value) counts.value[key] += selected ? -1 : 1
-
-  const seq = ++requestSeq
+async function submit() {
+  if (!problem.value || !selected.value.length) return
+  submitting.value = true
   try {
-    const res = await setReaction(problem.value.id, next)
-    if (seq !== requestSeq) return
-    mine.value = res.data.mine
+    const res = await setReaction(problem.value.id, selected.value)
+    selected.value = res.data.mine
     counts.value = res.data.counts
+    locked.value = true
   } catch {
-    if (seq !== requestSeq) return
-    mine.value = prevMine
-    counts.value = prevCounts
-    message.error("操作失败，请重试")
+    message.error("提交失败，请重试")
+  } finally {
+    submitting.value = false
   }
 }
 
 async function load() {
   if (!problem.value) return
   const res = await getReaction(problem.value.id)
-  mine.value = res.data.mine
+  selected.value = res.data.mine
   counts.value = res.data.counts
+  locked.value = res.data.mine.length > 0
 }
 
 onMounted(() => {
@@ -126,6 +137,17 @@ onMounted(() => {
 .reaction-button:disabled {
   opacity: 0.5;
   cursor: not-allowed;
+}
+/* 锁定后选中的那几个仍要看得清，不然自己评过什么都糊成一片 */
+.reaction-button.active:disabled {
+  opacity: 1;
+}
+.footer {
+  margin-top: 12px;
+}
+.hint {
+  font-size: 13px;
+  opacity: 0.6;
 }
 .count {
   font-size: 15px;
