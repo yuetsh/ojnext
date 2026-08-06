@@ -9,7 +9,6 @@ export function signup(data: {
   username: string
   email: string
   password: string
-  captcha: string
 }) {
   return http.post("register", data)
 }
@@ -24,10 +23,6 @@ export function getProfile(username: string = "") {
 
 export function getProblemTagList() {
   return http.get<Tag[]>("problem/tags")
-}
-
-export function getCaptcha() {
-  return http.get("captcha")
 }
 
 export function getHitokoto() {

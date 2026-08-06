@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { getCaptcha, signup } from "../api"
+import { signup } from "../api"
 import { storeToRefs } from "pinia"
 import { useAuthModalStore } from "../store/authModal"
 
@@ -10,7 +10,6 @@ const {
   signupForm: form,
   signupLoading: isLoading,
   signupError: msg,
-  captchaSrc,
 } = storeToRefs(authStore)
 const signupRef = useTemplateRef("signupRef")
 
@@ -31,9 +30,6 @@ const rules: FormRules = {
       trigger: "blur",
     },
   ],
-  captcha: [
-    { required: true, message: "验证码必填", trigger: "blur", min: 1, max: 10 },
-  ],
 }
 
 function goLogin() {
@@ -50,20 +46,15 @@ function submit() {
           username: form.value.username,
           email: form.value.email,
           password: form.value.password,
-          captcha: form.value.captcha,
         })
       } catch (err: any) {
-        if (err.data === "Invalid captcha") {
-          authStore.setSignupError("验证码不正确")
-        } else if (err.data === "Username already exists") {
+        if (err.data === "Username already exists") {
           authStore.setSignupError("用户名已存在")
         } else if (err.data === "Email already exists") {
           authStore.setSignupError("邮箱已存在")
         } else {
           authStore.setSignupError("无法注册")
         }
-        getCaptchaSrc()
-        form.value.captcha = ""
       } finally {
         authStore.setSignupLoading(false)
       }
@@ -74,14 +65,6 @@ function submit() {
   })
 }
 
-async function getCaptchaSrc() {
-  const res = await getCaptcha()
-  authStore.setCaptchaSrc(res.data)
-}
-
-watch(signupModalOpen, (v) => {
-  if (v) getCaptchaSrc()
-})
 </script>
 
 <template>
@@ -134,18 +117,6 @@ watch(signupModalOpen, (v) => {
           autocomplete="new-password"
         />
       </n-form-item>
-      <n-form-item label="验证码" path="captcha">
-        <n-space>
-          <n-input
-            v-model:value="form.captcha"
-            clearable
-            name="captcha"
-            id="signup-captcha"
-            autocomplete="off"
-          />
-          <img class="captcha" :src="captchaSrc" @click="getCaptchaSrc" />
-        </n-space>
-      </n-form-item>
       <n-alert v-if="msg" type="error" :show-icon="false"> {{ msg }}</n-alert>
       <n-form-item>
         <n-space>
@@ -158,10 +129,3 @@ watch(signupModalOpen, (v) => {
     </n-form>
   </n-modal>
 </template>
-
-<style scoped>
-.captcha {
-  height: 34px;
-  cursor: pointer;
-}
-</style>

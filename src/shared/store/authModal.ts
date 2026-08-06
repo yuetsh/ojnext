@@ -25,14 +25,10 @@ export const useAuthModalStore = defineStore("authModal", () => {
     email: "",
     password: "",
     passwordAgain: "",
-    captcha: "",
   })
 
   const signupLoading = ref(false)
   const signupError = ref("")
-
-  // ==================== 验证码 ====================
-  const captchaSrc = ref("")
 
   // ==================== 模态框操作 ====================
   /**
@@ -123,13 +119,6 @@ export const useAuthModalStore = defineStore("authModal", () => {
     signupError.value = ""
   }
 
-  /**
-   * 设置验证码图片地址
-   */
-  function setCaptchaSrc(src: string) {
-    captchaSrc.value = src
-  }
-
   return {
     // 模态框状态
     loginModalOpen,
@@ -144,9 +133,6 @@ export const useAuthModalStore = defineStore("authModal", () => {
     signupForm,
     signupLoading,
     signupError,
-
-    // 验证码
-    captchaSrc,
 
     // 模态框操作
     openLoginModal,
@@ -165,6 +151,5 @@ export const useAuthModalStore = defineStore("authModal", () => {
     setSignupLoading,
     setSignupError,
     clearSignupError,
-    setCaptchaSrc,
   }
 })
