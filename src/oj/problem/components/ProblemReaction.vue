@@ -6,7 +6,7 @@
         v-for="item in REACTIONS"
         :key="item.key"
         trigger="hover"
-        :disabled="solved && !locked"
+        :disabled="solved"
       >
         <template #trigger>
           <n-button
@@ -23,7 +23,7 @@
             <span v-if="counts" class="count">{{ counts[item.key] }}</span>
           </n-button>
         </template>
-        {{ tooltipOf(item.label) }}
+        完成本题后可以评价
       </n-tooltip>
     </n-flex>
     <div v-if="solved" class="hint">
@@ -55,12 +55,7 @@ const submitting = ref<ReactionKey | null>(null)
 
 const solved = computed(() => problem.value?.my_status === 0)
 // 评价一次定终身：后端已存在记录就锁死，只剩查看
-const locked = ref(false)
-
-function tooltipOf(label: string) {
-  if (!solved.value) return "完成本题后可以评价"
-  return `${label}（已评价，不能修改）`
-}
+const locked = computed(() => mine.value !== null)
 
 async function pick(key: ReactionKey) {
   if (!problem.value) return
@@ -69,7 +64,6 @@ async function pick(key: ReactionKey) {
     const res = await setReaction(problem.value.id, key)
     mine.value = res.data.mine
     counts.value = res.data.counts
-    locked.value = true
     emit("submitted")
   } catch {
     message.error("提交失败，请重试")
@@ -83,7 +77,6 @@ async function load() {
   const res = await getReaction(problem.value.id)
   mine.value = res.data.mine
   counts.value = res.data.counts
-  locked.value = res.data.mine !== null
 }
 
 onMounted(() => {

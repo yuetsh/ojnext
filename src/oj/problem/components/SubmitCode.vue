@@ -40,9 +40,8 @@ const router = useRouter()
 const [commentPanel] = useToggle()
 const message = useMessage()
 
-// 评价提交后停一下让用户看到选中态，再收起弹窗
 function closeCommentPanel() {
-  setTimeout(() => (commentPanel.value = false), 800)
+  commentPanel.value = false
 }
 
 const { isDesktop } = useBreakpoints()
@@ -266,6 +265,8 @@ watch(
     preset="card"
     title="恭喜你成功提交，说说你对这道题的感受吧"
     :mask-closable="false"
+    :closable="false"
+    :close-on-esc="false"
     :style="{ maxWidth: isDesktop && '50vw', maxHeight: '80vh' }"
     v-model:show="commentPanel"
   >
