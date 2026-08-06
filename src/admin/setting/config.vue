@@ -1,5 +1,10 @@
 <script setup lang="ts">
 import { NButton, NTag } from "naive-ui"
+import {
+  CLASS_NAME_MAX_DIGITS,
+  CLASS_NAME_MIN_DIGITS,
+  CLASS_NAME_RE,
+} from "utils/constants"
 import { parseTime } from "utils/functions"
 import type { Server } from "utils/types"
 import { useConfigStore } from "shared/store/config"
@@ -140,7 +145,21 @@ async function getWebsiteConfig() {
 }
 
 async function saveWebsiteConfig() {
-  await editWebsite(websiteConfig)
+  // 班级号要和用户名里 ks 后面那段对得上，位数不对登录页会查不到该班学生。
+  // 后端 CreateEditWebsiteConfigSerializer 也会拦，这里先报更明确的错
+  const invalid = websiteConfig.class_list.filter((c) => !CLASS_NAME_RE.test(c))
+  if (invalid.length) {
+    message.error(
+      `班级号 ${invalid.join("、")} 必须是 ${CLASS_NAME_MIN_DIGITS}~${CLASS_NAME_MAX_DIGITS} 位数字`,
+    )
+    return
+  }
+  try {
+    await editWebsite(websiteConfig)
+  } catch (err: any) {
+    message.error("保存失败：" + err.data)
+    return
+  }
   message.success("网站配置保存成功")
   getWebsiteConfig()
   configStore.getConfig()
@@ -214,7 +233,13 @@ onMounted(() => {
     </n-form>
     <n-form label-placement="left">
       <n-form-item label="班级列表">
-        <n-dynamic-tags v-model:value="websiteConfig.class_list" />
+        <n-flex vertical size="small">
+          <n-dynamic-tags v-model:value="websiteConfig.class_list" />
+          <n-text depth="3" style="font-size: 12px">
+            填 {{ CLASS_NAME_MIN_DIGITS }}~{{ CLASS_NAME_MAX_DIGITS }}
+            位数字，如 251、2510，要和用户名里 ks 后面那段一致
+          </n-text>
+        </n-flex>
       </n-form-item>
     </n-form>
     <n-flex align="center">

@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { Icon } from "@iconify/vue"
+import { USERNAME_CLASS_RE } from "utils/constants"
 
 interface Props {
   type: "题目" | "用户"
@@ -10,12 +11,14 @@ const props = defineProps<Props>()
 
 const emits = defineEmits(["click", "search", "filterClass"])
 
+// 用同一个正则判断，避免 kstest 这类 ks 开头但没有班级号的用户名
+// 也显示出按钮，点了却什么都不发生
 const showFilterClass = computed(() => {
-  return props.type === "用户" && props.username?.startsWith("ks")
+  return props.type === "用户" && USERNAME_CLASS_RE.test(props.username ?? "")
 })
 
 function filterClass() {
-  const match = props.username!.match(/^ks\d{3,4}/)
+  const match = props.username!.match(USERNAME_CLASS_RE)
   const classname = match ? match[0] : ""
   if (!classname) return
   emits("filterClass", classname)

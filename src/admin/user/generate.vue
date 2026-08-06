@@ -1,4 +1,10 @@
 <script setup lang="ts">
+import {
+  CLASS_NAME_MAX_DIGITS,
+  CLASS_NAME_MAX_VALUE,
+  CLASS_NAME_MIN_DIGITS,
+  CLASS_NAME_MIN_VALUE,
+} from "utils/constants"
 import { importUsers } from "../api"
 
 const message = useMessage()
@@ -10,6 +16,17 @@ const users = shallowRef<string[][]>([])
 function generateUsers() {
   if (!rawInput.value || !rawInput.value.trim()) {
     message.info("请填写相关内容")
+    return false
+  }
+  // 后端 get_class_name 只认合法位数的班级号，位数不对会整批拒绝导入，
+  // 这里先拦一道，省得填完一屏用户名才被打回来
+  if (
+    prefix.value &&
+    (prefix.value < CLASS_NAME_MIN_VALUE || prefix.value > CLASS_NAME_MAX_VALUE)
+  ) {
+    message.error(
+      `班级号 ${prefix.value} 必须是 ${CLASS_NAME_MIN_DIGITS}~${CLASS_NAME_MAX_DIGITS} 位数字`,
+    )
     return false
   }
   let className = !!prefix.value ? `ks${prefix.value}` : ""
@@ -64,9 +81,9 @@ async function submit() {
           style="width: 170px"
           v-model:value="prefix"
           clearable
-          :max="9999"
+          :max="CLASS_NAME_MAX_VALUE"
           :min="0"
-          placeholder="班级号"
+          :placeholder="`班级号（${CLASS_NAME_MIN_DIGITS}~${CLASS_NAME_MAX_DIGITS} 位）`"
         />
       </n-flex>
       <n-input

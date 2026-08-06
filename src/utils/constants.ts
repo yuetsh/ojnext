@@ -325,3 +325,24 @@ export const DURATION_OPTIONS = [
   { label: "半年内", value: "months:6" },
   { label: "一年内", value: "years:1" },
 ] as const
+
+// 班级号的位数范围。学生用户名形如 ks<班级号><姓名>，班级号还要跟
+// 网站配置里的班级列表对得上。
+// 后端 OnlineJudge/utils/shortcuts.py 的 CLASS_NAME_MIN/MAX_DIGITS
+// 是同一条规则的另一份，改这里必须同时改那边。
+export const CLASS_NAME_MIN_DIGITS = 3
+export const CLASS_NAME_MAX_DIGITS = 4
+
+/** 合法班级号：3~4 位纯数字 */
+export const CLASS_NAME_RE = new RegExp(
+  `^\\d{${CLASS_NAME_MIN_DIGITS},${CLASS_NAME_MAX_DIGITS}}$`,
+)
+
+/** 用户名开头的 ks<班级号>，用于从用户名里认出班级 */
+export const USERNAME_CLASS_RE = new RegExp(
+  `^ks\\d{${CLASS_NAME_MIN_DIGITS},${CLASS_NAME_MAX_DIGITS}}`,
+)
+
+/** 班级号作为数字时的上下界，给 n-input-number 用 */
+export const CLASS_NAME_MIN_VALUE = 10 ** (CLASS_NAME_MIN_DIGITS - 1)
+export const CLASS_NAME_MAX_VALUE = 10 ** CLASS_NAME_MAX_DIGITS - 1

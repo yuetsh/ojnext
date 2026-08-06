@@ -196,20 +196,29 @@ async function handleEditUser() {
     message.error("密码长度不得小于 6")
     return
   }
-  if (create.value) {
-    const newUser = [
-      [
-        userEditing.value.username,
-        password.value,
-        userEditing.value.email,
-        userEditing.value.real_name,
-      ],
-    ]
-    await importUsers(newUser)
-    listUsers()
-  } else {
-    const user = Object.assign(userEditing.value, { password: password.value })
-    await editUser(user)
+  // http 拦截器只对 login-required / permission-denied 自动弹提示，
+  // 其余业务错误（比如班级号位数不对）不接住就什么都不显示
+  try {
+    if (create.value) {
+      const newUser = [
+        [
+          userEditing.value.username,
+          password.value,
+          userEditing.value.email,
+          userEditing.value.real_name,
+        ],
+      ]
+      await importUsers(newUser)
+      listUsers()
+    } else {
+      const user = Object.assign(userEditing.value, {
+        password: password.value,
+      })
+      await editUser(user)
+    }
+  } catch (err: any) {
+    message.error("保存失败：" + err.data)
+    return
   }
   userEditing.value = null
   password.value = ""
