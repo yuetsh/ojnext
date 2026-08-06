@@ -80,7 +80,6 @@ function handleSorter(sorter: { columnKey: string; order: string | false }) {
       (sorter.order === "descend" ? "-" : "") + String(sorter.columnKey)
   }
   query.page = 1
-  listStats()
 }
 
 async function listStats() {
@@ -96,7 +95,7 @@ async function listStats() {
 }
 
 onMounted(listStats)
-watch(() => [query.page, query.limit], listStats)
+watch(() => [query.page, query.limit, query.ordering], listStats)
 watchDebounced(() => query.problem, listStats, {
   debounce: 500,
   maxWait: 1000,
