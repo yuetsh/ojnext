@@ -2,6 +2,7 @@
 import { Icon } from "@iconify/vue"
 import { useThemeVars } from "naive-ui"
 import { storeToRefs } from "pinia"
+import type { CSSProperties } from "vue"
 import { getReaction, setReaction } from "oj/api"
 import { useProblemStore } from "oj/store/problem"
 import { useUserStore } from "shared/store/user"
@@ -22,10 +23,73 @@ const counts = ref<ReactionCounts | null>(null)
 const loading = ref(false)
 // 正在提交的 key，用来锁住整组并只在当前选项显示进度。
 const submitting = ref<ReactionKey | null>(null)
+const activeIndex = ref<number | null>(null)
+const keyboardActive = ref(false)
+const wheelRef = ref<HTMLElement | null>(null)
 let loadSequence = 0
+
+const wheelGeometry = {
+  startAngle: -90,
+  contentRadius: 34.5,
+  pushRadius: 4.5,
+  outerRadius: 50,
+  gapAngle: 1.15,
+  arcPointCount: 9,
+  hitInnerRadius: 0.18,
+  hitOuterRadius: 0.49,
+} as const
+
+const sliceAngle = 360 / REACTIONS.length
+
+function pointOnCircle(angle: number, radius: number) {
+  const radians = (angle * Math.PI) / 180
+  return {
+    x: 50 + Math.cos(radians) * radius,
+    y: 50 + Math.sin(radians) * radius,
+  }
+}
+
+function getWheelItemStyle(index: number): CSSProperties {
+  const centerAngle = wheelGeometry.startAngle + index * sliceAngle
+  const startAngle = centerAngle - sliceAngle / 2 + wheelGeometry.gapAngle
+  const endAngle = centerAngle + sliceAngle / 2 - wheelGeometry.gapAngle
+  const position = pointOnCircle(centerAngle, wheelGeometry.contentRadius)
+  const push = pointOnCircle(centerAngle, wheelGeometry.pushRadius)
+  const arcPoints = Array.from(
+    { length: wheelGeometry.arcPointCount },
+    (_, pointIndex) => {
+      const progress = pointIndex / (wheelGeometry.arcPointCount - 1)
+      const angle = startAngle + (endAngle - startAngle) * progress
+      const point = pointOnCircle(angle, wheelGeometry.outerRadius)
+      return `${point.x.toFixed(3)}% ${point.y.toFixed(3)}%`
+    },
+  )
+
+  return {
+    "--segment-path": `polygon(50% 50%, ${arcPoints.join(", ")})`,
+    "--content-x": `${position.x}%`,
+    "--content-y": `${position.y}%`,
+    "--push-x": `${push.x - 50}px`,
+    "--push-y": `${push.y - 50}px`,
+  }
+}
+
+const wheelItems = REACTIONS.map((item, index) => ({
+  ...item,
+  index,
+  style: getWheelItemStyle(index),
+}))
 
 const solved = computed(() => problem.value?.my_status === 0)
 const locked = computed(() => mine.value !== null)
+const canInteract = computed(
+  () =>
+    !!problem.value &&
+    solved.value &&
+    !locked.value &&
+    !loading.value &&
+    !submitting.value,
+)
 const selectedLabel = computed(
   () => REACTIONS.find((item) => item.key === mine.value)?.label ?? "",
 )
@@ -62,12 +126,73 @@ const statusText = computed(() => {
   return "点击即提交，点评提交后不能修改"
 })
 
+const wheelCenter = computed(() => {
+  if (loading.value) {
+    return {
+      icon: "ph:spinner-gap-bold",
+      eyebrow: "正在读取",
+      label: "题目点评",
+      spinning: true,
+    }
+  }
+
+  if (submitting.value) {
+    const item = REACTIONS.find((reaction) => reaction.key === submitting.value)
+    return {
+      icon: "svg-spinners:180-ring-with-bg",
+      eyebrow: "正在记录",
+      label: item?.label ?? "提交点评",
+      spinning: false,
+    }
+  }
+
+  if (mine.value) {
+    const item = REACTIONS.find((reaction) => reaction.key === mine.value)
+    return {
+      icon: "ph:check-bold",
+      eyebrow: "你的选择",
+      label: item?.label ?? "已提交",
+      spinning: false,
+    }
+  }
+
+  if (activeIndex.value !== null) {
+    const item = wheelItems[activeIndex.value]
+    const count = counts.value?.[item.key]
+    return {
+      icon: item.icon,
+      eyebrow: count === undefined ? "选择这项" : `${count} 人选择`,
+      label: item.label,
+      spinning: false,
+    }
+  }
+
+  if (!solved.value) {
+    return {
+      icon: "ph:lock-simple-bold",
+      eyebrow: "完成后开放",
+      label: "通关后点评",
+      spinning: false,
+    }
+  }
+
+  return {
+    icon: "ph:cursor-click-bold",
+    eyebrow: "移动到扇区",
+    label: "选择点评",
+    spinning: false,
+  }
+})
+
 const reactionStyle = computed(() => ({
   "--reaction-accent": theme.value.primaryColor,
-  "--reaction-accent-hover": theme.value.primaryColorHover,
-  "--reaction-accent-pressed": theme.value.primaryColorPressed,
   "--reaction-card": theme.value.cardColor,
   "--reaction-canvas": theme.value.bodyColor,
+  "--reaction-action": theme.value.actionColor,
+  "--reaction-hover": theme.value.hoverColor,
+  "--reaction-border": theme.value.borderColor,
+  "--reaction-rail": theme.value.railColor,
+  "--reaction-shadow": theme.value.boxShadow1,
   "--reaction-text": theme.value.textColor1,
   "--reaction-text-muted": theme.value.textColor2,
   "--reaction-text-faint": theme.value.textColor3,
@@ -82,6 +207,56 @@ function optionAriaLabel(key: ReactionKey, label: string) {
   return `${label}${countText}${selectedText}`
 }
 
+function getPointerIndex(event: PointerEvent | MouseEvent) {
+  const wheel = wheelRef.value
+  if (!wheel) return null
+
+  const bounds = wheel.getBoundingClientRect()
+  const x = event.clientX - (bounds.left + bounds.width / 2)
+  const y = event.clientY - (bounds.top + bounds.height / 2)
+  const distance = Math.hypot(x, y)
+
+  if (
+    distance < bounds.width * wheelGeometry.hitInnerRadius ||
+    distance > bounds.width * wheelGeometry.hitOuterRadius
+  ) {
+    return null
+  }
+
+  const angle = (Math.atan2(y, x) * 180) / Math.PI
+  const rawIndex = Math.round((angle - wheelGeometry.startAngle) / sliceAngle)
+  return (
+    ((rawIndex % wheelItems.length) + wheelItems.length) % wheelItems.length
+  )
+}
+
+function preview(index: number, fromKeyboard = false) {
+  if (!canInteract.value) return
+  keyboardActive.value = fromKeyboard
+  activeIndex.value = index
+}
+
+function clearPreview() {
+  if (locked.value) return
+  activeIndex.value = null
+  keyboardActive.value = false
+}
+
+function onWheelPointerMove(event: PointerEvent) {
+  if (!canInteract.value) return
+  keyboardActive.value = false
+  activeIndex.value = getPointerIndex(event)
+}
+
+function onWheelClick(event: MouseEvent) {
+  if (!canInteract.value) return
+  const target = event.target
+  if (target instanceof Element && target.closest(".reaction-option")) return
+
+  const index = getPointerIndex(event)
+  if (index !== null) pick(wheelItems[index].key)
+}
+
 async function pick(key: ReactionKey) {
   if (
     !problem.value ||
@@ -92,6 +267,8 @@ async function pick(key: ReactionKey) {
   )
     return
 
+  activeIndex.value = null
+  keyboardActive.value = false
   submitting.value = key
   try {
     const res = await setReaction(problem.value.id, key)
@@ -126,6 +303,8 @@ watch(
     mine.value = null
     counts.value = null
     submitting.value = null
+    activeIndex.value = null
+    keyboardActive.value = false
 
     if (!isAuthed || problemId === undefined) {
       loadSequence += 1
@@ -180,53 +359,84 @@ watch(
     </div>
 
     <template v-else>
-      <div
-        class="reaction-grid"
-        role="group"
-        aria-label="选择一项题目点评，点击后立即提交"
-        :aria-busy="loading || !!submitting"
-      >
-        <button
-          v-for="item in REACTIONS"
-          :key="item.key"
-          type="button"
-          class="reaction-option"
+      <div class="wheel-stage">
+        <div
+          ref="wheelRef"
+          class="reaction-wheel"
           :class="{
-            'is-selected': mine === item.key,
-            'is-submitting': submitting === item.key,
-            'is-muted': locked && mine !== item.key,
-            'is-unavailable': !solved || loading,
+            'has-selection': locked,
+            'is-disabled': !canInteract,
+            'is-keyboard-active': keyboardActive,
           }"
-          :disabled="!solved || locked || loading || !!submitting"
-          :aria-pressed="mine === item.key"
-          :aria-label="optionAriaLabel(item.key, item.label)"
-          @click="pick(item.key)"
+          role="group"
+          aria-label="选择一项题目点评，点击后立即提交"
+          :aria-busy="loading || !!submitting"
+          @pointermove="onWheelPointerMove"
+          @pointerleave="clearPreview"
+          @click="onWheelClick"
         >
-          <span class="option-icon" aria-hidden="true">
-            <Icon
-              :icon="
-                submitting === item.key
-                  ? 'svg-spinners:180-ring-with-bg'
-                  : item.icon
-              "
-            />
-          </span>
-
-          <span class="option-copy">
-            <span class="option-label">{{ item.label }}</span>
-            <span v-if="counts" class="option-count">
-              {{ counts[item.key] }} 人
-            </span>
-          </span>
-
           <span
-            v-if="mine === item.key"
-            class="selected-mark"
+            v-for="item in wheelItems"
+            :key="`${item.key}-face`"
+            class="segment-face"
+            :class="{
+              'is-active': activeIndex === item.index,
+              'is-selected': mine === item.key,
+              'is-submitting': submitting === item.key,
+            }"
+            :style="item.style"
             aria-hidden="true"
+          />
+
+          <button
+            v-for="item in wheelItems"
+            :key="item.key"
+            type="button"
+            class="reaction-option"
+            :class="{
+              'is-active': activeIndex === item.index,
+              'is-selected': mine === item.key,
+              'is-submitting': submitting === item.key,
+              'is-muted': locked && mine !== item.key,
+              'is-unavailable': !solved || loading,
+            }"
+            :style="item.style"
+            :disabled="!canInteract"
+            :aria-pressed="mine === item.key"
+            :aria-label="optionAriaLabel(item.key, item.label)"
+            @focus="preview(item.index, true)"
+            @blur="clearPreview"
+            @click.stop="pick(item.key)"
           >
-            <Icon icon="ph:check-bold" />
-          </span>
-        </button>
+            <span class="option-content">
+              <span class="option-icon" aria-hidden="true">
+                <Icon
+                  :icon="
+                    submitting === item.key
+                      ? 'svg-spinners:180-ring-with-bg'
+                      : item.icon
+                  "
+                />
+              </span>
+              <span class="option-label">{{ item.label }}</span>
+              <span v-if="counts" class="option-count">
+                {{ counts[item.key] }} 人
+              </span>
+            </span>
+          </button>
+
+          <div class="wheel-core" aria-hidden="true">
+            <div class="core-content">
+              <Icon
+                class="core-icon"
+                :class="{ 'is-spinning': wheelCenter.spinning }"
+                :icon="wheelCenter.icon"
+              />
+              <span class="core-eyebrow">{{ wheelCenter.eyebrow }}</span>
+              <strong class="core-label">{{ wheelCenter.label }}</strong>
+            </div>
+          </div>
+        </div>
       </div>
 
       <footer class="reaction-status" aria-live="polite">
@@ -338,50 +548,109 @@ watch(
   font-size: 15px;
 }
 
-.reaction-grid {
+.wheel-stage {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 10px;
+  place-items: center;
+  padding: 4px 0 12px;
+}
+
+.reaction-wheel {
+  position: relative;
+  width: min(100%, 440px);
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: 50%;
+  background: var(--reaction-rail);
+  box-shadow:
+    var(--reaction-shadow),
+    inset 0 0 0 1px var(--reaction-border),
+    inset 0 0 0 10px var(--reaction-card),
+    inset 0 0 0 11px var(--reaction-border);
+  isolation: isolate;
+}
+
+.reaction-wheel::before {
+  position: absolute;
+  z-index: 8;
+  inset: 9px;
+  border-radius: 50%;
+  box-shadow:
+    inset 0 0 0 1px var(--reaction-border),
+    inset 0 0 10px color-mix(in srgb, var(--reaction-text) 7%, transparent);
+  pointer-events: none;
+  content: "";
+}
+
+.segment-face {
+  position: absolute;
+  inset: 13px;
+  overflow: hidden;
+  background: var(--reaction-action);
+  clip-path: var(--segment-path);
+  transform: translate(0, 0) scale(1);
+  transform-origin: center;
+  pointer-events: none;
+  transition:
+    transform 150ms cubic-bezier(0, 0, 0.2, 1),
+    background-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
+    opacity 150ms ease-out,
+    filter 150ms ease-out;
+}
+
+.segment-face:is(.is-active, .is-submitting, .is-selected) {
+  z-index: 2;
+  background: color-mix(
+    in srgb,
+    var(--reaction-accent) 9%,
+    var(--reaction-hover)
+  );
+}
+
+.segment-face.is-active,
+.segment-face.is-submitting {
+  transform: translate(calc(var(--push-x) * 0.67), calc(var(--push-y) * 0.67))
+    scale(1.02);
+}
+
+.segment-face.is-selected {
+  z-index: 3;
+  background: color-mix(
+    in srgb,
+    var(--reaction-accent) 18%,
+    var(--reaction-hover)
+  );
+  transform: translate(calc(var(--push-x) * 0.9), calc(var(--push-y) * 0.9))
+    scale(1.03);
+}
+
+.reaction-wheel.has-selection .segment-face:not(.is-selected) {
+  opacity: 0.44;
+  filter: saturate(0.45);
+}
+
+.reaction-wheel.is-disabled:not(.has-selection) .segment-face {
+  opacity: 0.68;
 }
 
 .reaction-option {
-  position: relative;
+  position: absolute;
+  z-index: 9;
+  top: var(--content-y);
+  left: var(--content-x);
   display: flex;
-  min-width: 0;
-  min-height: 82px;
-  align-items: center;
-  gap: 11px;
-  box-sizing: border-box;
-  padding: 14px;
-  overflow: hidden;
+  width: clamp(68px, 21%, 90px);
+  min-height: clamp(56px, 17%, 72px);
+  align-items: stretch;
+  justify-content: stretch;
+  padding: 0;
   border: 0;
-  border-radius: 12px;
-  background: var(--reaction-card);
-  box-shadow:
-    inset 0 0 0 1px var(--reaction-divider),
-    0 1px 3px rgba(15, 23, 42, 0.1);
+  border-radius: 10px;
+  background: transparent;
   color: var(--reaction-text);
   font: inherit;
-  text-align: left;
+  transform: translate(-50%, -50%);
   touch-action: manipulation;
   cursor: pointer;
-  transition-property: transform, box-shadow, background-color, opacity;
-  transition-duration: 140ms;
-  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.reaction-option:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--reaction-accent) 36%, transparent);
-  outline-offset: 2px;
-}
-
-.reaction-option:active:not(:disabled) {
-  transform: scale(0.97);
-  background: color-mix(
-    in srgb,
-    var(--reaction-accent-pressed) 7%,
-    var(--reaction-card)
-  );
 }
 
 .reaction-option:disabled {
@@ -396,39 +665,42 @@ watch(
   opacity: 0.48;
 }
 
-.reaction-option.is-selected {
-  background: color-mix(
-    in srgb,
-    var(--reaction-accent) 10%,
-    var(--reaction-card)
-  );
-  box-shadow:
-    inset 0 0 0 2px var(--reaction-accent),
-    0 5px 16px color-mix(in srgb, var(--reaction-accent) 15%, transparent);
+.reaction-option:is(.is-selected, .is-submitting) {
   opacity: 1;
 }
 
-.reaction-option.is-submitting {
-  background: color-mix(
-    in srgb,
-    var(--reaction-accent) 8%,
-    var(--reaction-card)
-  );
-  box-shadow: inset 0 0 0 2px var(--reaction-accent);
-  opacity: 1;
+.reaction-option:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--reaction-accent) 45%, transparent);
+  outline-offset: 2px;
+}
+
+.option-content {
+  display: flex;
+  width: 100%;
+  min-height: 100%;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 3px;
+  border-radius: 10px;
+  transform: translate(var(--push-x), var(--push-y));
+  transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reaction-option:active:not(:disabled) .option-content {
+  transform: translate(var(--push-x), var(--push-y)) scale(0.94);
 }
 
 .option-icon {
   display: grid;
-  width: 42px;
-  height: 42px;
-  flex: 0 0 42px;
+  width: 34px;
+  height: 34px;
   place-items: center;
-  border-radius: 10px;
-  background: var(--reaction-canvas);
-  box-shadow: inset 0 0 0 1px
-    color-mix(in srgb, var(--reaction-divider) 70%, transparent);
   font-size: 27px;
+  line-height: 1;
+  transform: translateY(0) scale(1);
+  transform-origin: center;
+  transition: transform 170ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .option-icon svg {
@@ -436,42 +708,100 @@ watch(
   height: 27px;
 }
 
-.option-copy {
-  display: flex;
-  min-width: 0;
-  flex: 1;
-  flex-direction: column;
-  gap: 3px;
+.reaction-option:is(.is-active, .is-submitting) .option-icon {
+  transform: translateY(-4px) scale(1.45);
+}
+
+.reaction-option.is-selected .option-icon {
+  transform: translateY(-5px) scale(1.58);
 }
 
 .option-label {
-  overflow: hidden;
-  font-size: 14px;
-  font-weight: 650;
-  line-height: 1.35;
-  text-overflow: ellipsis;
+  font-size: 13px;
+  font-weight: 720;
+  line-height: 1.25;
+  transform: scale(1);
+  transform-origin: center;
+  transition: transform 170ms cubic-bezier(0, 0, 0.2, 1);
   white-space: nowrap;
 }
 
 .option-count {
   color: var(--reaction-text-faint);
-  font-size: 12px;
+  font-size: 10px;
   font-variant-numeric: tabular-nums;
-  line-height: 1.4;
+  line-height: 1.2;
+  transform: scale(1);
+  transform-origin: center;
+  transition: transform 170ms cubic-bezier(0, 0, 0.2, 1);
 }
 
-.selected-mark {
+.reaction-option:is(.is-active, .is-submitting) .option-label {
+  transform: scale(1.16);
+}
+
+.reaction-option:is(.is-active, .is-submitting) .option-count {
+  transform: scale(1.08);
+}
+
+.reaction-option.is-selected .option-label {
+  transform: scale(1.22);
+}
+
+.reaction-option.is-selected .option-count {
+  color: var(--reaction-text);
+  transform: scale(1.1);
+}
+
+.wheel-core {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  z-index: 12;
+  top: 50%;
+  left: 50%;
   display: grid;
-  width: 20px;
-  height: 20px;
+  width: 34%;
+  aspect-ratio: 1;
   place-items: center;
+  padding: 14px;
   border-radius: 50%;
-  background: var(--reaction-accent);
-  color: var(--reaction-card);
-  font-size: 12px;
+  background: var(--reaction-card);
+  box-shadow:
+    0 0 0 1px var(--reaction-border),
+    var(--reaction-shadow);
+  color: var(--reaction-text);
+  text-align: center;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+
+.core-content {
+  display: grid;
+  justify-items: center;
+  gap: 5px;
+}
+
+.core-icon {
+  width: clamp(24px, 6cqi, 34px);
+  height: clamp(24px, 6cqi, 34px);
+  font-size: clamp(24px, 6cqi, 34px);
+}
+
+.core-eyebrow {
+  color: var(--reaction-text-faint);
+  font-size: clamp(9px, 2.3cqi, 11px);
+  font-weight: 650;
+}
+
+.core-label {
+  font-size: clamp(13px, 3.1cqi, 17px);
+  font-weight: 760;
+  line-height: 1.2;
+  text-wrap: balance;
+}
+
+.reaction-wheel.is-keyboard-active
+  :is(.segment-face, .option-icon, .option-label, .option-count) {
+  transition-duration: 0.01ms;
 }
 
 .reaction-status {
@@ -536,35 +866,6 @@ watch(
   animation: reaction-spin 850ms linear infinite;
 }
 
-@media (hover: hover) {
-  .reaction-option:hover:not(:disabled) {
-    transform: translateY(-2px);
-    background: color-mix(
-      in srgb,
-      var(--reaction-accent-hover) 6%,
-      var(--reaction-card)
-    );
-    box-shadow:
-      inset 0 0 0 1px
-        color-mix(in srgb, var(--reaction-accent) 55%, var(--reaction-divider)),
-      0 7px 18px rgba(15, 23, 42, 0.12);
-  }
-}
-
-@container (min-width: 480px) {
-  .reaction-grid {
-    grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .reaction-option {
-    min-height: 116px;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 10px;
-  }
-}
-
 @container (max-width: 440px) {
   .reaction-header {
     flex-direction: column;
@@ -574,10 +875,65 @@ watch(
   .state-chip {
     align-self: flex-start;
   }
+
+  .wheel-stage {
+    padding-top: 0;
+  }
+
+  .segment-face {
+    inset: 10px;
+  }
+
+  .segment-face.is-active,
+  .segment-face.is-submitting {
+    transform: translate(calc(var(--push-x) * 0.34), calc(var(--push-y) * 0.34))
+      scale(1.01);
+  }
+
+  .segment-face.is-selected {
+    transform: translate(calc(var(--push-x) * 0.5), calc(var(--push-y) * 0.5))
+      scale(1.018);
+  }
+
+  .reaction-option {
+    width: clamp(62px, 21%, 72px);
+    min-height: clamp(50px, 17%, 58px);
+  }
+
+  .option-content {
+    gap: 2px;
+  }
+
+  .option-icon {
+    width: 28px;
+    height: 28px;
+    font-size: 23px;
+  }
+
+  .option-icon svg {
+    width: 23px;
+    height: 23px;
+  }
+
+  .option-label {
+    font-size: 11px;
+  }
+
+  .option-count {
+    font-size: 9px;
+  }
+
+  .wheel-core {
+    padding: 10px;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .reaction-option {
+  .segment-face,
+  .option-content,
+  .option-icon,
+  .option-label,
+  .option-count {
     transition-duration: 0.01ms;
   }
 
