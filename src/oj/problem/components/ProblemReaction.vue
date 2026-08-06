@@ -1,21 +1,17 @@
 <template>
   <n-alert v-if="!userStore.isAuthed" type="error" title="请先登录" />
-  <div v-else ref="container" class="reactions">
+  <div v-else class="reactions">
     <n-tooltip v-for="item in REACTIONS" :key="item.key" trigger="hover">
       <template #trigger>
-        <span class="reaction-trigger">
-          <n-button
-            size="small"
-            :disabled="isDisabled(item.key)"
-            :type="mine.includes(item.key) ? 'primary' : 'default'"
-            :ghost="mine.includes(item.key)"
-            @click="toggle(item.key)"
-          >
-            <Icon :icon="item.icon" :width="18" />
-            <span v-if="showLabel" class="label">{{ item.label }}</span>
-            <span v-if="counts" class="count">{{ counts[item.key] }}</span>
-          </n-button>
-        </span>
+        <button
+          class="reaction-button"
+          :class="{ active: mine.includes(item.key) }"
+          :disabled="isDisabled(item.key)"
+          @click="toggle(item.key)"
+        >
+          <Icon :icon="item.icon" :width="28" />
+          <span v-if="counts" class="count">×{{ counts[item.key] }}</span>
+        </button>
       </template>
       {{ tooltipOf(item.key, item.label) }}
     </n-tooltip>
@@ -36,11 +32,6 @@ const problemStore = useProblemStore()
 const { problem } = storeToRefs(problemStore)
 const message = useMessage()
 
-const container = ref<HTMLElement | null>(null)
-const { width } = useElementSize(container)
-// 七个按钮带中文标签大约需要 560px，放不下就只留图标和计数
-const showLabel = computed(() => width.value >= 560)
-
 const mine = ref<ReactionKey[]>([])
 const counts = ref<ReactionCounts | null>(null)
 
@@ -55,7 +46,6 @@ function isDisabled(key: ReactionKey) {
 function tooltipOf(key: ReactionKey, label: string) {
   if (!solved.value) return "完成本题后可以评价"
   if (isDisabled(key)) return `最多选 ${MAX_REACTIONS} 个，先取消一个`
-  if (counts.value) return `${counts.value[key]} 人选了「${label}」`
   return label
 }
 
@@ -102,21 +92,43 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 七个按钮一行约需 700px，窄面板放不下就换行，不做横向滚动免得按钮被藏起来 */
 .reactions {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   gap: 8px;
-  overflow-x: auto;
 }
-.reaction-trigger {
-  display: inline-flex;
+.reaction-button {
   flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 48px;
+  padding: 0 14px;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  border-radius: 8px;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background-color 0.2s;
 }
-.label {
-  margin-left: 4px;
+.reaction-button:hover:not(:disabled) {
+  border-color: rgba(128, 128, 128, 0.6);
+  background: rgba(128, 128, 128, 0.1);
+}
+.reaction-button.active {
+  border-color: #18a058;
+  background: rgba(24, 160, 88, 0.12);
+}
+.reaction-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 .count {
-  margin-left: 6px;
+  font-size: 15px;
   opacity: 0.7;
 }
 </style>
