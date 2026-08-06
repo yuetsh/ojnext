@@ -14,5 +14,7 @@ export function toProblemListItem(result: AdminProblem) {
     has_ast_rules: result.has_ast_rules,
     allow_flowchart: result.allow_flowchart,
     show_flowchart: result.show_flowchart,
+    // 比赛题目列表接口不返回这个字段
+    top_reaction: result.top_reaction ?? null,
   }
 }

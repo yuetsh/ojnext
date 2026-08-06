@@ -1,7 +1,7 @@
 <template>
   <n-alert v-if="!userStore.isAuthed" type="error" title="请先登录" />
   <div v-else>
-    <n-flex class="reactions">
+    <n-flex>
       <n-tooltip
         v-for="item in REACTIONS"
         :key="item.key"
@@ -12,7 +12,7 @@
           <n-button
             :type="mine === item.key ? 'primary' : 'tertiary'"
             :secondary="mine === item.key"
-            :disabled="!solved || locked || submitting"
+            :disabled="!solved || locked || !!submitting"
             :loading="submitting === item.key"
             @click="pick(item.key)"
           >
@@ -20,15 +20,15 @@
               <Icon :icon="item.icon" :width="20" />
             </template>
             {{ item.label }}
-            <span v-if="counts" class="count">{{ counts[item.key] }}</span>
+            <span v-if="counts">{{ counts[item.key] }}</span>
           </n-button>
         </template>
         完成本题后可以评价
       </n-tooltip>
     </n-flex>
-    <div v-if="solved" class="hint">
+    <n-text v-if="solved">
       {{ locked ? "已评价，不能修改" : "选一个，点了直接提交，不能修改" }}
-    </div>
+    </n-text>
   </div>
 </template>
 
@@ -83,27 +83,3 @@ onMounted(() => {
   if (userStore.isAuthed) load()
 })
 </script>
-
-<style scoped>
-/* 七个按钮一行放不下就换行，不做横向滚动免得按钮被藏起来 */
-.reactions {
-  gap: 8px;
-}
-/* 锁定后选中的那颗仍要看得清，不然自己评过什么都糊成一片 */
-.reactions :deep(.n-button.n-button--disabled) {
-  opacity: 0.6;
-}
-.reactions :deep(.n-button--primary-type.n-button--disabled) {
-  opacity: 1;
-}
-.count {
-  margin-left: 6px;
-  opacity: 0.7;
-  font-variant-numeric: tabular-nums;
-}
-.hint {
-  margin-top: 12px;
-  font-size: 13px;
-  opacity: 0.6;
-}
-</style>

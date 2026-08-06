@@ -177,7 +177,11 @@ export interface Problem {
   sql_display?: SQLDisplay | null
 }
 
-export type AdminProblem = Problem & AlterProblem
+export type AdminProblem = Problem &
+  AlterProblem & {
+    // 后台题目列表接口附带的最高票评价，比赛题目列表不返回
+    top_reaction?: { type: ReactionKey; count: number } | null
+  }
 
 interface AlterProblem {
   test_case_id: string
