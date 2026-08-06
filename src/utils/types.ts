@@ -606,6 +606,28 @@ export interface Comment {
   user: SampleUser
 }
 
+export type ReactionKey =
+  | "too_easy"
+  | "too_hard"
+  | "confusing"
+  | "buggy"
+  | "learned"
+  | "interesting"
+  | "want_explain"
+
+export type ReactionCounts = Record<ReactionKey, number>
+
+export interface ReactionState {
+  mine: ReactionKey[]
+  counts: ReactionCounts | null
+}
+
+export interface ReactionStatsRow extends ReactionCounts {
+  pid: string
+  title: string
+  users: number
+}
+
 export interface Tutorial {
   id: number
   title: string

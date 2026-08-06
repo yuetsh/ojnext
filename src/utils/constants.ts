@@ -1,4 +1,4 @@
-import type { AchievementRarity, SUBMISSION_RESULT } from "./types"
+import type { AchievementRarity, SUBMISSION_RESULT, ReactionKey } from "./types"
 
 export enum SubmissionStatus {
   compile_error = -2,
@@ -346,3 +346,27 @@ export const USERNAME_CLASS_RE = new RegExp(
 /** 班级号作为数字时的上下界，给 n-input-number 用 */
 export const CLASS_NAME_MIN_VALUE = 10 ** (CLASS_NAME_MIN_DIGITS - 1)
 export const CLASS_NAME_MAX_VALUE = 10 ** CLASS_NAME_MAX_DIGITS - 1
+
+export const REACTIONS: {
+  key: ReactionKey
+  label: string
+  icon: string
+}[] = [
+  {
+    key: "too_easy",
+    label: "太简单",
+    icon: "fluent-emoji:smiling-face-with-sunglasses",
+  },
+  { key: "too_hard", label: "太难了", icon: "fluent-emoji:exploding-head" },
+  {
+    key: "confusing",
+    label: "没看懂",
+    icon: "fluent-emoji:face-with-spiral-eyes",
+  },
+  { key: "buggy", label: "题目有错", icon: "fluent-emoji:bug" },
+  { key: "learned", label: "学到了", icon: "fluent-emoji:light-bulb" },
+  { key: "interesting", label: "有意思", icon: "fluent-emoji:star-struck" },
+  { key: "want_explain", label: "想听讲解", icon: "fluent-emoji:books" },
+]
+
+export const MAX_REACTIONS = 3

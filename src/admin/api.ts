@@ -297,6 +297,17 @@ export function deleteComment(id: number) {
   return http.delete("admin/comment", { params: { id } })
 }
 
+export function getReactionStats(
+  offset = 0,
+  limit = 10,
+  problem: string,
+  ordering: string,
+) {
+  return http.get("admin/reaction", {
+    params: { offset, limit, problem, ordering },
+  })
+}
+
 export async function getTutorialList() {
   const res = await http.get<Tutorial[]>("admin/tutorial")
   return res.data

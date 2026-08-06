@@ -3,6 +3,7 @@ import { filterResult } from "oj/transforms"
 import type {
   Exercise,
   Problem,
+  ReactionKey,
   Submission,
   SubmissionListPayload,
   SubmitCodePayload,
@@ -239,6 +240,14 @@ export function getComment(problemID: number) {
 
 export function getCommentStatistics(problemID: number) {
   return http.get("comment/statistics", { params: { problem_id: problemID } })
+}
+
+export function getReaction(problemID: number) {
+  return http.get("reaction", { params: { problem_id: problemID } })
+}
+
+export function setReaction(problemID: number, types: ReactionKey[]) {
+  return http.post("reaction", { problem_id: problemID, types })
 }
 
 // TODO: 这个API有问题
