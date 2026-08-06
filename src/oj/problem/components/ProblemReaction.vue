@@ -57,6 +57,10 @@ function tooltipOf(key: ReactionKey, label: string) {
   return label
 }
 
+// 连续点击不做防抖、不禁用按钮，靠请求代号保证后到的旧响应不会覆盖新状态：
+// 每次点击自增一次，只有仍是最新请求时才把结果写回本地状态
+let requestSeq = 0
+
 async function toggle(key: ReactionKey) {
   if (!problem.value) return
   const prevMine = [...mine.value]
@@ -69,11 +73,14 @@ async function toggle(key: ReactionKey) {
   mine.value = next
   if (counts.value) counts.value[key] += selected ? -1 : 1
 
+  const seq = ++requestSeq
   try {
     const res = await setReaction(problem.value.id, next)
+    if (seq !== requestSeq) return
     mine.value = res.data.mine
     counts.value = res.data.counts
   } catch {
+    if (seq !== requestSeq) return
     mine.value = prevMine
     counts.value = prevCounts
     message.error("操作失败，请重试")
