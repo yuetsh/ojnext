@@ -29,10 +29,9 @@ let loadSequence = 0
 
 const wheelGeometry = {
   startAngle: -90,
-  contentRadius: 34.5,
-  pushRadius: 4.5,
+  contentRadius: 35,
+  pushRadius: 4,
   outerRadius: 50,
-  gapAngle: 1.15,
   arcPointCount: 9,
   hitInnerRadius: 0.18,
   hitOuterRadius: 0.49,
@@ -50,8 +49,9 @@ function pointOnCircle(angle: number, radius: number) {
 
 function getWheelItemStyle(index: number): CSSProperties {
   const centerAngle = wheelGeometry.startAngle + index * sliceAngle
-  const startAngle = centerAngle - sliceAngle / 2 + wheelGeometry.gapAngle
-  const endAngle = centerAngle + sliceAngle / 2 - wheelGeometry.gapAngle
+  const startAngle = centerAngle - sliceAngle / 2
+  const endAngle = centerAngle + sliceAngle / 2
+  const dividerAngle = index * sliceAngle - sliceAngle / 2
   const position = pointOnCircle(centerAngle, wheelGeometry.contentRadius)
   const push = pointOnCircle(centerAngle, wheelGeometry.pushRadius)
   const arcPoints = Array.from(
@@ -70,6 +70,7 @@ function getWheelItemStyle(index: number): CSSProperties {
     "--content-y": `${position.y}%`,
     "--push-x": `${push.x - 50}px`,
     "--push-y": `${push.y - 50}px`,
+    "--divider-angle": `${dividerAngle}deg`,
   }
 }
 
@@ -161,11 +162,7 @@ const wheelCenter = computed(() => {
 const reactionStyle = computed(() => ({
   "--reaction-accent": theme.value.primaryColor,
   "--reaction-card": theme.value.cardColor,
-  "--reaction-action": theme.value.actionColor,
-  "--reaction-hover": theme.value.hoverColor,
   "--reaction-border": theme.value.borderColor,
-  "--reaction-rail": theme.value.railColor,
-  "--reaction-shadow": theme.value.boxShadow1,
   "--reaction-text": theme.value.textColor1,
   "--reaction-text-faint": theme.value.textColor3,
 }))
@@ -305,67 +302,75 @@ watch(
         @pointerleave="clearPreview"
         @click="onWheelClick"
       >
-          <span
-            v-for="item in wheelItems"
-            :key="`${item.key}-face`"
-            class="segment-face"
-            :class="{
-              'is-active': activeIndex === item.index,
-              'is-selected': mine === item.key,
-              'is-submitting': submitting === item.key,
-            }"
-            :style="item.style"
-            aria-hidden="true"
-          />
+        <span
+          v-for="item in wheelItems"
+          :key="`${item.key}-face`"
+          class="segment-face"
+          :class="{
+            'is-active': activeIndex === item.index,
+            'is-selected': mine === item.key,
+            'is-submitting': submitting === item.key,
+          }"
+          :style="item.style"
+          aria-hidden="true"
+        />
 
-          <button
-            v-for="item in wheelItems"
-            :key="item.key"
-            type="button"
-            class="reaction-option"
-            :class="{
-              'is-active': activeIndex === item.index,
-              'is-selected': mine === item.key,
-              'is-submitting': submitting === item.key,
-              'is-muted': locked && mine !== item.key,
-              'is-unavailable': !userStore.isAuthed || !solved || loading,
-            }"
-            :style="item.style"
-            :disabled="!canInteract"
-            :aria-pressed="mine === item.key"
-            :aria-label="optionAriaLabel(item.key, item.label)"
-            @focus="preview(item.index, true)"
-            @blur="clearPreview"
-            @click.stop="pick(item.key)"
-          >
-            <span class="option-content">
-              <span class="option-icon" aria-hidden="true">
-                <Icon
-                  :icon="
-                    submitting === item.key
-                      ? 'svg-spinners:180-ring-with-bg'
-                      : item.icon
-                  "
-                />
-              </span>
-              <span class="option-label">{{ item.label }}</span>
-              <span v-if="counts" class="option-count">
-                {{ counts[item.key] }} 人
-              </span>
-            </span>
-          </button>
+        <span
+          v-for="item in wheelItems"
+          :key="`${item.key}-divider`"
+          class="segment-divider"
+          :style="item.style"
+          aria-hidden="true"
+        />
 
-          <div class="wheel-core" aria-hidden="true">
-            <div class="core-content">
+        <button
+          v-for="item in wheelItems"
+          :key="item.key"
+          type="button"
+          class="reaction-option"
+          :class="{
+            'is-active': activeIndex === item.index,
+            'is-selected': mine === item.key,
+            'is-submitting': submitting === item.key,
+            'is-muted': locked && mine !== item.key,
+            'is-unavailable': !userStore.isAuthed || !solved || loading,
+          }"
+          :style="item.style"
+          :disabled="!canInteract"
+          :aria-pressed="mine === item.key"
+          :aria-label="optionAriaLabel(item.key, item.label)"
+          @focus="preview(item.index, true)"
+          @blur="clearPreview"
+          @click.stop="pick(item.key)"
+        >
+          <span class="option-content">
+            <span class="option-icon" aria-hidden="true">
               <Icon
-                class="core-icon"
-                :class="{ 'is-spinning': wheelCenter.spinning }"
-                :icon="wheelCenter.icon"
+                :icon="
+                  submitting === item.key
+                    ? 'svg-spinners:180-ring-with-bg'
+                    : item.icon
+                "
               />
-              <span class="core-eyebrow">{{ wheelCenter.eyebrow }}</span>
-              <strong class="core-label">{{ wheelCenter.label }}</strong>
-            </div>
+            </span>
+            <span class="option-label">{{ item.label }}</span>
+            <span v-if="counts" class="option-count">
+              {{ counts[item.key] }} 人
+            </span>
+          </span>
+        </button>
+
+        <div class="wheel-core" aria-hidden="true">
+          <div class="core-content">
+            <Icon
+              class="core-icon"
+              :class="{ 'is-spinning': wheelCenter.spinning }"
+              :icon="wheelCenter.icon"
+            />
+            <span class="core-eyebrow">{{ wheelCenter.eyebrow }}</span>
+            <strong class="core-label">{{ wheelCenter.label }}</strong>
           </div>
+        </div>
       </div>
     </div>
   </section>
@@ -373,76 +378,55 @@ watch(
 
 <style scoped>
 .reaction-panel {
-  width: min(100%, 880px);
+  width: min(100%, 720px);
   box-sizing: border-box;
   container-type: inline-size;
   margin: 0 auto;
-  padding: clamp(16px, 3.5vw, 32px);
+  padding: clamp(12px, 3vw, 24px);
   color: var(--reaction-text);
 }
 
 .wheel-stage {
   display: grid;
   place-items: center;
-  padding: 4px 0 12px;
+  padding: 4px 0;
 }
 
 .reaction-wheel {
   position: relative;
-  width: min(100%, 440px);
+  width: min(100%, 400px);
+  box-sizing: border-box;
   aspect-ratio: 1;
   overflow: hidden;
+  border: 1px solid var(--reaction-border);
   border-radius: 50%;
-  background: var(--reaction-rail);
-  box-shadow:
-    var(--reaction-shadow),
-    inset 0 0 0 1px var(--reaction-border),
-    inset 0 0 0 10px var(--reaction-card),
-    inset 0 0 0 11px var(--reaction-border);
+  background: var(--reaction-card);
   isolation: isolate;
-}
-
-.reaction-wheel::before {
-  position: absolute;
-  z-index: 8;
-  inset: 9px;
-  border-radius: 50%;
-  box-shadow:
-    inset 0 0 0 1px var(--reaction-border),
-    inset 0 0 10px color-mix(in srgb, var(--reaction-text) 7%, transparent);
-  pointer-events: none;
-  content: "";
 }
 
 .segment-face {
   position: absolute;
-  inset: 13px;
+  inset: 1px;
   overflow: hidden;
-  background: var(--reaction-action);
+  background: color-mix(in srgb, var(--reaction-text) 4%, var(--reaction-card));
   clip-path: var(--segment-path);
   transform: translate(0, 0) scale(1);
   transform-origin: center;
   pointer-events: none;
   transition:
-    transform 150ms cubic-bezier(0, 0, 0.2, 1),
-    background-color 150ms cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 150ms ease-out,
-    filter 150ms ease-out;
+    transform 140ms cubic-bezier(0, 0, 0.2, 1),
+    background-color 140ms ease-out;
 }
 
-.segment-face:is(.is-active, .is-submitting, .is-selected) {
+.segment-face:is(.is-active, .is-submitting) {
   z-index: 2;
   background: color-mix(
     in srgb,
-    var(--reaction-accent) 9%,
-    var(--reaction-hover)
+    var(--reaction-accent) 10%,
+    var(--reaction-card)
   );
-}
-
-.segment-face.is-active,
-.segment-face.is-submitting {
-  transform: translate(calc(var(--push-x) * 0.67), calc(var(--push-y) * 0.67))
-    scale(1.02);
+  transform: translate(calc(var(--push-x) * 0.7), calc(var(--push-y) * 0.7))
+    scale(1.045);
 }
 
 .segment-face.is-selected {
@@ -450,19 +434,22 @@ watch(
   background: color-mix(
     in srgb,
     var(--reaction-accent) 18%,
-    var(--reaction-hover)
+    var(--reaction-card)
   );
-  transform: translate(calc(var(--push-x) * 0.9), calc(var(--push-y) * 0.9))
-    scale(1.03);
+  transform: translate(var(--push-x), var(--push-y)) scale(1.075);
 }
 
-.reaction-wheel.has-selection .segment-face:not(.is-selected) {
-  opacity: 0.44;
-  filter: saturate(0.45);
-}
-
-.reaction-wheel.is-disabled:not(.has-selection) .segment-face {
-  opacity: 0.68;
+.segment-divider {
+  position: absolute;
+  z-index: 8;
+  top: 1px;
+  left: calc(50% - 1px);
+  width: 2px;
+  height: calc(50% - 1px);
+  background: var(--reaction-border);
+  transform: rotate(var(--divider-angle));
+  transform-origin: 50% 100%;
+  pointer-events: none;
 }
 
 .reaction-option {
@@ -471,13 +458,13 @@ watch(
   top: var(--content-y);
   left: var(--content-x);
   display: flex;
-  width: clamp(68px, 21%, 90px);
-  min-height: clamp(56px, 17%, 72px);
+  width: clamp(66px, 20%, 80px);
+  min-height: clamp(52px, 16%, 64px);
   align-items: stretch;
   justify-content: stretch;
   padding: 0;
   border: 0;
-  border-radius: 10px;
+  border-radius: 6px;
   background: transparent;
   color: var(--reaction-text);
   font: inherit;
@@ -503,7 +490,7 @@ watch(
 }
 
 .reaction-option:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--reaction-accent) 45%, transparent);
+  outline: 2px solid color-mix(in srgb, var(--reaction-accent) 55%, transparent);
   outline-offset: 2px;
 }
 
@@ -514,77 +501,62 @@ watch(
   align-items: center;
   justify-content: center;
   flex-direction: column;
-  gap: 3px;
-  border-radius: 10px;
-  transform: translate(var(--push-x), var(--push-y));
-  transition: transform 150ms cubic-bezier(0.16, 1, 0.3, 1);
+  gap: 2px;
+  border-radius: 6px;
+  transform: translate(0, 0) scale(1);
+  transition: transform 140ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .reaction-option:active:not(:disabled) .option-content {
-  transform: translate(var(--push-x), var(--push-y)) scale(0.94);
+  transform: scale(0.96);
+}
+
+.reaction-option:is(.is-active, .is-submitting) .option-content {
+  transform: translate(calc(var(--push-x) * 0.8), calc(var(--push-y) * 0.8))
+    scale(1.18);
+}
+
+.reaction-option:is(.is-active, .is-submitting):active:not(:disabled)
+  .option-content {
+  transform: translate(calc(var(--push-x) * 0.8), calc(var(--push-y) * 0.8))
+    scale(1.1);
+}
+
+.reaction-option.is-selected .option-content {
+  transform: translate(var(--push-x), var(--push-y)) scale(1.24);
 }
 
 .option-icon {
   display: grid;
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   place-items: center;
-  font-size: 27px;
+  font-size: 24px;
   line-height: 1;
-  transform: translateY(0) scale(1);
-  transform-origin: center;
-  transition: transform 170ms cubic-bezier(0, 0, 0.2, 1);
 }
 
 .option-icon svg {
-  width: 27px;
-  height: 27px;
-}
-
-.reaction-option:is(.is-active, .is-submitting) .option-icon {
-  transform: translateY(-4px) scale(1.45);
-}
-
-.reaction-option.is-selected .option-icon {
-  transform: translateY(-5px) scale(1.58);
+  width: 24px;
+  height: 24px;
 }
 
 .option-label {
   font-size: 13px;
-  font-weight: 720;
+  font-weight: 600;
   line-height: 1.25;
-  transform: scale(1);
-  transform-origin: center;
-  transition: transform 170ms cubic-bezier(0, 0, 0.2, 1);
   white-space: nowrap;
 }
 
 .option-count {
   color: var(--reaction-text-faint);
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 400;
   font-variant-numeric: tabular-nums;
   line-height: 1.2;
-  transform: scale(1);
-  transform-origin: center;
-  transition: transform 170ms cubic-bezier(0, 0, 0.2, 1);
-}
-
-.reaction-option:is(.is-active, .is-submitting) .option-label {
-  transform: scale(1.16);
-}
-
-.reaction-option:is(.is-active, .is-submitting) .option-count {
-  transform: scale(1.08);
-}
-
-.reaction-option.is-selected .option-label {
-  transform: scale(1.22);
 }
 
 .reaction-option.is-selected .option-count {
   color: var(--reaction-text);
-  transform: scale(1.1);
 }
 
 .wheel-core {
@@ -593,15 +565,13 @@ watch(
   top: 50%;
   left: 50%;
   display: grid;
-  width: 34%;
+  width: 31%;
   aspect-ratio: 1;
   place-items: center;
-  padding: 14px;
+  padding: 12px;
+  border: 1px solid var(--reaction-border);
   border-radius: 50%;
   background: var(--reaction-card);
-  box-shadow:
-    0 0 0 1px var(--reaction-border),
-    var(--reaction-shadow);
   color: var(--reaction-text);
   text-align: center;
   transform: translate(-50%, -50%);
@@ -611,33 +581,32 @@ watch(
 .core-content {
   display: grid;
   justify-items: center;
-  gap: 5px;
+  gap: 3px;
 }
 
 .core-icon {
-  width: clamp(24px, 6cqi, 34px);
-  height: clamp(24px, 6cqi, 34px);
-  font-size: clamp(24px, 6cqi, 34px);
+  width: clamp(20px, 5cqi, 26px);
+  height: clamp(20px, 5cqi, 26px);
+  font-size: clamp(20px, 5cqi, 26px);
+  color: var(--reaction-text-faint);
 }
 
 .core-eyebrow {
   color: var(--reaction-text-faint);
   font-size: clamp(9px, 2.3cqi, 11px);
-  font-weight: 650;
+  font-weight: 400;
 }
 
 .core-label {
-  font-size: clamp(13px, 3.1cqi, 17px);
-  font-weight: 760;
+  font-size: clamp(12px, 3cqi, 15px);
+  font-weight: 600;
   line-height: 1.2;
   text-wrap: balance;
 }
 
-.reaction-wheel.is-keyboard-active
-  :is(.segment-face, .option-icon, .option-label, .option-count) {
+.reaction-wheel.is-keyboard-active :is(.segment-face, .option-content) {
   transition-duration: 0.01ms;
 }
-
 
 .is-spinning {
   animation: reaction-spin 850ms linear infinite;
@@ -648,39 +617,50 @@ watch(
     padding-top: 0;
   }
 
-  .segment-face {
-    inset: 10px;
+  .reaction-option {
+    width: clamp(58px, 20%, 70px);
+    min-height: clamp(48px, 16%, 56px);
   }
 
-  .segment-face.is-active,
-  .segment-face.is-submitting {
-    transform: translate(calc(var(--push-x) * 0.34), calc(var(--push-y) * 0.34))
-      scale(1.01);
+  .segment-face:is(.is-active, .is-submitting) {
+    transform: translate(calc(var(--push-x) * 0.5), calc(var(--push-y) * 0.5))
+      scale(1.03);
   }
 
   .segment-face.is-selected {
-    transform: translate(calc(var(--push-x) * 0.5), calc(var(--push-y) * 0.5))
-      scale(1.018);
-  }
-
-  .reaction-option {
-    width: clamp(62px, 21%, 72px);
-    min-height: clamp(50px, 17%, 58px);
+    transform: translate(calc(var(--push-x) * 0.75), calc(var(--push-y) * 0.75))
+      scale(1.05);
   }
 
   .option-content {
     gap: 2px;
   }
 
+  .reaction-option:is(.is-active, .is-submitting) .option-content {
+    transform: translate(calc(var(--push-x) * 0.55), calc(var(--push-y) * 0.55))
+      scale(1.12);
+  }
+
+  .reaction-option:is(.is-active, .is-submitting):active:not(:disabled)
+    .option-content {
+    transform: translate(calc(var(--push-x) * 0.55), calc(var(--push-y) * 0.55))
+      scale(1.06);
+  }
+
+  .reaction-option.is-selected .option-content {
+    transform: translate(calc(var(--push-x) * 0.75), calc(var(--push-y) * 0.75))
+      scale(1.17);
+  }
+
   .option-icon {
-    width: 28px;
-    height: 28px;
-    font-size: 23px;
+    width: 24px;
+    height: 24px;
+    font-size: 21px;
   }
 
   .option-icon svg {
-    width: 23px;
-    height: 23px;
+    width: 21px;
+    height: 21px;
   }
 
   .option-label {
